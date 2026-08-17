@@ -6,7 +6,7 @@ FPL Draft Assistant is a personal companion application for an official Fantasy 
 
 ## Scope
 
-The implemented Phase 6 scope is a desktop draft-night companion: manager setup, a live ranked player board, sequential pick tracking, derived rosters and availability, undo-last-pick, Best Available, deterministic Best Fit, and local refresh persistence. Backup/import, pair optimization, official-pick automation, and season-long management remain outside this phase.
+The implemented Phase 6.1 scope is a desktop draft-night companion: manager setup, a live ranked player board, sequential pick tracking, derived rosters and availability, undo-last-pick, Best Available, deterministic Best Fit, consecutive-turn Best Pair, and local refresh persistence. Backup/import, official-pick automation, and season-long management remain outside this phase.
 
 ## Initial stack
 
@@ -30,7 +30,7 @@ React UI
 
 External response structures stop at the adapter boundary. Components consume stable project-owned models, while important calculations remain pure and testable independently of React. `src/services/fpl` validates the small upstream surface it needs and maps it into the `src/domain` Player model.
 
-`src/domain/league.ts` owns the official roster contract, supported league-size validation, and per-position demand/target arithmetic. `src/domain/draftBoard.ts` consumes only `Player[]` to derive deterministic official-rank context. `src/domain/manager.ts` owns manager identity and configuration validation. `src/domain/draftSchedule.ts` generates the snake schedule, current picker, manager turns, and Turn Horizon. `src/domain/draftRanking.ts` combines official and optional model rank evidence without mutating either. `src/domain/draftState.ts` validates authoritative sequential pick history and derives rosters and availability. `src/domain/bestFit.ts` owns the deterministic depletion scenario and recommendation facts. None imports React or raw upstream response types.
+`src/domain/league.ts` owns the official roster contract, supported league-size validation, and per-position demand/target arithmetic. `src/domain/draftBoard.ts` consumes only `Player[]` to derive deterministic official-rank context. `src/domain/manager.ts` owns manager identity and configuration validation. `src/domain/draftSchedule.ts` generates the snake schedule, current picker, manager turns, and Turn Horizon. `src/domain/draftRanking.ts` combines official and optional model rank evidence without mutating either. `src/domain/draftState.ts` validates authoritative sequential pick history and derives rosters and availability. `src/domain/bestFit.ts` owns individual-selection depletion facts; `src/domain/bestPair.ts` owns consecutive-selection pair evaluation. None imports React or raw upstream response types.
 
 Planned source areas are:
 
@@ -103,7 +103,7 @@ The assistant models the Wheel of Names or other order supplied by the user. It 
 
 Scheduling progress is represented only by `completedPickCount`: zero means no selections are complete, and schedule length means the draft is complete. The current slot is the schedule element immediately after the completed prefix; it is deliberately `null` at completion. Manager pick numbers, consecutive manager turns, and Turn Horizon are derived by inspecting this generated schedule rather than duplicating snake-position formulas. See [SNAKE_DRAFT_LOGIC.md](SNAKE_DRAFT_LOGIC.md) for exact off-by-one semantics.
 
-## Ranking and Best Fit boundary
+## Ranking, Best Fit, and Best Pair boundary
 
 The Phase 6 recommendation domain consumes schedule context without putting recommendation logic inside the snake engine:
 
@@ -114,14 +114,16 @@ User Roster
         +
 Turn Horizon
         ↓
-Best Available + deterministic Best Fit
+Best Available + deterministic Best Fit + deterministic Best Pair
 ```
 
 Official Draft rank remains the primary evidence. `DraftFitHeuristicV1` uses 70% official-rank percentile and 30% historical-model-rank percentile when an exact, trustworthy model signal exists; otherwise it uses 100% official rank. Those weights are a transparent MVP choice, not optimized probabilities.
 
 Best Fit removes roster-illegal candidates, creates a Turn-Horizon-sized shortlist, and stress-tests positional depth by consuming the next `N` top consensus options, where `N` is the opponent selections before the user's following turn. Recommendation ordering uses current consensus quality plus 0.35 times the resulting position drop-off. Deterministic tie-breakers fall back to consensus rank, display name, and player ID. The output contains facts and fixed explanations; it has no probability or survival claim.
 
-At a consecutive edge turn such as Picks 12 and 13, the scenario looks beyond the pair to the following user turn at Pick 24. The API remains individual-pick based, while authoritative history and immutable schedule context permit later Best Pair evaluation without changing state ownership. See [DRAFT_NIGHT_MVP.md](DRAFT_NIGHT_MVP.md).
+Best Pair activates only when the current picker is the user and at least two consecutive selections remain in that current turn. It considers distinct available players from a shortlist of `max(12, N + 5)`, rejects pairs that would exceed roster capacities, removes the pair and then the next `N` consensus-ranked opponent selections, and evaluates positional replacements jointly. For two selections at one position, the stronger selection is compared with the strongest replacement and the second selection with the second replacement. Its score is pair consensus quality plus 0.35 times the sum of positive replacement drops. The five results use deterministic quality, rank, official-evidence, name, and ID tie-breakers and contain no probability claim.
+
+At Vuk's consecutive edge turn, Best Pair is active immediately before Picks 12 and 13, uses 10 opponent selections before the following turn at Pick 24, and becomes inactive after Pick 12 is recorded because only Pick 13 remains. React only renders the domain result and never auto-drafts either player. See [DRAFT_NIGHT_MVP.md](DRAFT_NIGHT_MVP.md).
 
 ## Future data-enrichment research
 

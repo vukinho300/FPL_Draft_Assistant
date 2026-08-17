@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from research.fpl_research.data import HistoricalRepository
-from research.fpl_research.features import aggregate_stats, columns_for_groups
+from research.fpl_research.features import aggregate_stats, columns_for_groups, position_prior_rate
 from research.fpl_research.metrics import evaluate_predictions
 from research.fpl_research.model_safety import (
     audit_train_test_split,
@@ -254,16 +254,13 @@ def build_current_feature_rows(
     result["expected_fields_missing"] = result["expected_goal_involvements_prior"].isna().astype(float)
     result["ict_fields_missing"] = result["ict_index_prior"].isna().astype(float)
 
-    rates = {}
-    for position in ("GK", "DEF", "MID", "FWD"):
-        subset = prior.loc[(prior["position"] == position) & (prior["minutes"] >= 450)] if "minutes" in prior else pd.DataFrame()
-        if subset.empty:
-            subset = prior.loc[prior["season_minutes_prior"] >= 450]
-        rates[position] = (
-            float((subset["season_points_prior"] * 90 / subset["season_minutes_prior"]).median())
-            if not subset.empty
-            else 3.0
-        )
+    prior_for_rates = prior.rename(
+        columns={"season_points_prior": "total_points", "season_minutes_prior": "minutes"}
+    )
+    rates = {
+        position: position_prior_rate(prior_for_rates, position)
+        for position in ("GK", "DEF", "MID", "FWD")
+    }
     minutes = result["season_minutes_prior"].fillna(0.0)
     points = result["season_points_prior"].fillna(0.0)
     position_prior = result["position"].map(rates).fillna(float(np.nanmedian(list(rates.values()))))

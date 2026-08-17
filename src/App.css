@@ -377,6 +377,7 @@ td strong,
 }
 
 .best-available-card {
+  order: 1;
   color: #e8fff3;
   border-color: #24794e;
   background: #17583a;
@@ -417,6 +418,56 @@ td strong,
   color: #687c71;
   font-size: 0.76rem;
   line-height: 1.5;
+}
+
+.best-pair-card {
+  order: 2;
+  border-color: #d9b766;
+  background: #fffaf0;
+}
+
+.best-fit-card {
+  order: 3;
+}
+
+.roster-card {
+  order: 4;
+}
+
+.best-pair-card h2 {
+  color: #5f4512;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.pair-player-line {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 0.45rem;
+  align-items: start;
+}
+
+.pair-player-line > span {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.pair-player-line strong {
+  color: #143623;
+  font-size: 0.78rem;
+}
+
+.pair-player-line small {
+  color: #63776c;
+  font-size: 0.62rem;
+}
+
+.pair-player-line b {
+  padding: 0.2rem 0.35rem;
+  border-radius: 0.3rem;
+  color: #fff;
+  background: #9a6b0c;
+  font-size: 0.6rem;
 }
 
 .recommendation-list {

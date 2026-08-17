@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { currentDraftRankingArtifact } from './data/currentDraftRanking.ts'
 import { calculateBestFit } from './domain/bestFit.ts'
+import { calculateBestPair } from './domain/bestPair.ts'
 import {
   deriveDraftState,
   DraftPickError,
@@ -160,6 +161,9 @@ function App() {
       const bestFit = draftState === null
         ? null
         : calculateBestFit(availableRanked, userRoster, schedule, userManagerId, pickHistory.length)
+      const bestPair = draftState === null
+        ? null
+        : calculateBestPair(availableRanked, userRoster, schedule, userManagerId, pickHistory.length)
       return {
         configuration,
         schedule,
@@ -168,6 +172,7 @@ function App() {
         rankedPlayers,
         draftState,
         bestFit,
+        bestPair,
         draftPosition: getManagerDraftPosition(managers, userManagerId),
         userPickNumbers: getManagerPickNumbers(schedule, userManagerId),
         error: null,
@@ -181,6 +186,7 @@ function App() {
         rankedPlayers: [],
         draftState: null,
         bestFit: null,
+        bestPair: null,
         draftPosition: null,
         userPickNumbers: [],
         error: error instanceof Error ? error.message : 'Draft configuration is invalid',
@@ -291,10 +297,10 @@ function App() {
     <main className="draft-room-shell">
       <header className="draft-header">
         <div>
-          <p className="eyebrow">Phase 6 · Draft-night MVP</p>
+          <p className="eyebrow">Phase 6.1 · Draft-night MVP</p>
           <h1>Draft Room</h1>
           <p className="header-note">
-            Official Draft rank leads. The project model is secondary; Best Fit is a deterministic depth stress test, not a survival prediction.
+            Official Draft rank leads. Best Fit and Best Pair are deterministic depth stress tests, not survival predictions.
           </p>
         </div>
         <div className="live-status" aria-live="polite">
@@ -408,6 +414,34 @@ function App() {
                   ))}
                 </ol>
               </section>
+
+              {draftModel.bestPair?.active === true && (
+                <section className="rail-card best-pair-card">
+                  <p className="section-label">Consecutive-turn optimizer</p>
+                  <h2>BEST PAIR — PICKS {draftModel.bestPair.scenario.currentUserTurnPickNumbers.join(' + ')}</h2>
+                  <p className="scenario-copy">
+                    Joint depletion stress test: {draftModel.bestPair.scenario.opponentSelections} opponent selections before Pick {draftModel.bestPair.scenario.followingUserPickNumber ?? '—'}.
+                  </p>
+                  <ol className="recommendation-list pair-recommendation-list">
+                    {draftModel.bestPair.recommendations.slice(0, 3).map((recommendation, index) => (
+                      <li key={recommendation.rankedPlayers.map(({ player }) => player.id).join(':')}>
+                        <div className="pair-player-line">
+                          {recommendation.rankedPlayers.map(({ player, consensusRank }) => (
+                            <span key={player.id}><strong>{player.displayName}</strong><small>{player.position} · MVP #{consensusRank}</small></span>
+                          ))}
+                          {index === 0 && <b>Recommended</b>}
+                        </div>
+                        <div className="evidence-line">
+                          <span>Pair {recommendation.bestPairScore.toFixed(3)}</span>
+                          <span>Quality {recommendation.pairQuality.toFixed(3)}</span>
+                          <span>Scarcity {recommendation.pairScarcity.toFixed(3)}</span>
+                        </div>
+                        <ul>{recommendation.reasons.slice(1, 3).map((reason) => <li key={reason}>{reason}</li>)}</ul>
+                      </li>
+                    ))}
+                  </ol>
+                </section>
+              )}
 
               <section className="rail-card roster-card">
                 <p className="section-label">My roster</p><h2>{userName}</h2>

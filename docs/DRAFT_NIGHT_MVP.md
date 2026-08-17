@@ -2,7 +2,7 @@
 
 ## Purpose and boundary
 
-Phase 6 is a desktop-first companion for manually mirroring an official FPL Draft. The user records the football player selected on the official service; the existing snake schedule supplies the manager. The application never authenticates to FPL, changes an official league, submits a pick, or changes the official server order.
+Phase 6.1 is a desktop-first companion for manually mirroring an official FPL Draft. The user records the football player selected on the official service; the existing snake schedule supplies the manager. The application never authenticates to FPL, changes an official league, submits a pick, or changes the official server order.
 
 The default fixture is Vuk, Diego, Kristian, Miku, Tin, and Deni with Vuk selected as the user. These are real demo labels, not domain assumptions. The schedule and state domains remain generic for 2–16 managers.
 
@@ -80,6 +80,12 @@ The current generation observed:
 
 No fuzzy matching is used. Missing historical data does not mean poor quality. Unmatched or insufficient-history players keep the official ranking backbone and display the historical model signal as unavailable.
 
+### Current-feature parity hardening
+
+Historical draft-day construction calculates its shrinkage prior from players at the same position with at least 450 minutes, falling back to all qualifying players only when that position has no qualifying history, then to `3.0` only when no qualifying history exists. Current inference now calls that same helper after mapping its renamed aggregate columns back to the helper contract.
+
+Previously, current inference tested for the pre-rename `minutes` column after it had become `season_minutes_prior`. That branch could never run, so all positions received the all-player fallback median. The regenerated artifact corrects this inference-only mismatch. A deterministic test creates distinct GK, DEF, MID, and FWD priors and checks exact parity across every shared `FPL_BASE`, `FPL_EXPECTED`, and `FPL_ICT` feature. Historical benchmark rows and evaluation semantics are unchanged.
+
 ## DraftFitHeuristicV1
 
 For an officially ranked player with a trustworthy model signal:
@@ -146,6 +152,30 @@ The 0.35 drop-off multiplier and 0.10 strong-alternative band are project MVP he
 
 Best Available and Best Fit may differ naturally. The algorithm does not manufacture scarcity at Pick 1.
 
+## Best Pair activation and scenario
+
+Best Pair is a pure consecutive-turn optimizer. It is active only when the current scheduled picker is the user and at least two consecutive user picks remain in the current turn. Therefore:
+
+- it is inactive for Vuk at Pick 1;
+- it is active immediately before Pick 12 with current turn `[12, 13]`;
+- it is inactive immediately after Pick 12 is recorded because the remaining turn is `[13]`.
+
+The optimizer starts from the already available ranked board, so drafted players have already been removed. It rejects individually full positions and then checks both players together against the roster caps. The two player IDs must differ. Candidate combinations come only from the first `max(12, N + 5)` individually legal players, bounded by availability. It returns five deterministic recommendations; the UI displays the top three and never records either selection automatically.
+
+For each legal pair, the scenario removes the pair and then removes the next `N` highest consensus-ranked remaining players as opponent selections. `N` is the Turn Horizon opponent count before the following user turn. For Vuk at Picks 12 + 13, the following turn begins at Pick 24 and `N = 10`.
+
+## Best Pair formula and same-position semantics
+
+```text
+pairQuality  = playerA.consensusScore + playerB.consensusScore
+pairScarcity = sum of positive selected-slot versus replacement-slot drops
+bestPairScore = pairQuality + 0.35 × pairScarcity
+```
+
+For every selected position, the selected players are sorted by consensus rank. If the pair contains two players at the same position, selected slot 1 is compared with the best post-pair, post-depletion replacement and selected slot 2 is compared with the second-best replacement. Only positive differences contribute. This joint comparison prevents both selected players from claiming the same replacement option.
+
+Ordering is deterministic: Best Pair score descending, consensus-rank sum ascending, best individual consensus rank, official-rank evidence, names, then IDs. The result includes score components, the exact picks and opponent horizon, position replacement facts, roster-cap facts, and fixed reasons. It does not contain chance, likelihood, probability, or survival fields.
+
 ## Persistence schema
 
 Storage is isolated behind `src/storage/draftSessionStorage.ts`.
@@ -159,13 +189,13 @@ derived: completed count, current picker, rosters, drafted IDs, availability
 
 Invalid or corrupted saved data is rejected and the UI offers a fresh-session reset. There is no database, account, or cross-device synchronization.
 
-## Known limitations and Best Pair boundary
+## Known limitations
 
 - The Ridge signal is secondary and has meaningful cold-start and positional limitations.
 - The live public endpoint is undocumented or insufficiently documented.
 - Opponent depletion is deterministic scenario analysis, not behavioral modeling.
-- Best Fit evaluates the current individual selection only.
+- Best Fit evaluates one selection; Best Pair evaluates only an active consecutive two-pick turn and does not model opponent behavior.
 - No injury diagnosis, fixture analysis, prices, budget, club cap, trades, waivers, or official FPL automation exists.
 - No XGBoost, Understat production data, bookmaker production data, or scraping exists.
 
-Because schedule, history, availability, and roster state are immutable domain inputs, a later Best Pair service can jointly evaluate consecutive picks without changing state ownership. Phase 6 does not implement that optimizer.
+Best Pair does not auto-draft, reserve, or persist recommendations. Pick history remains the only authoritative selection state.

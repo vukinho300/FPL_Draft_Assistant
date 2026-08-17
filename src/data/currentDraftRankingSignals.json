@@ -7,7 +7,7 @@
     "FPL_EXPECTED",
     "FPL_ICT"
   ],
-  "generatedAt": "2026-08-17T19:58:27.523039+00:00",
+  "generatedAt": "2026-08-17T20:11:59.189676+00:00",
   "historicalMatchCount": 460,
   "leakageStatus": "PASS",
   "model": "position-specific Ridge",
@@ -19,31 +19,31 @@
     {
       "draftPlayerId": "1",
       "modelPositionRank": 1,
-      "modelPredictedSeasonPoints": 149.78641,
+      "modelPredictedSeasonPoints": 148.719764,
       "modelRank": 2,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "2",
-      "modelPositionRank": 47,
-      "modelPredictedSeasonPoints": 13.589819,
-      "modelRank": 448,
+      "modelPositionRank": 49,
+      "modelPredictedSeasonPoints": 6.123291,
+      "modelRank": 459,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "3",
-      "modelPositionRank": 39,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 401,
+      "modelPositionRank": 41,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 451,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "4",
       "modelPositionRank": 1,
-      "modelPredictedSeasonPoints": 139.126039,
+      "modelPredictedSeasonPoints": 138.800759,
       "modelRank": 5,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -51,7 +51,7 @@
     {
       "draftPlayerId": "5",
       "modelPositionRank": 6,
-      "modelPredictedSeasonPoints": 127.677464,
+      "modelPredictedSeasonPoints": 127.318782,
       "modelRank": 14,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -59,7 +59,7 @@
     {
       "draftPlayerId": "6",
       "modelPositionRank": 16,
-      "modelPredictedSeasonPoints": 110.035121,
+      "modelPredictedSeasonPoints": 109.695403,
       "modelRank": 37,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -67,55 +67,55 @@
     {
       "draftPlayerId": "7",
       "modelPositionRank": 149,
-      "modelPredictedSeasonPoints": 30.121098,
-      "modelRank": 319,
+      "modelPredictedSeasonPoints": 30.1992,
+      "modelRank": 317,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "8",
       "modelPositionRank": 11,
-      "modelPredictedSeasonPoints": 115.159081,
-      "modelRank": 28,
+      "modelPredictedSeasonPoints": 114.674266,
+      "modelRank": 27,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "9",
       "modelPositionRank": 66,
-      "modelPredictedSeasonPoints": 69.966474,
-      "modelRank": 152,
+      "modelPredictedSeasonPoints": 69.501165,
+      "modelRank": 154,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "10",
       "modelPositionRank": 83,
-      "modelPredictedSeasonPoints": 56.321264,
-      "modelRank": 214,
+      "modelPredictedSeasonPoints": 55.415348,
+      "modelRank": 216,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "11",
       "modelPositionRank": 96,
-      "modelPredictedSeasonPoints": 45.731056,
-      "modelRank": 261,
+      "modelPredictedSeasonPoints": 45.006198,
+      "modelRank": 265,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "12",
       "modelPositionRank": 9,
-      "modelPredictedSeasonPoints": 114.590627,
-      "modelRank": 30,
+      "modelPredictedSeasonPoints": 114.624204,
+      "modelRank": 28,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "13",
       "modelPositionRank": 17,
-      "modelPredictedSeasonPoints": 96.571855,
+      "modelPredictedSeasonPoints": 96.597139,
       "modelRank": 59,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -123,7 +123,7 @@
     {
       "draftPlayerId": "14",
       "modelPositionRank": 36,
-      "modelPredictedSeasonPoints": 83.034608,
+      "modelPredictedSeasonPoints": 83.072973,
       "modelRank": 105,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -131,15 +131,15 @@
     {
       "draftPlayerId": "15",
       "modelPositionRank": 86,
-      "modelPredictedSeasonPoints": 58.390151,
-      "modelRank": 206,
+      "modelPredictedSeasonPoints": 58.439563,
+      "modelRank": 205,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "16",
       "modelPositionRank": 62,
-      "modelPredictedSeasonPoints": 66.229612,
+      "modelPredictedSeasonPoints": 66.283741,
       "modelRank": 165,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -147,7 +147,7 @@
     {
       "draftPlayerId": "17",
       "modelPositionRank": 77,
-      "modelPredictedSeasonPoints": 60.16412,
+      "modelPredictedSeasonPoints": 60.224896,
       "modelRank": 192,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -155,15 +155,15 @@
     {
       "draftPlayerId": "18",
       "modelPositionRank": 73,
-      "modelPredictedSeasonPoints": 61.705141,
-      "modelRank": 185,
+      "modelPredictedSeasonPoints": 61.764272,
+      "modelRank": 183,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "19",
       "modelPositionRank": 29,
-      "modelPredictedSeasonPoints": 89.498406,
+      "modelPredictedSeasonPoints": 89.52444,
       "modelRank": 88,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -171,55 +171,55 @@
     {
       "draftPlayerId": "20",
       "modelPositionRank": 152,
-      "modelPredictedSeasonPoints": 23.745698,
-      "modelRank": 335,
+      "modelPredictedSeasonPoints": 23.894508,
+      "modelRank": 331,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "21",
       "modelPositionRank": 169,
-      "modelPredictedSeasonPoints": 16.4859,
-      "modelRank": 388,
+      "modelPredictedSeasonPoints": 16.648484,
+      "modelRank": 389,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "22",
       "modelPositionRank": 164,
-      "modelPredictedSeasonPoints": 17.21668,
-      "modelRank": 383,
+      "modelPredictedSeasonPoints": 17.362344,
+      "modelRank": 379,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "23",
       "modelPositionRank": 187,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 426,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 407,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "24",
       "modelPositionRank": 158,
-      "modelPredictedSeasonPoints": 18.263097,
-      "modelRank": 377,
+      "modelPredictedSeasonPoints": 18.420814,
+      "modelRank": 357,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "25",
       "modelPositionRank": 17,
-      "modelPredictedSeasonPoints": 73.866785,
-      "modelRank": 134,
+      "modelPredictedSeasonPoints": 74.08486,
+      "modelRank": 133,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "26",
       "modelPositionRank": 30,
-      "modelPredictedSeasonPoints": 42.875377,
+      "modelPredictedSeasonPoints": 43.441691,
       "modelRank": 275,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -227,31 +227,31 @@
     {
       "draftPlayerId": "27",
       "modelPositionRank": 37,
-      "modelPredictedSeasonPoints": 28.25998,
-      "modelRank": 323,
+      "modelPredictedSeasonPoints": 28.93003,
+      "modelRank": 320,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "28",
       "modelPositionRank": 11,
-      "modelPredictedSeasonPoints": 91.91481,
-      "modelRank": 79,
+      "modelPredictedSeasonPoints": 90.687436,
+      "modelRank": 83,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "29",
       "modelPositionRank": 25,
-      "modelPredictedSeasonPoints": 22.820145,
-      "modelRank": 343,
+      "modelPredictedSeasonPoints": 18.924566,
+      "modelRank": 354,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "30",
       "modelPositionRank": 65,
-      "modelPredictedSeasonPoints": 70.307165,
+      "modelPredictedSeasonPoints": 69.853022,
       "modelRank": 151,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -259,64 +259,64 @@
     {
       "draftPlayerId": "31",
       "modelPositionRank": 42,
-      "modelPredictedSeasonPoints": 86.919949,
-      "modelRank": 96,
+      "modelPredictedSeasonPoints": 86.62127,
+      "modelRank": 97,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "32",
       "modelPositionRank": 39,
-      "modelPredictedSeasonPoints": 87.982037,
-      "modelRank": 93,
+      "modelPredictedSeasonPoints": 87.681721,
+      "modelRank": 92,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "33",
       "modelPositionRank": 82,
-      "modelPredictedSeasonPoints": 56.621548,
-      "modelRank": 211,
+      "modelPredictedSeasonPoints": 56.034135,
+      "modelRank": 214,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "34",
       "modelPositionRank": 76,
-      "modelPredictedSeasonPoints": 61.825321,
-      "modelRank": 184,
+      "modelPredictedSeasonPoints": 61.335026,
+      "modelRank": 186,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "35",
       "modelPositionRank": 147,
-      "modelPredictedSeasonPoints": 31.071201,
-      "modelRank": 315,
+      "modelPredictedSeasonPoints": 31.131244,
+      "modelRank": 313,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "36",
-      "modelPositionRank": 70,
-      "modelPredictedSeasonPoints": 63.582656,
-      "modelRank": 175,
+      "modelPositionRank": 71,
+      "modelPredictedSeasonPoints": 63.072412,
+      "modelRank": 177,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "37",
       "modelPositionRank": 109,
-      "modelPredictedSeasonPoints": 33.871199,
-      "modelRank": 304,
+      "modelPredictedSeasonPoints": 33.123429,
+      "modelRank": 305,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "38",
-      "modelPositionRank": 122,
-      "modelPredictedSeasonPoints": 23.058706,
-      "modelRank": 340,
+      "modelPositionRank": 121,
+      "modelPredictedSeasonPoints": 21.105804,
+      "modelRank": 338,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -331,7 +331,7 @@
     {
       "draftPlayerId": "40",
       "modelPositionRank": 5,
-      "modelPredictedSeasonPoints": 121.75702,
+      "modelPredictedSeasonPoints": 121.781037,
       "modelRank": 21,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -339,55 +339,55 @@
     {
       "draftPlayerId": "41",
       "modelPositionRank": 50,
-      "modelPredictedSeasonPoints": 72.067966,
-      "modelRank": 141,
+      "modelPredictedSeasonPoints": 72.10863,
+      "modelRank": 140,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "42",
       "modelPositionRank": 126,
-      "modelPredictedSeasonPoints": 44.043919,
-      "modelRank": 270,
+      "modelPredictedSeasonPoints": 44.109838,
+      "modelRank": 269,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "43",
       "modelPositionRank": 71,
-      "modelPredictedSeasonPoints": 62.777081,
-      "modelRank": 179,
+      "modelPredictedSeasonPoints": 62.815912,
+      "modelRank": 178,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "44",
       "modelPositionRank": 146,
-      "modelPredictedSeasonPoints": 31.621631,
-      "modelRank": 314,
+      "modelPredictedSeasonPoints": 31.721168,
+      "modelRank": 312,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "45",
       "modelPositionRank": 42,
-      "modelPredictedSeasonPoints": 77.341327,
-      "modelRank": 121,
+      "modelPredictedSeasonPoints": 77.375969,
+      "modelRank": 119,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "46",
       "modelPositionRank": 122,
-      "modelPredictedSeasonPoints": 45.492958,
-      "modelRank": 263,
+      "modelPredictedSeasonPoints": 45.562187,
+      "modelRank": 262,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "47",
       "modelPositionRank": 104,
-      "modelPredictedSeasonPoints": 50.104374,
+      "modelPredictedSeasonPoints": 50.152537,
       "modelRank": 234,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -395,40 +395,40 @@
     {
       "draftPlayerId": "48",
       "modelPositionRank": 80,
-      "modelPredictedSeasonPoints": 59.530939,
-      "modelRank": 198,
+      "modelPredictedSeasonPoints": 59.571567,
+      "modelRank": 196,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "49",
       "modelPositionRank": 190,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 429,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 410,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "50",
       "modelPositionRank": 207,
-      "modelPredictedSeasonPoints": 14.920118,
-      "modelRank": 446,
+      "modelPredictedSeasonPoints": 15.112357,
+      "modelRank": 427,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "51",
       "modelPositionRank": 201,
-      "modelPredictedSeasonPoints": 15.13866,
-      "modelRank": 440,
+      "modelPredictedSeasonPoints": 15.327257,
+      "modelRank": 421,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "52",
-      "modelPositionRank": 205,
-      "modelPredictedSeasonPoints": 15.050701,
-      "modelRank": 444,
+      "modelPositionRank": 206,
+      "modelPredictedSeasonPoints": 15.230949,
+      "modelRank": 426,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -443,15 +443,15 @@
     {
       "draftPlayerId": "54",
       "modelPositionRank": 78,
-      "modelPredictedSeasonPoints": 60.125275,
-      "modelRank": 193,
+      "modelPredictedSeasonPoints": 60.152596,
+      "modelRank": 194,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "55",
       "modelPositionRank": 4,
-      "modelPredictedSeasonPoints": 122.329732,
+      "modelPredictedSeasonPoints": 122.506888,
       "modelRank": 20,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -459,103 +459,103 @@
     {
       "draftPlayerId": "56",
       "modelPositionRank": 38,
-      "modelPredictedSeasonPoints": 26.830696,
-      "modelRank": 325,
+      "modelPredictedSeasonPoints": 27.629602,
+      "modelRank": 323,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "57",
       "modelPositionRank": 9,
-      "modelPredictedSeasonPoints": 95.01495,
-      "modelRank": 65,
+      "modelPredictedSeasonPoints": 93.973109,
+      "modelRank": 71,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "58",
-      "modelPositionRank": 32,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 394,
+      "modelPositionRank": 34,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 444,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "59",
-      "modelPositionRank": 31,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 393,
+      "modelPositionRank": 33,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 443,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "60",
-      "modelPositionRank": 43,
-      "modelPredictedSeasonPoints": 85.089043,
-      "modelRank": 101,
+      "modelPositionRank": 44,
+      "modelPredictedSeasonPoints": 84.681168,
+      "modelRank": 103,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "61",
       "modelPositionRank": 15,
-      "modelPredictedSeasonPoints": 111.237728,
-      "modelRank": 36,
+      "modelPredictedSeasonPoints": 110.965811,
+      "modelRank": 35,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "62",
       "modelPositionRank": 92,
-      "modelPredictedSeasonPoints": 47.852076,
-      "modelRank": 249,
+      "modelPredictedSeasonPoints": 47.248658,
+      "modelRank": 250,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "63",
-      "modelPositionRank": 110,
-      "modelPredictedSeasonPoints": 33.487277,
-      "modelRank": 305,
+      "modelPositionRank": 111,
+      "modelPredictedSeasonPoints": 32.21323,
+      "modelRank": 310,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "64",
       "modelPositionRank": 89,
-      "modelPredictedSeasonPoints": 51.648633,
-      "modelRank": 229,
+      "modelPredictedSeasonPoints": 50.965181,
+      "modelRank": 231,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "65",
-      "modelPositionRank": 136,
-      "modelPredictedSeasonPoints": 20.559781,
-      "modelRank": 358,
+      "modelPositionRank": 137,
+      "modelPredictedSeasonPoints": 18.246677,
+      "modelRank": 363,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "66",
-      "modelPositionRank": 125,
-      "modelPredictedSeasonPoints": 22.21803,
-      "modelRank": 346,
+      "modelPositionRank": 126,
+      "modelPredictedSeasonPoints": 20.067418,
+      "modelRank": 345,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "67",
       "modelPositionRank": 85,
-      "modelPredictedSeasonPoints": 58.664074,
-      "modelRank": 205,
+      "modelPredictedSeasonPoints": 58.721499,
+      "modelRank": 203,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "68",
       "modelPositionRank": 12,
-      "modelPredictedSeasonPoints": 105.646125,
+      "modelPredictedSeasonPoints": 105.674278,
       "modelRank": 46,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -563,15 +563,15 @@
     {
       "draftPlayerId": "69",
       "modelPositionRank": 43,
-      "modelPredictedSeasonPoints": 77.044966,
-      "modelRank": 122,
+      "modelPredictedSeasonPoints": 77.072129,
+      "modelRank": 121,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "70",
       "modelPositionRank": 129,
-      "modelPredictedSeasonPoints": 43.435942,
+      "modelPredictedSeasonPoints": 43.500159,
       "modelRank": 274,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -579,23 +579,23 @@
     {
       "draftPlayerId": "71",
       "modelPositionRank": 137,
-      "modelPredictedSeasonPoints": 37.048312,
-      "modelRank": 295,
+      "modelPredictedSeasonPoints": 37.116075,
+      "modelRank": 293,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "72",
       "modelPositionRank": 165,
-      "modelPredictedSeasonPoints": 17.167775,
-      "modelRank": 384,
+      "modelPredictedSeasonPoints": 17.329186,
+      "modelRank": 381,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "73",
       "modelPositionRank": 88,
-      "modelPredictedSeasonPoints": 56.700151,
+      "modelPredictedSeasonPoints": 56.740523,
       "modelRank": 210,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -603,15 +603,15 @@
     {
       "draftPlayerId": "74",
       "modelPositionRank": 70,
-      "modelPredictedSeasonPoints": 63.2967,
-      "modelRank": 177,
+      "modelPredictedSeasonPoints": 63.35139,
+      "modelRank": 174,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "75",
       "modelPositionRank": 103,
-      "modelPredictedSeasonPoints": 50.119588,
+      "modelPredictedSeasonPoints": 50.182321,
       "modelRank": 233,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -619,15 +619,15 @@
     {
       "draftPlayerId": "76",
       "modelPositionRank": 168,
-      "modelPredictedSeasonPoints": 16.585113,
-      "modelRank": 387,
+      "modelPredictedSeasonPoints": 16.738247,
+      "modelRank": 388,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "77",
       "modelPositionRank": 97,
-      "modelPredictedSeasonPoints": 53.16194,
+      "modelPredictedSeasonPoints": 53.220722,
       "modelRank": 226,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -635,24 +635,24 @@
     {
       "draftPlayerId": "78",
       "modelPositionRank": 18,
-      "modelPredictedSeasonPoints": 95.998071,
-      "modelRank": 60,
+      "modelPredictedSeasonPoints": 96.040467,
+      "modelRank": 61,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "79",
       "modelPositionRank": 7,
-      "modelPredictedSeasonPoints": 95.717489,
+      "modelPredictedSeasonPoints": 95.899753,
       "modelRank": 62,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "80",
-      "modelPositionRank": 35,
-      "modelPredictedSeasonPoints": 34.41473,
-      "modelRank": 303,
+      "modelPositionRank": 34,
+      "modelPredictedSeasonPoints": 35.290639,
+      "modelRank": 299,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -667,15 +667,15 @@
     {
       "draftPlayerId": "82",
       "modelPositionRank": 4,
-      "modelPredictedSeasonPoints": 117.056701,
-      "modelRank": 24,
+      "modelPredictedSeasonPoints": 115.990054,
+      "modelRank": 26,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "83",
       "modelPositionRank": 50,
-      "modelPredictedSeasonPoints": 10.719845,
+      "modelPredictedSeasonPoints": 3.253318,
       "modelRank": 460,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -683,7 +683,7 @@
     {
       "draftPlayerId": "84",
       "modelPositionRank": 14,
-      "modelPredictedSeasonPoints": 111.917413,
+      "modelPredictedSeasonPoints": 111.613146,
       "modelRank": 34,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -691,7 +691,7 @@
     {
       "draftPlayerId": "85",
       "modelPositionRank": 19,
-      "modelPredictedSeasonPoints": 108.111254,
+      "modelPredictedSeasonPoints": 107.787088,
       "modelRank": 40,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -699,31 +699,31 @@
     {
       "draftPlayerId": "86",
       "modelPositionRank": 69,
-      "modelPredictedSeasonPoints": 64.158826,
-      "modelRank": 174,
+      "modelPredictedSeasonPoints": 64.195997,
+      "modelRank": 173,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "87",
       "modelPositionRank": 68,
-      "modelPredictedSeasonPoints": 66.843431,
-      "modelRank": 162,
+      "modelPredictedSeasonPoints": 66.381836,
+      "modelRank": 164,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "88",
       "modelPositionRank": 35,
-      "modelPredictedSeasonPoints": 93.311499,
-      "modelRank": 75,
+      "modelPredictedSeasonPoints": 93.030783,
+      "modelRank": 76,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "89",
       "modelPositionRank": 100,
-      "modelPredictedSeasonPoints": 42.142679,
+      "modelPredictedSeasonPoints": 41.555266,
       "modelRank": 280,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -731,24 +731,24 @@
     {
       "draftPlayerId": "90",
       "modelPositionRank": 95,
-      "modelPredictedSeasonPoints": 45.987808,
-      "modelRank": 258,
+      "modelPredictedSeasonPoints": 45.065845,
+      "modelRank": 264,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "91",
       "modelPositionRank": 115,
-      "modelPredictedSeasonPoints": 29.851129,
-      "modelRank": 321,
+      "modelPredictedSeasonPoints": 28.495796,
+      "modelRank": 322,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "92",
-      "modelPositionRank": 137,
-      "modelPredictedSeasonPoints": 20.559781,
-      "modelRank": 359,
+      "modelPositionRank": 138,
+      "modelPredictedSeasonPoints": 18.246677,
+      "modelRank": 364,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -763,15 +763,15 @@
     {
       "draftPlayerId": "94",
       "modelPositionRank": 8,
-      "modelPredictedSeasonPoints": 116.76209,
-      "modelRank": 26,
+      "modelPredictedSeasonPoints": 116.790137,
+      "modelRank": 24,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "95",
       "modelPositionRank": 28,
-      "modelPredictedSeasonPoints": 89.837051,
+      "modelPredictedSeasonPoints": 89.869974,
       "modelRank": 87,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -779,7 +779,7 @@
     {
       "draftPlayerId": "96",
       "modelPositionRank": 49,
-      "modelPredictedSeasonPoints": 73.407942,
+      "modelPredictedSeasonPoints": 73.443833,
       "modelRank": 137,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -787,7 +787,7 @@
     {
       "draftPlayerId": "97",
       "modelPositionRank": 66,
-      "modelPredictedSeasonPoints": 64.956655,
+      "modelPredictedSeasonPoints": 64.98997,
       "modelRank": 170,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -795,71 +795,71 @@
     {
       "draftPlayerId": "98",
       "modelPositionRank": 115,
-      "modelPredictedSeasonPoints": 47.016103,
-      "modelRank": 252,
+      "modelPredictedSeasonPoints": 47.063652,
+      "modelRank": 251,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "99",
       "modelPositionRank": 182,
-      "modelPredictedSeasonPoints": 15.479515,
-      "modelRank": 421,
+      "modelPredictedSeasonPoints": 15.660491,
+      "modelRank": 402,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "100",
       "modelPositionRank": 156,
-      "modelPredictedSeasonPoints": 19.484005,
-      "modelRank": 370,
+      "modelPredictedSeasonPoints": 19.646884,
+      "modelRank": 348,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "101",
       "modelPositionRank": 105,
-      "modelPredictedSeasonPoints": 49.774072,
-      "modelRank": 236,
+      "modelPredictedSeasonPoints": 49.812015,
+      "modelRank": 237,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "102",
       "modelPositionRank": 74,
-      "modelPredictedSeasonPoints": 61.085398,
-      "modelRank": 188,
+      "modelPredictedSeasonPoints": 61.114277,
+      "modelRank": 187,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "103",
       "modelPositionRank": 176,
-      "modelPredictedSeasonPoints": 15.864506,
-      "modelRank": 414,
+      "modelPredictedSeasonPoints": 16.0627,
+      "modelRank": 396,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "104",
       "modelPositionRank": 175,
-      "modelPredictedSeasonPoints": 15.945697,
-      "modelRank": 413,
+      "modelPredictedSeasonPoints": 16.112209,
+      "modelRank": 395,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "105",
       "modelPositionRank": 21,
-      "modelPredictedSeasonPoints": 94.559684,
-      "modelRank": 69,
+      "modelPredictedSeasonPoints": 94.58797,
+      "modelRank": 67,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "106",
       "modelPositionRank": 2,
-      "modelPredictedSeasonPoints": 146.69257,
+      "modelPredictedSeasonPoints": 146.848412,
       "modelRank": 3,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -867,55 +867,55 @@
     {
       "draftPlayerId": "107",
       "modelPositionRank": 48,
-      "modelPredictedSeasonPoints": 12.416967,
-      "modelRank": 453,
+      "modelPredictedSeasonPoints": 13.706554,
+      "modelRank": 431,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "108",
       "modelPositionRank": 18,
-      "modelPredictedSeasonPoints": 70.920954,
-      "modelRank": 146,
+      "modelPredictedSeasonPoints": 71.266325,
+      "modelRank": 143,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "109",
       "modelPositionRank": 6,
-      "modelPredictedSeasonPoints": 113.463472,
+      "modelPredictedSeasonPoints": 112.421631,
       "modelRank": 32,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "110",
-      "modelPositionRank": 43,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 405,
+      "modelPositionRank": 45,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 455,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "111",
-      "modelPositionRank": 44,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 406,
+      "modelPositionRank": 46,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 456,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "112",
       "modelPositionRank": 9,
-      "modelPredictedSeasonPoints": 123.452964,
-      "modelRank": 18,
+      "modelPredictedSeasonPoints": 123.168566,
+      "modelRank": 19,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "113",
       "modelPositionRank": 27,
-      "modelPredictedSeasonPoints": 99.258286,
+      "modelPredictedSeasonPoints": 98.967533,
       "modelRank": 53,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -923,15 +923,15 @@
     {
       "draftPlayerId": "114",
       "modelPositionRank": 98,
-      "modelPredictedSeasonPoints": 44.44434,
-      "modelRank": 269,
+      "modelPredictedSeasonPoints": 43.610956,
+      "modelRank": 272,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "115",
       "modelPositionRank": 63,
-      "modelPredictedSeasonPoints": 70.826228,
+      "modelPredictedSeasonPoints": 70.264795,
       "modelRank": 148,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -939,23 +939,23 @@
     {
       "draftPlayerId": "116",
       "modelPositionRank": 37,
-      "modelPredictedSeasonPoints": 90.973578,
-      "modelRank": 83,
+      "modelPredictedSeasonPoints": 90.656907,
+      "modelRank": 84,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "117",
       "modelPositionRank": 117,
-      "modelPredictedSeasonPoints": 26.000283,
-      "modelRank": 328,
+      "modelPredictedSeasonPoints": 24.38147,
+      "modelRank": 329,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "118",
       "modelPositionRank": 123,
-      "modelPredictedSeasonPoints": 22.835408,
+      "modelPredictedSeasonPoints": 20.953136,
       "modelRank": 341,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -979,15 +979,15 @@
     {
       "draftPlayerId": "121",
       "modelPositionRank": 47,
-      "modelPredictedSeasonPoints": 73.627993,
-      "modelRank": 135,
+      "modelPredictedSeasonPoints": 73.66939,
+      "modelRank": 134,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "122",
       "modelPositionRank": 23,
-      "modelPredictedSeasonPoints": 93.384299,
+      "modelPredictedSeasonPoints": 93.415854,
       "modelRank": 73,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -995,15 +995,15 @@
     {
       "draftPlayerId": "123",
       "modelPositionRank": 57,
-      "modelPredictedSeasonPoints": 68.800604,
-      "modelRank": 157,
+      "modelPredictedSeasonPoints": 68.841585,
+      "modelRank": 156,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "124",
       "modelPositionRank": 67,
-      "modelPredictedSeasonPoints": 64.931193,
+      "modelPredictedSeasonPoints": 64.974138,
       "modelRank": 171,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1011,23 +1011,23 @@
     {
       "draftPlayerId": "125",
       "modelPositionRank": 22,
-      "modelPredictedSeasonPoints": 59.953631,
-      "modelRank": 194,
+      "modelPredictedSeasonPoints": 60.214909,
+      "modelRank": 193,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "126",
       "modelPositionRank": 151,
-      "modelPredictedSeasonPoints": 23.787404,
-      "modelRank": 334,
+      "modelPredictedSeasonPoints": 23.924802,
+      "modelRank": 330,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "127",
       "modelPositionRank": 39,
-      "modelPredictedSeasonPoints": 81.538259,
+      "modelPredictedSeasonPoints": 81.573158,
       "modelRank": 109,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1035,23 +1035,23 @@
     {
       "draftPlayerId": "128",
       "modelPositionRank": 166,
-      "modelPredictedSeasonPoints": 16.931664,
-      "modelRank": 385,
+      "modelPredictedSeasonPoints": 17.100371,
+      "modelRank": 383,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "129",
       "modelPositionRank": 81,
-      "modelPredictedSeasonPoints": 59.071868,
-      "modelRank": 200,
+      "modelPredictedSeasonPoints": 59.109651,
+      "modelRank": 197,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "130",
       "modelPositionRank": 48,
-      "modelPredictedSeasonPoints": 79.743076,
+      "modelPredictedSeasonPoints": 79.30033,
       "modelRank": 115,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1059,32 +1059,32 @@
     {
       "draftPlayerId": "131",
       "modelPositionRank": 120,
-      "modelPredictedSeasonPoints": 45.781835,
-      "modelRank": 260,
+      "modelPredictedSeasonPoints": 45.824575,
+      "modelRank": 259,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "132",
       "modelPositionRank": 174,
-      "modelPredictedSeasonPoints": 16.01927,
-      "modelRank": 412,
+      "modelPredictedSeasonPoints": 16.184553,
+      "modelRank": 394,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "133",
       "modelPositionRank": 204,
-      "modelPredictedSeasonPoints": 15.05996,
-      "modelRank": 443,
+      "modelPredictedSeasonPoints": 15.236654,
+      "modelRank": 424,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "134",
       "modelPositionRank": 199,
-      "modelPredictedSeasonPoints": 15.380347,
-      "modelRank": 438,
+      "modelPredictedSeasonPoints": 15.57898,
+      "modelRank": 419,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -1099,63 +1099,63 @@
     {
       "draftPlayerId": "136",
       "modelPositionRank": 6,
-      "modelPredictedSeasonPoints": 95.835322,
-      "modelRank": 61,
+      "modelPredictedSeasonPoints": 96.05081,
+      "modelRank": 60,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "137",
       "modelPositionRank": 39,
-      "modelPredictedSeasonPoints": 25.68386,
-      "modelRank": 329,
+      "modelPredictedSeasonPoints": 26.68318,
+      "modelRank": 324,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "138",
       "modelPositionRank": 33,
-      "modelPredictedSeasonPoints": 37.714928,
-      "modelRank": 294,
+      "modelPredictedSeasonPoints": 38.441026,
+      "modelRank": 289,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "139",
       "modelPositionRank": 50,
-      "modelPredictedSeasonPoints": 11.8503,
-      "modelRank": 455,
+      "modelPredictedSeasonPoints": 13.142753,
+      "modelRank": 433,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "140",
       "modelPositionRank": 5,
-      "modelPredictedSeasonPoints": 115.549305,
-      "modelRank": 27,
+      "modelPredictedSeasonPoints": 114.394026,
+      "modelRank": 30,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "141",
-      "modelPositionRank": 49,
-      "modelPredictedSeasonPoints": 11.57198,
-      "modelRank": 459,
+      "modelPositionRank": 48,
+      "modelPredictedSeasonPoints": 6.702505,
+      "modelRank": 458,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "142",
       "modelPositionRank": 62,
-      "modelPredictedSeasonPoints": 71.141693,
-      "modelRank": 144,
+      "modelPredictedSeasonPoints": 70.709247,
+      "modelRank": 146,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "143",
       "modelPositionRank": 33,
-      "modelPredictedSeasonPoints": 93.790656,
+      "modelPredictedSeasonPoints": 93.468397,
       "modelRank": 72,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1163,64 +1163,64 @@
     {
       "draftPlayerId": "144",
       "modelPositionRank": 54,
-      "modelPredictedSeasonPoints": 75.941404,
-      "modelRank": 127,
+      "modelPredictedSeasonPoints": 75.556599,
+      "modelRank": 126,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "145",
       "modelPositionRank": 73,
-      "modelPredictedSeasonPoints": 62.658404,
-      "modelRank": 180,
+      "modelPredictedSeasonPoints": 62.178285,
+      "modelRank": 181,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "146",
-      "modelPositionRank": 126,
-      "modelPredictedSeasonPoints": 21.93996,
-      "modelRank": 347,
+      "modelPositionRank": 124,
+      "modelPredictedSeasonPoints": 20.808551,
+      "modelRank": 342,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "147",
       "modelPositionRank": 101,
-      "modelPredictedSeasonPoints": 42.111574,
-      "modelRank": 281,
+      "modelPredictedSeasonPoints": 41.270785,
+      "modelRank": 282,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "148",
-      "modelPositionRank": 111,
-      "modelPredictedSeasonPoints": 33.088831,
-      "modelRank": 307,
+      "modelPositionRank": 110,
+      "modelPredictedSeasonPoints": 32.433767,
+      "modelRank": 308,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "149",
-      "modelPositionRank": 121,
-      "modelPredictedSeasonPoints": 23.129126,
-      "modelRank": 339,
+      "modelPositionRank": 120,
+      "modelPredictedSeasonPoints": 21.587057,
+      "modelRank": 337,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "150",
-      "modelPositionRank": 124,
-      "modelPredictedSeasonPoints": 22.551071,
-      "modelRank": 344,
+      "modelPositionRank": 125,
+      "modelPredictedSeasonPoints": 20.658532,
+      "modelRank": 343,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "151",
       "modelPositionRank": 99,
-      "modelPredictedSeasonPoints": 42.748261,
-      "modelRank": 278,
+      "modelPredictedSeasonPoints": 41.807975,
+      "modelRank": 279,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -1235,55 +1235,55 @@
     {
       "draftPlayerId": "153",
       "modelPositionRank": 79,
-      "modelPredictedSeasonPoints": 59.111209,
-      "modelRank": 199,
+      "modelPredictedSeasonPoints": 58.500354,
+      "modelRank": 204,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "154",
       "modelPositionRank": 25,
-      "modelPredictedSeasonPoints": 91.300716,
-      "modelRank": 81,
+      "modelPredictedSeasonPoints": 91.33798,
+      "modelRank": 79,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "155",
       "modelPositionRank": 4,
-      "modelPredictedSeasonPoints": 123.278435,
-      "modelRank": 19,
+      "modelPredictedSeasonPoints": 123.303571,
+      "modelRank": 17,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "156",
       "modelPositionRank": 26,
-      "modelPredictedSeasonPoints": 90.948595,
-      "modelRank": 84,
+      "modelPredictedSeasonPoints": 90.977689,
+      "modelRank": 81,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "157",
-      "modelPositionRank": 90,
-      "modelPredictedSeasonPoints": 56.462213,
-      "modelRank": 213,
+      "modelPositionRank": 89,
+      "modelPredictedSeasonPoints": 56.531711,
+      "modelRank": 211,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "158",
       "modelPositionRank": 140,
-      "modelPredictedSeasonPoints": 35.048864,
-      "modelRank": 299,
+      "modelPredictedSeasonPoints": 35.144573,
+      "modelRank": 300,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "159",
       "modelPositionRank": 64,
-      "modelPredictedSeasonPoints": 65.218499,
+      "modelPredictedSeasonPoints": 65.246097,
       "modelRank": 168,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1291,32 +1291,32 @@
     {
       "draftPlayerId": "160",
       "modelPositionRank": 76,
-      "modelPredictedSeasonPoints": 60.814254,
-      "modelRank": 190,
+      "modelPredictedSeasonPoints": 60.866612,
+      "modelRank": 189,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "161",
       "modelPositionRank": 179,
-      "modelPredictedSeasonPoints": 15.770228,
-      "modelRank": 417,
+      "modelPredictedSeasonPoints": 15.878946,
+      "modelRank": 399,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "162",
       "modelPositionRank": 131,
-      "modelPredictedSeasonPoints": 42.415164,
-      "modelRank": 279,
+      "modelPredictedSeasonPoints": 42.467953,
+      "modelRank": 278,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "163",
       "modelPositionRank": 177,
-      "modelPredictedSeasonPoints": 15.85897,
-      "modelRank": 415,
+      "modelPredictedSeasonPoints": 16.04717,
+      "modelRank": 397,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -1331,7 +1331,7 @@
     {
       "draftPlayerId": "165",
       "modelPositionRank": 3,
-      "modelPredictedSeasonPoints": 131.058055,
+      "modelPredictedSeasonPoints": 131.245187,
       "modelRank": 9,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1339,32 +1339,32 @@
     {
       "draftPlayerId": "166",
       "modelPositionRank": 52,
-      "modelPredictedSeasonPoints": 11.8503,
-      "modelRank": 457,
+      "modelPredictedSeasonPoints": 13.142753,
+      "modelRank": 435,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "167",
       "modelPositionRank": 28,
-      "modelPredictedSeasonPoints": 45.369756,
-      "modelRank": 264,
+      "modelPredictedSeasonPoints": 45.746931,
+      "modelRank": 261,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "168",
       "modelPositionRank": 42,
-      "modelPredictedSeasonPoints": 22.824188,
-      "modelRank": 342,
+      "modelPredictedSeasonPoints": 23.63762,
+      "modelRank": 333,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "169",
       "modelPositionRank": 46,
-      "modelPredictedSeasonPoints": 12.639728,
-      "modelRank": 451,
+      "modelPredictedSeasonPoints": 13.929316,
+      "modelRank": 429,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -1531,8 +1531,8 @@
     {
       "draftPlayerId": "190",
       "modelPositionRank": 119,
-      "modelPredictedSeasonPoints": 45.930081,
-      "modelRank": 259,
+      "modelPredictedSeasonPoints": 45.982499,
+      "modelRank": 257,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -1595,31 +1595,31 @@
     {
       "draftPlayerId": "198",
       "modelPositionRank": 8,
-      "modelPredictedSeasonPoints": 107.576743,
-      "modelRank": 42,
+      "modelPredictedSeasonPoints": 106.510096,
+      "modelRank": 43,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "199",
-      "modelPositionRank": 22,
-      "modelPredictedSeasonPoints": 27.507855,
-      "modelRank": 324,
+      "modelPositionRank": 23,
+      "modelPredictedSeasonPoints": 20.041327,
+      "modelRank": 346,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "200",
       "modelPositionRank": 8,
-      "modelPredictedSeasonPoints": 123.496773,
-      "modelRank": 17,
+      "modelPredictedSeasonPoints": 123.202319,
+      "modelRank": 18,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "201",
       "modelPositionRank": 24,
-      "modelPredictedSeasonPoints": 101.176679,
+      "modelPredictedSeasonPoints": 100.811452,
       "modelRank": 49,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1627,23 +1627,23 @@
     {
       "draftPlayerId": "202",
       "modelPositionRank": 12,
-      "modelPredictedSeasonPoints": 114.65438,
-      "modelRank": 29,
+      "modelPredictedSeasonPoints": 114.336549,
+      "modelRank": 31,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "203",
       "modelPositionRank": 61,
-      "modelPredictedSeasonPoints": 71.607536,
-      "modelRank": 142,
+      "modelPredictedSeasonPoints": 71.023091,
+      "modelRank": 144,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "204",
       "modelPositionRank": 20,
-      "modelPredictedSeasonPoints": 107.867568,
+      "modelPredictedSeasonPoints": 107.586472,
       "modelRank": 41,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1651,16 +1651,16 @@
     {
       "draftPlayerId": "205",
       "modelPositionRank": 119,
-      "modelPredictedSeasonPoints": 24.335595,
-      "modelRank": 332,
+      "modelPredictedSeasonPoints": 22.439609,
+      "modelRank": 335,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "206",
       "modelPositionRank": 112,
-      "modelPredictedSeasonPoints": 32.032249,
-      "modelRank": 312,
+      "modelPredictedSeasonPoints": 30.991353,
+      "modelRank": 314,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -1675,31 +1675,31 @@
     {
       "draftPlayerId": "208",
       "modelPositionRank": 20,
-      "modelPredictedSeasonPoints": 94.622777,
-      "modelRank": 67,
+      "modelPredictedSeasonPoints": 94.65693,
+      "modelRank": 65,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "209",
       "modelPositionRank": 91,
-      "modelPredictedSeasonPoints": 56.006154,
-      "modelRank": 215,
+      "modelPredictedSeasonPoints": 56.047628,
+      "modelRank": 213,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "210",
       "modelPositionRank": 75,
-      "modelPredictedSeasonPoints": 60.867529,
-      "modelRank": 189,
+      "modelPredictedSeasonPoints": 60.89737,
+      "modelRank": 188,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "211",
       "modelPositionRank": 48,
-      "modelPredictedSeasonPoints": 73.50446,
+      "modelPredictedSeasonPoints": 73.539953,
       "modelRank": 136,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1707,15 +1707,15 @@
     {
       "draftPlayerId": "212",
       "modelPositionRank": 114,
-      "modelPredictedSeasonPoints": 47.459879,
-      "modelRank": 250,
+      "modelPredictedSeasonPoints": 47.504448,
+      "modelRank": 249,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "213",
-      "modelPositionRank": 89,
-      "modelPredictedSeasonPoints": 56.467271,
+      "modelPositionRank": 90,
+      "modelPredictedSeasonPoints": 56.508516,
       "modelRank": 212,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1723,7 +1723,7 @@
     {
       "draftPlayerId": "214",
       "modelPositionRank": 98,
-      "modelPredictedSeasonPoints": 51.82468,
+      "modelPredictedSeasonPoints": 51.862817,
       "modelRank": 227,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1731,119 +1731,119 @@
     {
       "draftPlayerId": "215",
       "modelPositionRank": 133,
-      "modelPredictedSeasonPoints": 39.862622,
-      "modelRank": 286,
+      "modelPredictedSeasonPoints": 39.935159,
+      "modelRank": 284,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "216",
       "modelPositionRank": 203,
-      "modelPredictedSeasonPoints": 15.087991,
-      "modelRank": 442,
+      "modelPredictedSeasonPoints": 15.270815,
+      "modelRank": 423,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "217",
       "modelPositionRank": 193,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 432,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 413,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "218",
       "modelPositionRank": 185,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 424,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 405,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "219",
       "modelPositionRank": 191,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 430,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 411,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "220",
       "modelPositionRank": 147,
-      "modelPredictedSeasonPoints": 19.273585,
-      "modelRank": 371,
+      "modelPredictedSeasonPoints": 17.345999,
+      "modelRank": 380,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "221",
       "modelPositionRank": 202,
-      "modelPredictedSeasonPoints": 15.11317,
-      "modelRank": 441,
+      "modelPredictedSeasonPoints": 15.309195,
+      "modelRank": 422,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "222",
       "modelPositionRank": 19,
-      "modelPredictedSeasonPoints": 66.306487,
-      "modelRank": 164,
+      "modelPredictedSeasonPoints": 66.517902,
+      "modelRank": 163,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "223",
       "modelPositionRank": 10,
-      "modelPredictedSeasonPoints": 91.19599,
-      "modelRank": 82,
+      "modelPredictedSeasonPoints": 91.414638,
+      "modelRank": 78,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "224",
       "modelPositionRank": 36,
-      "modelPredictedSeasonPoints": 31.656123,
-      "modelRank": 313,
+      "modelPredictedSeasonPoints": 32.329276,
+      "modelRank": 309,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "225",
       "modelPositionRank": 40,
-      "modelPredictedSeasonPoints": 25.194851,
-      "modelRank": 330,
+      "modelPredictedSeasonPoints": 26.149866,
+      "modelRank": 326,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "226",
       "modelPositionRank": 7,
-      "modelPredictedSeasonPoints": 111.766927,
-      "modelRank": 35,
+      "modelPredictedSeasonPoints": 110.725086,
+      "modelRank": 36,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "227",
-      "modelPositionRank": 45,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 407,
+      "modelPositionRank": 47,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 457,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "228",
-      "modelPositionRank": 35,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 397,
+      "modelPositionRank": 37,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 447,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "229",
       "modelPositionRank": 5,
-      "modelPredictedSeasonPoints": 128.736646,
+      "modelPredictedSeasonPoints": 128.461277,
       "modelRank": 13,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1851,15 +1851,15 @@
     {
       "draftPlayerId": "230",
       "modelPositionRank": 106,
-      "modelPredictedSeasonPoints": 37.886961,
-      "modelRank": 293,
+      "modelPredictedSeasonPoints": 36.964181,
+      "modelRank": 294,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "231",
       "modelPositionRank": 25,
-      "modelPredictedSeasonPoints": 99.969173,
+      "modelPredictedSeasonPoints": 99.626547,
       "modelRank": 50,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1867,15 +1867,15 @@
     {
       "draftPlayerId": "232",
       "modelPositionRank": 30,
-      "modelPredictedSeasonPoints": 95.521844,
+      "modelPredictedSeasonPoints": 95.230113,
       "modelRank": 64,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "233",
-      "modelPositionRank": 44,
-      "modelPredictedSeasonPoints": 85.009042,
+      "modelPositionRank": 43,
+      "modelPredictedSeasonPoints": 84.703704,
       "modelRank": 102,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1883,23 +1883,23 @@
     {
       "draftPlayerId": "234",
       "modelPositionRank": 103,
-      "modelPredictedSeasonPoints": 39.985367,
-      "modelRank": 284,
+      "modelPredictedSeasonPoints": 38.472436,
+      "modelRank": 288,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "235",
-      "modelPositionRank": 134,
-      "modelPredictedSeasonPoints": 20.559781,
-      "modelRank": 356,
+      "modelPositionRank": 135,
+      "modelPredictedSeasonPoints": 18.246677,
+      "modelRank": 361,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "236",
       "modelPositionRank": 38,
-      "modelPredictedSeasonPoints": 81.727389,
+      "modelPredictedSeasonPoints": 81.756484,
       "modelRank": 108,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1907,7 +1907,7 @@
     {
       "draftPlayerId": "237",
       "modelPositionRank": 19,
-      "modelPredictedSeasonPoints": 95.619184,
+      "modelPredictedSeasonPoints": 95.64691,
       "modelRank": 63,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1915,23 +1915,23 @@
     {
       "draftPlayerId": "238",
       "modelPositionRank": 54,
-      "modelPredictedSeasonPoints": 69.811301,
-      "modelRank": 153,
+      "modelPredictedSeasonPoints": 69.854432,
+      "modelRank": 150,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "239",
       "modelPositionRank": 30,
-      "modelPredictedSeasonPoints": 88.491428,
-      "modelRank": 91,
+      "modelPredictedSeasonPoints": 88.514618,
+      "modelRank": 90,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "240",
       "modelPositionRank": 124,
-      "modelPredictedSeasonPoints": 44.822545,
+      "modelPredictedSeasonPoints": 44.869034,
       "modelRank": 266,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1939,7 +1939,7 @@
     {
       "draftPlayerId": "241",
       "modelPositionRank": 130,
-      "modelPredictedSeasonPoints": 42.784498,
+      "modelPredictedSeasonPoints": 42.840105,
       "modelRank": 277,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1947,23 +1947,23 @@
     {
       "draftPlayerId": "242",
       "modelPositionRank": 154,
-      "modelPredictedSeasonPoints": 21.586007,
-      "modelRank": 351,
+      "modelPredictedSeasonPoints": 21.697846,
+      "modelRank": 336,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "243",
       "modelPositionRank": 134,
-      "modelPredictedSeasonPoints": 39.794998,
-      "modelRank": 287,
+      "modelPredictedSeasonPoints": 39.874345,
+      "modelRank": 285,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "244",
       "modelPositionRank": 145,
-      "modelPredictedSeasonPoints": 32.05671,
+      "modelPredictedSeasonPoints": 32.148685,
       "modelRank": 311,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -1971,16 +1971,16 @@
     {
       "draftPlayerId": "245",
       "modelPositionRank": 155,
-      "modelPredictedSeasonPoints": 20.058574,
-      "modelRank": 369,
+      "modelPredictedSeasonPoints": 20.170693,
+      "modelRank": 344,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "246",
       "modelPositionRank": 144,
-      "modelPredictedSeasonPoints": 32.719266,
-      "modelRank": 310,
+      "modelPredictedSeasonPoints": 32.798895,
+      "modelRank": 307,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -1995,7 +1995,7 @@
     {
       "draftPlayerId": "248",
       "modelPositionRank": 12,
-      "modelPredictedSeasonPoints": 85.87025,
+      "modelPredictedSeasonPoints": 86.160906,
       "modelRank": 99,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2003,7 +2003,7 @@
     {
       "draftPlayerId": "249",
       "modelPositionRank": 14,
-      "modelPredictedSeasonPoints": 80.939949,
+      "modelPredictedSeasonPoints": 81.187651,
       "modelRank": 111,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2011,31 +2011,31 @@
     {
       "draftPlayerId": "250",
       "modelPositionRank": 12,
-      "modelPredictedSeasonPoints": 88.673085,
-      "modelRank": 89,
+      "modelPredictedSeasonPoints": 87.631244,
+      "modelRank": 93,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "251",
-      "modelPositionRank": 36,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 398,
+      "modelPositionRank": 38,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 448,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "252",
-      "modelPositionRank": 38,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 400,
+      "modelPositionRank": 40,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 450,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "253",
       "modelPositionRank": 22,
-      "modelPredictedSeasonPoints": 105.262876,
+      "modelPredictedSeasonPoints": 104.950482,
       "modelRank": 47,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2043,7 +2043,7 @@
     {
       "draftPlayerId": "254",
       "modelPositionRank": 69,
-      "modelPredictedSeasonPoints": 65.806286,
+      "modelPredictedSeasonPoints": 65.26891,
       "modelRank": 167,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2051,31 +2051,31 @@
     {
       "draftPlayerId": "255",
       "modelPositionRank": 97,
-      "modelPredictedSeasonPoints": 44.458255,
-      "modelRank": 268,
+      "modelPredictedSeasonPoints": 43.706705,
+      "modelRank": 271,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "256",
       "modelPositionRank": 58,
-      "modelPredictedSeasonPoints": 74.07659,
-      "modelRank": 133,
+      "modelPredictedSeasonPoints": 73.612112,
+      "modelRank": 135,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "257",
       "modelPositionRank": 41,
-      "modelPredictedSeasonPoints": 87.169618,
-      "modelRank": 95,
+      "modelPredictedSeasonPoints": 86.820558,
+      "modelRank": 96,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "258",
-      "modelPositionRank": 71,
-      "modelPredictedSeasonPoints": 63.551163,
+      "modelPositionRank": 70,
+      "modelPredictedSeasonPoints": 63.096226,
       "modelRank": 176,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2083,15 +2083,15 @@
     {
       "draftPlayerId": "259",
       "modelPositionRank": 105,
-      "modelPredictedSeasonPoints": 38.069953,
-      "modelRank": 291,
+      "modelPredictedSeasonPoints": 37.245153,
+      "modelRank": 292,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "260",
       "modelPositionRank": 13,
-      "modelPredictedSeasonPoints": 99.457668,
+      "modelPredictedSeasonPoints": 99.486343,
       "modelRank": 51,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2099,7 +2099,7 @@
     {
       "draftPlayerId": "261",
       "modelPositionRank": 41,
-      "modelPredictedSeasonPoints": 78.143903,
+      "modelPredictedSeasonPoints": 78.175117,
       "modelRank": 117,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2107,15 +2107,15 @@
     {
       "draftPlayerId": "262",
       "modelPositionRank": 51,
-      "modelPredictedSeasonPoints": 71.467901,
-      "modelRank": 143,
+      "modelPredictedSeasonPoints": 71.505876,
+      "modelRank": 142,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "263",
       "modelPositionRank": 96,
-      "modelPredictedSeasonPoints": 53.55593,
+      "modelPredictedSeasonPoints": 53.61646,
       "modelRank": 225,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2123,7 +2123,7 @@
     {
       "draftPlayerId": "264",
       "modelPositionRank": 109,
-      "modelPredictedSeasonPoints": 49.056252,
+      "modelPredictedSeasonPoints": 49.116782,
       "modelRank": 242,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2131,39 +2131,39 @@
     {
       "draftPlayerId": "265",
       "modelPositionRank": 68,
-      "modelPredictedSeasonPoints": 64.787131,
-      "modelRank": 173,
+      "modelPredictedSeasonPoints": 64.813841,
+      "modelRank": 172,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "266",
       "modelPositionRank": 136,
-      "modelPredictedSeasonPoints": 38.041672,
-      "modelRank": 292,
+      "modelPredictedSeasonPoints": 38.115953,
+      "modelRank": 290,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "267",
       "modelPositionRank": 79,
-      "modelPredictedSeasonPoints": 59.584467,
-      "modelRank": 197,
+      "modelPredictedSeasonPoints": 59.62556,
+      "modelRank": 195,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "268",
       "modelPositionRank": 84,
-      "modelPredictedSeasonPoints": 58.74365,
-      "modelRank": 204,
+      "modelPredictedSeasonPoints": 58.795135,
+      "modelRank": 202,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "269",
       "modelPositionRank": 64,
-      "modelPredictedSeasonPoints": 70.577854,
+      "modelPredictedSeasonPoints": 70.1185,
       "modelRank": 149,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2171,24 +2171,24 @@
     {
       "draftPlayerId": "270",
       "modelPositionRank": 167,
-      "modelPredictedSeasonPoints": 16.926079,
-      "modelRank": 386,
+      "modelPredictedSeasonPoints": 17.092282,
+      "modelRank": 384,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "271",
       "modelPositionRank": 29,
-      "modelPredictedSeasonPoints": 43.969693,
-      "modelRank": 271,
+      "modelPredictedSeasonPoints": 44.374428,
+      "modelRank": 268,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "272",
       "modelPositionRank": 44,
-      "modelPredictedSeasonPoints": 15.619085,
-      "modelRank": 420,
+      "modelPredictedSeasonPoints": 16.784624,
+      "modelRank": 387,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -2387,8 +2387,8 @@
     {
       "draftPlayerId": "297",
       "modelPositionRank": 189,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 428,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 409,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -2611,31 +2611,31 @@
     {
       "draftPlayerId": "325",
       "modelPositionRank": 17,
-      "modelPredictedSeasonPoints": 64.864735,
-      "modelRank": 172,
+      "modelPredictedSeasonPoints": 63.205507,
+      "modelRank": 175,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "326",
       "modelPositionRank": 20,
-      "modelPredictedSeasonPoints": 33.024044,
-      "modelRank": 308,
+      "modelPredictedSeasonPoints": 30.89075,
+      "modelRank": 315,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "327",
       "modelPositionRank": 55,
-      "modelPredictedSeasonPoints": 75.367535,
-      "modelRank": 129,
+      "modelPredictedSeasonPoints": 74.922327,
+      "modelRank": 130,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "328",
       "modelPositionRank": 13,
-      "modelPredictedSeasonPoints": 112.468295,
+      "modelPredictedSeasonPoints": 112.160792,
       "modelRank": 33,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2643,7 +2643,7 @@
     {
       "draftPlayerId": "329",
       "modelPositionRank": 36,
-      "modelPredictedSeasonPoints": 91.547225,
+      "modelPredictedSeasonPoints": 91.241259,
       "modelRank": 80,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2651,7 +2651,7 @@
     {
       "draftPlayerId": "330",
       "modelPositionRank": 46,
-      "modelPredictedSeasonPoints": 82.743897,
+      "modelPredictedSeasonPoints": 82.423128,
       "modelRank": 106,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2659,15 +2659,15 @@
     {
       "draftPlayerId": "331",
       "modelPositionRank": 52,
-      "modelPredictedSeasonPoints": 77.355845,
-      "modelRank": 120,
+      "modelPredictedSeasonPoints": 77.018658,
+      "modelRank": 122,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "332",
       "modelPositionRank": 50,
-      "modelPredictedSeasonPoints": 78.109409,
+      "modelPredictedSeasonPoints": 77.665151,
       "modelRank": 118,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2675,7 +2675,7 @@
     {
       "draftPlayerId": "333",
       "modelPositionRank": 107,
-      "modelPredictedSeasonPoints": 36.940743,
+      "modelPredictedSeasonPoints": 35.75656,
       "modelRank": 296,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2691,7 +2691,7 @@
     {
       "draftPlayerId": "335",
       "modelPositionRank": 34,
-      "modelPredictedSeasonPoints": 85.728698,
+      "modelPredictedSeasonPoints": 85.760477,
       "modelRank": 100,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2699,15 +2699,15 @@
     {
       "draftPlayerId": "336",
       "modelPositionRank": 45,
-      "modelPredictedSeasonPoints": 76.642124,
-      "modelRank": 125,
+      "modelPredictedSeasonPoints": 76.686849,
+      "modelRank": 124,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "337",
       "modelPositionRank": 33,
-      "modelPredictedSeasonPoints": 86.469289,
+      "modelPredictedSeasonPoints": 86.500191,
       "modelRank": 98,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2715,7 +2715,7 @@
     {
       "draftPlayerId": "338",
       "modelPositionRank": 65,
-      "modelPredictedSeasonPoints": 65.185524,
+      "modelPredictedSeasonPoints": 65.210624,
       "modelRank": 169,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2723,55 +2723,55 @@
     {
       "draftPlayerId": "339",
       "modelPositionRank": 111,
-      "modelPredictedSeasonPoints": 48.838013,
-      "modelRank": 244,
+      "modelPredictedSeasonPoints": 48.899667,
+      "modelRank": 245,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "340",
       "modelPositionRank": 188,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 427,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 408,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "341",
       "modelPositionRank": 148,
-      "modelPredictedSeasonPoints": 30.507946,
-      "modelRank": 317,
+      "modelPredictedSeasonPoints": 30.600205,
+      "modelRank": 316,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "342",
       "modelPositionRank": 161,
-      "modelPredictedSeasonPoints": 17.735692,
-      "modelRank": 380,
+      "modelPredictedSeasonPoints": 17.861511,
+      "modelRank": 375,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "343",
       "modelPositionRank": 141,
-      "modelPredictedSeasonPoints": 34.460846,
-      "modelRank": 300,
+      "modelPredictedSeasonPoints": 34.550699,
+      "modelRank": 302,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "344",
       "modelPositionRank": 135,
-      "modelPredictedSeasonPoints": 38.800567,
-      "modelRank": 289,
+      "modelPredictedSeasonPoints": 38.851236,
+      "modelRank": 287,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "345",
       "modelPositionRank": 128,
-      "modelPredictedSeasonPoints": 43.497097,
+      "modelPredictedSeasonPoints": 43.548084,
       "modelRank": 273,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2779,7 +2779,7 @@
     {
       "draftPlayerId": "346",
       "modelPositionRank": 5,
-      "modelPredictedSeasonPoints": 105.92962,
+      "modelPredictedSeasonPoints": 106.113033,
       "modelRank": 45,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2787,56 +2787,56 @@
     {
       "draftPlayerId": "347",
       "modelPositionRank": 20,
-      "modelPredictedSeasonPoints": 61.687285,
-      "modelRank": 186,
+      "modelPredictedSeasonPoints": 62.071182,
+      "modelRank": 182,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "348",
       "modelPositionRank": 41,
-      "modelPredictedSeasonPoints": 23.793357,
-      "modelRank": 333,
+      "modelPredictedSeasonPoints": 24.631403,
+      "modelRank": 328,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "349",
       "modelPositionRank": 51,
-      "modelPredictedSeasonPoints": 11.8503,
-      "modelRank": 456,
+      "modelPredictedSeasonPoints": 13.142753,
+      "modelRank": 434,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "350",
       "modelPositionRank": 16,
-      "modelPredictedSeasonPoints": 69.561666,
-      "modelRank": 154,
+      "modelPredictedSeasonPoints": 68.116532,
+      "modelRank": 158,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "351",
       "modelPositionRank": 19,
-      "modelPredictedSeasonPoints": 39.723902,
-      "modelRank": 288,
+      "modelPredictedSeasonPoints": 36.662456,
+      "modelRank": 295,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "352",
-      "modelPositionRank": 46,
-      "modelPredictedSeasonPoints": 14.317254,
-      "modelRank": 447,
+      "modelPositionRank": 28,
+      "modelPredictedSeasonPoints": 8.226733,
+      "modelRank": 438,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "353",
-      "modelPositionRank": 41,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 403,
+      "modelPositionRank": 43,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 453,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -2859,7 +2859,7 @@
     {
       "draftPlayerId": "356",
       "modelPositionRank": 2,
-      "modelPredictedSeasonPoints": 138.87148,
+      "modelPredictedSeasonPoints": 138.602515,
       "modelRank": 6,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2867,15 +2867,15 @@
     {
       "draftPlayerId": "357",
       "modelPositionRank": 85,
-      "modelPredictedSeasonPoints": 55.382751,
-      "modelRank": 218,
+      "modelPredictedSeasonPoints": 54.680392,
+      "modelRank": 219,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "358",
       "modelPositionRank": 47,
-      "modelPredictedSeasonPoints": 80.326195,
+      "modelPredictedSeasonPoints": 79.94082,
       "modelRank": 113,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2883,24 +2883,24 @@
     {
       "draftPlayerId": "359",
       "modelPositionRank": 102,
-      "modelPredictedSeasonPoints": 40.681574,
-      "modelRank": 283,
+      "modelPredictedSeasonPoints": 39.684546,
+      "modelRank": 286,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "360",
       "modelPositionRank": 93,
-      "modelPredictedSeasonPoints": 47.050308,
-      "modelRank": 251,
+      "modelPredictedSeasonPoints": 46.29494,
+      "modelRank": 255,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "361",
-      "modelPositionRank": 139,
-      "modelPredictedSeasonPoints": 20.559781,
-      "modelRank": 361,
+      "modelPositionRank": 140,
+      "modelPredictedSeasonPoints": 18.246677,
+      "modelRank": 366,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -2914,32 +2914,32 @@
     },
     {
       "draftPlayerId": "363",
-      "modelPositionRank": 138,
-      "modelPredictedSeasonPoints": 20.559781,
-      "modelRank": 360,
-      "modelSignalAvailable": true,
-      "unavailableReason": null
-    },
-    {
-      "draftPlayerId": "364",
-      "modelPositionRank": 143,
-      "modelPredictedSeasonPoints": 20.559781,
+      "modelPositionRank": 139,
+      "modelPredictedSeasonPoints": 18.246677,
       "modelRank": 365,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
+      "draftPlayerId": "364",
+      "modelPositionRank": 144,
+      "modelPredictedSeasonPoints": 18.246677,
+      "modelRank": 370,
+      "modelSignalAvailable": true,
+      "unavailableReason": null
+    },
+    {
       "draftPlayerId": "365",
-      "modelPositionRank": 142,
-      "modelPredictedSeasonPoints": 20.559781,
-      "modelRank": 364,
+      "modelPositionRank": 143,
+      "modelPredictedSeasonPoints": 18.246677,
+      "modelRank": 369,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "366",
       "modelPositionRank": 14,
-      "modelPredictedSeasonPoints": 98.862056,
+      "modelPredictedSeasonPoints": 98.893779,
       "modelRank": 54,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2947,7 +2947,7 @@
     {
       "draftPlayerId": "367",
       "modelPositionRank": 7,
-      "modelPredictedSeasonPoints": 118.267435,
+      "modelPredictedSeasonPoints": 118.295553,
       "modelRank": 23,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2955,15 +2955,15 @@
     {
       "draftPlayerId": "368",
       "modelPositionRank": 11,
-      "modelPredictedSeasonPoints": 107.303869,
-      "modelRank": 43,
+      "modelPredictedSeasonPoints": 107.328199,
+      "modelRank": 42,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "369",
       "modelPositionRank": 125,
-      "modelPredictedSeasonPoints": 44.473626,
+      "modelPredictedSeasonPoints": 44.563479,
       "modelRank": 267,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2971,15 +2971,15 @@
     {
       "draftPlayerId": "370",
       "modelPositionRank": 150,
-      "modelPredictedSeasonPoints": 29.801864,
-      "modelRank": 322,
+      "modelPredictedSeasonPoints": 29.918661,
+      "modelRank": 318,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "371",
       "modelPositionRank": 40,
-      "modelPredictedSeasonPoints": 79.768875,
+      "modelPredictedSeasonPoints": 79.794909,
       "modelRank": 114,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2987,7 +2987,7 @@
     {
       "draftPlayerId": "372",
       "modelPositionRank": 37,
-      "modelPredictedSeasonPoints": 82.377297,
+      "modelPredictedSeasonPoints": 82.406157,
       "modelRank": 107,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -2995,7 +2995,7 @@
     {
       "draftPlayerId": "373",
       "modelPositionRank": 87,
-      "modelPredictedSeasonPoints": 57.531957,
+      "modelPredictedSeasonPoints": 57.569708,
       "modelRank": 208,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3003,24 +3003,24 @@
     {
       "draftPlayerId": "374",
       "modelPositionRank": 159,
-      "modelPredictedSeasonPoints": 17.991591,
-      "modelRank": 378,
+      "modelPredictedSeasonPoints": 18.13608,
+      "modelRank": 373,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "375",
       "modelPositionRank": 181,
-      "modelPredictedSeasonPoints": 15.63188,
-      "modelRank": 419,
+      "modelPredictedSeasonPoints": 15.822078,
+      "modelRank": 401,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "376",
       "modelPositionRank": 183,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 422,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 403,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -3035,23 +3035,23 @@
     {
       "draftPlayerId": "378",
       "modelPositionRank": 194,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 433,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 414,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "379",
       "modelPositionRank": 32,
-      "modelPredictedSeasonPoints": 40.916619,
-      "modelRank": 282,
+      "modelPredictedSeasonPoints": 41.425014,
+      "modelRank": 281,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "380",
       "modelPositionRank": 15,
-      "modelPredictedSeasonPoints": 80.591419,
+      "modelPredictedSeasonPoints": 80.850255,
       "modelRank": 112,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3067,23 +3067,23 @@
     {
       "draftPlayerId": "382",
       "modelPositionRank": 49,
-      "modelPredictedSeasonPoints": 11.8503,
-      "modelRank": 454,
+      "modelPredictedSeasonPoints": 13.142753,
+      "modelRank": 432,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "383",
       "modelPositionRank": 160,
-      "modelPredictedSeasonPoints": 17.906154,
-      "modelRank": 379,
+      "modelPredictedSeasonPoints": 18.066124,
+      "modelRank": 374,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "384",
       "modelPositionRank": 3,
-      "modelPredictedSeasonPoints": 125.871767,
+      "modelPredictedSeasonPoints": 124.72307,
       "modelRank": 16,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3091,23 +3091,23 @@
     {
       "draftPlayerId": "385",
       "modelPositionRank": 26,
-      "modelPredictedSeasonPoints": 22.446009,
-      "modelRank": 345,
+      "modelPredictedSeasonPoints": 17.468324,
+      "modelRank": 377,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "386",
-      "modelPositionRank": 30,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 392,
+      "modelPositionRank": 32,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 442,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "387",
       "modelPositionRank": 3,
-      "modelPredictedSeasonPoints": 138.579594,
+      "modelPredictedSeasonPoints": 138.243061,
       "modelRank": 7,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3115,7 +3115,7 @@
     {
       "draftPlayerId": "388",
       "modelPositionRank": 4,
-      "modelPredictedSeasonPoints": 134.644807,
+      "modelPredictedSeasonPoints": 134.355669,
       "modelRank": 8,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3123,15 +3123,15 @@
     {
       "draftPlayerId": "389",
       "modelPositionRank": 32,
-      "modelPredictedSeasonPoints": 94.570025,
-      "modelRank": 68,
+      "modelPredictedSeasonPoints": 94.25565,
+      "modelRank": 69,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "390",
       "modelPositionRank": 38,
-      "modelPredictedSeasonPoints": 90.288962,
+      "modelPredictedSeasonPoints": 89.886917,
       "modelRank": 86,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3139,55 +3139,55 @@
     {
       "draftPlayerId": "391",
       "modelPositionRank": 51,
-      "modelPredictedSeasonPoints": 77.900091,
-      "modelRank": 119,
+      "modelPredictedSeasonPoints": 77.32817,
+      "modelRank": 120,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "392",
       "modelPositionRank": 78,
-      "modelPredictedSeasonPoints": 59.728283,
-      "modelRank": 196,
+      "modelPredictedSeasonPoints": 58.995774,
+      "modelRank": 201,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "393",
       "modelPositionRank": 75,
-      "modelPredictedSeasonPoints": 61.992621,
-      "modelRank": 183,
+      "modelPredictedSeasonPoints": 61.438068,
+      "modelRank": 185,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "394",
       "modelPositionRank": 118,
-      "modelPredictedSeasonPoints": 25.148145,
-      "modelRank": 331,
+      "modelPredictedSeasonPoints": 23.368835,
+      "modelRank": 334,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "395",
       "modelPositionRank": 114,
-      "modelPredictedSeasonPoints": 29.941518,
-      "modelRank": 320,
+      "modelPredictedSeasonPoints": 28.718373,
+      "modelRank": 321,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "396",
-      "modelPositionRank": 144,
-      "modelPredictedSeasonPoints": 20.559781,
-      "modelRank": 366,
+      "modelPositionRank": 145,
+      "modelPredictedSeasonPoints": 18.246677,
+      "modelRank": 371,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "397",
       "modelPositionRank": 1,
-      "modelPredictedSeasonPoints": 146.482606,
+      "modelPredictedSeasonPoints": 146.50715,
       "modelRank": 4,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3195,7 +3195,7 @@
     {
       "draftPlayerId": "398",
       "modelPositionRank": 15,
-      "modelPredictedSeasonPoints": 97.578729,
+      "modelPredictedSeasonPoints": 97.614165,
       "modelRank": 55,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3203,39 +3203,39 @@
     {
       "draftPlayerId": "399",
       "modelPositionRank": 31,
-      "modelPredictedSeasonPoints": 88.375186,
-      "modelRank": 92,
+      "modelPredictedSeasonPoints": 88.415503,
+      "modelRank": 91,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "400",
       "modelPositionRank": 22,
-      "modelPredictedSeasonPoints": 94.109687,
-      "modelRank": 71,
+      "modelPredictedSeasonPoints": 94.149985,
+      "modelRank": 70,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "401",
       "modelPositionRank": 24,
-      "modelPredictedSeasonPoints": 49.492423,
-      "modelRank": 239,
+      "modelPredictedSeasonPoints": 50.002154,
+      "modelRank": 235,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "402",
       "modelPositionRank": 94,
-      "modelPredictedSeasonPoints": 54.296407,
-      "modelRank": 223,
+      "modelPredictedSeasonPoints": 54.342113,
+      "modelRank": 221,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "403",
       "modelPositionRank": 99,
-      "modelPredictedSeasonPoints": 51.714401,
+      "modelPredictedSeasonPoints": 51.785106,
       "modelRank": 228,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3243,48 +3243,48 @@
     {
       "draftPlayerId": "404",
       "modelPositionRank": 46,
-      "modelPredictedSeasonPoints": 75.49535,
-      "modelRank": 128,
+      "modelPredictedSeasonPoints": 75.538565,
+      "modelRank": 127,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "405",
       "modelPositionRank": 101,
-      "modelPredictedSeasonPoints": 51.480538,
-      "modelRank": 231,
+      "modelPredictedSeasonPoints": 51.525085,
+      "modelRank": 230,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "406",
       "modelPositionRank": 162,
-      "modelPredictedSeasonPoints": 17.371116,
-      "modelRank": 381,
+      "modelPredictedSeasonPoints": 17.526913,
+      "modelRank": 376,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "407",
       "modelPositionRank": 186,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 425,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 406,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "408",
       "modelPositionRank": 197,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 436,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 417,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "409",
       "modelPositionRank": 178,
-      "modelPredictedSeasonPoints": 15.817246,
-      "modelRank": 416,
+      "modelPredictedSeasonPoints": 16.005843,
+      "modelRank": 398,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -3299,7 +3299,7 @@
     {
       "draftPlayerId": "411",
       "modelPositionRank": 1,
-      "modelPredictedSeasonPoints": 157.285462,
+      "modelPredictedSeasonPoints": 157.456371,
       "modelRank": 1,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3307,47 +3307,47 @@
     {
       "draftPlayerId": "412",
       "modelPositionRank": 14,
-      "modelPredictedSeasonPoints": 72.957135,
-      "modelRank": 138,
+      "modelPredictedSeasonPoints": 71.746347,
+      "modelRank": 141,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "413",
       "modelPositionRank": 24,
-      "modelPredictedSeasonPoints": 23.349358,
-      "modelRank": 337,
+      "modelPredictedSeasonPoints": 19.276707,
+      "modelRank": 353,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "414",
-      "modelPositionRank": 34,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 396,
+      "modelPositionRank": 36,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 446,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "415",
       "modelPositionRank": 53,
-      "modelPredictedSeasonPoints": 70.542275,
-      "modelRank": 150,
+      "modelPredictedSeasonPoints": 70.589674,
+      "modelRank": 147,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "416",
       "modelPositionRank": 90,
-      "modelPredictedSeasonPoints": 49.930119,
-      "modelRank": 235,
+      "modelPredictedSeasonPoints": 49.287591,
+      "modelRank": 240,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "417",
       "modelPositionRank": 40,
-      "modelPredictedSeasonPoints": 87.522139,
+      "modelPredictedSeasonPoints": 87.181865,
       "modelRank": 94,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3355,79 +3355,79 @@
     {
       "draftPlayerId": "418",
       "modelPositionRank": 57,
-      "modelPredictedSeasonPoints": 75.057832,
-      "modelRank": 131,
+      "modelPredictedSeasonPoints": 74.561931,
+      "modelRank": 132,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "419",
       "modelPositionRank": 87,
-      "modelPredictedSeasonPoints": 54.556081,
-      "modelRank": 221,
+      "modelPredictedSeasonPoints": 53.936131,
+      "modelRank": 223,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "420",
       "modelPositionRank": 80,
-      "modelPredictedSeasonPoints": 58.767855,
-      "modelRank": 203,
+      "modelPredictedSeasonPoints": 58.29038,
+      "modelRank": 206,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "421",
       "modelPositionRank": 94,
-      "modelPredictedSeasonPoints": 46.708697,
-      "modelRank": 255,
+      "modelPredictedSeasonPoints": 45.948919,
+      "modelRank": 258,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "422",
       "modelPositionRank": 86,
-      "modelPredictedSeasonPoints": 55.176866,
-      "modelRank": 219,
+      "modelPredictedSeasonPoints": 54.447436,
+      "modelRank": 220,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "423",
       "modelPositionRank": 34,
-      "modelPredictedSeasonPoints": 93.332748,
-      "modelRank": 74,
+      "modelPredictedSeasonPoints": 93.049125,
+      "modelRank": 75,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "424",
-      "modelPositionRank": 133,
-      "modelPredictedSeasonPoints": 20.559781,
-      "modelRank": 355,
+      "modelPositionRank": 134,
+      "modelPredictedSeasonPoints": 18.246677,
+      "modelRank": 360,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "425",
-      "modelPositionRank": 128,
-      "modelPredictedSeasonPoints": 21.814887,
-      "modelRank": 349,
+      "modelPositionRank": 129,
+      "modelPredictedSeasonPoints": 19.512019,
+      "modelRank": 350,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "426",
       "modelPositionRank": 3,
-      "modelPredictedSeasonPoints": 128.945493,
-      "modelRank": 12,
+      "modelPredictedSeasonPoints": 128.970979,
+      "modelRank": 11,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "427",
       "modelPositionRank": 6,
-      "modelPredictedSeasonPoints": 120.919995,
+      "modelPredictedSeasonPoints": 120.949261,
       "modelRank": 22,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3435,31 +3435,31 @@
     {
       "draftPlayerId": "428",
       "modelPositionRank": 10,
-      "modelPredictedSeasonPoints": 114.545608,
-      "modelRank": 31,
+      "modelPredictedSeasonPoints": 114.576048,
+      "modelRank": 29,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "429",
       "modelPositionRank": 198,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 437,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 418,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "430",
       "modelPositionRank": 110,
-      "modelPredictedSeasonPoints": 48.925237,
-      "modelRank": 243,
+      "modelPredictedSeasonPoints": 48.986596,
+      "modelRank": 244,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "431",
       "modelPositionRank": 27,
-      "modelPredictedSeasonPoints": 90.475705,
+      "modelPredictedSeasonPoints": 90.507825,
       "modelRank": 85,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3467,96 +3467,96 @@
     {
       "draftPlayerId": "432",
       "modelPositionRank": 93,
-      "modelPredictedSeasonPoints": 55.108144,
-      "modelRank": 220,
+      "modelPredictedSeasonPoints": 55.150742,
+      "modelRank": 218,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "433",
       "modelPositionRank": 142,
-      "modelPredictedSeasonPoints": 33.381192,
-      "modelRank": 306,
+      "modelPredictedSeasonPoints": 33.448751,
+      "modelRank": 303,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "434",
-      "modelPositionRank": 171,
-      "modelPredictedSeasonPoints": 16.136453,
-      "modelRank": 409,
+      "modelPositionRank": 173,
+      "modelPredictedSeasonPoints": 16.297285,
+      "modelRank": 393,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "435",
-      "modelPositionRank": 172,
-      "modelPredictedSeasonPoints": 16.117339,
-      "modelRank": 410,
+      "modelPositionRank": 171,
+      "modelPredictedSeasonPoints": 16.300163,
+      "modelRank": 391,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "436",
       "modelPositionRank": 184,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 423,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 404,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "437",
       "modelPositionRank": 180,
-      "modelPredictedSeasonPoints": 15.684769,
-      "modelRank": 418,
+      "modelPredictedSeasonPoints": 15.877422,
+      "modelRank": 400,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "438",
       "modelPositionRank": 200,
-      "modelPredictedSeasonPoints": 15.238904,
-      "modelRank": 439,
+      "modelPredictedSeasonPoints": 15.430731,
+      "modelRank": 420,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "439",
       "modelPositionRank": 11,
-      "modelPredictedSeasonPoints": 88.566433,
-      "modelRank": 90,
+      "modelPredictedSeasonPoints": 88.846051,
+      "modelRank": 89,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "440",
       "modelPositionRank": 25,
-      "modelPredictedSeasonPoints": 49.343306,
-      "modelRank": 240,
+      "modelPredictedSeasonPoints": 49.893546,
+      "modelRank": 236,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "441",
       "modelPositionRank": 53,
-      "modelPredictedSeasonPoints": 11.8503,
-      "modelRank": 458,
+      "modelPredictedSeasonPoints": 13.142753,
+      "modelRank": 436,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "442",
       "modelPositionRank": 15,
-      "modelPredictedSeasonPoints": 71.027889,
-      "modelRank": 145,
+      "modelPredictedSeasonPoints": 69.621076,
+      "modelRank": 152,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "443",
-      "modelPositionRank": 33,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 395,
+      "modelPositionRank": 35,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 445,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -3571,7 +3571,7 @@
     {
       "draftPlayerId": "445",
       "modelPositionRank": 10,
-      "modelPredictedSeasonPoints": 116.827616,
+      "modelPredictedSeasonPoints": 116.522636,
       "modelRank": 25,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3579,111 +3579,111 @@
     {
       "draftPlayerId": "446",
       "modelPositionRank": 74,
-      "modelPredictedSeasonPoints": 62.220753,
-      "modelRank": 182,
+      "modelPredictedSeasonPoints": 61.544407,
+      "modelRank": 184,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "447",
       "modelPositionRank": 45,
-      "modelPredictedSeasonPoints": 84.923261,
-      "modelRank": 103,
+      "modelPredictedSeasonPoints": 84.467527,
+      "modelRank": 104,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "448",
       "modelPositionRank": 49,
-      "modelPredictedSeasonPoints": 79.295993,
+      "modelPredictedSeasonPoints": 78.902459,
       "modelRank": 116,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "449",
-      "modelPositionRank": 60,
-      "modelPredictedSeasonPoints": 72.594569,
-      "modelRank": 140,
+      "modelPositionRank": 59,
+      "modelPredictedSeasonPoints": 72.198188,
+      "modelRank": 138,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "450",
       "modelPositionRank": 88,
-      "modelPredictedSeasonPoints": 54.423694,
-      "modelRank": 222,
+      "modelPredictedSeasonPoints": 53.837603,
+      "modelRank": 224,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "451",
-      "modelPositionRank": 120,
-      "modelPredictedSeasonPoints": 23.271723,
-      "modelRank": 338,
+      "modelPositionRank": 122,
+      "modelPredictedSeasonPoints": 20.994051,
+      "modelRank": 339,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "452",
       "modelPositionRank": 16,
-      "modelPredictedSeasonPoints": 97.159838,
-      "modelRank": 58,
+      "modelPredictedSeasonPoints": 97.190665,
+      "modelRank": 57,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "453",
       "modelPositionRank": 32,
-      "modelPredictedSeasonPoints": 86.804492,
-      "modelRank": 97,
+      "modelPredictedSeasonPoints": 86.841803,
+      "modelRank": 95,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "454",
       "modelPositionRank": 127,
-      "modelPredictedSeasonPoints": 43.765704,
-      "modelRank": 272,
+      "modelPredictedSeasonPoints": 43.816836,
+      "modelRank": 270,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "455",
       "modelPositionRank": 55,
-      "modelPredictedSeasonPoints": 69.553578,
-      "modelRank": 155,
+      "modelPredictedSeasonPoints": 69.5836,
+      "modelRank": 153,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "456",
       "modelPositionRank": 100,
-      "modelPredictedSeasonPoints": 51.515637,
-      "modelRank": 230,
+      "modelPredictedSeasonPoints": 51.563011,
+      "modelRank": 229,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "457",
       "modelPositionRank": 59,
-      "modelPredictedSeasonPoints": 67.393356,
-      "modelRank": 160,
+      "modelPredictedSeasonPoints": 67.436928,
+      "modelRank": 159,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "458",
       "modelPositionRank": 58,
-      "modelPredictedSeasonPoints": 68.638652,
-      "modelRank": 158,
+      "modelPredictedSeasonPoints": 68.675979,
+      "modelRank": 157,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "459",
       "modelPositionRank": 108,
-      "modelPredictedSeasonPoints": 49.182888,
+      "modelPredictedSeasonPoints": 49.228994,
       "modelRank": 241,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3691,8 +3691,8 @@
     {
       "draftPlayerId": "460",
       "modelPositionRank": 121,
-      "modelPredictedSeasonPoints": 45.72651,
-      "modelRank": 262,
+      "modelPredictedSeasonPoints": 45.789508,
+      "modelRank": 260,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -3715,15 +3715,15 @@
     {
       "draftPlayerId": "463",
       "modelPositionRank": 13,
-      "modelPredictedSeasonPoints": 81.191815,
+      "modelPredictedSeasonPoints": 81.439728,
       "modelRank": 110,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "464",
-      "modelPositionRank": 34,
-      "modelPredictedSeasonPoints": 34.436093,
+      "modelPositionRank": 35,
+      "modelPredictedSeasonPoints": 35.037544,
       "modelRank": 301,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3731,39 +3731,39 @@
     {
       "draftPlayerId": "465",
       "modelPositionRank": 23,
-      "modelPredictedSeasonPoints": 57.283969,
-      "modelRank": 209,
+      "modelPredictedSeasonPoints": 57.747399,
+      "modelRank": 207,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "466",
       "modelPositionRank": 47,
-      "modelPredictedSeasonPoints": 12.590791,
-      "modelRank": 452,
+      "modelPredictedSeasonPoints": 13.846955,
+      "modelRank": 430,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "467",
       "modelPositionRank": 10,
-      "modelPredictedSeasonPoints": 92.083123,
-      "modelRank": 78,
+      "modelPredictedSeasonPoints": 90.789596,
+      "modelRank": 82,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "468",
-      "modelPositionRank": 48,
-      "modelPredictedSeasonPoints": 12.810626,
-      "modelRank": 450,
+      "modelPositionRank": 27,
+      "modelPredictedSeasonPoints": 8.265051,
+      "modelRank": 437,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "469",
       "modelPositionRank": 18,
-      "modelPredictedSeasonPoints": 108.605118,
+      "modelPredictedSeasonPoints": 108.320175,
       "modelRank": 39,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3771,7 +3771,7 @@
     {
       "draftPlayerId": "470",
       "modelPositionRank": 84,
-      "modelPredictedSeasonPoints": 55.826771,
+      "modelPredictedSeasonPoints": 55.245265,
       "modelRank": 217,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3779,7 +3779,7 @@
     {
       "draftPlayerId": "471",
       "modelPositionRank": 31,
-      "modelPredictedSeasonPoints": 94.904999,
+      "modelPredictedSeasonPoints": 94.63287,
       "modelRank": 66,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3787,56 +3787,56 @@
     {
       "draftPlayerId": "472",
       "modelPositionRank": 56,
-      "modelPredictedSeasonPoints": 75.073767,
-      "modelRank": 130,
+      "modelPredictedSeasonPoints": 74.670319,
+      "modelRank": 131,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "473",
       "modelPositionRank": 81,
-      "modelPredictedSeasonPoints": 57.626035,
-      "modelRank": 207,
+      "modelPredictedSeasonPoints": 57.11504,
+      "modelRank": 209,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "474",
       "modelPositionRank": 116,
-      "modelPredictedSeasonPoints": 26.722495,
-      "modelRank": 326,
+      "modelPredictedSeasonPoints": 25.642727,
+      "modelRank": 327,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "475",
       "modelPositionRank": 91,
-      "modelPredictedSeasonPoints": 48.560419,
-      "modelRank": 246,
+      "modelPredictedSeasonPoints": 47.854726,
+      "modelRank": 248,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "476",
-      "modelPositionRank": 140,
-      "modelPredictedSeasonPoints": 20.559781,
-      "modelRank": 362,
+      "modelPositionRank": 141,
+      "modelPredictedSeasonPoints": 18.246677,
+      "modelRank": 367,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "477",
       "modelPositionRank": 150,
-      "modelPredictedSeasonPoints": 18.601809,
-      "modelRank": 374,
+      "modelPredictedSeasonPoints": 16.909295,
+      "modelRank": 386,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "478",
-      "modelPositionRank": 130,
-      "modelPredictedSeasonPoints": 21.058145,
-      "modelRank": 352,
+      "modelPositionRank": 127,
+      "modelPredictedSeasonPoints": 19.761885,
+      "modelRank": 347,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -3851,47 +3851,47 @@
     {
       "draftPlayerId": "480",
       "modelPositionRank": 2,
-      "modelPredictedSeasonPoints": 128.97114,
-      "modelRank": 11,
+      "modelPredictedSeasonPoints": 128.996368,
+      "modelRank": 10,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "481",
       "modelPositionRank": 24,
-      "modelPredictedSeasonPoints": 93.107163,
-      "modelRank": 76,
+      "modelPredictedSeasonPoints": 93.130849,
+      "modelRank": 74,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "482",
       "modelPositionRank": 56,
-      "modelPredictedSeasonPoints": 69.130135,
-      "modelRank": 156,
+      "modelPredictedSeasonPoints": 69.169288,
+      "modelRank": 155,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "483",
       "modelPositionRank": 118,
-      "modelPredictedSeasonPoints": 46.00193,
-      "modelRank": 257,
+      "modelPredictedSeasonPoints": 46.057331,
+      "modelRank": 256,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "484",
       "modelPositionRank": 60,
-      "modelPredictedSeasonPoints": 67.01987,
-      "modelRank": 161,
+      "modelPredictedSeasonPoints": 67.062007,
+      "modelRank": 160,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "485",
       "modelPositionRank": 138,
-      "modelPredictedSeasonPoints": 35.46152,
+      "modelPredictedSeasonPoints": 35.551193,
       "modelRank": 297,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3899,39 +3899,39 @@
     {
       "draftPlayerId": "486",
       "modelPositionRank": 157,
-      "modelPredictedSeasonPoints": 18.579061,
-      "modelRank": 375,
+      "modelPredictedSeasonPoints": 18.700448,
+      "modelRank": 356,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "487",
       "modelPositionRank": 106,
-      "modelPredictedSeasonPoints": 49.731882,
-      "modelRank": 237,
+      "modelPredictedSeasonPoints": 49.787249,
+      "modelRank": 238,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "488",
       "modelPositionRank": 83,
-      "modelPredictedSeasonPoints": 59.02368,
-      "modelRank": 202,
+      "modelPredictedSeasonPoints": 59.059187,
+      "modelRank": 200,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "489",
       "modelPositionRank": 143,
-      "modelPredictedSeasonPoints": 32.881461,
-      "modelRank": 309,
+      "modelPredictedSeasonPoints": 32.966617,
+      "modelRank": 306,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "490",
       "modelPositionRank": 31,
-      "modelPredictedSeasonPoints": 42.857649,
+      "modelPredictedSeasonPoints": 43.289747,
       "modelRank": 276,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3939,7 +3939,7 @@
     {
       "draftPlayerId": "491",
       "modelPositionRank": 9,
-      "modelPredictedSeasonPoints": 92.68498,
+      "modelPredictedSeasonPoints": 92.897012,
       "modelRank": 77,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -3947,55 +3947,55 @@
     {
       "draftPlayerId": "492",
       "modelPositionRank": 27,
-      "modelPredictedSeasonPoints": 46.339247,
-      "modelRank": 256,
+      "modelPredictedSeasonPoints": 46.964627,
+      "modelRank": 253,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "493",
       "modelPositionRank": 43,
-      "modelPredictedSeasonPoints": 18.390777,
-      "modelRank": 376,
+      "modelPredictedSeasonPoints": 19.46982,
+      "modelRank": 351,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "494",
       "modelPositionRank": 13,
-      "modelPredictedSeasonPoints": 76.557738,
-      "modelRank": 126,
+      "modelPredictedSeasonPoints": 75.313316,
+      "modelRank": 128,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "495",
-      "modelPositionRank": 29,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 391,
+      "modelPositionRank": 31,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 441,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "496",
       "modelPositionRank": 21,
-      "modelPredictedSeasonPoints": 30.281866,
-      "modelRank": 318,
+      "modelPredictedSeasonPoints": 26.548602,
+      "modelRank": 325,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "497",
       "modelPositionRank": 18,
-      "modelPredictedSeasonPoints": 61.548522,
-      "modelRank": 187,
+      "modelPredictedSeasonPoints": 60.428543,
+      "modelRank": 191,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "498",
       "modelPositionRank": 7,
-      "modelPredictedSeasonPoints": 126.200534,
+      "modelPredictedSeasonPoints": 125.922071,
       "modelRank": 15,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -4003,15 +4003,15 @@
     {
       "draftPlayerId": "499",
       "modelPositionRank": 21,
-      "modelPredictedSeasonPoints": 106.525515,
+      "modelPredictedSeasonPoints": 106.204548,
       "modelRank": 44,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "500",
-      "modelPositionRank": 59,
-      "modelPredictedSeasonPoints": 72.599495,
+      "modelPositionRank": 60,
+      "modelPredictedSeasonPoints": 72.15064,
       "modelRank": 139,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -4019,151 +4019,151 @@
     {
       "draftPlayerId": "501",
       "modelPositionRank": 67,
-      "modelPredictedSeasonPoints": 67.478055,
-      "modelRank": 159,
+      "modelPredictedSeasonPoints": 66.941234,
+      "modelRank": 161,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "502",
       "modelPositionRank": 77,
-      "modelPredictedSeasonPoints": 59.734815,
-      "modelRank": 195,
+      "modelPredictedSeasonPoints": 59.090297,
+      "modelRank": 198,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "503",
       "modelPositionRank": 29,
-      "modelPredictedSeasonPoints": 97.343923,
-      "modelRank": 57,
+      "modelPredictedSeasonPoints": 97.045757,
+      "modelRank": 58,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "504",
-      "modelPositionRank": 145,
-      "modelPredictedSeasonPoints": 20.559781,
-      "modelRank": 367,
+      "modelPositionRank": 146,
+      "modelPredictedSeasonPoints": 18.246677,
+      "modelRank": 372,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "505",
       "modelPositionRank": 53,
-      "modelPredictedSeasonPoints": 77.038318,
-      "modelRank": 123,
+      "modelPredictedSeasonPoints": 76.621793,
+      "modelRank": 125,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "506",
       "modelPositionRank": 104,
-      "modelPredictedSeasonPoints": 38.387067,
-      "modelRank": 290,
+      "modelPredictedSeasonPoints": 37.803932,
+      "modelRank": 291,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "507",
-      "modelPositionRank": 141,
-      "modelPredictedSeasonPoints": 20.559781,
-      "modelRank": 363,
+      "modelPositionRank": 142,
+      "modelPredictedSeasonPoints": 18.246677,
+      "modelRank": 368,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "508",
       "modelPositionRank": 113,
-      "modelPredictedSeasonPoints": 30.84859,
-      "modelRank": 316,
+      "modelPredictedSeasonPoints": 29.072316,
+      "modelRank": 319,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "509",
-      "modelPositionRank": 127,
-      "modelPredictedSeasonPoints": 21.926809,
-      "modelRank": 348,
+      "modelPositionRank": 128,
+      "modelPredictedSeasonPoints": 19.618834,
+      "modelRank": 349,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "510",
-      "modelPositionRank": 129,
-      "modelPredictedSeasonPoints": 21.695461,
-      "modelRank": 350,
+      "modelPositionRank": 130,
+      "modelPredictedSeasonPoints": 19.387486,
+      "modelRank": 352,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "511",
-      "modelPositionRank": 146,
-      "modelPredictedSeasonPoints": 20.490521,
-      "modelRank": 368,
+      "modelPositionRank": 131,
+      "modelPredictedSeasonPoints": 18.73225,
+      "modelRank": 355,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "512",
       "modelPositionRank": 61,
-      "modelPredictedSeasonPoints": 66.544887,
-      "modelRank": 163,
+      "modelPredictedSeasonPoints": 66.590017,
+      "modelRank": 162,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "513",
       "modelPositionRank": 82,
-      "modelPredictedSeasonPoints": 59.046067,
-      "modelRank": 201,
+      "modelPredictedSeasonPoints": 59.086842,
+      "modelRank": 199,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "514",
       "modelPositionRank": 72,
-      "modelPredictedSeasonPoints": 62.429458,
-      "modelRank": 181,
+      "modelPredictedSeasonPoints": 62.479673,
+      "modelRank": 180,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "515",
-      "modelPositionRank": 173,
-      "modelPredictedSeasonPoints": 16.114676,
-      "modelRank": 411,
+      "modelPositionRank": 172,
+      "modelPredictedSeasonPoints": 16.299766,
+      "modelRank": 392,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "516",
       "modelPositionRank": 92,
-      "modelPredictedSeasonPoints": 55.845647,
-      "modelRank": 216,
+      "modelPredictedSeasonPoints": 55.884095,
+      "modelRank": 215,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "517",
       "modelPositionRank": 116,
-      "modelPredictedSeasonPoints": 46.917147,
-      "modelRank": 253,
+      "modelPredictedSeasonPoints": 46.980145,
+      "modelRank": 252,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "518",
       "modelPositionRank": 107,
-      "modelPredictedSeasonPoints": 49.632766,
-      "modelRank": 238,
+      "modelPredictedSeasonPoints": 49.681506,
+      "modelRank": 239,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "519",
       "modelPositionRank": 117,
-      "modelPredictedSeasonPoints": 46.897504,
+      "modelPredictedSeasonPoints": 46.952362,
       "modelRank": 254,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -4171,103 +4171,103 @@
     {
       "draftPlayerId": "520",
       "modelPositionRank": 123,
-      "modelPredictedSeasonPoints": 45.021055,
-      "modelRank": 265,
+      "modelPredictedSeasonPoints": 45.084816,
+      "modelRank": 263,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "521",
       "modelPositionRank": 192,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 431,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 412,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "522",
       "modelPositionRank": 112,
-      "modelPredictedSeasonPoints": 48.483738,
-      "modelRank": 247,
+      "modelPredictedSeasonPoints": 48.530372,
+      "modelRank": 246,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "523",
       "modelPositionRank": 195,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 434,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 415,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "524",
-      "modelPositionRank": 206,
-      "modelPredictedSeasonPoints": 15.042346,
-      "modelRank": 445,
+      "modelPositionRank": 205,
+      "modelPredictedSeasonPoints": 15.235414,
+      "modelRank": 425,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "525",
       "modelPositionRank": 44,
-      "modelPredictedSeasonPoints": 76.854805,
-      "modelRank": 124,
+      "modelPredictedSeasonPoints": 76.880644,
+      "modelRank": 123,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "526",
       "modelPositionRank": 26,
-      "modelPredictedSeasonPoints": 48.622706,
-      "modelRank": 245,
+      "modelPredictedSeasonPoints": 49.024644,
+      "modelRank": 243,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "527",
       "modelPositionRank": 8,
-      "modelPredictedSeasonPoints": 94.163962,
-      "modelRank": 70,
+      "modelPredictedSeasonPoints": 94.405893,
+      "modelRank": 68,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "528",
       "modelPositionRank": 45,
-      "modelPredictedSeasonPoints": 13.025998,
-      "modelRank": 449,
+      "modelPredictedSeasonPoints": 14.298654,
+      "modelRank": 428,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "529",
       "modelPositionRank": 2,
-      "modelPredictedSeasonPoints": 129.594784,
-      "modelRank": 10,
+      "modelPredictedSeasonPoints": 128.474805,
+      "modelRank": 12,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "530",
-      "modelPositionRank": 40,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 402,
+      "modelPositionRank": 42,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 452,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "531",
-      "modelPositionRank": 23,
-      "modelPredictedSeasonPoints": 26.569518,
-      "modelRank": 327,
+      "modelPositionRank": 22,
+      "modelPredictedSeasonPoints": 20.969622,
+      "modelRank": 340,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "532",
       "modelPositionRank": 23,
-      "modelPredictedSeasonPoints": 102.010307,
+      "modelPredictedSeasonPoints": 101.609036,
       "modelRank": 48,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -4275,7 +4275,7 @@
     {
       "draftPlayerId": "533",
       "modelPositionRank": 28,
-      "modelPredictedSeasonPoints": 97.533534,
+      "modelPredictedSeasonPoints": 97.211673,
       "modelRank": 56,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -4283,7 +4283,7 @@
     {
       "draftPlayerId": "534",
       "modelPositionRank": 26,
-      "modelPredictedSeasonPoints": 99.369512,
+      "modelPredictedSeasonPoints": 99.070576,
       "modelRank": 52,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -4291,7 +4291,7 @@
     {
       "draftPlayerId": "535",
       "modelPositionRank": 17,
-      "modelPredictedSeasonPoints": 109.010571,
+      "modelPredictedSeasonPoints": 108.689999,
       "modelRank": 38,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -4299,40 +4299,40 @@
     {
       "draftPlayerId": "536",
       "modelPositionRank": 72,
-      "modelPredictedSeasonPoints": 62.927609,
-      "modelRank": 178,
+      "modelPredictedSeasonPoints": 62.496774,
+      "modelRank": 179,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "537",
       "modelPositionRank": 149,
-      "modelPredictedSeasonPoints": 18.7517,
-      "modelRank": 373,
+      "modelPredictedSeasonPoints": 16.966286,
+      "modelRank": 385,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "538",
-      "modelPositionRank": 135,
-      "modelPredictedSeasonPoints": 20.559781,
-      "modelRank": 357,
+      "modelPositionRank": 136,
+      "modelPredictedSeasonPoints": 18.246677,
+      "modelRank": 362,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "539",
       "modelPositionRank": 108,
-      "modelPredictedSeasonPoints": 34.427596,
-      "modelRank": 302,
+      "modelPredictedSeasonPoints": 33.402082,
+      "modelRank": 304,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "540",
       "modelPositionRank": 148,
-      "modelPredictedSeasonPoints": 19.056578,
-      "modelRank": 372,
+      "modelPredictedSeasonPoints": 17.246323,
+      "modelRank": 382,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -4347,15 +4347,15 @@
     {
       "draftPlayerId": "542",
       "modelPositionRank": 35,
-      "modelPredictedSeasonPoints": 84.741007,
-      "modelRank": 104,
+      "modelPredictedSeasonPoints": 84.767511,
+      "modelRank": 101,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "543",
       "modelPositionRank": 102,
-      "modelPredictedSeasonPoints": 50.483302,
+      "modelPredictedSeasonPoints": 50.531648,
       "modelRank": 232,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -4363,15 +4363,15 @@
     {
       "draftPlayerId": "544",
       "modelPositionRank": 52,
-      "modelPredictedSeasonPoints": 70.86549,
-      "modelRank": 147,
+      "modelPredictedSeasonPoints": 70.892224,
+      "modelRank": 145,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "545",
       "modelPositionRank": 63,
-      "modelPredictedSeasonPoints": 66.126211,
+      "modelPredictedSeasonPoints": 66.153024,
       "modelRank": 166,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -4379,7 +4379,7 @@
     {
       "draftPlayerId": "546",
       "modelPositionRank": 139,
-      "modelPredictedSeasonPoints": 35.286305,
+      "modelPredictedSeasonPoints": 35.367819,
       "modelRank": 298,
       "modelSignalAvailable": true,
       "unavailableReason": null
@@ -4387,56 +4387,56 @@
     {
       "draftPlayerId": "547",
       "modelPositionRank": 163,
-      "modelPredictedSeasonPoints": 17.354229,
-      "modelRank": 382,
+      "modelPredictedSeasonPoints": 17.459745,
+      "modelRank": 378,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "548",
       "modelPositionRank": 132,
-      "modelPredictedSeasonPoints": 39.9773,
-      "modelRank": 285,
+      "modelPredictedSeasonPoints": 40.051458,
+      "modelRank": 283,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "549",
       "modelPositionRank": 95,
-      "modelPredictedSeasonPoints": 53.964823,
-      "modelRank": 224,
+      "modelPredictedSeasonPoints": 54.009547,
+      "modelRank": 222,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "550",
       "modelPositionRank": 170,
-      "modelPredictedSeasonPoints": 16.152591,
-      "modelRank": 408,
+      "modelPredictedSeasonPoints": 16.336163,
+      "modelRank": 390,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "551",
       "modelPositionRank": 153,
-      "modelPredictedSeasonPoints": 23.588035,
-      "modelRank": 336,
+      "modelPredictedSeasonPoints": 23.693303,
+      "modelRank": 332,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "552",
       "modelPositionRank": 16,
-      "modelPredictedSeasonPoints": 74.757412,
-      "modelRank": 132,
+      "modelPredictedSeasonPoints": 75.002814,
+      "modelRank": 129,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "553",
       "modelPositionRank": 21,
-      "modelPredictedSeasonPoints": 60.173836,
-      "modelRank": 191,
+      "modelPredictedSeasonPoints": 60.537794,
+      "modelRank": 190,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -4466,33 +4466,33 @@
     },
     {
       "draftPlayerId": "557",
-      "modelPositionRank": 42,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 404,
+      "modelPositionRank": 44,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 454,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "558",
-      "modelPositionRank": 131,
-      "modelPredictedSeasonPoints": 20.559781,
-      "modelRank": 353,
+      "modelPositionRank": 132,
+      "modelPredictedSeasonPoints": 18.246677,
+      "modelRank": 358,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "559",
-      "modelPositionRank": 37,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 399,
+      "modelPositionRank": 39,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 449,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
     {
       "draftPlayerId": "560",
-      "modelPositionRank": 132,
-      "modelPredictedSeasonPoints": 20.559781,
-      "modelRank": 354,
+      "modelPositionRank": 133,
+      "modelPredictedSeasonPoints": 18.246677,
+      "modelRank": 359,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -4522,9 +4522,9 @@
     },
     {
       "draftPlayerId": "564",
-      "modelPositionRank": 28,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 390,
+      "modelPositionRank": 30,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 440,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -4587,8 +4587,8 @@
     {
       "draftPlayerId": "572",
       "modelPositionRank": 113,
-      "modelPredictedSeasonPoints": 47.893847,
-      "modelRank": 248,
+      "modelPredictedSeasonPoints": 47.928978,
+      "modelRank": 247,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -4635,8 +4635,8 @@
     {
       "draftPlayerId": "578",
       "modelPositionRank": 196,
-      "modelPredictedSeasonPoints": 15.400517,
-      "modelRank": 435,
+      "modelPredictedSeasonPoints": 15.599591,
+      "modelRank": 416,
       "modelSignalAvailable": true,
       "unavailableReason": null
     },
@@ -4730,9 +4730,9 @@
     },
     {
       "draftPlayerId": "590",
-      "modelPositionRank": 27,
-      "modelPredictedSeasonPoints": 16.237152,
-      "modelRank": 389,
+      "modelPositionRank": 29,
+      "modelPredictedSeasonPoints": 7.277319,
+      "modelRank": 439,
       "modelSignalAvailable": true,
       "unavailableReason": null
     }
