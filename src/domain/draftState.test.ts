@@ -4,8 +4,10 @@ import { createDraftConfiguration, type Manager } from './manager.ts'
 import type { Player, Position } from './player.ts'
 import { generateSnakeDraftSchedule } from './draftSchedule.ts'
 import {
+  canAddRosterPosition,
   deriveDraftState,
   DraftPickError,
+  getRosterPositionNeeds,
   recordDraftPick,
   undoLastDraftPick,
   type DraftPick,
@@ -76,6 +78,85 @@ describe('authoritative sequential draft state', () => {
     let history: readonly DraftPick[] = []
     for (const item of players.slice(0, 4)) history = recordDraftPick(slots, history, players, item.id)
     expect(() => recordDraftPick(slots, history, players, '5')).toThrowError(/already filled GK/)
+  })
+
+  it('derives remaining roster needs without mutating the supplied counts', () => {
+    const counts = Object.freeze({ GK: 1, DEF: 4, MID: 5, FWD: 3 })
+
+    expect(getRosterPositionNeeds(counts)).toEqual({ GK: 1, DEF: 1, MID: 0, FWD: 0 })
+    expect(canAddRosterPosition(counts, 'GK')).toBe(true)
+    expect(canAddRosterPosition(counts, 'DEF')).toBe(true)
+    expect(canAddRosterPosition(counts, 'MID')).toBe(false)
+    expect(canAddRosterPosition(counts, 'FWD')).toBe(false)
+    expect(counts).toEqual({ GK: 1, DEF: 4, MID: 5, FWD: 3 })
+  })
+
+  it('continues the real six-manager endgame from pick 82 through pick 90', () => {
+    const slots = schedule()
+    const positionByRosterIndex: Position[] = [
+      'GK',
+      'DEF', 'DEF', 'DEF', 'DEF',
+      'MID', 'MID', 'MID', 'MID', 'MID',
+      'FWD', 'FWD', 'FWD',
+      'DEF',
+      'GK',
+    ]
+    const rosterIndexes = new Map<string, number>()
+    const scheduledPlayers = slots.map((slot, index) => {
+      const rosterIndex = rosterIndexes.get(slot.managerId) ?? 0
+      rosterIndexes.set(slot.managerId, rosterIndex + 1)
+      return player(`scheduled-${index + 1}`, positionByRosterIndex[rosterIndex])
+    })
+    const illegalMidfielder = player('illegal-midfielder', 'MID')
+    const players = [...scheduledPlayers, illegalMidfielder]
+    let history: readonly DraftPick[] = []
+
+    for (const scheduledPlayer of scheduledPlayers.slice(0, 81)) {
+      history = recordDraftPick(slots, history, players, scheduledPlayer.id)
+    }
+
+    const pick82State = deriveDraftState(slots, history, players)
+    expect(pick82State.completedPickCount).toBe(81)
+    expect(pick82State.currentSlot).toMatchObject({
+      overallPickNumber: 82,
+      managerId: 'manager-3',
+    })
+    expect(pick82State.rosters['manager-3'].positionCounts).toEqual({
+      GK: 1,
+      DEF: 4,
+      MID: 5,
+      FWD: 3,
+    })
+    expect(() => recordDraftPick(slots, history, players, illegalMidfielder.id)).toThrowError(
+      /already filled MID/,
+    )
+
+    const expectedNextManagers = [
+      'manager-2',
+      'manager-1',
+      'manager-1',
+      'manager-2',
+      'manager-3',
+      'manager-4',
+      'manager-5',
+      'manager-6',
+    ]
+    for (let pickNumber = 82; pickNumber <= 89; pickNumber += 1) {
+      history = recordDraftPick(
+        slots,
+        history,
+        players,
+        scheduledPlayers[pickNumber - 1].id,
+      )
+      expect(deriveDraftState(slots, history, players).currentSlot).toMatchObject({
+        overallPickNumber: pickNumber + 1,
+        managerId: expectedNextManagers[pickNumber - 82],
+      })
+    }
+
+    history = recordDraftPick(slots, history, players, scheduledPlayers[89].id)
+    expect(deriveDraftState(slots, history, players).currentSlot).toBeNull()
+    expect(history).toHaveLength(90)
   })
 
   it('derives rosters and availability and undo restores player and picker', () => {

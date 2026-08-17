@@ -49,6 +49,22 @@ function emptyCounts(): Record<Position, number> {
   return { GK: 0, DEF: 0, MID: 0, FWD: 0 }
 }
 
+export function getRosterPositionNeeds(positionCounts: PositionCounts): PositionCounts {
+  return Object.freeze({
+    GK: Math.max(0, ROSTER_REQUIREMENTS.GK - positionCounts.GK),
+    DEF: Math.max(0, ROSTER_REQUIREMENTS.DEF - positionCounts.DEF),
+    MID: Math.max(0, ROSTER_REQUIREMENTS.MID - positionCounts.MID),
+    FWD: Math.max(0, ROSTER_REQUIREMENTS.FWD - positionCounts.FWD),
+  })
+}
+
+export function canAddRosterPosition(
+  positionCounts: PositionCounts,
+  position: Position,
+): boolean {
+  return getRosterPositionNeeds(positionCounts)[position] > 0
+}
+
 export function validatePickHistory(
   schedule: readonly DraftSlot[],
   history: readonly DraftPick[],
