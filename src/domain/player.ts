@@ -1,13 +1,23 @@
 /** Opaque internal identifier. External adapters decide how upstream IDs map to it. */
 export type PlayerId = string
+export type ClubId = string
 
 export type Position = 'GK' | 'DEF' | 'MID' | 'FWD'
+
+export interface Club {
+  id: ClubId
+  name: string
+  shortName: string
+}
 
 /** Normalized player data that application code may safely depend on. */
 export interface Player {
   id: PlayerId
   displayName: string
   position: Position
+  club: Club
+  /** Upstream Draft ordinal; null when the upstream value is absent. */
+  officialDraftRank: number | null
 }
 
 const positionLabels: Readonly<Record<Position, string>> = {
