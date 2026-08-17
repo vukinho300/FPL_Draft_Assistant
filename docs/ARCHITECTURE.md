@@ -6,7 +6,7 @@ FPL Draft Assistant is a personal companion application for an official Fantasy 
 
 ## Scope
 
-The product scope is a draft-night companion: manager setup, a local draft board, available-player discovery, pick tracking, history, undo, and backup are planned. The current implementation establishes the player-data boundary but does not implement those draft-night features.
+The product scope is a draft-night companion: manager setup, a local draft board, available-player discovery, pick tracking, history, undo, and backup are planned. The current implementation establishes the player-data boundary and deterministic candidate-board domain, but it does not implement live draft state or player selection.
 
 ## Initial stack
 
@@ -29,6 +29,8 @@ React UI
 ```
 
 External response structures stop at the adapter boundary. Components consume stable project-owned models, while important calculations remain pure and testable independently of React. `src/services/fpl` validates the small upstream surface it needs and maps it into the `src/domain` Player model.
+
+`src/domain/league.ts` owns the official roster contract, supported league-size validation, and per-position demand/target arithmetic. `src/domain/draftBoard.ts` consumes only `Player[]` to derive deterministic rank context and candidate-board entries. Neither module imports raw FPL response types or React.
 
 Planned source areas are:
 
@@ -72,6 +74,22 @@ The endpoint is an undocumented or insufficiently documented implementation deta
 The Player model adopts the upstream numeric `id` as a project-owned string ID, `web_name` as the display label, the referenced team name and short name as a Club, the explicitly mapped position, and `draft_rank` as a nullable official ordinal. The upstream response does not formally define the semantics of `draft_rank`; it must not be described as projected points or a project recommendation.
 
 The response also exposed `status` codes and numerous statistics, but their precise current semantics were not established by the response itself. They are intentionally omitted. Full field evidence and failure categories are documented in [FPL_DATA_CONTRACT.md](FPL_DATA_CONTRACT.md).
+
+## Draft-board domain
+
+The domain accepts leagues from 2 through 16 managers. Official per-manager roster requirements are 2 GK, 5 DEF, 5 MID, and 3 FWD. League demand multiplies those values by manager count.
+
+Candidate targets apply the project-owned `DEFAULT_RESERVE_BUFFER` of 0.35 independently to every position and round each result upward. Per-position calculation prevents an overall buffer from producing too few candidates at one position.
+
+Players are ordered by:
+
+1. valid `officialDraftRank` ascending;
+2. display name ascending using deterministic string comparison;
+3. player ID ascending using deterministic string comparison.
+
+Null-ranked players follow every ranked player and retain `null`; no artificial official rank is created. `positionRank`, positional demand, candidate target, and core-demand membership are project-derived context. They are not official fields, projections, VOR, or availability assessments.
+
+The board validates that each position has enough input players to meet its candidate target. If not, it throws a typed error containing the position, target, and available count instead of returning a silently incomplete pool. See [DRAFT_BOARD_LOGIC.md](DRAFT_BOARD_LOGIC.md) for formulas and examples.
 
 ## Non-goals for v1
 
