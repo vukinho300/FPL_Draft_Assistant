@@ -1,0 +1,678 @@
+{
+  "data_quality_status": "PASS WITH EXCLUSIONS",
+  "duplicate_sample_count": 0,
+  "failures": [],
+  "feature_manifest_summary": {
+    "manifest_count": 4,
+    "manifests_sha256": "08ddaa91490ada106140fefd217806c7925b9cc72c1f7045f8fdc8bc2150e386",
+    "path": "model_sanity_feature_manifests.json"
+  },
+  "forbidden_feature_violations": 0,
+  "gameweek_integer_violations_in_historical_rows": 0,
+  "generated_at": "2026-08-17T19:05:26.234376+00:00",
+  "holdout_discipline": {
+    "baseline_commit": "bf5bc2c278b4138caade3251528bd10216ee9b5d",
+    "committed_development_hash": "c17d9d9c528beca782bbdb43ef5aa9a281751f28845e9c4ce3274e998708257f",
+    "config_sha256": "f3357fe2f7762efebe0dbf84dce6eb101def5404375f666042bd20c2b615a5dd",
+    "development_hash_verified_against_baseline_commit": true,
+    "development_results_sha256": "c17d9d9c528beca782bbdb43ef5aa9a281751f28845e9c4ce3274e998708257f",
+    "first_holdout_evaluated_at": "2026-08-17T19:05:09.965805+00:00",
+    "frozen_status": "SELECTED BEFORE HOLDOUT",
+    "interpretation": "2025/26 has already been exposed; no Phase 5B choice uses it as an unseen model-selection set",
+    "locked_holdout_season": "2025-26",
+    "selected_at": "2026-08-17T15:35:30.731969+00:00",
+    "selected_before_holdout": true,
+    "status": "PASS"
+  },
+  "holdout_freeze_verified": true,
+  "leakage_status": "PASS",
+  "metric_grouping": {
+    "draft_day": [
+      "season"
+    ],
+    "inseason": [
+      "season",
+      "cutoff_gw"
+    ],
+    "ndcg_cutoff": 25,
+    "six_manager_position_demand": {
+      "DEF": 30,
+      "FWD": 18,
+      "GK": 12,
+      "MID": 30
+    }
+  },
+  "model_sanity_status": "PASS",
+  "random_seed": 20250817,
+  "real_target_metrics": {
+    "draft_day": {
+      "mae": 31.073423,
+      "ndcg_at_10": 0.864703,
+      "ndcg_at_25": 0.806685,
+      "ndcg_at_50": 0.76376,
+      "precision_at_10": 0.4,
+      "precision_at_25": 0.36,
+      "precision_at_50": 0.4,
+      "recall_at_10": 0.4,
+      "recall_at_25": 0.36,
+      "recall_at_50": 0.4,
+      "rmse": 41.463734,
+      "spearman": 0.587206
+    },
+    "inseason_h5": {
+      "mae": 3.714639,
+      "ndcg_at_10": 0.631836,
+      "ndcg_at_25": 0.637089,
+      "ndcg_at_50": 0.661355,
+      "precision_at_10": 0.213793,
+      "precision_at_25": 0.289655,
+      "precision_at_50": 0.371034,
+      "recall_at_10": 0.213793,
+      "recall_at_25": 0.289655,
+      "recall_at_50": 0.371034,
+      "rmse": 5.903702,
+      "spearman": 0.755674
+    }
+  },
+  "schema_version": 1,
+  "selected_models": {
+    "draft_day": {
+      "feature_groups": [
+        "FPL_BASE",
+        "FPL_EXPECTED",
+        "FPL_ICT",
+        "TEAM_CONTEXT",
+        "BOOKMAKER"
+      ],
+      "model": "ridge",
+      "position_handling": "position_specific"
+    },
+    "inseason_h1": {
+      "feature_groups": [
+        "FPL_BASE",
+        "FPL_EXPECTED",
+        "FPL_ICT",
+        "FORM"
+      ],
+      "model": "ridge",
+      "position_handling": "position_specific"
+    },
+    "inseason_h3": {
+      "feature_groups": [
+        "FPL_BASE",
+        "FPL_EXPECTED",
+        "FPL_ICT",
+        "FORM"
+      ],
+      "model": "ridge",
+      "position_handling": "position_specific"
+    },
+    "inseason_h5": {
+      "feature_groups": [
+        "FPL_BASE",
+        "FPL_EXPECTED",
+        "FPL_ICT",
+        "FORM"
+      ],
+      "model": "ridge",
+      "position_handling": "position_specific"
+    }
+  },
+  "selected_negative_control_tasks": [
+    "draft_day",
+    "inseason_h5"
+  ],
+  "shuffled_target_metrics": {
+    "draft_day": {
+      "mae": 43.873538,
+      "ndcg_at_10": 0.214603,
+      "ndcg_at_25": 0.213094,
+      "ndcg_at_50": 0.242746,
+      "precision_at_10": 0.0,
+      "precision_at_25": 0.08,
+      "precision_at_50": 0.14,
+      "recall_at_10": 0.0,
+      "recall_at_25": 0.08,
+      "recall_at_50": 0.14,
+      "rmse": 55.554009,
+      "spearman": -0.182284
+    },
+    "inseason_h5": {
+      "mae": 6.284462,
+      "ndcg_at_10": 0.461907,
+      "ndcg_at_25": 0.430817,
+      "ndcg_at_50": 0.40371,
+      "precision_at_10": 0.093103,
+      "precision_at_25": 0.143448,
+      "precision_at_50": 0.151034,
+      "recall_at_10": 0.093103,
+      "recall_at_25": 0.143448,
+      "recall_at_50": 0.151034,
+      "rmse": 8.197077,
+      "spearman": -0.013431
+    }
+  },
+  "suspicious_performance_flags": [],
+  "tasks": [
+    {
+      "baselines": [
+        {
+          "mae": 30.87013,
+          "name": "previous_season_total",
+          "ndcg_at_10": 0.721004,
+          "ndcg_at_25": 0.705012,
+          "ndcg_at_50": 0.745437,
+          "precision_at_10": 0.5,
+          "precision_at_25": 0.36,
+          "precision_at_50": 0.44,
+          "recall_at_10": 0.5,
+          "recall_at_25": 0.36,
+          "recall_at_50": 0.44,
+          "rmse": 44.022648,
+          "spearman": 0.553573
+        },
+        {
+          "mae": 30.461926,
+          "name": "previous_season_pp90_minutes",
+          "ndcg_at_10": 0.745854,
+          "ndcg_at_25": 0.713113,
+          "ndcg_at_50": 0.742298,
+          "precision_at_10": 0.5,
+          "precision_at_25": 0.36,
+          "precision_at_50": 0.42,
+          "recall_at_10": 0.5,
+          "recall_at_25": 0.36,
+          "recall_at_50": 0.42,
+          "rmse": 43.601565,
+          "spearman": 0.557124
+        },
+        {
+          "mae": 47.204245,
+          "name": "previous_position_rank",
+          "ndcg_at_10": 0.607411,
+          "ndcg_at_25": 0.682305,
+          "ndcg_at_50": 0.707627,
+          "precision_at_10": 0.3,
+          "precision_at_25": 0.32,
+          "precision_at_50": 0.42,
+          "recall_at_10": 0.3,
+          "recall_at_25": 0.32,
+          "recall_at_50": 0.42,
+          "rmse": 69.266656,
+          "spearman": 0.528495
+        }
+      ],
+      "feature_groups": [
+        "FPL_BASE",
+        "FPL_EXPECTED",
+        "FPL_ICT",
+        "TEAM_CONTEXT",
+        "BOOKMAKER"
+      ],
+      "horizon": 38,
+      "model": "ridge",
+      "position_handling": "position_specific",
+      "position_stability": [
+        {
+          "mae": 27.70408,
+          "ndcg_at_10": 0.758184,
+          "ndcg_at_25": 0.747077,
+          "ndcg_at_50": 0.736429,
+          "position": "DEF",
+          "precision_at_10": 0.4,
+          "precision_at_25": 0.4,
+          "precision_at_50": 0.6,
+          "recall_at_10": 0.4,
+          "recall_at_25": 0.4,
+          "recall_at_50": 0.6,
+          "rmse": 35.354458,
+          "sample_count": 203,
+          "spearman": 0.543842
+        },
+        {
+          "mae": 40.94723,
+          "ndcg_at_10": 0.746507,
+          "ndcg_at_25": 0.729539,
+          "ndcg_at_50": 0.816825,
+          "position": "FWD",
+          "precision_at_10": 0.5,
+          "precision_at_25": 0.6,
+          "precision_at_50": 0.82,
+          "recall_at_10": 0.5,
+          "recall_at_25": 0.6,
+          "recall_at_50": 0.82,
+          "rmse": 53.212976,
+          "sample_count": 71,
+          "spearman": 0.542706
+        },
+        {
+          "mae": 27.980009,
+          "ndcg_at_10": 0.74045,
+          "ndcg_at_25": 0.743288,
+          "ndcg_at_50": 0.849896,
+          "position": "GK",
+          "precision_at_10": 0.5,
+          "precision_at_25": 0.6,
+          "precision_at_50": 0.8,
+          "recall_at_10": 0.5,
+          "recall_at_25": 0.6,
+          "recall_at_50": 0.8,
+          "rmse": 43.244687,
+          "sample_count": 66,
+          "spearman": 0.482535
+        },
+        {
+          "mae": 31.751326,
+          "ndcg_at_10": 0.883113,
+          "ndcg_at_25": 0.786305,
+          "ndcg_at_50": 0.79041,
+          "position": "MID",
+          "precision_at_10": 0.5,
+          "precision_at_25": 0.36,
+          "precision_at_50": 0.56,
+          "recall_at_10": 0.5,
+          "recall_at_25": 0.36,
+          "recall_at_50": 0.56,
+          "rmse": 41.739504,
+          "sample_count": 276,
+          "spearman": 0.641174
+        }
+      ],
+      "random_feature_metrics": {
+        "mae": 31.106583,
+        "ndcg_at_10": 0.864703,
+        "ndcg_at_25": 0.806598,
+        "ndcg_at_50": 0.752234,
+        "precision_at_10": 0.4,
+        "precision_at_25": 0.36,
+        "precision_at_50": 0.38,
+        "recall_at_10": 0.4,
+        "recall_at_25": 0.36,
+        "recall_at_50": 0.38,
+        "rmse": 41.472932,
+        "spearman": 0.588246
+      },
+      "random_feature_ndcg_at_25_delta": -8.6e-05,
+      "real_metrics": {
+        "mae": 31.073423,
+        "ndcg_at_10": 0.864703,
+        "ndcg_at_25": 0.806685,
+        "ndcg_at_50": 0.76376,
+        "precision_at_10": 0.4,
+        "precision_at_25": 0.36,
+        "precision_at_50": 0.4,
+        "recall_at_10": 0.4,
+        "recall_at_25": 0.36,
+        "recall_at_50": 0.4,
+        "rmse": 41.463734,
+        "spearman": 0.587206
+      },
+      "season_stability": [
+        {
+          "mae": 31.847531,
+          "ndcg_at_10": 0.666398,
+          "ndcg_at_25": 0.720167,
+          "ndcg_at_50": 0.696319,
+          "precision_at_10": 0.4,
+          "precision_at_25": 0.44,
+          "precision_at_50": 0.44,
+          "recall_at_10": 0.4,
+          "recall_at_25": 0.44,
+          "recall_at_50": 0.44,
+          "rmse": 40.982448,
+          "spearman": 0.514713,
+          "test_season": "2023-24"
+        },
+        {
+          "mae": 31.073423,
+          "ndcg_at_10": 0.864703,
+          "ndcg_at_25": 0.806685,
+          "ndcg_at_50": 0.76376,
+          "precision_at_10": 0.4,
+          "precision_at_25": 0.36,
+          "precision_at_50": 0.4,
+          "recall_at_10": 0.4,
+          "recall_at_25": 0.36,
+          "recall_at_50": 0.4,
+          "rmse": 41.463734,
+          "spearman": 0.587206,
+          "test_season": "2024-25"
+        }
+      ],
+      "season_stability_classification": "MIXED",
+      "shuffled_target_metrics": {
+        "mae": 43.873538,
+        "ndcg_at_10": 0.214603,
+        "ndcg_at_25": 0.213094,
+        "ndcg_at_50": 0.242746,
+        "precision_at_10": 0.0,
+        "precision_at_25": 0.08,
+        "precision_at_50": 0.14,
+        "recall_at_10": 0.0,
+        "recall_at_25": 0.08,
+        "recall_at_50": 0.14,
+        "rmse": 55.554009,
+        "spearman": -0.182284
+      },
+      "six_manager_position_metrics": [
+        {
+          "draft_pool_size": 12,
+          "eligible_players": 66,
+          "ndcg": 0.758998,
+          "position": "GK",
+          "precision": 0.5,
+          "recall": 0.5,
+          "spearman": 0.482535
+        },
+        {
+          "draft_pool_size": 30,
+          "eligible_players": 203,
+          "ndcg": 0.748178,
+          "position": "DEF",
+          "precision": 0.433333,
+          "recall": 0.433333,
+          "spearman": 0.543842
+        },
+        {
+          "draft_pool_size": 30,
+          "eligible_players": 276,
+          "ndcg": 0.782723,
+          "position": "MID",
+          "precision": 0.433333,
+          "recall": 0.433333,
+          "spearman": 0.641174
+        },
+        {
+          "draft_pool_size": 18,
+          "eligible_players": 71,
+          "ndcg": 0.767096,
+          "position": "FWD",
+          "precision": 0.611111,
+          "recall": 0.611111,
+          "spearman": 0.542706
+        }
+      ],
+      "split_audit": {
+        "chronological": true,
+        "overlap_count": 0,
+        "status": "PASS",
+        "task": "draft_day",
+        "test_rows": 616,
+        "test_unique_sample_keys": 616,
+        "training_rows": 1785,
+        "training_unique_sample_keys": 1785
+      },
+      "task": "draft_day",
+      "task_key": "draft_day",
+      "temporal_contract": {
+        "feature_after_cutoff": 0,
+        "rows": 2401,
+        "status": "PASS",
+        "target_at_or_before_cutoff": 0,
+        "target_end_before_start": 0
+      },
+      "test_season": "2024-25",
+      "training_metrics": {
+        "mae": 29.765312,
+        "ndcg_at_10": 0.839697,
+        "ndcg_at_25": 0.792142,
+        "ndcg_at_50": 0.797635,
+        "precision_at_10": 0.433333,
+        "precision_at_25": 0.453333,
+        "precision_at_50": 0.493333,
+        "recall_at_10": 0.433333,
+        "recall_at_25": 0.453333,
+        "recall_at_50": 0.493333,
+        "rmse": 38.297722,
+        "spearman": 0.601103
+      },
+      "training_minus_development_ndcg_at_25": -0.014542,
+      "training_seasons": [
+        "2021-22",
+        "2022-23",
+        "2023-24"
+      ],
+      "unique_samples": {
+        "rows": 2401,
+        "status": "PASS",
+        "unique_sample_keys": 2401
+      }
+    },
+    {
+      "baselines": [
+        {
+          "mae": 4.172606,
+          "name": "recent_points_average",
+          "ndcg_at_10": 0.521385,
+          "ndcg_at_25": 0.551653,
+          "ndcg_at_50": 0.583756,
+          "precision_at_10": 0.148276,
+          "precision_at_25": 0.216552,
+          "precision_at_50": 0.295862,
+          "recall_at_10": 0.148276,
+          "recall_at_25": 0.216552,
+          "recall_at_50": 0.295862,
+          "rmse": 7.629479,
+          "spearman": 0.764754
+        },
+        {
+          "mae": 3.478135,
+          "name": "minutes_adjusted_points_rate",
+          "ndcg_at_10": 0.641069,
+          "ndcg_at_25": 0.638171,
+          "ndcg_at_50": 0.662194,
+          "precision_at_10": 0.258621,
+          "precision_at_25": 0.277241,
+          "precision_at_50": 0.366897,
+          "recall_at_10": 0.258621,
+          "recall_at_25": 0.277241,
+          "recall_at_50": 0.366897,
+          "rmse": 6.061871,
+          "spearman": 0.794951
+        }
+      ],
+      "feature_groups": [
+        "FPL_BASE",
+        "FPL_EXPECTED",
+        "FPL_ICT",
+        "FORM"
+      ],
+      "horizon": 5,
+      "model": "ridge",
+      "position_handling": "position_specific",
+      "position_stability": [
+        {
+          "mae": 3.536333,
+          "ndcg_at_10": 0.541649,
+          "ndcg_at_25": 0.611249,
+          "ndcg_at_50": 0.681789,
+          "position": "DEF",
+          "precision_at_10": 0.231034,
+          "precision_at_25": 0.402759,
+          "precision_at_50": 0.60069,
+          "recall_at_10": 0.231034,
+          "recall_at_25": 0.402759,
+          "recall_at_50": 0.60069,
+          "rmse": 5.575737,
+          "sample_count": 6982,
+          "spearman": 0.698202
+        },
+        {
+          "mae": 4.612749,
+          "ndcg_at_10": 0.676182,
+          "ndcg_at_25": 0.776746,
+          "ndcg_at_50": 0.844794,
+          "position": "FWD",
+          "precision_at_10": 0.444828,
+          "precision_at_25": 0.766897,
+          "precision_at_50": 0.875172,
+          "recall_at_10": 0.444828,
+          "recall_at_25": 0.766897,
+          "recall_at_50": 0.875172,
+          "rmse": 7.07844,
+          "sample_count": 2292,
+          "spearman": 0.801706
+        },
+        {
+          "mae": 2.902232,
+          "ndcg_at_10": 0.673644,
+          "ndcg_at_25": 0.789119,
+          "ndcg_at_50": 0.819936,
+          "position": "GK",
+          "precision_at_10": 0.493103,
+          "precision_at_25": 0.804138,
+          "precision_at_50": 0.897931,
+          "recall_at_10": 0.493103,
+          "recall_at_25": 0.804138,
+          "recall_at_50": 0.897931,
+          "rmse": 5.428118,
+          "sample_count": 2188,
+          "spearman": 0.70216
+        },
+        {
+          "mae": 3.817632,
+          "ndcg_at_10": 0.666916,
+          "ndcg_at_25": 0.696578,
+          "ndcg_at_50": 0.735729,
+          "position": "MID",
+          "precision_at_10": 0.348276,
+          "precision_at_25": 0.434483,
+          "precision_at_50": 0.547586,
+          "recall_at_10": 0.348276,
+          "recall_at_25": 0.434483,
+          "recall_at_50": 0.547586,
+          "rmse": 5.931897,
+          "sample_count": 9360,
+          "spearman": 0.815488
+        }
+      ],
+      "random_feature_metrics": {
+        "mae": 3.714615,
+        "ndcg_at_10": 0.631813,
+        "ndcg_at_25": 0.637076,
+        "ndcg_at_50": 0.661845,
+        "precision_at_10": 0.213793,
+        "precision_at_25": 0.289655,
+        "precision_at_50": 0.371724,
+        "recall_at_10": 0.213793,
+        "recall_at_25": 0.289655,
+        "recall_at_50": 0.371724,
+        "rmse": 5.903842,
+        "spearman": 0.754325
+      },
+      "random_feature_ndcg_at_25_delta": -1.3e-05,
+      "real_metrics": {
+        "mae": 3.714639,
+        "ndcg_at_10": 0.631836,
+        "ndcg_at_25": 0.637089,
+        "ndcg_at_50": 0.661355,
+        "precision_at_10": 0.213793,
+        "precision_at_25": 0.289655,
+        "precision_at_50": 0.371034,
+        "recall_at_10": 0.213793,
+        "recall_at_25": 0.289655,
+        "recall_at_50": 0.371034,
+        "rmse": 5.903702,
+        "spearman": 0.755674
+      },
+      "season_stability": [
+        {
+          "mae": 3.780884,
+          "ndcg_at_10": 0.603813,
+          "ndcg_at_25": 0.62542,
+          "ndcg_at_50": 0.644514,
+          "precision_at_10": 0.227586,
+          "precision_at_25": 0.306207,
+          "precision_at_50": 0.367586,
+          "recall_at_10": 0.227586,
+          "recall_at_25": 0.306207,
+          "recall_at_50": 0.367586,
+          "rmse": 5.917884,
+          "spearman": 0.749918,
+          "test_season": "2023-24"
+        },
+        {
+          "mae": 3.714639,
+          "ndcg_at_10": 0.631836,
+          "ndcg_at_25": 0.637089,
+          "ndcg_at_50": 0.661355,
+          "precision_at_10": 0.213793,
+          "precision_at_25": 0.289655,
+          "precision_at_50": 0.371034,
+          "recall_at_10": 0.213793,
+          "recall_at_25": 0.289655,
+          "recall_at_50": 0.371034,
+          "rmse": 5.903702,
+          "spearman": 0.755674,
+          "test_season": "2024-25"
+        }
+      ],
+      "season_stability_classification": "CONSISTENT",
+      "shuffled_target_metrics": {
+        "mae": 6.284462,
+        "ndcg_at_10": 0.461907,
+        "ndcg_at_25": 0.430817,
+        "ndcg_at_50": 0.40371,
+        "precision_at_10": 0.093103,
+        "precision_at_25": 0.143448,
+        "precision_at_50": 0.151034,
+        "recall_at_10": 0.093103,
+        "recall_at_25": 0.143448,
+        "recall_at_50": 0.151034,
+        "rmse": 8.197077,
+        "spearman": -0.013431
+      },
+      "six_manager_position_metrics": [],
+      "split_audit": {
+        "chronological": true,
+        "overlap_count": 0,
+        "status": "PASS",
+        "task": "inseason",
+        "test_rows": 20822,
+        "test_unique_sample_keys": 20822,
+        "training_rows": 80144,
+        "training_unique_sample_keys": 80144
+      },
+      "task": "inseason",
+      "task_key": "inseason_h5",
+      "temporal_contract": {
+        "feature_after_cutoff": 0,
+        "rows": 100966,
+        "status": "PASS",
+        "target_at_or_before_cutoff": 0,
+        "target_end_before_start": 0
+      },
+      "test_season": "2024-25",
+      "training_metrics": {
+        "mae": 3.973547,
+        "ndcg_at_10": 0.606234,
+        "ndcg_at_25": 0.628044,
+        "ndcg_at_50": 0.653965,
+        "precision_at_10": 0.215652,
+        "precision_at_25": 0.283826,
+        "precision_at_50": 0.37113,
+        "recall_at_10": 0.215652,
+        "recall_at_25": 0.283826,
+        "recall_at_50": 0.37113,
+        "rmse": 6.116881,
+        "spearman": 0.764184
+      },
+      "training_minus_development_ndcg_at_25": -0.009044,
+      "training_seasons": [
+        "2020-21",
+        "2021-22",
+        "2022-23",
+        "2023-24"
+      ],
+      "unique_samples": {
+        "rows": 100966,
+        "status": "PASS",
+        "unique_sample_keys": 100966
+      }
+    }
+  ],
+  "temporal_violations": 0,
+  "train_test_overlap_count": 0,
+  "trust_rule_satisfied": true,
+  "warnings": []
+}

@@ -28,3 +28,13 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+# Phase 5 local research environment and acquired/generated artifacts
+research/.venv/
+research/data/raw/
+research/data/processed/
+research/data/cache/
+research/artifacts/
+research/**/__pycache__/
+research/.pytest_cache/
+*.pyc
