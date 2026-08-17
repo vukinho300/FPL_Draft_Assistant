@@ -1,0 +1,46 @@
+/**
+ * Tiny fictional fixture shaped from the schema observed on 2026-08-17.
+ * Names and values are test-only and are not current FPL data.
+ */
+export function createBootstrapFixture(): {
+  elements: Array<Record<string, unknown>>
+  teams: Array<Record<string, unknown>>
+  element_types: Array<Record<string, unknown>>
+} {
+  return {
+    teams: [
+      { id: 10, name: 'Fixture City', short_name: 'FIX' },
+      { id: 20, name: 'Example Athletic', short_name: 'EXA' },
+    ],
+    element_types: [
+      { id: 1, singular_name_short: 'GKP' },
+      { id: 2, singular_name_short: 'DEF' },
+      { id: 3, singular_name_short: 'MID' },
+      { id: 4, singular_name_short: 'FWD' },
+    ],
+    elements: [
+      { id: 104, web_name: 'Fixture Forward', team: 20, element_type: 4 },
+      {
+        id: 102,
+        web_name: 'Fixture Defender',
+        team: 10,
+        element_type: 2,
+        draft_rank: 2,
+      },
+      {
+        id: 101,
+        web_name: 'Fixture Keeper',
+        team: 10,
+        element_type: 1,
+        draft_rank: 1,
+      },
+      {
+        id: 103,
+        web_name: 'Fixture Midfielder',
+        team: 20,
+        element_type: 3,
+        draft_rank: null,
+      },
+    ],
+  }
+}

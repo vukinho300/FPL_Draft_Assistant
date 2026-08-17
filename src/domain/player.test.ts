@@ -8,6 +8,12 @@ describe('normalized player model', () => {
       id: 'fixture-player',
       displayName: 'Test Player',
       position: 'MID',
+      club: {
+        id: 'fixture-club',
+        name: 'Fixture Club',
+        shortName: 'FIX',
+      },
+      officialDraftRank: null,
     }
 
     expect(getPositionLabel(player.position)).toBe('Midfielder')
