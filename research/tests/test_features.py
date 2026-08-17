@@ -154,7 +154,8 @@ def test_historical_repository_parses_gameweek_and_stable_identity(tmp_path):
     pd.DataFrame({"id": [7], "code": [700]}).to_csv(season_root / "players_raw.csv", index=False)
     pd.DataFrame(
         {
-            "element": [7],
+                "element": [7],
+                "fixture": [1],
             "GW": [1],
             "kickoff_time": ["2024-08-17T14:00:00Z"],
             "team": ["Arsenal"],

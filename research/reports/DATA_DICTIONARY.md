@@ -2,6 +2,20 @@
 
 ## Row contracts
 
+### Acquired source grains
+
+| Source dataset | Expected grain | Candidate key |
+| --- | --- | --- |
+| FPL `players_raw.csv` | one registered player-season | `id` (with `code` also unique within season) |
+| FPL `gws/gw1.csv` | one registered player-fixture observation in GW1 | `element`, `fixture` |
+| FPL `gws/merged_gw.csv` | one registered player-fixture observation | `element`, `fixture` |
+| FPL `fixtures.csv` | one league fixture | `id` |
+| FPL `teams.csv` | one team-season | `id` |
+| Football-Data E0 | one league fixture | parsed date, canonical home team, canonical away team |
+| Understat player extract | one external player-match | filename external player ID, match `id` |
+
+`player + GW` is not unique: a Double Gameweek legitimately has two fixture rows. Only repeated `player + fixture` is a logical duplicate. Team aggregate and generic files found in Understat directories do not satisfy player-match grain and are explicitly excluded.
+
 ### Draft-day dataset
 
 One row represents one player present in the target season's archived GW1 player universe. Only identity, position, team and the scheduled first kickoff are taken from the target GW1 file; no target-season match output is a feature. The target is the sum of that player's target-season GW `total_points`. Features are built from the immediately preceding season.
@@ -11,6 +25,8 @@ One row represents one player present in the target season's archived GW1 player
 ### In-season dataset
 
 One row represents a player known by the end of cutoff GW `t`. All FPL features contain only rows with `GW <= t`. Targets are sums over `t < GW <= t+h`, where `h` is 1, 3 or 5. The end-of-cutoff timestamp is the latest kickoff in the completed cutoff GW. Blank and double gameweeks are handled by explicit GW labels and fixture rows, not array offsets.
+
+The horizon unit is **gameweeks, not matches**. Both fixtures in a DGW are summed; a blank GW adds no match rows; rescheduled fixtures follow their archived fixture `event`; and a player in the cutoff universe with no target-window appearance receives zero target points. Missing feature fields still remain missing.
 
 ## Common identifiers and labels
 
@@ -63,4 +79,4 @@ Understat date filtering includes `date <= cutoff_time`. Cross-source mappings r
 - 2022/23 has no GW7 match rows because the round was postponed; GW labels are not assumed contiguous.
 - 2024/25 files add assistant-manager fields; those are outside the player problem and excluded.
 - 2025/26 adds official defensive-contribution points and archived recoveries, tackles and clearance/block/interception fields. Official assist and BPS rules also changed. These fields are not backfilled into earlier seasons and were not selected using the holdout.
-- Understat coverage is 24/736/575/798/789/0 files for 2020/21 through 2025/26 respectively, so it is not a holdout-capable production input.
+- Understat directories contain 24/736/575/798/789/0 CSVs for 2020/21 through 2025/26, but 2020/21's 24 files are team/generic aggregates rather than player-ID files. Player-level counts are therefore 0/712/554/774/765/0. Understat-dependent in-season configurations touching 2020/21 and every 2025/26 Understat configuration fail the quality gate.

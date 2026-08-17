@@ -1,78 +1,84 @@
-# Phase 5 benchmark results
+# Phase 5/5A benchmark results
 
-All numbers below are generated from real archived data, not fixtures. Development values are means over the 2023/24 and 2024/25 chronological folds. The final column set/model was frozen before 2025/26 evaluation.
+All numbers are generated from real archived data, not fixtures. Phase 5A rebuilt every dataset after the blocking quality gate, reran the chronological development benchmark, and reevaluated the original frozen Phase 5 candidate on 2025/26. It did not retune after the holdout had already been observed.
 
 ## Executive result
 
-Ridge was the best development ranking model at every horizon. The frozen candidate uses position-specific Ridge models. Draft-day retains prior-match bookmaker/team context because it produced a meaningful development NDCG@25 lift; in-season uses FPL-only signals because bookmaker and Understat gains were inconsistent and operationally unjustified.
+The selected holdout metrics changed slightly after explicit duplicate removal, position/grain corrections, and exact team-name reconciliation. Ranking conclusions for FPL-only in-season signals remain broadly stable. The earlier claim that Football-Data improved draft-day HGB ranking does **not** survive the corrected run.
 
-| Task | Selected development NDCG@25 | Development Spearman | Development RMSE | 2025/26 NDCG@25 | 2025/26 Spearman | 2025/26 RMSE |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Draft season total | 0.763 | 0.554 | 41.208 | 0.532 | 0.595 | 44.629 |
-| Next 1 GW | 0.393 | 0.656 | 2.005 | 0.351 | 0.694 | 1.985 |
-| Next 3 GWs | 0.568 | 0.734 | 4.061 | 0.509 | 0.766 | 4.046 |
-| Next 5 GWs | 0.631 | 0.753 | 5.911 | 0.567 | 0.783 | 5.926 |
+| Task | Original selected NDCG@25 | Corrected NDCG@25 | Corrected Spearman | Corrected RMSE |
+| --- | ---: | ---: | ---: | ---: |
+| Draft season total | 0.532190 | 0.531499 | 0.599461 | 44.444999 |
+| Next 1 GW | 0.351209 | 0.354837 | 0.693860 | 1.979168 |
+| Next 3 GWs | 0.508978 | 0.514533 | 0.765676 | 4.032058 |
+| Next 5 GWs | 0.566848 | 0.570456 | 0.783200 | 5.912731 |
 
-## 1. Best FPL-only model
+Exact deltas and the baseline commit are in `quality_gate_benchmark_comparison.csv`.
 
-Position-specific Ridge with FPL base, expected, ICT and rolling-form families was strongest for all in-season horizons. Development NDCG@25 was 0.393/0.568/0.631 for 1/3/5 GWs.
+## Corrected development evidence
 
-## 2. Best FPL plus external-data model
+The original frozen configuration remains position-specific Ridge. Its corrected development means are:
 
-For draft-day value, position-specific Ridge using FPL base/expected/ICT plus prior completed-match team context and market strength reached development NDCG@25 0.763. Understat was not holdout-capable.
+| Task | NDCG@25 | Spearman | RMSE |
+| --- | ---: | ---: | ---: |
+| Draft season total | 0.756598 | 0.564040 | 40.721512 |
+| Next 1 GW | 0.390434 | 0.655513 | 2.002528 |
+| Next 3 GWs | 0.569667 | 0.734067 | 4.046211 |
+| Next 5 GWs | 0.635252 | 0.754441 | 5.875677 |
 
-## 3. Best source combination
+For one-GW development, pooled Ridge now scores NDCG@25 0.394454 versus 0.390434 position-specific. That sensitivity is reported rather than used to change the frozen candidate after holdout exposure.
 
-With fixed HistGradientBoosting parameters, draft FPL+bookmaker scored NDCG@25 0.706 versus 0.678 FPL-only. In-season results were inconsistent: FPL-only led at 1 GW (0.364 versus 0.358) and 5 GWs (0.579 versus 0.571); FPL+bookmaker led by only 0.001 at 3 GWs. The production-minded winner is therefore bookmaker-enhanced draft-day and FPL-only in-season.
+## Source combinations
 
-## 4. Best model family
+With fixed HistGradientBoosting parameters, corrected draft FPL-only NDCG@25 is 0.678141 and FPL+team/bookmaker is 0.677399. The old run reported 0.678 versus 0.706. The explicit `Man Utd`/`Man United` mapping filled a previously unmatched team-history path and removed the apparent lift. This materially changes the source conclusion even though final selected-model metrics moved little.
 
-On the holdout-capable full development features, pooled Ridge had NDCG@25 0.732/0.387/0.553/0.617 for draft/1/3/5, higher than Random Forest (0.693/0.371/0.506/0.559) and fixed boosting (0.706/0.358/0.514/0.571). XGBoost was not used: the required linear and tree suites already established a stable winner without another compiled dependency.
+Corrected in-season FPL-only versus FPL+bookmaker NDCG@25 is:
 
-## 5–7. Best 1/3/5-GW configurations
+- 1 GW: 0.367880 versus 0.361078
+- 3 GWs: 0.525481 versus 0.529356
+- 5 GWs: 0.592940 versus 0.580359
 
-All three use FPL base, native expected values, ICT and rolling form with position-specific Ridge. The longer horizons rank more reliably than one GW because single-match points are noisier.
+The 3-GW difference is small and not enough to justify an external production dependency. Understat-dependent in-season rows are `blocked_by_data_quality` because the 2020/21 archive has no player-level files. Draft Understat comparisons use only benchmarkable 2021/22–2024/25 source-seasons and remain weaker than FPL-only (0.672466 versus 0.678141).
 
-## 8. Best draft-day configuration
+## Model families
 
-FPL prior-season base/expected/ICT plus completed prior-season team shot/goal context and overround-normalized bookmaker market strength; FORM was removed because its ablation improved development NDCG. Separate Ridge models are fitted for GK/DEF/MID/FWD.
+On the corrected holdout-capable full features, pooled model development NDCG@25 is:
 
-## 9. Best by position
+| Task | Ridge | Random Forest | HGB | Tuned HGB |
+| --- | ---: | ---: | ---: | ---: |
+| Draft | 0.732333 | 0.685820 | 0.677399 | 0.689208 |
+| 1 GW | 0.394454 | 0.371647 | 0.361078 | 0.380734 |
+| 3 GWs | 0.566000 | 0.525401 | 0.529356 | 0.532743 |
+| 5 GWs | 0.630687 | 0.572709 | 0.580359 | 0.596389 |
 
-On 2025/26, selected-model position NDCG@25 was 0.682 GK, 0.679 DEF, 0.672 MID and 0.590 FWD for draft-day. At the 5-GW horizon it was 0.835 GK, 0.621 DEF, 0.619 MID and 0.768 FWD. Forward draft-day value remains the weakest position result.
+Ridge remains the strongest ranking family. XGBoost and deep learning remain unjustified additions.
 
-## 10. External source adding most value
+## Feature and ablation conclusions
 
-Football-Data bookmaker/team context added the clearest development value for draft-day ranking (+0.028 NDCG@25 over FPL-only under the fixed source-comparison model). It did not consistently add in-season value.
+Rolling form remains essential in-season. Removing it reduces fixed-model NDCG@25 to 0.328587/0.498161/0.570981 at 1/3/5 GWs. Expected and ICT families overlap, so individual removals are not uniformly harmful. Team/bookmaker context is not consistently additive after the corrected mapping.
 
-## 11. Source adding almost no value
+## Corrected holdout by position
 
-Understat did not produce a stable incremental gain over modern native FPL expected data: development NDCG@25 changed from FPL-only 0.678/0.364/0.513/0.579 to 0.673/0.365/0.513/0.577. Its incomplete exact identity coverage and missing 2025/26 data further weaken the case.
+Draft NDCG@25 is 0.695 GK, 0.682 DEF, 0.672 MID, and 0.610 FWD. Five-GW NDCG@25 is 0.835 GK, 0.621 DEF, 0.619 MID, and 0.774 FWD. Forward draft ranking remains the weakest broad position result despite its small correction.
 
-## 12. Feature families that mattered
+## Cold-start weakness
 
-Rolling form was essential in-season: removing it reduced NDCG@25 by about 0.023, 0.031 and 0.034 for 1/3/5 GWs under the fixed ablation model. Permutation analysis highlighted cumulative expected goal involvement, recent minutes and BPS. Draft permutation importance emphasized prior expected assists/xGI, starts and BPS.
+The 690-player 2025/26 draft universe remains 512 returning players, 100 promoted-club players, and 78 unknown cold starts. Corrected Spearman is 0.656 for returning players, 0.356 for unknown players, and 0.002 for promoted-club players. The source set still cannot responsibly distinguish every new foreign signing, academy player, or long absence.
 
-## 13. Redundant or unstable families
+## Quality corrections and sample counts
 
-Native expected and ICT families were not uniformly additive in every fixed boosting ablation, reflecting overlap. Understat largely duplicated native expected data. Bookmaker context was redundant in-season. Draft final-five-GW form was harmful in the selected development comparison.
+- 2025/26: removed 10 excess exact player-fixture copies from merged GWs and 2 from the separate GW1 file.
+- 2024/25: excluded 322 assistant-manager chip observations from football-player datasets.
+- 2021/22: normalized 101 legacy `GKP` observations to the known goalkeeper label `GK`.
+- Cross-source team identity: added exact aliases for `Man Utd` and `Sheffield Utd`; all 2,280 FPL/Football-Data fixtures now match on date, teams, and score.
+- Understat: excluded team/generic directory files from player-match ingestion and blocked source-seasons with no player files.
 
-## 14. Locked 2025/26 result
+Final selected holdout sample counts remain unchanged at 690 draft players and 26,059/24,381/22,719 in-season rows. The corrections changed features and target values, not the evaluation universe.
 
-The selected draft ranking degraded from development NDCG@25 0.763 to 0.532, although Spearman increased to 0.595. The 2025/26 scoring regime added defensive contributions and changed assists/BPS, so early-draft top-K ordering shifted more than global ordering. In-season Spearman improved at all horizons and RMSE remained close to development.
+## Production interpretation
 
-## 15. Cold-start weakness
+Research still supports verified native FPL points, minutes, starts, BPS, expected statistics, ICT, and rolling form as future enrichment facts. It no longer supports Football-Data/bookmaker context as an evidence-backed production addition. No prediction model, Best Fit score, player selection, roster, health analysis, or persistence is integrated into the application.
 
-Of 690 2025/26 draft-universe players, 512 were returning by stable code, 100 were classified as promoted-club cold starts and 78 as unknown cold starts. Promoted-club players had Spearman 0.002 versus 0.650 for returning players, the clearest unresolved weakness. The source set cannot responsibly distinguish all foreign signings, academy players and long absences.
+## Holdout limitation
 
-## 16. Recommended production inputs
-
-Research supports native FPL points/minutes/starts/BPS, expected statistics, ICT and rolling 3/5-GW form for future in-season enrichment. Prior-match market/team context is a research candidate for preseason ranking, but should not block a production release. No prediction model or Best Fit score is integrated into the app in Phase 5.
-
-## Baselines
-
-Previous-season total and points-per-90/minutes baselines achieved draft NDCG@25 0.702 and 0.705. The minutes-adjusted in-season baseline achieved 0.370/0.533/0.599 for 1/3/5 GWs. The selected models improved ranking modestly and RMSE materially, but not enough to erase top-K uncertainty.
-
-## Retrospective holdout comparison
-
-Retrospectively, position-specific boosting produced the best draft NDCG@25 (0.588) versus the preselected 0.532, while Ridge generally remained strongest on in-season NDCG. This is reported only as model-risk evidence. The winner was not changed after viewing 2025/26.
+2025/26 cannot become an untouched holdout again. The quality-corrected run is labelled a re-evaluation of the original frozen candidate, not a new pre-holdout selection. Any future model-choice change—such as pooled versus position-specific one-GW Ridge—needs a fresh prospective season.

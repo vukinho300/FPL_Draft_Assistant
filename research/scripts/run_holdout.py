@@ -10,6 +10,7 @@ import pandas as pd
 from research.fpl_research.features import columns_for_groups
 from research.fpl_research.metrics import evaluate_predictions, six_manager_metrics
 from research.fpl_research.models import fit_predict
+from research.fpl_research.quality import require_benchmarkable_quality_gate
 from research.scripts.run_development_benchmark import HOLDOUT_CAPABLE_FULL, FPL_CORE, load_dataset, predict_position_specific, result_row
 
 
@@ -38,6 +39,11 @@ def predict_with_handling(train, test, model, numeric, categorical, handling):
 
 
 def main() -> None:
+    require_benchmarkable_quality_gate(
+        Path("research/reports/data_quality_results.json"),
+        ("Vaastav FPL", "Football-Data.co.uk"),
+        manifest_path=Path("research/data/source_manifest.json"),
+    )
     config_path = Path("research/configs/final_holdout_candidate.json")
     config = read_frozen_config(config_path)
     processed = Path("research/data/processed")
@@ -78,6 +84,7 @@ def main() -> None:
             groups,
         )
         selected["position_handling"] = task_config["position_handling"]
+        selected["training_sample_count"] = len(train)
         selected["evaluation_type"] = "SELECTED BEFORE HOLDOUT"
         selected["config_sha256"] = config["config_sha256"]
         selected_rows.append(selected)
@@ -132,6 +139,7 @@ def main() -> None:
                 alternative_groups,
             )
             row["position_handling"] = handling
+            row["training_sample_count"] = len(train)
             row["evaluation_type"] = "RETROSPECTIVE; NOT USED TO CHANGE WINNER"
             row["config_sha256"] = config["config_sha256"]
             retrospective_rows.append(row)

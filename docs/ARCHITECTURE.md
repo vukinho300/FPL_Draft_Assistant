@@ -149,6 +149,8 @@ Historical external data
         ↓
 Research ingestion + provenance
         ↓
+Blocking data-quality gate
+        ↓
 Leakage-safe historical features
         ↓
 Chronological backtesting
@@ -161,5 +163,31 @@ Future production enrichment
 The layer lives under `research/`; pandas, NumPy, SciPy and scikit-learn are research-only dependencies and do not ship in the React/Vercel build. Raw data, processed frames, environments and model binaries are gitignored. Committed artifacts are acquisition/feature/model code, small deterministic fixtures, configs, checksums, aggregate metrics and reports.
 
 Draft-day and in-season targets are separate. Historical FPL `code` is the only authoritative cross-season player key. Features are cutoff-aware, preprocessing is fitted inside chronological training folds, and 2025/26 is a locked holdout whose config was frozen before target evaluation. Optional source failures degrade the experiment rather than becoming production dependencies or scraping escalation.
+
+### Phase 5A quality boundary
+
+The research dependency flow is now enforced as:
+
+```text
+SOURCE
+  ↓
+RAW SCHEMA + GRAIN + DUPLICATE VALIDATION
+  ↓
+REFERENTIAL INTEGRITY + HISTORICAL IDENTITY
+  ↓
+DECLARED JOIN CARDINALITY
+  ↓
+MISSINGNESS + DISTRIBUTION + TEMPORAL/LEAKAGE VALIDATION
+  ↓
+FEATURES
+  ↓
+MODELS
+```
+
+`research/fpl_research/quality.py` owns pure validation and audited-join primitives. `quality_gate.py` applies them to the pinned archives, and `run_data_quality.py` writes both human and machine evidence. Dataset building and benchmark entry points refuse to run without a current benchmarkable gate result. Preserve-left joins fail on row multiplication; unjustified many-to-many joins fail; conflicting logical duplicates fail.
+
+Data cleaning and data-quality validation are distinct. Validation decides whether a source can be trusted. Cleaning may then apply only documented, evidence-backed transformations. Phase 5A permits identical-copy removal, the historical `GKP` label normalization to `GK`, and removal of assistant-manager chip rows that violate the football-player grain. It does not auto-delete statistical outliers or turn absent fields into zero.
+
+Understat is optional. Its 2020/21 and 2025/26 player-level datasets fail availability, so configurations requiring those source-seasons are blocked rather than scored. FPL and Football-Data pass all required seasons, with explicit FPL exclusions documented in the quality report.
 
 Research conclusions do not enter `src/domain/player.ts` and are not a Best Fit implementation. A future phase may design a production enrichment adapter after reviewing the evidence, source stability, scoring-regime changes and cold-start limitations.

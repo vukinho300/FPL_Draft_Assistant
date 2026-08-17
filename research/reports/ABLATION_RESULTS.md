@@ -1,21 +1,18 @@
-# Phase 5 ablation results
+# Phase 5A quality-corrected ablation results
 
-Values are development means from a fixed HistGradientBoosting model. `FULL` is FPL base + expected + ICT + form + team context + bookmaker. Positive interpretation requires consistency across ranking and error metrics; a sophisticated family is not retained solely because it sounds useful.
+Values are corrected development means from a fixed HistGradientBoosting model. `FULL` is FPL base + expected + ICT + form + team context + bookmaker. A family is not retained solely because it sounds useful.
 
 | Task | Full NDCG@25 | −Expected | −ICT | −Form | −Team context | −Bookmaker |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Draft | 0.706 | 0.710 | 0.663 | 0.741 | 0.680 | 0.695 |
-| Next 1 GW | 0.358 | 0.350 | 0.358 | 0.335 | 0.360 | 0.361 |
-| Next 3 GWs | 0.514 | 0.512 | 0.524 | 0.483 | 0.514 | 0.515 |
-| Next 5 GWs | 0.571 | 0.565 | 0.574 | 0.537 | 0.564 | 0.567 |
+| Draft | 0.677399 | 0.694480 | 0.697933 | 0.691724 | 0.718764 | 0.670573 |
+| Next 1 GW | 0.361078 | 0.366006 | 0.365268 | 0.328587 | 0.364852 | 0.374178 |
+| Next 3 GWs | 0.529356 | 0.517354 | 0.528691 | 0.498161 | 0.524660 | 0.531326 |
+| Next 5 GWs | 0.580359 | 0.574712 | 0.590187 | 0.570981 | 0.584607 | 0.586429 |
 
 Conclusions:
 
-- FORM is consistently important in-season but harmful for draft-day when appended to the full configuration.
-- ICT supplies useful draft-day rank information, while its in-season value overlaps other families.
-- Expected statistics improve some horizons and dominate permutation importance, but fixed-model ablations show overlap rather than universal gain.
-- Team and bookmaker context are useful together for draft-day development; each alone is unstable.
-- Bookmaker context is not justified in-season because removal is neutral or slightly beneficial.
-- Understat source comparisons were effectively neutral and it lacks locked-holdout coverage, so it is not selected.
-
-The complete per-fold values are in `feature_ablation_results.csv`; incremental additions are in `feature_family_results.csv`.
+- FORM remains consistently important in-season.
+- Expected and ICT families overlap; neither has universal isolated lift in a fixed nonlinear model.
+- Team/bookmaker context is unstable. The source-combination comparison now has draft FPL-only slightly ahead of the full external-data configuration.
+- In-season Understat ablations are not treated as trustworthy evidence because 2020/21 has no player-level archive; affected rows are quality-blocked.
+- The complete per-fold corrected values and `blocked_by_data_quality` statuses are in the CSV result tables.

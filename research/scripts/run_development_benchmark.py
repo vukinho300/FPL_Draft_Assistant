@@ -14,6 +14,7 @@ from research.fpl_research import RANDOM_SEED
 from research.fpl_research.features import columns_for_groups
 from research.fpl_research.metrics import evaluate_predictions, six_manager_metrics
 from research.fpl_research.models import MODEL_CONFIGS, fit_predict
+from research.fpl_research.quality import configuration_quality_failures, require_benchmarkable_quality_gate
 
 
 DEVELOPMENT_FOLDS = (
@@ -79,6 +80,7 @@ def result_row(
     model: str,
     groups: tuple[str, ...],
     status: str = "ok",
+    training_sample_count: int | None = None,
 ) -> dict[str, object]:
     ranking_groups = ["season"] if task == "draft_day" else ["season", "cutoff_gw"]
     metrics = evaluate_predictions(predictions, ranking_groups)
@@ -92,6 +94,7 @@ def result_row(
         "model": model,
         "position_handling": "pooled",
         "status": status,
+        "training_sample_count": training_sample_count,
         "sample_count": len(predictions),
         **metrics,
     }
@@ -128,6 +131,11 @@ def predict_position_specific(
 
 
 def main() -> None:
+    quality = require_benchmarkable_quality_gate(
+        Path("research/reports/data_quality_results.json"),
+        ("Vaastav FPL", "Football-Data.co.uk"),
+        manifest_path=Path("research/data/source_manifest.json"),
+    )
     processed = Path("research/data/processed")
     reports = Path("research/reports")
     reports.mkdir(parents=True, exist_ok=True)
@@ -151,45 +159,108 @@ def main() -> None:
             for name, prediction in baseline_predictions(test, task, horizon).items():
                 predicted = test.copy()
                 predicted["prediction"] = prediction
-                model_rows.append(result_row(predicted, task, horizon, train_seasons, test_season, name, "baseline", (), "baseline"))
+                baseline = result_row(predicted, task, horizon, train_seasons, test_season, name, "baseline", (), "baseline")
+                baseline["training_sample_count"] = len(train)
+                model_rows.append(baseline)
 
             for configuration, groups in SOURCE_CONFIGS.items():
+                sources = ["Vaastav FPL"]
+                if "TEAM_CONTEXT" in groups or "BOOKMAKER" in groups:
+                    sources.append("Football-Data.co.uk")
+                if "UNDERSTAT_PLAYER" in groups:
+                    sources.append("Understat via Vaastav")
+                failures = configuration_quality_failures(quality, sources, (*train_seasons, test_season))
+                if failures:
+                    source_rows.append(
+                        {
+                            "task": task,
+                            "prediction_horizon": horizon,
+                            "training_seasons": ";".join(train_seasons),
+                            "test_season": test_season,
+                            "configuration": configuration,
+                            "feature_groups": ";".join(groups),
+                            "model": "hist_gradient_boosting",
+                            "position_handling": "pooled",
+                            "status": "blocked_by_data_quality",
+                            "quality_failure": "; ".join(failures),
+                            "training_sample_count": len(train),
+                            "sample_count": 0,
+                        }
+                    )
+                    continue
                 numeric = columns_for_groups(groups, draft)
                 predicted, _ = fit_predict(train, test, "hist_gradient_boosting", numeric, categorical)
-                source_rows.append(
-                    result_row(predicted, task, horizon, train_seasons, test_season, configuration, "hist_gradient_boosting", groups)
+                row = result_row(
+                    predicted, task, horizon, train_seasons, test_season, configuration, "hist_gradient_boosting", groups
                 )
+                row["training_sample_count"] = len(train)
+                source_rows.append(row)
 
             numeric = columns_for_groups(HOLDOUT_CAPABLE_FULL, draft)
             for model_name in MODEL_CONFIGS:
                 predicted, _ = fit_predict(train, test, model_name, numeric, categorical)
-                model_rows.append(
-                    result_row(
-                        predicted,
-                        task,
-                        horizon,
-                        train_seasons,
-                        test_season,
-                        "FPL_BOOKMAKER",
-                        model_name,
-                        HOLDOUT_CAPABLE_FULL,
-                    )
+                row = result_row(
+                    predicted,
+                    task,
+                    horizon,
+                    train_seasons,
+                    test_season,
+                    "FPL_BOOKMAKER",
+                    model_name,
+                    HOLDOUT_CAPABLE_FULL,
                 )
+                row["training_sample_count"] = len(train)
+                model_rows.append(row)
 
             for configuration, groups in FEATURE_FAMILIES.items():
+                sources = ["Vaastav FPL"]
+                if "TEAM_CONTEXT" in groups or "BOOKMAKER" in groups:
+                    sources.append("Football-Data.co.uk")
+                if "UNDERSTAT_PLAYER" in groups:
+                    sources.append("Understat via Vaastav")
+                failures = configuration_quality_failures(quality, sources, (*train_seasons, test_season))
+                if failures:
+                    family_rows.append(
+                        {
+                            "task": task,
+                            "prediction_horizon": horizon,
+                            "training_seasons": ";".join(train_seasons),
+                            "test_season": test_season,
+                            "configuration": configuration,
+                            "feature_groups": ";".join(groups),
+                            "model": "hist_gradient_boosting",
+                            "position_handling": "pooled",
+                            "status": "blocked_by_data_quality",
+                            "quality_failure": "; ".join(failures),
+                            "training_sample_count": len(train),
+                            "sample_count": 0,
+                        }
+                    )
+                    continue
                 numeric = columns_for_groups(groups, draft)
                 predicted, _ = fit_predict(train, test, "hist_gradient_boosting", numeric, categorical)
-                family_rows.append(
-                    result_row(predicted, task, horizon, train_seasons, test_season, configuration, "hist_gradient_boosting", groups)
+                row = result_row(
+                    predicted, task, horizon, train_seasons, test_season, configuration, "hist_gradient_boosting", groups
                 )
+                row["training_sample_count"] = len(train)
+                family_rows.append(row)
 
             for removed in ("FPL_EXPECTED", "FPL_ICT", "FORM", "TEAM_CONTEXT", "BOOKMAKER"):
                 groups = tuple(group for group in HOLDOUT_CAPABLE_FULL if group != removed)
                 numeric = columns_for_groups(groups, draft)
                 predicted, _ = fit_predict(train, test, "hist_gradient_boosting", numeric, categorical)
-                ablation_rows.append(
-                    result_row(predicted, task, horizon, train_seasons, test_season, f"FULL_MINUS_{removed}", "hist_gradient_boosting", groups)
+                row = result_row(
+                    predicted,
+                    task,
+                    horizon,
+                    train_seasons,
+                    test_season,
+                    f"FULL_MINUS_{removed}",
+                    "hist_gradient_boosting",
+                    groups,
                 )
+                row["training_sample_count"] = len(train)
+                ablation_rows.append(row)
 
     source_frame = pd.DataFrame(source_rows)
     model_frame = pd.DataFrame(model_rows)
@@ -216,6 +287,7 @@ def main() -> None:
                 base = result_row(
                     predicted, task, horizon, train_seasons, test_season, "FPL_BOOKMAKER", model_name, HOLDOUT_CAPABLE_FULL
                 )
+                base["training_sample_count"] = len(train)
                 base["position_handling"] = handling
                 position_rows.append(base)
                 for position, subset in predicted.groupby("position"):

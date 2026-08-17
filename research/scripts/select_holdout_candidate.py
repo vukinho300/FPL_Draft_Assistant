@@ -13,6 +13,7 @@ from research.fpl_research import RANDOM_SEED
 from research.fpl_research.features import columns_for_groups
 from research.fpl_research.metrics import evaluate_predictions
 from research.fpl_research.models import MODEL_CONFIGS, fit_predict
+from research.fpl_research.quality import require_benchmarkable_quality_gate
 from research.scripts.run_development_benchmark import folds_for, load_dataset, predict_position_specific, result_row
 
 
@@ -26,6 +27,11 @@ MODEL_CANDIDATES = ("ridge", "hist_gradient_boosting_tuned")
 
 
 def main() -> None:
+    require_benchmarkable_quality_gate(
+        Path("research/reports/data_quality_results.json"),
+        ("Vaastav FPL", "Football-Data.co.uk"),
+        manifest_path=Path("research/data/source_manifest.json"),
+    )
     reports = Path("research/reports")
     config_path = Path("research/configs/final_holdout_candidate.json")
     rows: list[dict[str, object]] = []
@@ -56,6 +62,7 @@ def main() -> None:
                         model_name,
                         groups,
                     )
+                    row["training_sample_count"] = len(train)
                     row["position_handling"] = handling
                     rows.append(row)
 

@@ -7,6 +7,7 @@ import pandas as pd
 
 from research.fpl_research.data import HistoricalRepository
 from research.fpl_research.features import build_draft_day_dataset, build_inseason_dataset
+from research.fpl_research.quality import require_benchmarkable_quality_gate
 
 
 DEVELOPMENT_SEASONS = ("2020-21", "2021-22", "2022-23", "2023-24", "2024-25")
@@ -32,9 +33,20 @@ def main() -> None:
     parser.add_argument("--output-root", type=Path, default=Path("research/data/processed"))
     parser.add_argument("--include-holdout", action="store_true")
     parser.add_argument("--frozen-config", type=Path, default=Path("research/configs/final_holdout_candidate.json"))
+    parser.add_argument(
+        "--quality-results",
+        type=Path,
+        default=Path("research/reports/data_quality_results.json"),
+    )
+    parser.add_argument("--manifest", type=Path, default=Path("research/data/source_manifest.json"))
     args = parser.parse_args()
     if args.include_holdout and not args.frozen_config.exists():
         raise SystemExit("Refusing to build holdout targets before final_holdout_candidate.json exists")
+    require_benchmarkable_quality_gate(
+        args.quality_results,
+        ("Vaastav FPL", "Football-Data.co.uk"),
+        manifest_path=args.manifest,
+    )
 
     args.output_root.mkdir(parents=True, exist_ok=True)
     repository = HistoricalRepository(args.raw_root)

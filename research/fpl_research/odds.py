@@ -8,8 +8,10 @@ import pandas as pd
 
 TEAM_ALIASES = {
     "Man United": "Manchester Utd",
+    "Man Utd": "Manchester Utd",
     "Man City": "Manchester City",
     "Nott'm Forest": "Nottingham Forest",
+    "Sheffield Utd": "Sheffield United",
     "Spurs": "Tottenham",
     "Wolves": "Wolverhampton",
 }

@@ -20,7 +20,7 @@ Allow future recommendation research to vary by FPL position. Position-specific 
 
 ### Bookmaker/team context for preseason ranking
 
-Historical evidence: +0.028 development draft NDCG@25 under the fixed source test, but a weaker holdout top-K result and no consistent in-season value. Live path: Football-Data or another licensed feed with provable pre-deadline timestamps. Stability is reasonable for annual archives; live integration, licensing and name mapping add moderate cost. Research further rather than make it a hard production dependency.
+The quality-corrected fixed source test has draft FPL-only NDCG@25 0.678 versus 0.677 with team/bookmaker context; the earlier apparent +0.028 lift depended on an incomplete cross-provider team-name path. There is no longer evidence to add this source to production. A future fresh dataset could research it again only with complete exact team mappings, provable pre-deadline timestamps, and acceptable licensing.
 
 ### Cold-start enrichment
 
@@ -34,7 +34,7 @@ Defensive contribution, revised assists and BPS altered point generation. Accumu
 
 ### Understat ingestion
 
-Incremental development gains were negligible/inconsistent, exact mapping covered only part of the player pool, and the audited Vaastav archive has no 2025/26 files. Direct extraction would add maintenance and terms uncertainty without demonstrated unique value.
+Incremental draft development gains were negligible/inconsistent, exact mapping covered only part of the player pool, and the audited Vaastav archive has no player-level 2020/21 or 2025/26 data. In-season Understat comparisons touching 2020/21 are now quality-blocked. Direct extraction would add maintenance and terms uncertainty without demonstrated unique value.
 
 ### ClubElo
 

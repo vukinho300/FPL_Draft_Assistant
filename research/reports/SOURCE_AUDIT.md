@@ -7,7 +7,7 @@ Audit date: 2026-08-17. This audit was completed before model training. Source c
 | Source | Decision | Unique candidate signal | Main constraint |
 | --- | --- | --- | --- |
 | Vaastav FPL Historical Dataset | Use as mandatory core | Player/gameweek FPL outcomes, expected statistics and ICT | Snapshot semantics vary by file; `xP` is explicitly unsafe unshifted |
-| Vaastav Understat extracts | Development-only benchmark | npxG, shots, key passes, xGChain and xGBuildup | No 2025/26 files; 2020/21 coverage is effectively absent |
+| Vaastav Understat extracts | Quality-gated development-only benchmark | npxG, shots, key passes, xGChain and xGBuildup | No player-level 2020/21 or 2025/26 files; affected configurations are blocked |
 | Football-Data.co.uk | Use | Historical match results, shots and bookmaker market probabilities | No explicit open-data redistribution licence was identified; raw files stay local |
 | ClubElo | Exclude from executed benchmark | Date-specific team strength | Documented read-only endpoints timed out in all clean access probes |
 | Archived official FPL fixture context | Partial use | Home/away and opponent identity | No trustworthy historical snapshots of changing official FDR were found |
@@ -38,6 +38,7 @@ Audit date: 2026-08-17. This audit was completed before model training. Source c
 - **Access:** per-player CSV files under Vaastav season folders. Direct Understat pages are public, but no official documented bulk API or explicit data licence was identified.
 - **Observed coverage:** 24 files in 2020/21, 736 in 2021/22, 575 in 2022/23, 798 in 2023/24, 789 in 2024/25 and none in 2025/26. The 2020/21 count is insufficient for a usable league-wide feature family.
 - **Granularity:** player-match. Observed fields include goals, shots, xG, minutes, position, teams, match date, Understat identifiers, xA, assists, key passes, npxG, xGChain and xGBuildup.
+- **Quality finding:** Understat season directories also contain team aggregate and generic files without a player ID. Those files are explicitly excluded from player-match ingestion. The 2020/21 directory has no usable player-ID file, so that source-season is `FAIL`, not “24 player files.”
 - **Identity quality:** filenames combine a name and Understat ID, while Vaastav player-list files only provide FPL season IDs. There is no inspected stable, explicit FPL-code-to-Understat-ID table. Authoritative cross-source matching therefore requires exact reviewed evidence; silent fuzzy matching is forbidden.
 - **Historical snapshots:** match dates permit strict cutoff filtering. Aggregates must include only matches with a date before the prediction cutoff.
 - **Licence/redistribution:** Vaastav states that Understat owns the data. Raw extracts remain gitignored and are not committed.

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from dataclasses import asdict
 from pathlib import Path
 
@@ -7,6 +8,7 @@ import pandas as pd
 
 from research.fpl_research.identity import attach_fpl_code, build_understat_identity_evidence
 from research.fpl_research.odds import prepare_team_match_history
+from research.fpl_research.quality import apply_approved_fpl_observation_rules
 
 
 class HistoricalRepository:
@@ -24,16 +26,16 @@ class HistoricalRepository:
         return self._cache[key].copy()  # type: ignore[union-attr]
 
     def gw1(self, season: str) -> pd.DataFrame:
-        return attach_fpl_code(
-            pd.read_csv(self.season_root(season) / "gws" / "gw1.csv", low_memory=False),
-            self.players(season),
-        )
+        raw = pd.read_csv(self.season_root(season) / "gws" / "gw1.csv", low_memory=False)
+        approved, _, _ = apply_approved_fpl_observation_rules(raw, season=season, dataset="gw1")
+        return attach_fpl_code(approved, self.players(season))
 
     def gameweeks(self, season: str) -> pd.DataFrame:
         key = ("gameweeks", season)
         if key in self._cache:
             return self._cache[key].copy()  # type: ignore[union-attr]
-        frame = pd.read_csv(self.season_root(season) / "gws" / "merged_gw.csv", low_memory=False)
+        raw = pd.read_csv(self.season_root(season) / "gws" / "merged_gw.csv", low_memory=False)
+        frame, _, _ = apply_approved_fpl_observation_rules(raw, season=season, dataset="merged_gw")
         frame = attach_fpl_code(frame, self.players(season))
         if "GW" not in frame.columns:
             raise ValueError(f"{season} merged_gw.csv has no GW column")
@@ -58,7 +60,11 @@ class HistoricalRepository:
             data, evidence = self._cache[key]  # type: ignore[misc]
             return data.copy(), evidence.copy()
         understat_root = self.season_root(season) / "understat"
-        files = sorted(understat_root.glob("*.csv")) if understat_root.exists() else []
+        files = (
+            sorted(path for path in understat_root.glob("*.csv") if re.search(r"_(\d+)$", path.stem))
+            if understat_root.exists()
+            else []
+        )
         mapping, evidence = build_understat_identity_evidence(season, self.players(season), files)
         evidence_frame = pd.DataFrame([asdict(item) for item in evidence])
         if mapping.empty:

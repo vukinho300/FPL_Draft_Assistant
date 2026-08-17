@@ -103,6 +103,48 @@ def aggregate_stats(frame: pd.DataFrame, group: str = "code") -> pd.DataFrame:
     return numeric.groupby(group, as_index=False)[columns].sum(min_count=1)
 
 
+def gameweek_target_points(
+    games: pd.DataFrame,
+    *,
+    cutoff_gw: int,
+    horizon: int,
+    player_codes: pd.Series,
+) -> pd.DataFrame:
+    """Sum fixture rows in gameweeks t < GW <= t+h, preserving DGWs and zero-appearance players."""
+    if horizon not in (1, 3, 5):
+        raise ValueError("target horizon must be 1, 3 or 5 gameweeks")
+    if cutoff_gw < 0:
+        raise ValueError("cutoff gameweek cannot be negative")
+    required = {"code", "GW", "total_points"}
+    if not required.issubset(games):
+        raise ValueError(f"target construction missing fields: {sorted(required - set(games))}")
+    future = games.loc[(games["GW"] > cutoff_gw) & (games["GW"] <= cutoff_gw + horizon)]
+    totals = (
+        ensure_numeric(future, ["total_points"])
+        .groupby("code", as_index=False)["total_points"]
+        .sum(min_count=1)
+        .rename(columns={"total_points": "target"})
+    )
+    universe = pd.DataFrame({"code": pd.Series(player_codes).drop_duplicates()})
+    result = universe.merge(totals, on="code", how="left", validate="one_to_one")
+    result["target"] = result["target"].fillna(0.0)
+    return result
+
+
+def player_season_universe(gw1: pd.DataFrame) -> pd.DataFrame:
+    """Reduce player-fixture GW1 grain to player-season after checking identity fields agree."""
+    fields = ["code", "element", "name", "position", "team", "kickoff_time"]
+    missing = [field for field in fields if field not in gw1]
+    if missing:
+        raise ValueError(f"GW1 player universe missing fields: {missing}")
+    for field in ("element", "name", "position", "team"):
+        if gw1.groupby("code", dropna=False)[field].nunique(dropna=False).gt(1).any():
+            raise ValueError(f"GW1 player-fixture rows conflict on player-season field {field}")
+    universe = gw1.sort_values(["code", "kickoff_time"]).groupby("code", as_index=False).first()[fields]
+    universe["kickoff_time"] = gw1["kickoff_time"].min()
+    return universe
+
+
 def _position_prior_rate(history: pd.DataFrame, position: str) -> float:
     candidates = history.loc[(history["position"] == position) & (history["minutes"] >= 450)].copy()
     if candidates.empty:
@@ -142,7 +184,7 @@ def build_draft_day_dataset(
     target_gw1 = repository.gw1(target_season)
     target_games = repository.gameweeks(target_season)
     prior_games = repository.gameweeks(prior_season)
-    universe = target_gw1[["code", "element", "name", "position", "team", "kickoff_time"]].drop_duplicates("code").copy()
+    universe = player_season_universe(target_gw1)
     universe = universe.rename(columns={"kickoff_time": "cutoff_time"})
     universe["cutoff_time"] = target_gw1["kickoff_time"].min()
     target = (
@@ -322,12 +364,8 @@ def build_inseason_dataset(
             rows["season_points_to_date"].fillna(0.0) + prior * 5.0
         ) * 90.0 / (rows["season_minutes_to_date"].fillna(0.0) + 450.0)
 
-        target = games.loc[(games["GW"] > cutoff) & (games["GW"] <= cutoff + horizon)]
-        target = ensure_numeric(target, ["total_points"]).groupby("code", as_index=False)["total_points"].sum().rename(
-            columns={"total_points": "target"}
-        )
-        rows = rows.merge(target, on="code", how="left", validate="one_to_one")
-        rows["target"] = rows["target"].fillna(0.0)
+        target = gameweek_target_points(games, cutoff_gw=cutoff, horizon=horizon, player_codes=rows["code"])
+        rows = rows.merge(target, on="code", validate="one_to_one")
         rows = asof_team_features(rows, odds)
         if include_understat:
             rows = rows.merge(_understat_before(understat, rows["cutoff_time"].iloc[0], rows["code"]), on="code", how="left")

@@ -1,6 +1,6 @@
 # FPL Draft Assistant
 
-**Phase 5 — Historical Data Research, Source Benchmarking, and Prediction Backtesting**
+**Phase 5/5A — Historical Data Research, Quality-Gated Source Benchmarking, and Prediction Backtesting**
 
 FPL Draft Assistant is a personal web companion for an official Fantasy Premier League Draft. The long-term product will help organize manager order, available players, selections, and a user's squad while all official draft actions remain in the official FPL Draft service.
 
@@ -63,7 +63,7 @@ The draft-board domain consumes only normalized `Player[]` and applies the offic
 
 The schedule domain consumes a validated project-owned manager configuration. It reverses the supplied first-round order on alternate rounds, creates one-based immutable draft slots, derives manager pick numbers and consecutive turns, and calculates Turn Horizon from `completedPickCount`. See [docs/SNAKE_DRAFT_LOGIC.md](docs/SNAKE_DRAFT_LOGIC.md).
 
-Historical research is isolated under [research/README.md](research/README.md). Raw datasets and fitted artifacts are not committed; acquisition writes a checksum manifest, deterministic CI uses tiny fixtures, and Python dependencies do not ship with the web app. See [research/reports/BENCHMARK_RESULTS.md](research/reports/BENCHMARK_RESULTS.md) for actual results and [research/reports/PRODUCTION_RECOMMENDATION.md](research/reports/PRODUCTION_RECOMMENDATION.md) for evidence-based next steps.
+Historical research is isolated under [research/README.md](research/README.md). A blocking raw-data quality gate validates checksums, schema, grain, duplicates, references, identity, join cardinality, missingness, distributions, temporal boundaries, targets, and cross-source match facts before feature generation. Raw datasets and fitted artifacts are not committed; deterministic CI uses tiny fixtures, and Python dependencies do not ship with the web app. See [research/reports/DATA_QUALITY_REPORT.md](research/reports/DATA_QUALITY_REPORT.md) for the six-season audit, [research/reports/BENCHMARK_RESULTS.md](research/reports/BENCHMARK_RESULTS.md) for corrected results, and [research/reports/PRODUCTION_RECOMMENDATION.md](research/reports/PRODUCTION_RECOMMENDATION.md) for evidence-based next steps.
 
 The current UI is a development demonstration. It defaults to the real project example Vuk, Diego, Kristian, Miku, Tin, and Deni; supports 2–16 managers, rename and move controls, a selectable user manager and completed-pick count; and previews the first four rounds. Those names are demo data, not domain assumptions. The UI does not load players or record selections, and refresh resets it.
 
@@ -75,7 +75,7 @@ Vercel is the intended deployment target, sourced from this GitHub repository. T
 
 ## Current limitations
 
-- No production projections, VOR, AI recommendations, or hidden player-quality score; Phase 5 models remain offline research
+- No production projections, VOR, AI recommendations, or hidden player-quality score; Phase 5/5A models remain offline research
 - No football player selections, available-player removal, roster, or pick history
 - No Best Fit recommendations, pair scoring, or health/fixture analysis
 - No browser persistence or backup import/export

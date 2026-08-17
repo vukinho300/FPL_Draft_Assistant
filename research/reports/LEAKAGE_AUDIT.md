@@ -1,6 +1,6 @@
 # Phase 5 leakage audit
 
-Leakage is treated as a blocking error. All development choices were made on 2023/24 and 2024/25 chronological folds. `final_holdout_candidate.json` was written with a digest of the development tables before 2025/26 targets were built or evaluated.
+Leakage is treated as a blocking error after schema, grain, duplicate, referential-integrity, identity, join-cardinality, missingness, and distribution validation pass. All original Phase 5 development choices were made on 2023/24 and 2024/25 chronological folds. `final_holdout_candidate.json` was written with a digest of the original development tables before 2025/26 targets were built or evaluated.
 
 ## Feature timestamp rules
 
@@ -32,6 +32,8 @@ There is no random train/test split. Development fold 1 trains on seasons throug
 ## Holdout evidence
 
 The frozen config has status `SELECTED BEFORE HOLDOUT`, a SHA-256 of all development result files and its own config digest. `build_dataset --include-holdout` refuses to run unless that config exists. Retrospective 2025/26 alternatives are labelled `RETROSPECTIVE; NOT USED TO CHANGE WINNER` and do not replace the selected result.
+
+Phase 5A retains that frozen candidate and reruns it on quality-approved data. It does not rewrite the model choice after the holdout was already observed. The config's development digest identifies the original pre-gate artifacts at commit `bf5bc2c278b4138caade3251528bd10216ee9b5d`; corrected development metrics are reported separately. This makes the data correction transparent without pretending the holdout can become unseen again.
 
 ## Known limitations
 
