@@ -1,34 +1,25 @@
 # FPL Draft Assistant
 
-**Phase 5/5A/5B — Quality-Gated Historical Research and Leakage-Safe Model Validation**
+**Phase 6 — Fast Draft-night MVP**
 
-FPL Draft Assistant is a personal web companion for an official Fantasy Premier League Draft. The long-term product will help organize manager order, available players, selections, and a user's squad while all official draft actions remain in the official FPL Draft service.
+FPL Draft Assistant is a personal desktop companion for an official Fantasy Premier League Draft. It loads the current public FPL Draft player pool, maintains a local ranked board, assigns manually recorded players to managers through the existing snake schedule, and provides deterministic Best Available and Best Fit context. All official draft actions still happen in the official FPL Draft service.
 
-This repository contains the Phase 2–4 production foundations plus an isolated Phase 5 Python research layer. The research quality-gates historical sources, enforces timestamp/feature/sample contracts, benchmarks with chronological folds, and validates models with negative controls. Its recommendations are evidence only: no prediction model, Best Fit logic, football-player selection, roster, or persistent draft state is integrated into the app.
+The default development fixture is the real six-manager order Vuk, Diego, Kristian, Miku, Tin, and Deni, with Vuk selected as the user. The domain remains generic for 2–16 managers.
 
 ## Prerequisites
 
-- Node.js 24 (recorded in `.nvmrc`)
+- Node.js 24, recorded in `.nvmrc`
 - npm 11 or a compatible npm version
-- Python 3.13 for optional Phase 5 research reproduction
+- Python 3.13 only when reproducing the research-side ranking artifact
 
-## Install
-
-Install exactly the dependencies in the lockfile:
+## Install and run
 
 ```bash
 npm ci
-```
-
-## Development
-
-Start the local Vite development server:
-
-```bash
 npm run dev
 ```
 
-Vite serves the frontend but does not execute the root Vercel Function at `/api/fpl`. Unit tests exercise the complete client and normalization path without Vercel. For optional end-to-end local function testing, use `vercel dev` from a separately installed Vercel CLI; the CLI is intentionally not a permanent project dependency.
+The Vite development server exposes the same project-owned `/api/fpl` boundary used by production, backed by the existing FPL adapter. The production Vercel Function remains `api/fpl.ts`.
 
 ## Verification
 
@@ -39,50 +30,93 @@ npm run build
 npm run lint
 ```
 
-For an interactive test watcher, run `npm run test:watch`. To preview a production build locally, run `npm run preview` after building.
-
-Run the optional live upstream verification separately:
+The opt-in live check contacts the public FPL Draft bootstrap and also audits the committed ranking-artifact join:
 
 ```bash
 npm run verify:fpl-live
 ```
 
-This command requires network access and is intentionally excluded from the deterministic test and CI suites.
+It is deliberately excluded from deterministic CI.
+
+To reproduce the fixed current-season model signal after acquiring the pinned research data:
+
+```bash
+research/.venv/Scripts/python.exe -m research.scripts.build_current_draft_rankings
+```
+
+The script evaluates one fixed position-specific Ridge configuration on the 2023/24 and 2024/25 chronological development folds before producing `src/data/currentDraftRankingSignals.json`. It does not run XGBoost or a model search.
+
+## Draft-night workflow
+
+1. Confirm the first-round manager order and choose “My manager”.
+2. Follow the ranked available-player board or search/filter it.
+3. After each official selection, click **Draft** for the selected player.
+4. The snake schedule automatically assigns that player to the correct manager and advances the picker.
+5. Use **Undo last pick** for the single supported correction.
+
+Refresh restores manager configuration, user-manager identity, and authoritative pick history from the versioned `fpl-draft-assistant:v1` localStorage entry. Availability, completed-pick count, rosters, and current picker are always recomputed.
+
+## Ranking evidence
+
+Official `draft_rank` is the primary live ranking input and remains visible unchanged. The project-owned `DraftFitHeuristicV1` combines rank-percentile evidence as follows:
+
+```text
+trusted historical model signal: 70% official rank + 30% model rank
+no trusted historical signal:    100% official rank
+```
+
+The fixed secondary signal is position-specific Ridge with `alpha=10`, using only quality-approved `FPL_BASE`, `FPL_EXPECTED`, and `FPL_ICT` draft-day features. Exact stable FPL `code` matching is required during artifact generation. Unmatched, ambiguous, conflicting, and insufficient-history players retain their official Draft rank and receive no fabricated model value.
+
+The 70/30 split is a transparent project MVP heuristic, not an official FPL ranking, validated probability, or historically optimized weight. See [docs/DRAFT_NIGHT_MVP.md](docs/DRAFT_NIGHT_MVP.md).
+
+## Best Available and Best Fit
+
+**Best Available** is the highest consensus-ranked legal available player for the user's roster.
+
+**Best Fit** evaluates a shortlist using current quality plus deterministic positional opportunity cost. It reuses Turn Horizon and assumes the next `N` opponent selections consume the top consensus-ranked available players. This is a board-depletion stress test, not a prediction of opponent behavior and not a survival probability. At Vuk's consecutive Picks 12 and 13, `N` is derived from the opponent selections before the following user turn at Pick 24.
 
 ## Architecture overview
 
-External FPL data passes through a dedicated server-side client, defensive validation, and normalization into project-owned domain models before reaching business logic or React components:
-
 ```text
-External FPL data -> adapter -> normalized models -> domain logic -> React UI
+Public FPL Draft bootstrap
+        ↓
+server-side FPL adapter -> normalized Player[]
+        ↓                         + small research-generated model artifact
+MVP consensus ranking            + snake schedule / Turn Horizon
+        ↓                         + authoritative local pick history
+Available board + rosters + Best Available + Best Fit
+        ↓
+React Draft Room
 ```
 
-The Vercel Function at `GET /api/fpl` returns only the normalized project contract; it never proxies the full upstream response. See [docs/FPL_DATA_CONTRACT.md](docs/FPL_DATA_CONTRACT.md) for the verified mapping and its uncertainties.
+Important calculations remain pure in `src/domain`; React does not reimplement snake reversal, roster validation, consensus arithmetic, or Best Fit. Storage is isolated under `src/storage`. Phase 5 research remains isolated under `research/` and its Python dependencies do not ship in the app.
 
-The draft-board domain consumes only normalized `Player[]` and applies the official 2 GK / 5 DEF / 5 MID / 3 FWD roster contract. Candidate targets add a documented 35% project reserve separately to each position. Player ordering uses only normalized official Draft rank, with deterministic name and ID tie-breakers. See [docs/DRAFT_BOARD_LOGIC.md](docs/DRAFT_BOARD_LOGIC.md).
+Current trust statuses are:
 
-The schedule domain consumes a validated project-owned manager configuration. It reverses the supplied first-round order on alternate rounds, creates one-based immutable draft slots, derives manager pick numbers and consecutive turns, and calculates Turn Horizon from `completedPickCount`. See [docs/SNAKE_DRAFT_LOGIC.md](docs/SNAKE_DRAFT_LOGIC.md).
+- Data quality: **PASS WITH EXCLUSIONS**
+- Leakage: **PASS**
+- Model sanity: **PASS**
 
-Historical research is isolated under [research/README.md](research/README.md). The raw-data gate validates source integrity before feature generation; the Phase 5B model boundary then enforces chronology, explicit feature manifests, zero-overlap sample keys, train-only preprocessing, metric semantics, and negative controls. Raw datasets and fitted artifacts are not committed; deterministic CI uses tiny fixtures, and Python dependencies do not ship with the web app. See [research/reports/DATA_QUALITY_REPORT.md](research/reports/DATA_QUALITY_REPORT.md), [research/reports/LEAKAGE_AUDIT.md](research/reports/LEAKAGE_AUDIT.md), [research/reports/MODEL_SANITY_REPORT.md](research/reports/MODEL_SANITY_REPORT.md), and [research/reports/BENCHMARK_RESULTS.md](research/reports/BENCHMARK_RESULTS.md).
+## Documentation
 
-The current UI is a development demonstration. It defaults to the real project example Vuk, Diego, Kristian, Miku, Tin, and Deni; supports 2–16 managers, rename and move controls, a selectable user manager and completed-pick count; and previews the first four rounds. Those names are demo data, not domain assumptions. The UI does not load players or record selections, and refresh resets it.
-
-Future draft persistence will follow a separate storage boundary backed by browser `localStorage`. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for decisions and non-goals.
-
-## Deployment target
-
-Vercel is the intended deployment target, sourced from this GitHub repository. The serverless function source exists, but production deployment remains unconfigured in Phase 4.
+- [Draft-night MVP](docs/DRAFT_NIGHT_MVP.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [FPL data contract](docs/FPL_DATA_CONTRACT.md)
+- [Draft-board logic](docs/DRAFT_BOARD_LOGIC.md)
+- [Snake-draft logic](docs/SNAKE_DRAFT_LOGIC.md)
+- [Historical research](research/README.md)
 
 ## Current limitations
 
-- No production projections, VOR, AI recommendations, or hidden player-quality score; Phase 5 models remain offline research
-- No football player selections, available-player removal, roster, or pick history
-- No Best Fit recommendations, pair scoring, or health/fixture analysis
-- No browser persistence or backup import/export
-- No authentication, database, or official FPL actions
-- No FBref, scraping, or production richer-metric integration
-- No guarantee that the undocumented upstream endpoint or schema will remain stable
+- Manual companion only: no FPL authentication or automatic official picks
+- Secondary Ridge output is supporting evidence, not the sole ranking authority
+- No validated opponent-selection or survival-probability model
+- No Best Pair optimization for consecutive turns
+- No prices, budgets, three-per-club rule, trades, waivers, or health diagnosis
+- No database, accounts, cross-device sync, or backup import/export
+- No production Understat, bookmaker, ClubElo, scraping, or XGBoost integration
+- The public FPL Draft endpoint and its schema are not formally guaranteed
 
-## Roadmap summary
+## Deployment target
 
-The next research phase is Phase 5C: evaluate XGBoost regression/ranking only through the validated Phase 5A/5B boundaries. It must call 2025/26 a previously exposed external benchmark and reserve unseen 2026/27 data for genuinely prospective validation. Production Best Fit, player selection, persistence, and the final Draft Room remain later work.
+Vercel remains the target, sourced from this GitHub repository. Deployment itself is outside Phase 6.

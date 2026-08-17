@@ -6,7 +6,7 @@ FPL Draft Assistant is a personal companion application for an official Fantasy 
 
 ## Scope
 
-The product scope is a draft-night companion: manager setup, a local draft board, available-player discovery, pick tracking, history, undo, and backup are planned. The current implementation establishes the player-data boundary, deterministic candidate-board domain, manager configuration, and snake-schedule context. It does not implement live draft state or football player selection.
+The implemented Phase 6 scope is a desktop draft-night companion: manager setup, a live ranked player board, sequential pick tracking, derived rosters and availability, undo-last-pick, Best Available, deterministic Best Fit, and local refresh persistence. Backup/import, pair optimization, official-pick automation, and season-long management remain outside this phase.
 
 ## Initial stack
 
@@ -30,7 +30,7 @@ React UI
 
 External response structures stop at the adapter boundary. Components consume stable project-owned models, while important calculations remain pure and testable independently of React. `src/services/fpl` validates the small upstream surface it needs and maps it into the `src/domain` Player model.
 
-`src/domain/league.ts` owns the official roster contract, supported league-size validation, and per-position demand/target arithmetic. `src/domain/draftBoard.ts` consumes only `Player[]` to derive deterministic rank context and candidate-board entries. `src/domain/manager.ts` owns manager identity and configuration validation. `src/domain/draftSchedule.ts` consumes validated manager configuration to generate the snake schedule, current picker, manager turns, and Turn Horizon. None of these modules imports raw FPL response types or React.
+`src/domain/league.ts` owns the official roster contract, supported league-size validation, and per-position demand/target arithmetic. `src/domain/draftBoard.ts` consumes only `Player[]` to derive deterministic official-rank context. `src/domain/manager.ts` owns manager identity and configuration validation. `src/domain/draftSchedule.ts` generates the snake schedule, current picker, manager turns, and Turn Horizon. `src/domain/draftRanking.ts` combines official and optional model rank evidence without mutating either. `src/domain/draftState.ts` validates authoritative sequential pick history and derives rosters and availability. `src/domain/bestFit.ts` owns the deterministic depletion scenario and recommendation facts. None imports React or raw upstream response types.
 
 Planned source areas are:
 
@@ -44,7 +44,9 @@ Only a source area needed by the current phase should be created.
 
 ## Persistence decision
 
-Future personal draft state will use browser-local persistence through a storage adapter backed by `localStorage`. State therefore will not automatically be shared between different browsers or devices. Export and import can later provide an explicit transfer mechanism. Phase 4 deliberately adds no storage: manager setup and `completedPickCount` are demonstration state that reset on refresh.
+`src/storage/draftSessionStorage.ts` owns the versioned `fpl-draft-assistant:v1` localStorage contract. It persists only the ordered managers, `userManagerId`, and authoritative pick history. Completed-pick count, current picker, drafted IDs, availability, and rosters are recomputed from the schedule and history.
+
+Malformed JSON, unsupported schema versions, invalid manager configuration, and invalid persisted history fail closed. The UI offers a fresh-session reset instead of silently accepting the state. Data is local to one browser/origin; there is no database, account, cross-device sync, or backup import/export.
 
 ## Deployment model
 
@@ -56,11 +58,11 @@ The production request flow is:
 Browser -> GET /api/fpl -> FPL client -> official FPL Draft endpoint
 ```
 
-The Vite development server does not execute root Vercel Functions. Deterministic tests exercise the integration modules directly. Developers who need end-to-end local function execution may use a separately installed Vercel CLI and `vercel dev`; the CLI is not a project dependency.
+The Vite development configuration mounts the same `createFplHandler` implementation at `/api/fpl` for local Draft Room testing. Production continues to use the root Vercel Function. No separate proxy implementation or browser-side direct upstream call is introduced.
 
 ## External FPL data
 
-The integration currently retrieves `https://draft.premierleague.com/api/bootstrap-static` on the server. It was live-verified at `2026-08-17T11:32:17.936Z` with HTTP 200 and an `application/json` response containing 587 players, 20 teams, and four position definitions.
+The integration retrieves `https://draft.premierleague.com/api/bootstrap-static` on the server. The Phase 6 verification observed 590 normalized current players. Live counts are response-specific evidence, not a schema or availability guarantee.
 
 The endpoint is an undocumented or insufficiently documented implementation detail. Its availability and schema are not guaranteed. For that reason:
 
@@ -101,23 +103,25 @@ The assistant models the Wheel of Names or other order supplied by the user. It 
 
 Scheduling progress is represented only by `completedPickCount`: zero means no selections are complete, and schedule length means the draft is complete. The current slot is the schedule element immediately after the completed prefix; it is deliberately `null` at completion. Manager pick numbers, consecutive manager turns, and Turn Horizon are derived by inspecting this generated schedule rather than duplicating snake-position formulas. See [SNAKE_DRAFT_LOGIC.md](SNAKE_DRAFT_LOGIC.md) for exact off-by-one semantics.
 
-## Future Best Fit boundary
+## Ranking and Best Fit boundary
 
-A future Best Fit service may consume schedule context without putting recommendation logic inside the snake engine:
+The Phase 6 recommendation domain consumes schedule context without putting recommendation logic inside the snake engine:
 
 ```text
-Available Player Data
+Consensus-ranked Available Player Data
         +
 User Roster
         +
-Draft Board
-        +
 Turn Horizon
         ↓
-Best Fit
+Best Available + deterministic Best Fit
 ```
 
-Phase 4 implements only Turn Horizon from that input set. It does not implement a roster, player selections, pair scoring, recommendations, or choose a scoring model.
+Official Draft rank remains the primary evidence. `DraftFitHeuristicV1` uses 70% official-rank percentile and 30% historical-model-rank percentile when an exact, trustworthy model signal exists; otherwise it uses 100% official rank. Those weights are a transparent MVP choice, not optimized probabilities.
+
+Best Fit removes roster-illegal candidates, creates a Turn-Horizon-sized shortlist, and stress-tests positional depth by consuming the next `N` top consensus options, where `N` is the opponent selections before the user's following turn. Recommendation ordering uses current consensus quality plus 0.35 times the resulting position drop-off. Deterministic tie-breakers fall back to consensus rank, display name, and player ID. The output contains facts and fixed explanations; it has no probability or survival claim.
+
+At a consecutive edge turn such as Picks 12 and 13, the scenario looks beyond the pair to the following user turn at Pick 24. The API remains individual-pick based, while authoritative history and immutable schedule context permit later Best Pair evaluation without changing state ownership. See [DRAFT_NIGHT_MVP.md](DRAFT_NIGHT_MVP.md).
 
 ## Future data-enrichment research
 
@@ -132,9 +136,9 @@ A later research phase may evaluate verified sources and precise contracts for e
 - Waivers
 - Season-long league management
 - A remote database
-- AI recommendations
-- A fabricated projection model
-- Football player selection or roster state in the Phase 4 schedule engine
+- AI-generated recommendation text
+- A fabricated projection for cold-start players
+- Pair optimization in the Phase 6 MVP
 
 ## Verification philosophy
 

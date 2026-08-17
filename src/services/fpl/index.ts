@@ -2,3 +2,4 @@ export { FPL_DRAFT_BOOTSTRAP_ENDPOINT, retrieveFplPlayerData } from './client.ts
 export type { FplPlayerDataResponse } from './contract.ts'
 export { FplDataError } from './errors.ts'
 export type { FplDataErrorCode } from './errors.ts'
+export { loadFplPlayerData } from './browserClient.ts'

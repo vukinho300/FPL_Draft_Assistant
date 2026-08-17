@@ -79,3 +79,9 @@ Deterministic random seed: `20250817`. No trained model binary is committed. XGB
 Validation determines whether a dataset/configuration is trustworthy and can block it. Cleaning transforms values only after their meaning is established. The approved transformations are narrow and logged: remove only byte-equivalent player-fixture copies, normalize the documented legacy goalkeeper label, and exclude assistant-manager chip observations from the player dataset. Serious conflicts, broken references, join explosion, malformed domains, or stale provenance are not cleaned around.
 
 The checked-in `final_holdout_candidate.json` remains the original pre-2025/26 Phase 5 choice. Phase 5A/5B rerun that frozen choice against corrected/validated data; they do not retune after viewing the holdout. The original artifact baseline is commit `bf5bc2c278b4138caade3251528bd10216ee9b5d`. For future families, 2025/26 is a previously exposed external benchmark; unseen 2026/27 data is required for prospective validation.
+
+## Phase 6 fixed MVP signal
+
+`python -m research.scripts.build_current_draft_rankings` is a deliberately narrow production bridge, not Phase 5C. It evaluates position-specific Ridge (`alpha=10`) with only `FPL_BASE`, `FPL_EXPECTED`, and `FPL_ICT` on the fixed 2023/24 and 2024/25 chronological folds. Only after that gate passes does it train the same configuration through 2025/26 and generate the small `src/data/currentDraftRankingSignals.json` artifact.
+
+Current-player identity requires an exact stable FPL `code` match to 2025/26 history. Unmatched, ambiguous, conflicting, and insufficient-history players receive no invented score. The committed artifact omits historical codes, raw data, and fitted model binaries; it contains only production Draft player IDs, model ranks/signals, controlled availability reasons, and provenance metadata. The web app treats this as secondary evidence beneath official Draft rank.

@@ -20,6 +20,8 @@ All 587 live player records had unique positive integer IDs, valid team referenc
 
 This snapshot is evidence about one response, not a stability guarantee. The endpoint and schema are undocumented or insufficiently documented and may change without notice.
 
+The later Phase 6 live verification observed 590 normalized 2026/27 players. That count is intentionally reported separately: live bootstrap membership changes, while the normalized contract and fail-fast validation rules below remain the stable project boundary.
+
 ## Project response
 
 `GET /api/fpl` returns a project-owned contract:
