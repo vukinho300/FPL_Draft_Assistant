@@ -1,0 +1,46 @@
+.app-shell {
+  width: min(42rem, calc(100% - 3rem));
+  padding: 3rem;
+  border: 1px solid #dce5df;
+  border-radius: 1.25rem;
+  background: #ffffff;
+  box-shadow: 0 1.5rem 4rem rgb(18 65 40 / 10%);
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  color: #287a4a;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  color: #123526;
+  font-size: clamp(2.25rem, 8vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.status {
+  margin: 1.5rem 0 0;
+  color: #1d5c38;
+  font-size: 1.25rem;
+  font-weight: 650;
+}
+
+.description {
+  max-width: 34rem;
+  margin: 0.75rem auto 0;
+  color: #4d6257;
+  line-height: 1.65;
+}
+
+@media (max-width: 36rem) {
+  .app-shell {
+    padding: 2.25rem 1.5rem;
+  }
+}
