@@ -6,7 +6,7 @@ FPL Draft Assistant is a personal companion application for an official Fantasy 
 
 ## Scope
 
-The product scope is a draft-night companion: manager setup, a local draft board, available-player discovery, pick tracking, history, undo, and backup are planned. The current implementation establishes the player-data boundary and deterministic candidate-board domain, but it does not implement live draft state or player selection.
+The product scope is a draft-night companion: manager setup, a local draft board, available-player discovery, pick tracking, history, undo, and backup are planned. The current implementation establishes the player-data boundary, deterministic candidate-board domain, manager configuration, and snake-schedule context. It does not implement live draft state or football player selection.
 
 ## Initial stack
 
@@ -30,7 +30,7 @@ React UI
 
 External response structures stop at the adapter boundary. Components consume stable project-owned models, while important calculations remain pure and testable independently of React. `src/services/fpl` validates the small upstream surface it needs and maps it into the `src/domain` Player model.
 
-`src/domain/league.ts` owns the official roster contract, supported league-size validation, and per-position demand/target arithmetic. `src/domain/draftBoard.ts` consumes only `Player[]` to derive deterministic rank context and candidate-board entries. Neither module imports raw FPL response types or React.
+`src/domain/league.ts` owns the official roster contract, supported league-size validation, and per-position demand/target arithmetic. `src/domain/draftBoard.ts` consumes only `Player[]` to derive deterministic rank context and candidate-board entries. `src/domain/manager.ts` owns manager identity and configuration validation. `src/domain/draftSchedule.ts` consumes validated manager configuration to generate the snake schedule, current picker, manager turns, and Turn Horizon. None of these modules imports raw FPL response types or React.
 
 Planned source areas are:
 
@@ -44,7 +44,7 @@ Only a source area needed by the current phase should be created.
 
 ## Persistence decision
 
-Future personal draft state will use browser-local persistence through a storage adapter backed by `localStorage`. State therefore will not automatically be shared between different browsers or devices. Export and import can later provide an explicit transfer mechanism.
+Future personal draft state will use browser-local persistence through a storage adapter backed by `localStorage`. State therefore will not automatically be shared between different browsers or devices. Export and import can later provide an explicit transfer mechanism. Phase 4 deliberately adds no storage: manager setup and `completedPickCount` are demonstration state that reset on refresh.
 
 ## Deployment model
 
@@ -89,7 +89,39 @@ Players are ordered by:
 
 Null-ranked players follow every ranked player and retain `null`; no artificial official rank is created. `positionRank`, positional demand, candidate target, and core-demand membership are project-derived context. They are not official fields, projections, VOR, or availability assessments.
 
-The board validates that each position has enough input players to meet its candidate target. If not, it throws a typed error containing the position, target, and available count instead of returning a silently incomplete pool. See [DRAFT_BOARD_LOGIC.md](DRAFT_BOARD_LOGIC.md) for formulas and examples.
+The board validates that each position has enough input players to meet its candidate target. If not, it throws a typed error containing the position, required target, and available count instead of returning a silently incomplete pool. See [DRAFT_BOARD_LOGIC.md](DRAFT_BOARD_LOGIC.md) for formulas and examples.
+
+## Manager and snake-schedule domain
+
+A `Manager` has a project-owned string ID and a visible display name. Identity is independent of that label, so a rename does not create a new manager. A `DraftConfiguration` preserves the explicitly supplied first-round order, identifies the user's manager, and records the existing 15-player squad size as its round count.
+
+Validation reuses the supported 2–16 manager range. IDs must be non-empty and unique, labels must be non-empty after trimming, and `userManagerId` must resolve. Display labels must also be unique after trimming and lower-case normalization. That last requirement is a **project UX rule**, not an official FPL rule; duplicate visible labels would be ambiguous during manual draft-night operation.
+
+The assistant models the Wheel of Names or other order supplied by the user. It never modifies the official FPL Draft league or its server-side order. Odd rounds retain the supplied order and even rounds reverse it. The engine generates 15 rounds using `FPL_DRAFT_SQUAD_SIZE` and returns one-based project-owned `DraftSlot` values. For `N` managers the schedule length is `N × 15`.
+
+Scheduling progress is represented only by `completedPickCount`: zero means no selections are complete, and schedule length means the draft is complete. The current slot is the schedule element immediately after the completed prefix; it is deliberately `null` at completion. Manager pick numbers, consecutive manager turns, and Turn Horizon are derived by inspecting this generated schedule rather than duplicating snake-position formulas. See [SNAKE_DRAFT_LOGIC.md](SNAKE_DRAFT_LOGIC.md) for exact off-by-one semantics.
+
+## Future Best Fit boundary
+
+A future Best Fit service may consume schedule context without putting recommendation logic inside the snake engine:
+
+```text
+Available Player Data
+        +
+User Roster
+        +
+Draft Board
+        +
+Turn Horizon
+        ↓
+Best Fit
+```
+
+Phase 4 implements only Turn Horizon from that input set. It does not implement a roster, player selections, pair scoring, recommendations, or choose a scoring model.
+
+## Future data-enrichment research
+
+A later research phase may evaluate verified sources and precise contracts for expected goals, expected assists, expected goal involvement, ICT components, minutes and starts, defensive contributions, player availability, and fixture difficulty. These are roadmap questions, not current normalized fields. Phase 4 adds no FBref integration, scraping, projections, health assessment, or enrichment code.
 
 ## Non-goals for v1
 
@@ -102,6 +134,7 @@ The board validates that each position has enough input players to meet its cand
 - A remote database
 - AI recommendations
 - A fabricated projection model
+- Football player selection or roster state in the Phase 4 schedule engine
 
 ## Verification philosophy
 
