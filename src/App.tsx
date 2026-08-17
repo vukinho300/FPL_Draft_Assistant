@@ -5,12 +5,15 @@ import { currentDraftRankingArtifact } from './data/currentDraftRanking.ts'
 import { calculateBestFit } from './domain/bestFit.ts'
 import { calculateBestPair } from './domain/bestPair.ts'
 import {
+  canAddRosterPosition,
   deriveDraftState,
   DraftPickError,
+  getRosterPositionNeeds,
   recordDraftPick,
   undoLastDraftPick,
   validatePickHistory,
   type DraftPick,
+  type ManagerRoster,
 } from './domain/draftState.ts'
 import {
   filterAvailableRankedPlayers,
@@ -110,6 +113,63 @@ function resizeManagers(current: readonly Manager[], count: number): Manager[] {
   return next
 }
 
+interface TeamsViewProps {
+  readonly configuration: DraftConfiguration
+  readonly rosters: Readonly<Record<string, ManagerRoster>> | undefined
+}
+
+function TeamsView({ configuration, rosters }: TeamsViewProps) {
+  return (
+    <section className="teams-page" aria-labelledby="teams-title">
+      <div className="teams-heading">
+        <div>
+          <p className="section-label">Read-only league view</p>
+          <h2 id="teams-title">Every manager's squad</h2>
+        </div>
+        <p>Derived from recorded picks. Empty slots show what each manager still needs.</p>
+      </div>
+      <div className="teams-grid">
+        {configuration.managers.map((manager) => {
+          const roster = rosters?.[manager.id]
+          return (
+            <article className="team-card" key={manager.id}>
+              <header>
+                <div><span>Manager</span><h3>{manager.displayName}</h3></div>
+                <strong>{roster?.players.length ?? 0}/15</strong>
+              </header>
+              <div className="team-position-counts">
+                {POSITION_ORDER.map((position) => (
+                  <span key={position}>{position} {roster?.positionCounts[position] ?? 0}/{ROSTER_REQUIREMENTS[position]}</span>
+                ))}
+              </div>
+              <div className="team-squad">
+                {POSITION_ORDER.map((position) => {
+                  const positionPlayers = roster?.players.filter((player) => player.position === position) ?? []
+                  return (
+                    <section className="team-position" key={position} aria-label={`${manager.displayName} ${position}`}>
+                      <h4>{position}</h4>
+                      <ol>
+                        {Array.from({ length: ROSTER_REQUIREMENTS[position] }, (_, index) => {
+                          const player = positionPlayers[index]
+                          return (
+                            <li className={player === undefined ? 'empty' : ''} key={`${manager.id}-${position}-${index + 1}`}>
+                              <span>{index + 1}</span>{player?.displayName ?? 'Empty slot'}
+                            </li>
+                          )
+                        })}
+                      </ol>
+                    </section>
+                  )
+                })}
+              </div>
+            </article>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
 function App() {
   const initial = useMemo(initialSession, [])
   const [managers, setManagers] = useState<Manager[]>(initial.managers)
@@ -123,6 +183,7 @@ function App() {
   const [search, setSearch] = useState('')
   const [positionFilter, setPositionFilter] = useState<Position | 'ALL'>('ALL')
   const [actionError, setActionError] = useState<string | null>(null)
+  const [activeView, setActiveView] = useState<'draft' | 'teams'>('draft')
 
   useEffect(() => {
     let active = true
@@ -261,7 +322,14 @@ function App() {
       setPickHistory(recordDraftPick(draftModel.schedule, pickHistory, playerData.players, playerId))
       setActionError(null)
     } catch (error) {
-      setActionError(error instanceof DraftPickError ? error.message : 'Unable to record this pick')
+      if (error instanceof DraftPickError && error.code === 'ROSTER_POSITION_FULL') {
+        const position = playerData.players.find((player) => player.id === playerId)?.position
+        setActionError(
+          `${currentManagerName ?? 'Current manager'} has already filled ${position ?? 'that position'}. Choose a player from a position still needed.`,
+        )
+      } else {
+        setActionError(error instanceof DraftPickError ? error.message : 'Unable to record this pick')
+      }
     }
   }
 
@@ -287,6 +355,12 @@ function App() {
     ? 'My manager'
     : displayName(draftModel.configuration, userManagerId)
   const userRoster = draftModel.draftState?.rosters[userManagerId]
+  const currentRoster = draftModel.currentSlot === null
+    ? undefined
+    : draftModel.draftState?.rosters[draftModel.currentSlot.managerId]
+  const currentRosterNeeds = currentRoster === undefined
+    ? null
+    : getRosterPositionNeeds(currentRoster.positionCounts)
   const modelJoinCount = playerData?.players.filter((player) =>
     currentDraftRankingArtifact.players.some(
       (signal) => signal.draftPlayerId === player.id && signal.modelSignalAvailable,
@@ -298,9 +372,11 @@ function App() {
       <header className="draft-header">
         <div>
           <p className="eyebrow">Phase 6.1 · Draft-night MVP</p>
-          <h1>Draft Room</h1>
+          <h1>{activeView === 'draft' ? 'Draft Room' : 'Teams'}</h1>
           <p className="header-note">
-            Official Draft rank leads. Best Fit and Best Pair are deterministic depth stress tests, not survival predictions.
+            {activeView === 'draft'
+              ? 'Official Draft rank leads. Best Fit and Best Pair are deterministic depth stress tests, not survival predictions.'
+              : 'Read-only squads derived from the same saved pick history.'}
           </p>
         </div>
         <div className="live-status" aria-live="polite">
@@ -310,6 +386,11 @@ function App() {
             : `${playerData.playerCount} live players · ${modelJoinCount} model signals`}
         </div>
       </header>
+
+      <nav className="app-navigation" aria-label="Primary">
+        <button type="button" className={activeView === 'draft' ? 'active' : ''} aria-current={activeView === 'draft' ? 'page' : undefined} onClick={() => setActiveView('draft')}>Draft Room</button>
+        <button type="button" className={activeView === 'teams' ? 'active' : ''} aria-current={activeView === 'teams' ? 'page' : undefined} onClick={() => setActiveView('teams')}>Teams</button>
+      </nav>
 
       {persistenceError !== null && (
         <section className="alert error-alert" role="alert">
@@ -327,6 +408,8 @@ function App() {
 
       {draftModel.configuration !== null && draftModel.schedule !== null && (
         <>
+          {activeView === 'draft' ? (
+          <>
           <section className="draft-command-bar" aria-label="Current draft state">
             <article className="command-primary">
               <span>Current pick</span>
@@ -344,7 +427,19 @@ function App() {
               <small>{draftModel.userPickNumbers.join(', ')}</small>
             </article>
             <button className="undo-button" type="button" onClick={undo} disabled={pickHistory.length === 0}>Undo last pick</button>
+            <div className="current-manager-needs">
+              <div>
+                <span>Current manager needs</span>
+                <strong>{currentManagerName ?? 'Draft complete'}</strong>
+              </div>
+              {POSITION_ORDER.map((position) => {
+                const remaining = currentRosterNeeds?.[position] ?? 0
+                return <b className={remaining === 0 ? 'full' : ''} key={position}>{position} ×{remaining}</b>
+              })}
+            </div>
           </section>
+
+          {actionError !== null && <section className="current-pick-error" role="alert"><strong>Pick not recorded.</strong> {actionError}</section>}
 
           <div className="draft-layout">
             <section className="board-panel" aria-labelledby="board-title">
@@ -370,22 +465,24 @@ function App() {
                   <table>
                     <thead><tr><th>MVP</th><th>Player</th><th>Pos</th><th>Club</th><th>Official</th><th>Model</th><th><span className="sr-only">Record pick</span></th></tr></thead>
                     <tbody>
-                      {visibleBoard.map((entry) => (
-                        <tr key={entry.player.id}>
+                      {visibleBoard.map((entry) => {
+                        const positionAvailable = currentRoster !== undefined && canAddRosterPosition(currentRoster.positionCounts, entry.player.position)
+                        return (
+                        <tr key={entry.player.id} className={positionAvailable ? '' : 'position-full'}>
                           <td className="rank-cell">{entry.consensusRank}</td>
                           <td><strong>{entry.player.displayName}</strong></td>
                           <td><span className={`position-chip ${entry.player.position.toLowerCase()}`}>{entry.player.position}</span></td>
                           <td>{entry.player.club.shortName}</td>
                           <td>{entry.player.officialDraftRank ?? '—'}</td>
                           <td className="model-cell">{entry.modelSignal?.modelSignalAvailable ? entry.modelSignal.modelRank : '—'}</td>
-                          <td><button className="draft-button" type="button" onClick={() => recordPlayer(entry.player.id)} disabled={draftModel.currentSlot === null} aria-label={`Draft ${entry.player.displayName} for ${currentManagerName ?? 'current manager'}`}>Draft</button></td>
+                          <td><button className="draft-button" type="button" onClick={() => recordPlayer(entry.player.id)} disabled={draftModel.currentSlot === null || !positionAvailable} aria-label={positionAvailable ? `Draft ${entry.player.displayName} for ${currentManagerName ?? 'current manager'}` : `${entry.player.position} full for ${currentManagerName ?? 'current manager'}`}>{positionAvailable ? 'Draft' : 'Full'}</button></td>
                         </tr>
-                      ))}
+                        )
+                      })}
                     </tbody>
                   </table>
                 </div>
               )}
-              {actionError !== null && <p className="inline-error" role="alert">{actionError}</p>}
             </section>
 
             <aside className="decision-rail">
@@ -498,6 +595,11 @@ function App() {
               <p>Changing manager count or order clears pick history. Renaming preserves manager identity.</p>
             </div>
           </details>
+
+          </>
+          ) : (
+            <TeamsView configuration={draftModel.configuration} rosters={draftModel.draftState?.rosters} />
+          )}
 
           <footer><p>Model artifact: {currentDraftRankingArtifact.targetSeason} · {currentDraftRankingArtifact.modelSignalCount} exact historical signals · quality {currentDraftRankingArtifact.qualityStatus.toLowerCase()} · leakage {currentDraftRankingArtifact.leakageStatus.toLowerCase()} · sanity {currentDraftRankingArtifact.modelSanityStatus.toLowerCase()}.</p></footer>
         </>
