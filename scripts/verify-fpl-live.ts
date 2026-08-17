@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+
 import {
   FPL_DRAFT_BOOTSTRAP_ENDPOINT,
   FplDataError,
@@ -6,6 +8,21 @@ import {
 
 try {
   const result = await retrieveFplPlayerData()
+  const artifact = JSON.parse(
+    readFileSync(
+      new URL('../src/data/currentDraftRankingSignals.json', import.meta.url),
+      'utf8',
+    ),
+  ) as {
+    players: Array<{ draftPlayerId: string; modelSignalAvailable: boolean }>
+  }
+  const livePlayerIds = new Set(result.players.map((player) => player.id))
+  const availableSignals = artifact.players.filter(
+    ({ modelSignalAvailable }) => modelSignalAvailable,
+  )
+  const joinedSignals = availableSignals.filter(({ draftPlayerId }) =>
+    livePlayerIds.has(draftPlayerId),
+  )
   const positionCounts = Object.fromEntries(
     ['GK', 'DEF', 'MID', 'FWD'].map((position) => [
       position,
@@ -24,6 +41,11 @@ try {
         playersWithOfficialDraftRank: result.players.filter(
           (player) => player.officialDraftRank !== null,
         ).length,
+        playersWithNullOfficialDraftRank: result.players.filter(
+          (player) => player.officialDraftRank === null,
+        ).length,
+        modelSignalCount: joinedSignals.length,
+        unmatchedModelSignalCount: availableSignals.length - joinedSignals.length,
         rejectedOrSkippedRecords: 0,
       },
       null,

@@ -154,7 +154,7 @@ def player_season_universe(gw1: pd.DataFrame) -> pd.DataFrame:
     return universe
 
 
-def _position_prior_rate(history: pd.DataFrame, position: str) -> float:
+def position_prior_rate(history: pd.DataFrame, position: str) -> float:
     candidates = history.loc[(history["position"] == position) & (history["minutes"] >= 450)].copy()
     if candidates.empty:
         candidates = history.loc[history["minutes"] >= 450].copy()
@@ -244,7 +244,7 @@ def build_draft_day_dataset(
     prior_for_rates = prior_aggregate.rename(
         columns={"season_points_prior": "total_points", "season_minutes_prior": "minutes", "prior_position": "position"}
     )
-    prior_rates = {position: _position_prior_rate(prior_for_rates, position) for position in ("GK", "DEF", "MID", "FWD")}
+    prior_rates = {position: position_prior_rate(prior_for_rates, position) for position in ("GK", "DEF", "MID", "FWD")}
     minutes = result["season_minutes_prior"].fillna(0.0)
     points = result["season_points_prior"].fillna(0.0)
     position_prior = result["position"].map(prior_rates).fillna(np.nanmedian(list(prior_rates.values())))
@@ -371,7 +371,7 @@ def build_inseason_dataset(
         rows["ict_fields_missing"] = rows["ict_index_to_date"].isna().astype(float)
         position_rates = {}
         for position in ("GK", "DEF", "MID", "FWD"):
-            position_rates[position] = _position_prior_rate(
+            position_rates[position] = position_prior_rate(
                 rows.rename(
                     columns={
                         "season_points_to_date": "total_points",
