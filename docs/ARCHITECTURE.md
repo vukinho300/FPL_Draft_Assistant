@@ -139,3 +139,27 @@ A later research phase may evaluate verified sources and precise contracts for e
 ## Verification philosophy
 
 Important calculations must be deterministic and covered by focused unit tests. Tests should use the smallest fixtures that demonstrate behavior, keep external integration at explicit boundaries, and avoid large fabricated player datasets.
+
+## Phase 5 offline research boundary
+
+Phase 5 adds a Python-only research layer without changing the production dependency graph:
+
+```text
+Historical external data
+        ↓
+Research ingestion + provenance
+        ↓
+Leakage-safe historical features
+        ↓
+Chronological backtesting
+        ↓
+Evidence
+        ↓
+Future production enrichment
+```
+
+The layer lives under `research/`; pandas, NumPy, SciPy and scikit-learn are research-only dependencies and do not ship in the React/Vercel build. Raw data, processed frames, environments and model binaries are gitignored. Committed artifacts are acquisition/feature/model code, small deterministic fixtures, configs, checksums, aggregate metrics and reports.
+
+Draft-day and in-season targets are separate. Historical FPL `code` is the only authoritative cross-season player key. Features are cutoff-aware, preprocessing is fitted inside chronological training folds, and 2025/26 is a locked holdout whose config was frozen before target evaluation. Optional source failures degrade the experiment rather than becoming production dependencies or scraping escalation.
+
+Research conclusions do not enter `src/domain/player.ts` and are not a Best Fit implementation. A future phase may design a production enrichment adapter after reviewing the evidence, source stability, scoring-regime changes and cold-start limitations.
