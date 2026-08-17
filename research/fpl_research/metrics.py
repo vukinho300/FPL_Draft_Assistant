@@ -28,7 +28,11 @@ def ranking_metrics(actual: Iterable[float], predicted: Iterable[float], ks: tup
     y_pred = np.asarray(list(predicted), dtype=float)
     if len(y_true) == 0:
         raise ValueError("cannot score an empty ranking")
-    correlation = spearmanr(y_true, y_pred).statistic
+    correlation = (
+        math.nan
+        if np.unique(y_true).size < 2 or np.unique(y_pred).size < 2
+        else spearmanr(y_true, y_pred).statistic
+    )
     result: dict[str, float] = {"spearman": 0.0 if np.isnan(correlation) else float(correlation)}
     relevance = np.maximum(y_true, 0.0)
     for k in ks:

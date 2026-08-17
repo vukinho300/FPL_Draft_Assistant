@@ -48168,7 +48168,7 @@
     "missingness and distributions",
     "temporal and leakage"
   ],
-  "generated_at": "2026-08-17T16:50:34.605217+00:00",
+  "generated_at": "2026-08-17T18:55:03.361404+00:00",
   "identity_audits": [
     {
       "ambiguous_mappings": 0,
@@ -52082,6 +52082,146 @@
       "transformation": "quality-approved inputs -> inseason_h5_2025-26 feature dataset"
     }
   ],
+  "sample_key_audits": [
+    {
+      "dataset": "draft_day_2021-22",
+      "rows": 554,
+      "status": "PASS",
+      "unique_sample_keys": 554
+    },
+    {
+      "dataset": "draft_day_2022-23",
+      "rows": 573,
+      "status": "PASS",
+      "unique_sample_keys": 573
+    },
+    {
+      "dataset": "draft_day_2023-24",
+      "rows": 658,
+      "status": "PASS",
+      "unique_sample_keys": 658
+    },
+    {
+      "dataset": "draft_day_2024-25",
+      "rows": 616,
+      "status": "PASS",
+      "unique_sample_keys": 616
+    },
+    {
+      "dataset": "draft_day_2025-26",
+      "rows": 690,
+      "status": "PASS",
+      "unique_sample_keys": 690
+    },
+    {
+      "dataset": "inseason_h1_2020-21",
+      "rows": 21405,
+      "status": "PASS",
+      "unique_sample_keys": 21405
+    },
+    {
+      "dataset": "inseason_h1_2021-22",
+      "rows": 22288,
+      "status": "PASS",
+      "unique_sample_keys": 22288
+    },
+    {
+      "dataset": "inseason_h1_2022-23",
+      "rows": 22588,
+      "status": "PASS",
+      "unique_sample_keys": 22588
+    },
+    {
+      "dataset": "inseason_h1_2023-24",
+      "rows": 26098,
+      "status": "PASS",
+      "unique_sample_keys": 26098
+    },
+    {
+      "dataset": "inseason_h1_2024-25",
+      "rows": 23945,
+      "status": "PASS",
+      "unique_sample_keys": 23945
+    },
+    {
+      "dataset": "inseason_h1_2025-26",
+      "rows": 26059,
+      "status": "PASS",
+      "unique_sample_keys": 26059
+    },
+    {
+      "dataset": "inseason_h3_2020-21",
+      "rows": 19996,
+      "status": "PASS",
+      "unique_sample_keys": 19996
+    },
+    {
+      "dataset": "inseason_h3_2021-22",
+      "rows": 20818,
+      "status": "PASS",
+      "unique_sample_keys": 20818
+    },
+    {
+      "dataset": "inseason_h3_2022-23",
+      "rows": 21048,
+      "status": "PASS",
+      "unique_sample_keys": 21048
+    },
+    {
+      "dataset": "inseason_h3_2023-24",
+      "rows": 24378,
+      "status": "PASS",
+      "unique_sample_keys": 24378
+    },
+    {
+      "dataset": "inseason_h3_2024-25",
+      "rows": 22383,
+      "status": "PASS",
+      "unique_sample_keys": 22383
+    },
+    {
+      "dataset": "inseason_h3_2025-26",
+      "rows": 24381,
+      "status": "PASS",
+      "unique_sample_keys": 24381
+    },
+    {
+      "dataset": "inseason_h5_2020-21",
+      "rows": 18598,
+      "status": "PASS",
+      "unique_sample_keys": 18598
+    },
+    {
+      "dataset": "inseason_h5_2021-22",
+      "rows": 19360,
+      "status": "PASS",
+      "unique_sample_keys": 19360
+    },
+    {
+      "dataset": "inseason_h5_2022-23",
+      "rows": 19523,
+      "status": "PASS",
+      "unique_sample_keys": 19523
+    },
+    {
+      "dataset": "inseason_h5_2023-24",
+      "rows": 22663,
+      "status": "PASS",
+      "unique_sample_keys": 22663
+    },
+    {
+      "dataset": "inseason_h5_2024-25",
+      "rows": 20822,
+      "status": "PASS",
+      "unique_sample_keys": 20822
+    },
+    {
+      "dataset": "inseason_h5_2025-26",
+      "rows": 22719,
+      "status": "PASS",
+      "unique_sample_keys": 22719
+    }
+  ],
   "schema_drift": [
     {
       "current_season": "2021-22",
@@ -52784,12 +52924,13 @@
   "target_validation": [
     {
       "blank_league_gameweeks": [],
-      "boundary": "features use GW <= t; target uses t < GW <= t+h",
+      "boundary": "features use GW <= t; target uses t < GW <= t+h and actual kickoff > prediction cutoff",
       "double_gameweek_player_gw_groups": 1437,
       "double_gameweek_rows_preserved": 2913,
+      "gameweek_integer_violations": 0,
       "horizon_unit": "gameweeks",
       "no_appearance": "left target join becomes zero; missing source fields remain missing",
-      "rescheduled_fixtures": "count in the event/GW assigned by fixture metadata",
+      "rescheduled_fixtures": "event/GW defines the horizon, but actual kickoff chronology must remain strictly future",
       "season": "2020-21",
       "status": "PASS",
       "valid_horizons": [
@@ -52800,12 +52941,13 @@
     },
     {
       "blank_league_gameweeks": [],
-      "boundary": "features use GW <= t; target uses t < GW <= t+h",
+      "boundary": "features use GW <= t; target uses t < GW <= t+h and actual kickoff > prediction cutoff",
       "double_gameweek_player_gw_groups": 2217,
       "double_gameweek_rows_preserved": 4434,
+      "gameweek_integer_violations": 0,
       "horizon_unit": "gameweeks",
       "no_appearance": "left target join becomes zero; missing source fields remain missing",
-      "rescheduled_fixtures": "count in the event/GW assigned by fixture metadata",
+      "rescheduled_fixtures": "event/GW defines the horizon, but actual kickoff chronology must remain strictly future",
       "season": "2021-22",
       "status": "PASS",
       "valid_horizons": [
@@ -52818,12 +52960,13 @@
       "blank_league_gameweeks": [
         7
       ],
-      "boundary": "features use GW <= t; target uses t < GW <= t+h",
+      "boundary": "features use GW <= t; target uses t < GW <= t+h and actual kickoff > prediction cutoff",
       "double_gameweek_player_gw_groups": 1548,
       "double_gameweek_rows_preserved": 3096,
+      "gameweek_integer_violations": 0,
       "horizon_unit": "gameweeks",
       "no_appearance": "left target join becomes zero; missing source fields remain missing",
-      "rescheduled_fixtures": "count in the event/GW assigned by fixture metadata",
+      "rescheduled_fixtures": "event/GW defines the horizon, but actual kickoff chronology must remain strictly future",
       "season": "2022-23",
       "status": "PASS",
       "valid_horizons": [
@@ -52834,12 +52977,13 @@
     },
     {
       "blank_league_gameweeks": [],
-      "boundary": "features use GW <= t; target uses t < GW <= t+h",
+      "boundary": "features use GW <= t; target uses t < GW <= t+h and actual kickoff > prediction cutoff",
       "double_gameweek_player_gw_groups": 983,
       "double_gameweek_rows_preserved": 1966,
+      "gameweek_integer_violations": 0,
       "horizon_unit": "gameweeks",
       "no_appearance": "left target join becomes zero; missing source fields remain missing",
-      "rescheduled_fixtures": "count in the event/GW assigned by fixture metadata",
+      "rescheduled_fixtures": "event/GW defines the horizon, but actual kickoff chronology must remain strictly future",
       "season": "2023-24",
       "status": "PASS",
       "valid_horizons": [
@@ -52850,12 +52994,13 @@
     },
     {
       "blank_league_gameweeks": [],
-      "boundary": "features use GW <= t; target uses t < GW <= t+h",
+      "boundary": "features use GW <= t; target uses t < GW <= t+h and actual kickoff > prediction cutoff",
       "double_gameweek_player_gw_groups": 364,
       "double_gameweek_rows_preserved": 728,
+      "gameweek_integer_violations": 0,
       "horizon_unit": "gameweeks",
       "no_appearance": "left target join becomes zero; missing source fields remain missing",
-      "rescheduled_fixtures": "count in the event/GW assigned by fixture metadata",
+      "rescheduled_fixtures": "event/GW defines the horizon, but actual kickoff chronology must remain strictly future",
       "season": "2024-25",
       "status": "PASS",
       "valid_horizons": [
@@ -52866,12 +53011,13 @@
     },
     {
       "blank_league_gameweeks": [],
-      "boundary": "features use GW <= t; target uses t < GW <= t+h",
+      "boundary": "features use GW <= t; target uses t < GW <= t+h and actual kickoff > prediction cutoff",
       "double_gameweek_player_gw_groups": 409,
       "double_gameweek_rows_preserved": 818,
+      "gameweek_integer_violations": 0,
       "horizon_unit": "gameweeks",
       "no_appearance": "left target join becomes zero; missing source fields remain missing",
-      "rescheduled_fixtures": "count in the event/GW assigned by fixture metadata",
+      "rescheduled_fixtures": "event/GW defines the horizon, but actual kickoff chronology must remain strictly future",
       "season": "2025-26",
       "status": "PASS",
       "valid_horizons": [
@@ -52879,6 +53025,192 @@
         3,
         5
       ]
+    }
+  ],
+  "temporal_contracts": [
+    {
+      "dataset": "draft_day_2021-22",
+      "feature_after_cutoff": 0,
+      "rows": 554,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "draft_day_2022-23",
+      "feature_after_cutoff": 0,
+      "rows": 573,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "draft_day_2023-24",
+      "feature_after_cutoff": 0,
+      "rows": 658,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "draft_day_2024-25",
+      "feature_after_cutoff": 0,
+      "rows": 616,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "draft_day_2025-26",
+      "feature_after_cutoff": 0,
+      "rows": 690,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h1_2020-21",
+      "feature_after_cutoff": 0,
+      "rows": 21405,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h1_2021-22",
+      "feature_after_cutoff": 0,
+      "rows": 22288,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h1_2022-23",
+      "feature_after_cutoff": 0,
+      "rows": 22588,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h1_2023-24",
+      "feature_after_cutoff": 0,
+      "rows": 26098,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h1_2024-25",
+      "feature_after_cutoff": 0,
+      "rows": 23945,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h1_2025-26",
+      "feature_after_cutoff": 0,
+      "rows": 26059,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h3_2020-21",
+      "feature_after_cutoff": 0,
+      "rows": 19996,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h3_2021-22",
+      "feature_after_cutoff": 0,
+      "rows": 20818,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h3_2022-23",
+      "feature_after_cutoff": 0,
+      "rows": 21048,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h3_2023-24",
+      "feature_after_cutoff": 0,
+      "rows": 24378,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h3_2024-25",
+      "feature_after_cutoff": 0,
+      "rows": 22383,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h3_2025-26",
+      "feature_after_cutoff": 0,
+      "rows": 24381,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h5_2020-21",
+      "feature_after_cutoff": 0,
+      "rows": 18598,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h5_2021-22",
+      "feature_after_cutoff": 0,
+      "rows": 19360,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h5_2022-23",
+      "feature_after_cutoff": 0,
+      "rows": 19523,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h5_2023-24",
+      "feature_after_cutoff": 0,
+      "rows": 22663,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h5_2024-25",
+      "feature_after_cutoff": 0,
+      "rows": 20822,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
+    },
+    {
+      "dataset": "inseason_h5_2025-26",
+      "feature_after_cutoff": 0,
+      "rows": 22719,
+      "status": "PASS",
+      "target_at_or_before_cutoff": 0,
+      "target_end_before_start": 0
     }
   ]
 }

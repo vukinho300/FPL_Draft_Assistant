@@ -1,0 +1,50 @@
+[
+  {
+    "chronological": true,
+    "horizon": 38,
+    "overlap_count": 0,
+    "status": "PASS",
+    "task": "draft_day",
+    "test_rows": 690,
+    "test_season": "2025-26",
+    "test_unique_sample_keys": 690,
+    "training_rows": 2401,
+    "training_unique_sample_keys": 2401
+  },
+  {
+    "chronological": true,
+    "horizon": 1,
+    "overlap_count": 0,
+    "status": "PASS",
+    "task": "inseason",
+    "test_rows": 26059,
+    "test_season": "2025-26",
+    "test_unique_sample_keys": 26059,
+    "training_rows": 116324,
+    "training_unique_sample_keys": 116324
+  },
+  {
+    "chronological": true,
+    "horizon": 3,
+    "overlap_count": 0,
+    "status": "PASS",
+    "task": "inseason",
+    "test_rows": 24381,
+    "test_season": "2025-26",
+    "test_unique_sample_keys": 24381,
+    "training_rows": 108623,
+    "training_unique_sample_keys": 108623
+  },
+  {
+    "chronological": true,
+    "horizon": 5,
+    "overlap_count": 0,
+    "status": "PASS",
+    "task": "inseason",
+    "test_rows": 22719,
+    "test_season": "2025-26",
+    "test_unique_sample_keys": 22719,
+    "training_rows": 100966,
+    "training_unique_sample_keys": 100966
+  }
+]

@@ -9,6 +9,13 @@ import pandas as pd
 
 from research.fpl_research.features import columns_for_groups
 from research.fpl_research.metrics import evaluate_predictions, six_manager_metrics
+from research.fpl_research.model_safety import (
+    ModelInputManifest,
+    audit_train_test_split,
+    make_model_input_manifest,
+    validate_temporal_contract,
+    write_model_input_manifests,
+)
 from research.fpl_research.models import fit_predict
 from research.fpl_research.quality import require_benchmarkable_quality_gate
 from research.scripts.run_development_benchmark import HOLDOUT_CAPABLE_FULL, FPL_CORE, load_dataset, predict_position_specific, result_row
@@ -32,10 +39,18 @@ def load_all(processed: Path, task: str, horizon: int) -> pd.DataFrame:
     return pd.concat([pd.read_pickle(path) for path in paths], ignore_index=True)
 
 
-def predict_with_handling(train, test, model, numeric, categorical, handling):
+def predict_with_handling(train, test, model, numeric, categorical, handling, task, horizon, manifests):
     if handling == "position_specific":
-        return predict_position_specific(train, test, model, numeric, categorical)
-    return fit_predict(train, test, model, numeric, categorical)[0]
+        return predict_position_specific(train, test, model, numeric, categorical, task, horizon, manifests)
+    manifest = make_model_input_manifest(
+        task=task,
+        horizon=horizon,
+        model=model,
+        numeric_features=numeric,
+        categorical_features=categorical,
+    )
+    manifests.append(manifest)
+    return fit_predict(train, test, model, numeric, categorical, manifest=manifest)[0]
 
 
 def main() -> None:
@@ -53,13 +68,17 @@ def main() -> None:
     position_rows = []
     six_rows = []
     cold_rows = []
+    manifests: list[ModelInputManifest] = []
+    split_audits = []
 
     for key, task_config in config["tasks"].items():
         task = task_config["task"]
         horizon = int(task_config["prediction_horizon"])
         data = load_all(processed, task, horizon)
+        validate_temporal_contract(data)
         holdout = data.loc[data["season"] == "2025-26"]
         train = data.loc[data["season"] != "2025-26"]
+        split_audits.append(audit_train_test_split(train, holdout, task) | {"horizon": horizon, "test_season": "2025-26"})
         train_seasons = tuple(sorted(train["season"].unique()))
         draft = task == "draft_day"
         categorical = ["position", "cold_start_category"] if draft else ["position"]
@@ -72,6 +91,9 @@ def main() -> None:
             numeric,
             categorical,
             task_config["position_handling"],
+            task,
+            horizon,
+            manifests,
         )
         selected = result_row(
             selected_prediction,
@@ -127,7 +149,17 @@ def main() -> None:
         }
         for name, (alternative_groups, model_name, handling) in retrospective_configs.items():
             alternative_numeric = columns_for_groups(alternative_groups, draft)
-            prediction = predict_with_handling(train, holdout, model_name, alternative_numeric, categorical, handling)
+            prediction = predict_with_handling(
+                train,
+                holdout,
+                model_name,
+                alternative_numeric,
+                categorical,
+                handling,
+                task,
+                horizon,
+                manifests,
+            )
             row = result_row(
                 prediction,
                 task,
@@ -151,6 +183,10 @@ def main() -> None:
     pd.DataFrame(position_rows).assign(evaluated_at=evaluated_at).to_csv(reports / "holdout_position_results.csv", index=False)
     pd.DataFrame(six_rows).assign(evaluated_at=evaluated_at).to_csv(reports / "holdout_six_manager_results.csv", index=False)
     pd.DataFrame(cold_rows).assign(evaluated_at=evaluated_at).to_csv(reports / "cold_start_results.csv", index=False)
+    write_model_input_manifests(reports / "holdout_feature_manifests.json", manifests)
+    (reports / "holdout_split_audit.json").write_text(
+        json.dumps(split_audits, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     print(holdout.loc[holdout["evaluation_type"] == "SELECTED BEFORE HOLDOUT"].to_string(index=False))
 
 

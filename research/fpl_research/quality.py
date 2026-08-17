@@ -250,6 +250,27 @@ def validate_nonnegative(frame: pd.DataFrame, columns: Iterable[str], dataset: s
             raise DataQualityError(f"{dataset} has {int(negative.sum())} negative {column} values")
 
 
+def validate_gameweek_numbers(
+    frame: pd.DataFrame,
+    column: str = "GW",
+    dataset: str = "gameweek rows",
+) -> pd.Series:
+    """Return integral gameweeks and reject missing, fractional, or out-of-range values."""
+    if column not in frame:
+        raise DataQualityError(f"{dataset} missing required gameweek field {column}")
+    numeric = pd.to_numeric(frame[column], errors="coerce")
+    invalid_numeric = numeric.isna() | ~np.isfinite(numeric)
+    if invalid_numeric.any():
+        raise DataQualityError(f"{dataset} has {int(invalid_numeric.sum())} malformed {column} values")
+    fractional = numeric.mod(1).ne(0)
+    if fractional.any():
+        raise DataQualityError(f"{dataset} has {int(fractional.sum())} non-integral {column} values")
+    out_of_range = ~numeric.between(1, 38)
+    if out_of_range.any():
+        raise DataQualityError(f"{dataset} has {int(out_of_range.sum())} {column} values outside 1 through 38")
+    return numeric.astype("int64")
+
+
 def parse_required_dates(frame: pd.DataFrame, column: str, dataset: str, *, dayfirst: bool = False) -> pd.Series:
     if column not in frame:
         raise DataQualityError(f"{dataset} missing required date {column}")

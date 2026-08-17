@@ -1,6 +1,8 @@
-# Phase 5/5A benchmark results
+# Phase 5/5A/5B benchmark results
 
 All numbers are generated from real archived data, not fixtures. Phase 5A rebuilt every dataset after the blocking quality gate, reran the chronological development benchmark, and reevaluated the original frozen Phase 5 candidate on 2025/26. It did not retune after the holdout had already been observed.
+
+Phase 5B rebuilt and reran the benchmark through explicit temporal contracts, feature manifests, sample-key uniqueness, zero-overlap chronological splits and train-only preprocessing. No historical row violated the new integer-GW or actual-chronology invariants, so benchmark values below are unchanged. Leakage status is **PASS** and model sanity status is **PASS**; real-target results materially outperform fixed-seed shuffled controls.
 
 ## Executive result
 
@@ -82,3 +84,5 @@ Research still supports verified native FPL points, minutes, starts, BPS, expect
 ## Holdout limitation
 
 2025/26 cannot become an untouched holdout again. The quality-corrected run is labelled a re-evaluation of the original frozen candidate, not a new pre-holdout selection. Any future model-choice change—such as pooled versus position-specific one-GW Ridge—needs a fresh prospective season.
+
+For Phase 5C, 2025/26 must be described as a **previously exposed external benchmark**. The first genuinely prospective validation requires unseen 2026/27 data.

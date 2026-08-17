@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from research.fpl_research.data import HistoricalRepository
+from research.fpl_research.model_safety import make_sample_keys, validate_temporal_contract, validate_unique_samples
 from research.fpl_research.odds import asof_team_features
 
 
@@ -109,8 +110,9 @@ def gameweek_target_points(
     cutoff_gw: int,
     horizon: int,
     player_codes: pd.Series,
+    prediction_cutoff: pd.Timestamp | None = None,
 ) -> pd.DataFrame:
-    """Sum fixture rows in gameweeks t < GW <= t+h, preserving DGWs and zero-appearance players."""
+    """Sum future fixture rows in t < GW <= t+h, preserving DGWs and zero appearances."""
     if horizon not in (1, 3, 5):
         raise ValueError("target horizon must be 1, 3 or 5 gameweeks")
     if cutoff_gw < 0:
@@ -119,6 +121,13 @@ def gameweek_target_points(
     if not required.issubset(games):
         raise ValueError(f"target construction missing fields: {sorted(required - set(games))}")
     future = games.loc[(games["GW"] > cutoff_gw) & (games["GW"] <= cutoff_gw + horizon)]
+    if prediction_cutoff is not None:
+        if "kickoff_time" not in future:
+            raise ValueError("chronological target construction requires kickoff_time")
+        cutoff = pd.Timestamp(prediction_cutoff)
+        cutoff = cutoff.tz_localize("UTC") if cutoff.tzinfo is None else cutoff.tz_convert("UTC")
+        kickoff = pd.to_datetime(future["kickoff_time"], errors="raise", utc=True)
+        future = future.loc[kickoff > cutoff]
     totals = (
         ensure_numeric(future, ["total_points"])
         .groupby("code", as_index=False)["total_points"]
@@ -186,7 +195,10 @@ def build_draft_day_dataset(
     prior_games = repository.gameweeks(prior_season)
     universe = player_season_universe(target_gw1)
     universe = universe.rename(columns={"kickoff_time": "cutoff_time"})
-    universe["cutoff_time"] = target_gw1["kickoff_time"].min()
+    target_start = pd.to_datetime(target_games["kickoff_time"], errors="raise", utc=True).min()
+    target_end = pd.to_datetime(target_games["kickoff_time"], errors="raise", utc=True).max()
+    prediction_cutoff = target_start - pd.Timedelta(nanoseconds=1)
+    universe["cutoff_time"] = prediction_cutoff
     target = (
         ensure_numeric(target_games, ["total_points"])
         .groupby("code", as_index=False)["total_points"]
@@ -267,6 +279,13 @@ def build_draft_day_dataset(
     result["season"] = target_season
     result["task"] = "draft_day"
     result["horizon"] = 38
+    result["prediction_cutoff"] = prediction_cutoff
+    result["feature_max_timestamp"] = pd.to_datetime(prior_games["kickoff_time"], errors="raise", utc=True).max()
+    result["target_start_timestamp"] = target_start
+    result["target_end_timestamp"] = target_end
+    result["sample_key"] = make_sample_keys(result, "draft_day")
+    validate_temporal_contract(result)
+    validate_unique_samples(result, "draft_day")
     return result, evidence
 
 
@@ -303,14 +322,16 @@ def build_inseason_dataset(
     odds = repository.odds(season)
     understat, evidence = repository.understat(season) if include_understat else (pd.DataFrame(), pd.DataFrame())
     observed = sorted(int(value) for value in games["GW"].unique())
-    cutoffs = [value for value in observed if minimum_cutoff_gw <= value <= 38 - horizon]
+    maximum_observed_gw = max(observed)
+    cutoffs = [value for value in observed if minimum_cutoff_gw <= value <= maximum_observed_gw - horizon]
     outputs: list[pd.DataFrame] = []
     for cutoff in cutoffs:
         known = games.loc[games["GW"] <= cutoff]
+        prediction_cutoff = pd.to_datetime(known["kickoff_time"], errors="raise", utc=True).max()
         latest = known.sort_values(["code", "GW", "kickoff_time"]).drop_duplicates("code", keep="last")
         rows = latest[["code", "team", "position"]].copy()
         rows["cutoff_gw"] = cutoff
-        rows["cutoff_time"] = known["kickoff_time"].max()
+        rows["cutoff_time"] = prediction_cutoff
         cumulative = aggregate_stats(known)
         cumulative = cumulative.rename(
             columns={
@@ -364,7 +385,18 @@ def build_inseason_dataset(
             rows["season_points_to_date"].fillna(0.0) + prior * 5.0
         ) * 90.0 / (rows["season_minutes_to_date"].fillna(0.0) + 450.0)
 
-        target = gameweek_target_points(games, cutoff_gw=cutoff, horizon=horizon, player_codes=rows["code"])
+        target_window = games.loc[
+            (games["GW"] > cutoff)
+            & (games["GW"] <= cutoff + horizon)
+            & (pd.to_datetime(games["kickoff_time"], errors="raise", utc=True) > prediction_cutoff)
+        ]
+        target = gameweek_target_points(
+            games,
+            cutoff_gw=cutoff,
+            horizon=horizon,
+            player_codes=rows["code"],
+            prediction_cutoff=prediction_cutoff,
+        )
         rows = rows.merge(target, on="code", validate="one_to_one")
         rows = asof_team_features(rows, odds)
         if include_understat:
@@ -376,6 +408,23 @@ def build_inseason_dataset(
         rows["season"] = season
         rows["task"] = "inseason"
         rows["horizon"] = horizon
+        rows["prediction_cutoff"] = prediction_cutoff
+        rows["feature_max_timestamp"] = prediction_cutoff
+        if target_window.empty:
+            # A league-wide blank horizon has a real zero target but no fixture timestamp.
+            # The strict post-cutoff sentinel marks that empty interval without inventing an event.
+            target_start = prediction_cutoff + pd.Timedelta(nanoseconds=1)
+            target_end = target_start
+        else:
+            target_times = pd.to_datetime(target_window["kickoff_time"], errors="raise", utc=True)
+            target_start = target_times.min()
+            target_end = target_times.max()
+        rows["target_has_observations"] = not target_window.empty
+        rows["target_start_timestamp"] = target_start
+        rows["target_end_timestamp"] = target_end
+        rows["sample_key"] = make_sample_keys(rows, "inseason")
+        validate_temporal_contract(rows)
+        validate_unique_samples(rows, "inseason")
         outputs.append(rows)
     return pd.concat(outputs, ignore_index=True), evidence
 

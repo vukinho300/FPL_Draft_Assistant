@@ -8,7 +8,7 @@ import pandas as pd
 
 from research.fpl_research.identity import attach_fpl_code, build_understat_identity_evidence
 from research.fpl_research.odds import prepare_team_match_history
-from research.fpl_research.quality import apply_approved_fpl_observation_rules
+from research.fpl_research.quality import apply_approved_fpl_observation_rules, validate_gameweek_numbers
 
 
 class HistoricalRepository:
@@ -39,7 +39,7 @@ class HistoricalRepository:
         frame = attach_fpl_code(frame, self.players(season))
         if "GW" not in frame.columns:
             raise ValueError(f"{season} merged_gw.csv has no GW column")
-        frame["GW"] = pd.to_numeric(frame["GW"], errors="raise").astype("int64")
+        frame["GW"] = validate_gameweek_numbers(frame, "GW", f"FPL gameweeks {season}")
         frame["kickoff_time"] = pd.to_datetime(frame["kickoff_time"], utc=True, errors="raise")
         frame["team"] = frame["team"].astype(str)
         frame["position"] = frame["position"].astype(str)

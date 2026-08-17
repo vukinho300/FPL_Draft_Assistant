@@ -99,6 +99,28 @@ def test_horizon_boundaries_sum_only_next_1_3_5_gameweeks():
         assert result.loc[result["cutoff_gw"] == 5, "target"].iloc[0] == target
 
 
+def test_rolling_windows_include_cutoff_and_exclude_next_gameweek_exactly():
+    frame = games("2024-08-01", [1, 2, 3, 4, 5, 999])
+    repository = FakeRepository({"2024-25": {"games": frame, "odds": odds()}})
+    result, _ = build_inseason_dataset(repository, "2024-25", 1, minimum_cutoff_gw=5, include_understat=False)
+    row = result.loc[result["cutoff_gw"] == 5].iloc[0]
+    assert row["last3_points"] == 3 + 4 + 5
+    assert row["last5_points"] == 1 + 2 + 3 + 4 + 5
+    assert row["season_points_to_date"] == 1 + 2 + 3 + 4 + 5
+    assert row["target"] == 999
+
+
+def test_rescheduled_future_label_at_or_before_cutoff_is_not_a_future_target():
+    frame = games("2024-08-01", [1, 2, 3, 4, 5, 999])
+    frame.loc[frame["GW"] == 5, "kickoff_time"] = pd.Timestamp("2025-01-01", tz="UTC")
+    repository = FakeRepository({"2024-25": {"games": frame, "odds": odds()}})
+    result, _ = build_inseason_dataset(repository, "2024-25", 1, minimum_cutoff_gw=5, include_understat=False)
+    row = result.loc[result["cutoff_gw"] == 5].iloc[0]
+    assert row["target"] == 0
+    assert bool(row["target_has_observations"]) is False
+    assert row["target_start_timestamp"] > row["prediction_cutoff"]
+
+
 def test_draft_day_uses_prior_season_and_flags_cold_start():
     prior = games("2023-08-01", [2] * 10)
     current = games("2024-08-01", [10] * 10)
@@ -123,6 +145,9 @@ def test_draft_day_uses_prior_season_and_flags_cold_start():
     assert returning["season_points_prior"] != 9999
     assert cold["history_missing"] == 1
     assert cold["cold_start_category"] == "UNKNOWN"
+    assert returning["feature_max_timestamp"] <= returning["prediction_cutoff"]
+    assert returning["target_start_timestamp"] > returning["prediction_cutoff"]
+    assert returning["sample_key"] == "2024-25|1"
 
 
 def test_low_minutes_are_shrunk_and_marked():

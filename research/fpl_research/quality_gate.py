@@ -29,6 +29,7 @@ from research.fpl_research.quality import (
     reconcile_aggregates,
     schema_signature,
     validate_finite_numeric,
+    validate_gameweek_numbers,
     validate_nonnegative,
     validate_required_identifiers,
     write_quality_results,
@@ -204,9 +205,11 @@ def _fpl_season_audit(
     except DataQualityError as error:
         failures.append(str(error))
     minutes = pd.to_numeric(games["minutes"], errors="coerce")
-    gameweeks = pd.to_numeric(games["GW"], errors="coerce")
-    if gameweeks.isna().any() or (~gameweeks.between(1, 38)).any():
-        failures.append("gameweek values must be integers from 1 through 38")
+    try:
+        gameweeks = validate_gameweek_numbers(games, "GW", f"FPL gameweeks {season}")
+    except DataQualityError as error:
+        failures.append(str(error))
+        gameweeks = pd.to_numeric(games["GW"], errors="coerce")
     if (pd.to_numeric(fixtures["team_h"], errors="coerce") == pd.to_numeric(fixtures["team_a"], errors="coerce")).any():
         failures.append("fixture has identical home and away team")
 
@@ -349,12 +352,15 @@ def _fpl_season_audit(
             "season": season,
             "horizon_unit": "gameweeks",
             "valid_horizons": [1, 3, 5],
+            "gameweek_integer_violations": int(
+                (gameweeks.notna() & gameweeks.mod(1).ne(0)).sum()
+            ),
             "double_gameweek_player_gw_groups": int((multi > 1).sum()),
             "double_gameweek_rows_preserved": int(multi.loc[multi > 1].sum()),
             "blank_league_gameweeks": sorted(set(range(1, 39)) - fixture_events),
-            "boundary": "features use GW <= t; target uses t < GW <= t+h",
+            "boundary": "features use GW <= t; target uses t < GW <= t+h and actual kickoff > prediction cutoff",
             "no_appearance": "left target join becomes zero; missing source fields remain missing",
-            "rescheduled_fixtures": "count in the event/GW assigned by fixture metadata",
+            "rescheduled_fixtures": "event/GW defines the horizon, but actual kickoff chronology must remain strictly future",
             "status": "PASS" if not failures else "FAIL",
         }
     )
@@ -688,6 +694,8 @@ def _distribution_shift_flags(result: dict[str, Any]) -> None:
 
 
 def _processed_dataset_audit(processed_root: Path, raw_root: Path, result: dict[str, Any]) -> None:
+    from research.fpl_research.model_safety import validate_temporal_contract, validate_unique_samples
+
     if not processed_root.exists():
         return
     for path in sorted(processed_root.glob("*.pkl")):
@@ -734,6 +742,16 @@ def _processed_dataset_audit(processed_root: Path, raw_root: Path, result: dict[
                 "eligible_for_benchmark": status in BENCHMARKABLE_STATUSES,
             }
         )
+        task = "draft_day" if path.stem.startswith("draft_day") else "inseason"
+        try:
+            temporal = validate_temporal_contract(frame)
+            samples = validate_unique_samples(frame, task)
+        except DataQualityError as error:
+            result["blocking_failures"].append(f"{path.stem}: {error}")
+            temporal = {"dataset": path.stem, "status": "FAIL", "failure": str(error)}
+            samples = {"dataset": path.stem, "status": "FAIL", "failure": str(error)}
+        result["temporal_contracts"].append({"dataset": path.stem, **temporal})
+        result["sample_key_audits"].append({"dataset": path.stem, **samples})
         for (season, position), subset in frame.groupby(["season", "position"], dropna=False):
             for field in model_fields:
                 result["feature_missingness"].append(
@@ -802,6 +820,8 @@ def run_quality_gate(
         "schema_drift": [],
         "coverage": [],
         "target_validation": [],
+        "temporal_contracts": [],
+        "sample_key_audits": [],
         "cross_field_consistency": [],
         "benchmark_datasets": [],
         "benchmark_configuration_status": [],
@@ -919,6 +939,9 @@ def write_quality_report(path: Path, result: dict[str, Any]) -> None:
         for item in result["benchmark_configuration_status"]
     ]
     started_zero = sum(item["started_with_zero_minutes"] for item in result["cross_field_consistency"])
+    gameweek_integer_violations = sum(
+        item.get("gameweek_integer_violations", 0) for item in result["target_validation"]
+    )
     content = f"""# Phase 5A data quality report
 
 Generated from the pinned raw artifacts at `{result['generated_at']}`. The machine-readable evidence is `data_quality_results.json`. This gate runs before feature generation; a blocking failure prevents FPL or Football-Data inputs from entering the benchmark. Understat is optional and a failed/unavailable Understat season is excluded from configurations requiring it.
@@ -1021,7 +1044,9 @@ Understat exact-match coverage is reported by season, position, team, and the de
 
 ## Target and aggregate validation
 
-The 1/3/5 horizons mean **gameweeks**, not matches: features use `GW <= t`, while targets use `t < GW <= t+h`. Double Gameweek fixtures are summed within their assigned GW, blank GWs contribute no fixture rows, rescheduled fixtures follow fixture event metadata, and a player with no future appearance receives a zero target through the left join. Exact fixture and aggregate results are in JSON.
+The 1/3/5 horizons mean **gameweeks**, not matches: features use `GW <= t`, while target labels use `t < GW <= t+h` and actual target kickoffs must be strictly after the prediction cutoff. Double Gameweek fixtures are summed within their assigned GW, blank GWs contribute no fixture rows, and a player with no future appearance receives a zero target through the left join. Event labels define the horizon, but actual chronology blocks an already-played rescheduled fixture from becoming a future target. Exact fixture and aggregate results are in JSON.
+
+Gameweek labels must be finite integral values in `1..38`; fractional values such as `1.5`, `10.2`, and `37.9` are blocking failures. Existing historical rows violating that invariant: **{gameweek_integer_violations}**.
 
 Player-GW sums reconcile exactly to published season totals in every season except one 2024/25 football player with a one-point archived-GW/final-snapshot difference. That scoped source correction is reported, not silently forced. All seasons contain 380 fixtures and FPL/Football-Data scores agree for all 2,280 matches.
 

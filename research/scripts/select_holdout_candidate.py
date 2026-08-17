@@ -12,6 +12,7 @@ from sklearn.inspection import permutation_importance
 from research.fpl_research import RANDOM_SEED
 from research.fpl_research.features import columns_for_groups
 from research.fpl_research.metrics import evaluate_predictions
+from research.fpl_research.model_safety import ModelInputManifest, make_model_input_manifest, write_model_input_manifests
 from research.fpl_research.models import MODEL_CONFIGS, fit_predict
 from research.fpl_research.quality import require_benchmarkable_quality_gate
 from research.scripts.run_development_benchmark import folds_for, load_dataset, predict_position_specific, result_row
@@ -34,9 +35,14 @@ def main() -> None:
     )
     reports = Path("research/reports")
     config_path = Path("research/configs/final_holdout_candidate.json")
+    if config_path.exists():
+        raise SystemExit(
+            "Refusing to overwrite the committed pre-2025/26 frozen candidate after holdout exposure"
+        )
     rows: list[dict[str, object]] = []
     selected: dict[str, dict[str, object]] = {}
     importance_rows: list[dict[str, object]] = []
+    manifests: list[ModelInputManifest] = []
 
     for (task, horizon), groups in CANDIDATES.items():
         data = load_dataset(Path("research/data/processed"), task, horizon)
@@ -49,9 +55,21 @@ def main() -> None:
                     train = data.loc[data["season"].isin(train_seasons)]
                     test = data.loc[data["season"] == test_season]
                     if handling == "pooled":
-                        prediction, _ = fit_predict(train, test, model_name, numeric, categorical)
+                        manifest = make_model_input_manifest(
+                            task=task,
+                            horizon=horizon,
+                            model=model_name,
+                            numeric_features=numeric,
+                            categorical_features=categorical,
+                        )
+                        manifests.append(manifest)
+                        prediction, _ = fit_predict(
+                            train, test, model_name, numeric, categorical, manifest=manifest
+                        )
                     else:
-                        prediction = predict_position_specific(train, test, model_name, numeric, categorical)
+                        prediction = predict_position_specific(
+                            train, test, model_name, numeric, categorical, task, horizon, manifests
+                        )
                     row = result_row(
                         prediction,
                         task,
@@ -93,7 +111,17 @@ def main() -> None:
         for position in positions:
             train_part = train if position == "ALL" else train.loc[train["position"] == position]
             test_part = test if position == "ALL" else test.loc[test["position"] == position]
-            prediction, model = fit_predict(train_part, test_part, model_name, numeric, categorical)
+            manifest = make_model_input_manifest(
+                task=task,
+                horizon=horizon,
+                model=model_name,
+                numeric_features=numeric,
+                categorical_features=categorical,
+            )
+            manifests.append(manifest)
+            prediction, model = fit_predict(
+                train_part, test_part, model_name, numeric, categorical, manifest=manifest
+            )
             sample = prediction.sample(min(2500, len(prediction)), random_state=RANDOM_SEED)
             permutation = permutation_importance(
                 model,
@@ -121,6 +149,7 @@ def main() -> None:
     selection_frame = pd.DataFrame(rows)
     selection_frame.to_csv(reports / "candidate_selection_results.csv", index=False)
     pd.DataFrame(importance_rows).to_csv(reports / "feature_importance.csv", index=False)
+    write_model_input_manifests(reports / "candidate_feature_manifests.json", manifests)
     development_files = [
         reports / "source_combination_results.csv",
         reports / "model_results.csv",

@@ -18,8 +18,23 @@ from research.fpl_research.quality import (
     reconcile_aggregates,
     schema_signature,
     validate_finite_numeric,
+    validate_gameweek_numbers,
     validate_nonnegative,
 )
+
+
+def test_gameweek_numbers_must_be_integral_and_within_official_range():
+    valid = validate_gameweek_numbers(pd.DataFrame({"GW": [1, 10, 38]}))
+    assert valid.tolist() == [1, 10, 38]
+    assert str(valid.dtype) == "int64"
+
+    for malformed in (1.5, 10.2, 37.9):
+        with pytest.raises(DataQualityError, match="non-integral"):
+            validate_gameweek_numbers(pd.DataFrame({"GW": [malformed]}))
+
+    for out_of_range in (0, 39):
+        with pytest.raises(DataQualityError, match="outside 1 through 38"):
+            validate_gameweek_numbers(pd.DataFrame({"GW": [out_of_range]}))
 
 
 def observation(**overrides):

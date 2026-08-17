@@ -11,6 +11,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from research.fpl_research import RANDOM_SEED
+from research.fpl_research.model_safety import ModelInputManifest, validate_model_input_manifest
 
 
 MODEL_CONFIGS: dict[str, dict[str, object]] = {
@@ -65,7 +66,19 @@ def fit_predict(
     model_name: str,
     numeric_columns: Sequence[str],
     categorical_columns: Sequence[str],
+    *,
+    manifest: ModelInputManifest,
 ) -> tuple[pd.DataFrame, Pipeline]:
+    validate_model_input_manifest(manifest, numeric_columns, categorical_columns)
+    if manifest.model != model_name:
+        raise ValueError("feature manifest model does not match requested estimator")
+    for label, frame in (("training", train), ("evaluation", test)):
+        if "task" not in frame or "horizon" not in frame:
+            raise ValueError(f"{label} data lacks task/horizon manifest context")
+        if not frame["task"].astype(str).eq(manifest.task).all():
+            raise ValueError(f"{label} task does not match feature manifest")
+        if not pd.to_numeric(frame["horizon"], errors="coerce").eq(manifest.horizon).all():
+            raise ValueError(f"{label} horizon does not match feature manifest")
     columns = list(numeric_columns) + list(categorical_columns)
     missing = [column for column in columns if column not in train or column not in test]
     if missing:

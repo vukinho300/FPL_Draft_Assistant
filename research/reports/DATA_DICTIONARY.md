@@ -24,7 +24,7 @@ One row represents one player present in the target season's archived GW1 player
 
 ### In-season dataset
 
-One row represents a player known by the end of cutoff GW `t`. All FPL features contain only rows with `GW <= t`. Targets are sums over `t < GW <= t+h`, where `h` is 1, 3 or 5. The end-of-cutoff timestamp is the latest kickoff in the completed cutoff GW. Blank and double gameweeks are handled by explicit GW labels and fixture rows, not array offsets.
+One row represents a player known by the end of cutoff GW `t`. All FPL features contain only rows with `GW <= t`. Targets are sums over `t < GW <= t+h`, where `h` is 1, 3 or 5, and only actual kickoffs strictly after the prediction cutoff qualify. The cutoff is the latest actual kickoff across incorporated rows. Blank and double gameweeks are handled by explicit GW labels and fixture rows, not array offsets; rescheduled chronology overrides a misleading future event label.
 
 The horizon unit is **gameweeks, not matches**. Both fixtures in a DGW are summed; a blank GW adds no match rows; rescheduled fixtures follow their archived fixture `event`; and a player in the cutoff universe with no target-window appearance receives zero target points. Missing feature fields still remain missing.
 
@@ -39,7 +39,15 @@ The horizon unit is **gameweeks, not matches**. Both fixtures in a DGW are summe
 | `team` | Team name at the row's cutoff |
 | `cutoff_gw` | Last completed GW included in an in-season feature row |
 | `cutoff_time` | Maximum timestamp allowed in that feature row |
+| `prediction_cutoff` | Decision timestamp after incorporated observations are complete |
+| `feature_max_timestamp` | Latest actual information timestamp used by predictive features |
+| `target_start_timestamp` | First actual target timestamp, or strict post-cutoff sentinel for an empty blank interval |
+| `target_end_timestamp` | Last actual target timestamp; equals start for an empty interval |
+| `target_has_observations` | Whether the target gameweek interval contains archived fixture rows |
+| `sample_key` | Integrity-only stable key; `(season, code)` draft or `(season, code, cutoff_gw, horizon)` in-season |
 | `target` | Future points only, according to the task contract |
+
+Gameweek labels must be finite integral values in `1..38`; fractional numeric labels are invalid. `code`, `element`, names, source IDs and `sample_key` remain metadata and are forbidden estimator inputs.
 
 ## Feature families
 
@@ -58,6 +66,8 @@ The horizon unit is **gameweeks, not matches**. Both fixtures in a DGW are summe
 ## Missing values and cold starts
 
 Missing because a statistic or scoring rule did not exist is retained as missing, not converted to zero. Model preprocessing learns numeric medians on the training fold and adds missingness indicators. Categorical values use a training-fold mode and one-hot encoding. Ridge scaling is fitted only on training data.
+
+Every model call receives a machine-readable manifest whose numeric and categorical lists must exactly match the estimator input. Metadata, targets, future/final-season fields and identifiers are rejected before fitting. All chronological splits independently require unique sample keys and zero train/test overlap.
 
 Draft-day players are classified conservatively:
 

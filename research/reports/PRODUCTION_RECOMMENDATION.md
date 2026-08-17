@@ -2,6 +2,8 @@
 
 This is evidence for a future design phase, not production implementation. No Best Fit score, forecast service or player-selection state is introduced here.
 
+The evidence passes the combined trust rule: data quality **PASS WITH EXCLUSIONS**, leakage **PASS**, and model sanity **PASS**. That makes the existing conclusions eligible for future design discussion; it does not make the offline estimators production-ready.
+
 ## Recommend for live app
 
 ### Native FPL rolling history

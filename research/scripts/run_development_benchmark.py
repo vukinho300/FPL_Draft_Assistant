@@ -13,6 +13,13 @@ import sklearn
 from research.fpl_research import RANDOM_SEED
 from research.fpl_research.features import columns_for_groups
 from research.fpl_research.metrics import evaluate_predictions, six_manager_metrics
+from research.fpl_research.model_safety import (
+    ModelInputManifest,
+    audit_train_test_split,
+    make_model_input_manifest,
+    validate_temporal_contract,
+    write_model_input_manifests,
+)
 from research.fpl_research.models import MODEL_CONFIGS, fit_predict
 from research.fpl_research.quality import configuration_quality_failures, require_benchmarkable_quality_gate
 
@@ -118,14 +125,33 @@ def predict_position_specific(
     model_name: str,
     numeric_columns: list[str],
     categorical_columns: list[str],
+    task: str,
+    horizon: int,
+    manifests: list[ModelInputManifest] | None = None,
 ) -> pd.DataFrame:
+    manifest = make_model_input_manifest(
+        task=task,
+        horizon=horizon,
+        model=model_name,
+        numeric_features=numeric_columns,
+        categorical_features=categorical_columns,
+    )
+    if manifests is not None:
+        manifests.append(manifest)
     outputs = []
     for position in ("GK", "DEF", "MID", "FWD"):
         train_position = train.loc[train["position"] == position]
         test_position = test.loc[test["position"] == position]
         if test_position.empty:
             continue
-        prediction, _ = fit_predict(train_position, test_position, model_name, numeric_columns, categorical_columns)
+        prediction, _ = fit_predict(
+            train_position,
+            test_position,
+            model_name,
+            numeric_columns,
+            categorical_columns,
+            manifest=manifest,
+        )
         outputs.append(prediction)
     return pd.concat(outputs).sort_index()
 
@@ -147,15 +173,26 @@ def main() -> None:
     ablation_rows: list[dict[str, object]] = []
     position_rows: list[dict[str, object]] = []
     six_rows: list[dict[str, object]] = []
+    manifests: list[ModelInputManifest] = []
+    split_audits: list[dict[str, object]] = []
 
     for task, horizon in (("draft_day", 38), ("inseason", 1), ("inseason", 3), ("inseason", 5)):
         print(f"benchmarking {task} horizon={horizon}", flush=True)
         data = load_dataset(processed, task, horizon)
+        validate_temporal_contract(data)
         draft = task == "draft_day"
         categorical = ["position", "cold_start_category"] if draft else ["position"]
         for train_seasons, test_season in folds_for(task):
             train = data.loc[data["season"].isin(train_seasons)]
             test = data.loc[data["season"] == test_season]
+            split_audits.append(
+                {
+                    "training_seasons": list(train_seasons),
+                    "test_season": test_season,
+                    "horizon": horizon,
+                    **audit_train_test_split(train, test, task),
+                }
+            )
             for name, prediction in baseline_predictions(test, task, horizon).items():
                 predicted = test.copy()
                 predicted["prediction"] = prediction
@@ -189,7 +226,17 @@ def main() -> None:
                     )
                     continue
                 numeric = columns_for_groups(groups, draft)
-                predicted, _ = fit_predict(train, test, "hist_gradient_boosting", numeric, categorical)
+                manifest = make_model_input_manifest(
+                    task=task,
+                    horizon=horizon,
+                    model="hist_gradient_boosting",
+                    numeric_features=numeric,
+                    categorical_features=categorical,
+                )
+                manifests.append(manifest)
+                predicted, _ = fit_predict(
+                    train, test, "hist_gradient_boosting", numeric, categorical, manifest=manifest
+                )
                 row = result_row(
                     predicted, task, horizon, train_seasons, test_season, configuration, "hist_gradient_boosting", groups
                 )
@@ -198,7 +245,15 @@ def main() -> None:
 
             numeric = columns_for_groups(HOLDOUT_CAPABLE_FULL, draft)
             for model_name in MODEL_CONFIGS:
-                predicted, _ = fit_predict(train, test, model_name, numeric, categorical)
+                manifest = make_model_input_manifest(
+                    task=task,
+                    horizon=horizon,
+                    model=model_name,
+                    numeric_features=numeric,
+                    categorical_features=categorical,
+                )
+                manifests.append(manifest)
+                predicted, _ = fit_predict(train, test, model_name, numeric, categorical, manifest=manifest)
                 row = result_row(
                     predicted,
                     task,
@@ -238,7 +293,17 @@ def main() -> None:
                     )
                     continue
                 numeric = columns_for_groups(groups, draft)
-                predicted, _ = fit_predict(train, test, "hist_gradient_boosting", numeric, categorical)
+                manifest = make_model_input_manifest(
+                    task=task,
+                    horizon=horizon,
+                    model="hist_gradient_boosting",
+                    numeric_features=numeric,
+                    categorical_features=categorical,
+                )
+                manifests.append(manifest)
+                predicted, _ = fit_predict(
+                    train, test, "hist_gradient_boosting", numeric, categorical, manifest=manifest
+                )
                 row = result_row(
                     predicted, task, horizon, train_seasons, test_season, configuration, "hist_gradient_boosting", groups
                 )
@@ -248,7 +313,17 @@ def main() -> None:
             for removed in ("FPL_EXPECTED", "FPL_ICT", "FORM", "TEAM_CONTEXT", "BOOKMAKER"):
                 groups = tuple(group for group in HOLDOUT_CAPABLE_FULL if group != removed)
                 numeric = columns_for_groups(groups, draft)
-                predicted, _ = fit_predict(train, test, "hist_gradient_boosting", numeric, categorical)
+                manifest = make_model_input_manifest(
+                    task=task,
+                    horizon=horizon,
+                    model="hist_gradient_boosting",
+                    numeric_features=numeric,
+                    categorical_features=categorical,
+                )
+                manifests.append(manifest)
+                predicted, _ = fit_predict(
+                    train, test, "hist_gradient_boosting", numeric, categorical, manifest=manifest
+                )
                 row = result_row(
                     predicted,
                     task,
@@ -281,9 +356,19 @@ def main() -> None:
             test = data.loc[data["season"] == test_season]
             for handling in ("pooled", "position_specific"):
                 if handling == "pooled":
-                    predicted, _ = fit_predict(train, test, model_name, numeric, categorical)
+                    manifest = make_model_input_manifest(
+                        task=task,
+                        horizon=horizon,
+                        model=model_name,
+                        numeric_features=numeric,
+                        categorical_features=categorical,
+                    )
+                    manifests.append(manifest)
+                    predicted, _ = fit_predict(train, test, model_name, numeric, categorical, manifest=manifest)
                 else:
-                    predicted = predict_position_specific(train, test, model_name, numeric, categorical)
+                    predicted = predict_position_specific(
+                        train, test, model_name, numeric, categorical, task, horizon, manifests
+                    )
                 base = result_row(
                     predicted, task, horizon, train_seasons, test_season, "FPL_BOOKMAKER", model_name, HOLDOUT_CAPABLE_FULL
                 )
@@ -328,6 +413,15 @@ def main() -> None:
     ablation_frame.to_csv(reports / "feature_ablation_results.csv", index=False)
     (reports / "development_run_metadata.json").write_text(
         json.dumps({"run_id": run_id, **run_metadata}, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    write_model_input_manifests(reports / "development_feature_manifests.json", manifests)
+    unique_split_audits = {
+        (item["task"], item["horizon"], tuple(item["training_seasons"]), item["test_season"]): item
+        for item in split_audits
+    }
+    (reports / "split_audit_results.json").write_text(
+        json.dumps(list(unique_split_audits.values()), indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
     )
     print(f"development benchmark complete: run_id={run_id}")
 

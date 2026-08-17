@@ -1,6 +1,6 @@
 # Phase 5A data quality report
 
-Generated from the pinned raw artifacts at `2026-08-17T16:50:34.605217+00:00`. The machine-readable evidence is `data_quality_results.json`. This gate runs before feature generation; a blocking failure prevents FPL or Football-Data inputs from entering the benchmark. Understat is optional and a failed/unavailable Understat season is excluded from configurations requiring it.
+Generated from the pinned raw artifacts at `2026-08-17T18:55:03.361404+00:00`. The machine-readable evidence is `data_quality_results.json`. This gate runs before feature generation; a blocking failure prevents FPL or Football-Data inputs from entering the benchmark. Understat is optional and a failed/unavailable Understat season is excluded from configurations requiring it.
 
 ## Gate architecture
 
@@ -222,7 +222,9 @@ Understat exact-match coverage is reported by season, position, team, and the de
 
 ## Target and aggregate validation
 
-The 1/3/5 horizons mean **gameweeks**, not matches: features use `GW <= t`, while targets use `t < GW <= t+h`. Double Gameweek fixtures are summed within their assigned GW, blank GWs contribute no fixture rows, rescheduled fixtures follow fixture event metadata, and a player with no future appearance receives a zero target through the left join. Exact fixture and aggregate results are in JSON.
+The 1/3/5 horizons mean **gameweeks**, not matches: features use `GW <= t`, while target labels use `t < GW <= t+h` and actual target kickoffs must be strictly after the prediction cutoff. Double Gameweek fixtures are summed within their assigned GW, blank GWs contribute no fixture rows, and a player with no future appearance receives a zero target through the left join. Event labels define the horizon, but actual chronology blocks an already-played rescheduled fixture from becoming a future target. Exact fixture and aggregate results are in JSON.
+
+Gameweek labels must be finite integral values in `1..38`; fractional values such as `1.5`, `10.2`, and `37.9` are blocking failures. Existing historical rows violating that invariant: **0**.
 
 Player-GW sums reconcile exactly to published season totals in every season except one 2024/25 football player with a one-point archived-GW/final-snapshot difference. That scoped source correction is reported, not silently forced. All seasons contain 380 fixtures and FPL/Football-Data scores agree for all 2,280 matches.
 

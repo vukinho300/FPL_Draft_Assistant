@@ -162,7 +162,7 @@ Future production enrichment
 
 The layer lives under `research/`; pandas, NumPy, SciPy and scikit-learn are research-only dependencies and do not ship in the React/Vercel build. Raw data, processed frames, environments and model binaries are gitignored. Committed artifacts are acquisition/feature/model code, small deterministic fixtures, configs, checksums, aggregate metrics and reports.
 
-Draft-day and in-season targets are separate. Historical FPL `code` is the only authoritative cross-season player key. Features are cutoff-aware, preprocessing is fitted inside chronological training folds, and 2025/26 is a locked holdout whose config was frozen before target evaluation. Optional source failures degrade the experiment rather than becoming production dependencies or scraping escalation.
+Draft-day and in-season targets are separate. Historical FPL `code` is the authoritative cross-season player key but remains metadata, never a primary estimator predictor. Features are cutoff-aware, preprocessing is fitted inside chronological training folds, and the 2025/26 configuration was frozen before its original evaluation. Since that result is now exposed, later model families must treat 2025/26 as a previously exposed external benchmark rather than an untouched holdout.
 
 ### Phase 5A quality boundary
 
@@ -189,5 +189,24 @@ MODELS
 Data cleaning and data-quality validation are distinct. Validation decides whether a source can be trusted. Cleaning may then apply only documented, evidence-backed transformations. Phase 5A permits identical-copy removal, the historical `GKP` label normalization to `GK`, and removal of assistant-manager chip rows that violate the football-player grain. It does not auto-delete statistical outliers or turn absent fields into zero.
 
 Understat is optional. Its 2020/21 and 2025/26 player-level datasets fail availability, so configurations requiring those source-seasons are blocked rather than scored. FPL and Football-Data pass all required seasons, with explicit FPL exclusions documented in the quality report.
+
+### Phase 5B model-safety boundary
+
+Quality-approved feature rows now expose `prediction_cutoff`, `feature_max_timestamp`, `target_start_timestamp`, `target_end_timestamp`, and a metadata-only stable sample key. The model boundary blocks any row unless features are at/before the cutoff and targets begin strictly afterward. Actual chronology further excludes a future-labelled rescheduled fixture that has already occurred by the cutoff.
+
+`model_safety.py` owns the forbidden-feature registry, immutable estimator manifests, temporal validation, sample-key uniqueness, chronological split audits, and deterministic negative-control plumbing. Every fit must receive exactly its declared numeric/categorical features; targets, future/final values, IDs, names, teams, sample keys, and evaluation metadata cannot enter implicitly. Preprocessing stays inside the training-fitted scikit-learn pipeline.
+
+```text
+QUALITY-APPROVED DATA
+  -> TEMPORAL CONTRACT
+  -> FEATURE ALLOWLIST + MANIFEST
+  -> UNIQUE SAMPLE KEYS + ZERO-OVERLAP CHRONOLOGICAL SPLIT
+  -> TRAIN-ONLY PREPROCESSING
+  -> MODEL + SHUFFLED/RANDOM CONTROLS
+  -> GROUPED METRIC VALIDATION
+  -> MODEL-SANITY VERDICT
+```
+
+The current statuses are data quality **PASS WITH EXCLUSIONS**, leakage **PASS**, and model sanity **PASS**. XGBoost is deliberately absent and belongs to Phase 5C.
 
 Research conclusions do not enter `src/domain/player.ts` and are not a Best Fit implementation. A future phase may design a production enrichment adapter after reviewing the evidence, source stability, scoring-regime changes and cold-start limitations.

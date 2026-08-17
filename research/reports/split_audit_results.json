@@ -1,0 +1,140 @@
+[
+  {
+    "chronological": true,
+    "horizon": 38,
+    "overlap_count": 0,
+    "status": "PASS",
+    "task": "draft_day",
+    "test_rows": 658,
+    "test_season": "2023-24",
+    "test_unique_sample_keys": 658,
+    "training_rows": 1127,
+    "training_seasons": [
+      "2021-22",
+      "2022-23"
+    ],
+    "training_unique_sample_keys": 1127
+  },
+  {
+    "chronological": true,
+    "horizon": 38,
+    "overlap_count": 0,
+    "status": "PASS",
+    "task": "draft_day",
+    "test_rows": 616,
+    "test_season": "2024-25",
+    "test_unique_sample_keys": 616,
+    "training_rows": 1785,
+    "training_seasons": [
+      "2021-22",
+      "2022-23",
+      "2023-24"
+    ],
+    "training_unique_sample_keys": 1785
+  },
+  {
+    "chronological": true,
+    "horizon": 1,
+    "overlap_count": 0,
+    "status": "PASS",
+    "task": "inseason",
+    "test_rows": 26098,
+    "test_season": "2023-24",
+    "test_unique_sample_keys": 26098,
+    "training_rows": 66281,
+    "training_seasons": [
+      "2020-21",
+      "2021-22",
+      "2022-23"
+    ],
+    "training_unique_sample_keys": 66281
+  },
+  {
+    "chronological": true,
+    "horizon": 1,
+    "overlap_count": 0,
+    "status": "PASS",
+    "task": "inseason",
+    "test_rows": 23945,
+    "test_season": "2024-25",
+    "test_unique_sample_keys": 23945,
+    "training_rows": 92379,
+    "training_seasons": [
+      "2020-21",
+      "2021-22",
+      "2022-23",
+      "2023-24"
+    ],
+    "training_unique_sample_keys": 92379
+  },
+  {
+    "chronological": true,
+    "horizon": 3,
+    "overlap_count": 0,
+    "status": "PASS",
+    "task": "inseason",
+    "test_rows": 24378,
+    "test_season": "2023-24",
+    "test_unique_sample_keys": 24378,
+    "training_rows": 61862,
+    "training_seasons": [
+      "2020-21",
+      "2021-22",
+      "2022-23"
+    ],
+    "training_unique_sample_keys": 61862
+  },
+  {
+    "chronological": true,
+    "horizon": 3,
+    "overlap_count": 0,
+    "status": "PASS",
+    "task": "inseason",
+    "test_rows": 22383,
+    "test_season": "2024-25",
+    "test_unique_sample_keys": 22383,
+    "training_rows": 86240,
+    "training_seasons": [
+      "2020-21",
+      "2021-22",
+      "2022-23",
+      "2023-24"
+    ],
+    "training_unique_sample_keys": 86240
+  },
+  {
+    "chronological": true,
+    "horizon": 5,
+    "overlap_count": 0,
+    "status": "PASS",
+    "task": "inseason",
+    "test_rows": 22663,
+    "test_season": "2023-24",
+    "test_unique_sample_keys": 22663,
+    "training_rows": 57481,
+    "training_seasons": [
+      "2020-21",
+      "2021-22",
+      "2022-23"
+    ],
+    "training_unique_sample_keys": 57481
+  },
+  {
+    "chronological": true,
+    "horizon": 5,
+    "overlap_count": 0,
+    "status": "PASS",
+    "task": "inseason",
+    "test_rows": 20822,
+    "test_season": "2024-25",
+    "test_unique_sample_keys": 20822,
+    "training_rows": 80144,
+    "training_seasons": [
+      "2020-21",
+      "2021-22",
+      "2022-23",
+      "2023-24"
+    ],
+    "training_unique_sample_keys": 80144
+  }
+]
