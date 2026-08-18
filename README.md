@@ -1,10 +1,10 @@
-# FPL Draft Assistant
+# Kile N Others
 
-**Phase 6.1 — Draft-night MVP with Best Pair**
+**FPL Draft League Dashboard · 2026/27**
 
-FPL Draft Assistant is a personal desktop companion for an official Fantasy Premier League Draft. It loads the current public FPL Draft player pool, maintains a local ranked board, assigns manually recorded players to managers through the existing snake schedule, and provides deterministic Best Available, Best Fit, and consecutive-turn Best Pair context. All official draft actions still happen in the official FPL Draft service.
+Kile N Others is the permanent season dashboard for the six-manager league: Vuk, Diego, Kristian, Miku, Tin, and Deni. Its canonical base state is the immutable 90-pick official draft snapshot for 2026/27. The dashboard presents league squads, ownership, a transaction tracker, Matchday placeholders, and the complete Draft Archive without controlling or replacing the official Fantasy Premier League Draft service.
 
-The default development fixture is the real six-manager order Vuk, Diego, Kristian, Miku, Tin, and Deni, with Vuk selected as the user. The domain remains generic for 2–16 managers.
+The original Draft Room remains in the repository as legacy draft-night code. It is no longer the source of truth for current league rosters.
 
 ## Prerequisites
 
@@ -38,6 +38,12 @@ npm run verify:fpl-live
 
 It is deliberately excluded from deterministic CI.
 
+The development-only archive export validates the canonical snapshot and prints its project-owned `DraftPick[]`. It never reads or writes browser storage:
+
+```bash
+npm run export:official-draft-picks
+```
+
 To reproduce the fixed current-season model signal after acquiring the pinned research data:
 
 ```bash
@@ -46,15 +52,23 @@ research/.venv/Scripts/python.exe -m research.scripts.build_current_draft_rankin
 
 The script evaluates one fixed position-specific Ridge configuration on the 2023/24 and 2024/25 chronological development folds before producing `src/data/currentDraftRankingSignals.json`. It does not run XGBoost or a model search.
 
-## Draft-night workflow
+## League dashboard
 
-1. Confirm the first-round manager order and choose “My manager”.
-2. Follow the ranked available-player board or search/filter it.
-3. After each official selection, click **Draft** for the selected player.
-4. The snake schedule automatically assigns that player to the correct manager and advances the picker.
-5. Use **Undo last pick** for the single supported correction.
+The desktop navigation provides League, My Team, Teams, Matchday, Players, Transactions, and Draft Archive views. Pitch views group the full squad by FPL position. They do not claim an official Gameweek XI or bench order. Availability, fixtures, scores, and lineup fields remain visibly unconnected until a verified adapter exists.
 
-Refresh restores manager configuration, user-manager identity, and authoritative pick history from the versioned `fpl-draft-assistant:v1` localStorage entry. Availability, completed-pick count, rosters, and current picker are always recomputed.
+## Immutable draft and roster evolution
+
+`src/data/leagues/kile-n-others/officialDraft2026-27.json` is the canonical historical starting point. It contains 90 unique scheduled selections, six final 15-player rosters, and frozen draft-day ranking metadata. The human-readable mirror is `docs/leagues/KILE_N_OTHERS_OFFICIAL_DRAFT_2026_27.md`.
+
+```text
+immutable official draft final rosters
+        +
+processed transactions in chronological order
+        ↓
+current league rosters and ownership directory
+```
+
+`PROPOSED` trades never change ownership. Only `PROCESSED` records are applied. Trades must exchange the same positional composition, and waiver/free-agent exchanges preserve position. No project transaction is submitted to FPL automatically.
 
 ## Ranking evidence
 
@@ -80,18 +94,14 @@ The 70/30 split is a transparent project MVP heuristic, not an official FPL rank
 ## Architecture overview
 
 ```text
-Public FPL Draft bootstrap
-        ↓
-server-side FPL adapter -> normalized Player[]
-        ↓                         + small research-generated model artifact
-MVP consensus ranking            + snake schedule / Turn Horizon
-        ↓                         + authoritative local pick history
-Available board + rosters + Best Available + Best Fit + Best Pair
-        ↓
-React Draft Room
+Immutable official draft -> processed transactions -> current rosters
+            ↓                                      ↓
+      Draft Archive                    ownership + squad views
+                                                   ↑
+Public FPL Draft bootstrap -> adapter -> normalized Player[]
 ```
 
-Important calculations remain pure in `src/domain`; React does not reimplement snake reversal, roster validation, consensus arithmetic, Best Fit, or Best Pair. Storage is isolated under `src/storage`. Phase 5 research remains isolated under `research/` and its Python dependencies do not ship in the app.
+Important calculations remain pure in `src/domain`; React does not reimplement snapshot validation, ownership, or transaction application. The legacy Draft Room retains its snake, ranking, Best Fit, and Best Pair modules. Storage is isolated under `src/storage`. Phase 5 research remains isolated under `research/` and its Python dependencies do not ship in the app.
 
 Current trust statuses are:
 
@@ -102,6 +112,9 @@ Current trust statuses are:
 ## Documentation
 
 - [Draft-night MVP](docs/DRAFT_NIGHT_MVP.md)
+- [Official 2026/27 draft](docs/leagues/KILE_N_OTHERS_OFFICIAL_DRAFT_2026_27.md)
+- [League dashboard roadmap](docs/LEAGUE_DASHBOARD_ROADMAP.md)
+- [FPL Draft Matchday research](docs/FPL_DRAFT_MATCHDAY_RESEARCH.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [FPL data contract](docs/FPL_DATA_CONTRACT.md)
 - [Draft-board logic](docs/DRAFT_BOARD_LOGIC.md)
@@ -111,10 +124,13 @@ Current trust statuses are:
 ## Current limitations
 
 - Manual companion only: no FPL authentication or automatic official picks
+- No verified league ID or entry IDs are stored, so standings and manager Gameweek squads are not connected
+- No live Gameweek scores, official lineup/bench state, injuries, expected minutes, or fixture difficulty yet
+- Transactions are project-owned records; they do not submit official trades, waivers, or free-agent moves
 - Secondary Ridge output is supporting evidence, not the sole ranking authority
 - No validated opponent-selection or survival-probability model
 - Best Pair is deterministic scenario analysis, not an opponent-behavior or player-survival model
-- No prices, budgets, three-per-club rule, trades, waivers, or health diagnosis
+- No prices, budgets, three-per-club rule, or health diagnosis
 - No database, accounts, cross-device sync, or backup import/export
 - No production Understat, bookmaker, ClubElo, scraping, or XGBoost integration
 - The public FPL Draft endpoint and its schema are not formally guaranteed
