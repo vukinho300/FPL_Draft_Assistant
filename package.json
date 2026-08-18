@@ -15,6 +15,7 @@
     "test:watch": "vitest",
     "typecheck": "tsc -b --pretty false",
     "verify:fpl-live": "node scripts/verify-fpl-live.ts",
+    "export:official-draft-picks": "node scripts/export-official-draft-picks.ts",
     "preview": "vite preview"
   },
   "dependencies": {
