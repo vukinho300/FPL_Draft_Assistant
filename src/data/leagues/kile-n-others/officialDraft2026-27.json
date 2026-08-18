@@ -1,0 +1,3224 @@
+{
+  "schemaVersion": 1,
+  "league": {
+    "id": "kile-n-others",
+    "name": "Kile N Others"
+  },
+  "season": "2026/27",
+  "completedAt": "2026-08-17T23:46:36.799Z",
+  "sourceCommit": "ec90c2357a707e56df680615998c5c2a01120fb1",
+  "sourceBrowserOrigin": "http://localhost:5175",
+  "leagueSettings": {
+    "managerCount": 6,
+    "rounds": 15,
+    "squadSize": 15,
+    "rosterRequirements": {
+      "GK": 2,
+      "DEF": 5,
+      "MID": 5,
+      "FWD": 3
+    },
+    "userManagerId": "demo-manager-1"
+  },
+  "managers": [
+    {
+      "id": "demo-manager-1",
+      "displayName": "Vuk",
+      "draftPosition": 1
+    },
+    {
+      "id": "demo-manager-2",
+      "displayName": "Diego",
+      "draftPosition": 2
+    },
+    {
+      "id": "demo-manager-3",
+      "displayName": "Kristian",
+      "draftPosition": 3
+    },
+    {
+      "id": "demo-manager-4",
+      "displayName": "Miku",
+      "draftPosition": 4
+    },
+    {
+      "id": "demo-manager-5",
+      "displayName": "Tin",
+      "draftPosition": 5
+    },
+    {
+      "id": "demo-manager-6",
+      "displayName": "Deni",
+      "draftPosition": 6
+    }
+  ],
+  "draftOrder": [
+    "demo-manager-1",
+    "demo-manager-2",
+    "demo-manager-3",
+    "demo-manager-4",
+    "demo-manager-5",
+    "demo-manager-6"
+  ],
+  "rankingSnapshotMetadata": {
+    "heuristicVersion": "DraftFitHeuristicV1",
+    "officialRankWeight": 0.7,
+    "historicalModelRankWeight": 0.3,
+    "modelArtifact": {
+      "path": "src/data/currentDraftRankingSignals.json",
+      "sha256": "b1c218c531c3b6c958d66c44ca37232ffdb562278c57a91200d5e2ca9a0382c4",
+      "schemaVersion": 1,
+      "generatedAt": "2026-08-17T20:11:59.189676+00:00",
+      "model": "position-specific Ridge",
+      "alpha": 10,
+      "modelSignalCount": 460,
+      "qualityStatus": "PASS WITH EXCLUSIONS",
+      "leakageStatus": "PASS",
+      "modelSanityStatus": "PASS"
+    },
+    "liveSnapshot": {
+      "sourceUrl": "https://draft.premierleague.com/api/bootstrap-static",
+      "retrievedAt": "2026-08-17T23:55:46.299Z",
+      "sha256": "c8afb781ec976efe7af4a025341d816c6eca0772b6c8fb8cf63308c503facbd7",
+      "playerCount": 590,
+      "officialRankCount": 590
+    },
+    "reconstructionNotes": "Draft-day ranks were reconstructed immediately after completion from the committed model artifact and the public FPL Draft bootstrap. Null model fields mean no trusted exact model signal existed; no values were invented."
+  },
+  "picks": [
+    {
+      "overallPickNumber": 1,
+      "roundNumber": 1,
+      "pickInRound": 1,
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "draftPlayerId": "411",
+      "playerName": "Haaland",
+      "position": "FWD",
+      "club": {
+        "id": "15",
+        "name": "Man City",
+        "shortName": "MCI"
+      },
+      "officialDraftRankAtDraft": 1,
+      "modelRankAtDraft": 1,
+      "modelPositionRankAtDraft": 1,
+      "mvpConsensusRankAtDraft": 1
+    },
+    {
+      "overallPickNumber": 2,
+      "roundNumber": 1,
+      "pickInRound": 2,
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "draftPlayerId": "165",
+      "playerName": "João Pedro",
+      "position": "FWD",
+      "club": {
+        "id": "6",
+        "name": "Chelsea",
+        "shortName": "CHE"
+      },
+      "officialDraftRankAtDraft": 14,
+      "modelRankAtDraft": 9,
+      "modelPositionRankAtDraft": 3,
+      "mvpConsensusRankAtDraft": 8
+    },
+    {
+      "overallPickNumber": 3,
+      "roundNumber": 1,
+      "pickInRound": 3,
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "draftPlayerId": "426",
+      "playerName": "B.Fernandes",
+      "position": "MID",
+      "club": {
+        "id": "16",
+        "name": "Man Utd",
+        "shortName": "MUN"
+      },
+      "officialDraftRankAtDraft": 2,
+      "modelRankAtDraft": 11,
+      "modelPositionRankAtDraft": 3,
+      "mvpConsensusRankAtDraft": 2
+    },
+    {
+      "overallPickNumber": 4,
+      "roundNumber": 1,
+      "pickInRound": 4,
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "draftPlayerId": "40",
+      "playerName": "Rogers",
+      "position": "MID",
+      "club": {
+        "id": "6",
+        "name": "Chelsea",
+        "shortName": "CHE"
+      },
+      "officialDraftRankAtDraft": 15,
+      "modelRankAtDraft": 21,
+      "modelPositionRankAtDraft": 5,
+      "mvpConsensusRankAtDraft": 11
+    },
+    {
+      "overallPickNumber": 5,
+      "roundNumber": 1,
+      "pickInRound": 5,
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "draftPlayerId": "368",
+      "playerName": "Szoboszlai",
+      "position": "MID",
+      "club": {
+        "id": "14",
+        "name": "Liverpool",
+        "shortName": "LIV"
+      },
+      "officialDraftRankAtDraft": 23,
+      "modelRankAtDraft": 42,
+      "modelPositionRankAtDraft": 11,
+      "mvpConsensusRankAtDraft": 19
+    },
+    {
+      "overallPickNumber": 6,
+      "roundNumber": 1,
+      "pickInRound": 6,
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "draftPlayerId": "26",
+      "playerName": "Havertz",
+      "position": "FWD",
+      "club": {
+        "id": "1",
+        "name": "Arsenal",
+        "shortName": "ARS"
+      },
+      "officialDraftRankAtDraft": 22,
+      "modelRankAtDraft": 275,
+      "modelPositionRankAtDraft": 30,
+      "mvpConsensusRankAtDraft": 99
+    },
+    {
+      "overallPickNumber": 7,
+      "roundNumber": 2,
+      "pickInRound": 1,
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "draftPlayerId": "4",
+      "playerName": "Gabriel",
+      "position": "DEF",
+      "club": {
+        "id": "1",
+        "name": "Arsenal",
+        "shortName": "ARS"
+      },
+      "officialDraftRankAtDraft": 7,
+      "modelRankAtDraft": 5,
+      "modelPositionRankAtDraft": 1,
+      "mvpConsensusRankAtDraft": 4
+    },
+    {
+      "overallPickNumber": 8,
+      "roundNumber": 2,
+      "pickInRound": 2,
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "draftPlayerId": "428",
+      "playerName": "Cunha",
+      "position": "MID",
+      "club": {
+        "id": "16",
+        "name": "Man Utd",
+        "shortName": "MUN"
+      },
+      "officialDraftRankAtDraft": 12,
+      "modelRankAtDraft": 29,
+      "modelPositionRankAtDraft": 10,
+      "mvpConsensusRankAtDraft": 12
+    },
+    {
+      "overallPickNumber": 9,
+      "roundNumber": 2,
+      "pickInRound": 3,
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "draftPlayerId": "1",
+      "playerName": "Raya",
+      "position": "GK",
+      "club": {
+        "id": "1",
+        "name": "Arsenal",
+        "shortName": "ARS"
+      },
+      "officialDraftRankAtDraft": 59,
+      "modelRankAtDraft": 2,
+      "modelPositionRankAtDraft": 1,
+      "mvpConsensusRankAtDraft": 26
+    },
+    {
+      "overallPickNumber": 10,
+      "roundNumber": 2,
+      "pickInRound": 4,
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "draftPlayerId": "154",
+      "playerName": "Palmer",
+      "position": "MID",
+      "club": {
+        "id": "6",
+        "name": "Chelsea",
+        "shortName": "CHE"
+      },
+      "officialDraftRankAtDraft": 4,
+      "modelRankAtDraft": 79,
+      "modelPositionRankAtDraft": 25,
+      "mvpConsensusRankAtDraft": 20
+    },
+    {
+      "overallPickNumber": 11,
+      "roundNumber": 2,
+      "pickInRound": 5,
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "draftPlayerId": "13",
+      "playerName": "Rice",
+      "position": "MID",
+      "club": {
+        "id": "1",
+        "name": "Arsenal",
+        "shortName": "ARS"
+      },
+      "officialDraftRankAtDraft": 13,
+      "modelRankAtDraft": 59,
+      "modelPositionRankAtDraft": 17,
+      "mvpConsensusRankAtDraft": 18
+    },
+    {
+      "overallPickNumber": 12,
+      "roundNumber": 2,
+      "pickInRound": 6,
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "draftPlayerId": "397",
+      "playerName": "Semenyo",
+      "position": "MID",
+      "club": {
+        "id": "15",
+        "name": "Man City",
+        "shortName": "MCI"
+      },
+      "officialDraftRankAtDraft": 6,
+      "modelRankAtDraft": 4,
+      "modelPositionRankAtDraft": 1,
+      "mvpConsensusRankAtDraft": 3
+    },
+    {
+      "overallPickNumber": 13,
+      "roundNumber": 3,
+      "pickInRound": 1,
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "draftPlayerId": "480",
+      "playerName": "Gibbs-White",
+      "position": "MID",
+      "club": {
+        "id": "18",
+        "name": "Nott'm Forest",
+        "shortName": "NFO"
+      },
+      "officialDraftRankAtDraft": 8,
+      "modelRankAtDraft": 10,
+      "modelPositionRankAtDraft": 2,
+      "mvpConsensusRankAtDraft": 6
+    },
+    {
+      "overallPickNumber": 14,
+      "roundNumber": 3,
+      "pickInRound": 2,
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "draftPlayerId": "412",
+      "playerName": "Lammens",
+      "position": "GK",
+      "club": {
+        "id": "16",
+        "name": "Man Utd",
+        "shortName": "MUN"
+      },
+      "officialDraftRankAtDraft": 240,
+      "modelRankAtDraft": 141,
+      "modelPositionRankAtDraft": 14,
+      "mvpConsensusRankAtDraft": 221
+    },
+    {
+      "overallPickNumber": 15,
+      "roundNumber": 3,
+      "pickInRound": 3,
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "draftPlayerId": "6",
+      "playerName": "Saliba",
+      "position": "DEF",
+      "club": {
+        "id": "1",
+        "name": "Arsenal",
+        "shortName": "ARS"
+      },
+      "officialDraftRankAtDraft": 66,
+      "modelRankAtDraft": 37,
+      "modelPositionRankAtDraft": 16,
+      "mvpConsensusRankAtDraft": 43
+    },
+    {
+      "overallPickNumber": 16,
+      "roundNumber": 3,
+      "pickInRound": 4,
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "draftPlayerId": "504",
+      "playerName": "Vuskovic",
+      "position": "DEF",
+      "club": {
+        "id": "5",
+        "name": "Brighton",
+        "shortName": "BHA"
+      },
+      "officialDraftRankAtDraft": 380,
+      "modelRankAtDraft": 372,
+      "modelPositionRankAtDraft": 146,
+      "mvpConsensusRankAtDraft": 426
+    },
+    {
+      "overallPickNumber": 17,
+      "roundNumber": 3,
+      "pickInRound": 5,
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "draftPlayerId": "82",
+      "playerName": "Kelleher",
+      "position": "GK",
+      "club": {
+        "id": "4",
+        "name": "Brentford",
+        "shortName": "BRE"
+      },
+      "officialDraftRankAtDraft": 224,
+      "modelRankAtDraft": 26,
+      "modelPositionRankAtDraft": 4,
+      "mvpConsensusRankAtDraft": 138
+    },
+    {
+      "overallPickNumber": 18,
+      "roundNumber": 3,
+      "pickInRound": 6,
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "draftPlayerId": "55",
+      "playerName": "Watkins",
+      "position": "FWD",
+      "club": {
+        "id": "2",
+        "name": "Aston Villa",
+        "shortName": "AVL"
+      },
+      "officialDraftRankAtDraft": 10,
+      "modelRankAtDraft": 20,
+      "modelPositionRankAtDraft": 4,
+      "mvpConsensusRankAtDraft": 9
+    },
+    {
+      "overallPickNumber": 19,
+      "roundNumber": 4,
+      "pickInRound": 1,
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "draftPlayerId": "427",
+      "playerName": "Mbeumo",
+      "position": "MID",
+      "club": {
+        "id": "16",
+        "name": "Man Utd",
+        "shortName": "MUN"
+      },
+      "officialDraftRankAtDraft": 11,
+      "modelRankAtDraft": 22,
+      "modelPositionRankAtDraft": 6,
+      "mvpConsensusRankAtDraft": 10
+    },
+    {
+      "overallPickNumber": 20,
+      "roundNumber": 4,
+      "pickInRound": 2,
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "draftPlayerId": "356",
+      "playerName": "Virgil",
+      "position": "DEF",
+      "club": {
+        "id": "14",
+        "name": "Liverpool",
+        "shortName": "LIV"
+      },
+      "officialDraftRankAtDraft": 32,
+      "modelRankAtDraft": 6,
+      "modelPositionRankAtDraft": 2,
+      "mvpConsensusRankAtDraft": 14
+    },
+    {
+      "overallPickNumber": 21,
+      "roundNumber": 4,
+      "pickInRound": 3,
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "draftPlayerId": "106",
+      "playerName": "Thiago",
+      "position": "FWD",
+      "club": {
+        "id": "4",
+        "name": "Brentford",
+        "shortName": "BRE"
+      },
+      "officialDraftRankAtDraft": 9,
+      "modelRankAtDraft": 3,
+      "modelPositionRankAtDraft": 2,
+      "mvpConsensusRankAtDraft": 5
+    },
+    {
+      "overallPickNumber": 22,
+      "roundNumber": 4,
+      "pickInRound": 4,
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "draftPlayerId": "350",
+      "playerName": "A.Becker",
+      "position": "GK",
+      "club": {
+        "id": "14",
+        "name": "Liverpool",
+        "shortName": "LIV"
+      },
+      "officialDraftRankAtDraft": 139,
+      "modelRankAtDraft": 158,
+      "modelPositionRankAtDraft": 16,
+      "mvpConsensusRankAtDraft": 128
+    },
+    {
+      "overallPickNumber": 23,
+      "roundNumber": 4,
+      "pickInRound": 5,
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "draftPlayerId": "346",
+      "playerName": "Calvert-Lewin",
+      "position": "FWD",
+      "club": {
+        "id": "13",
+        "name": "Leeds",
+        "shortName": "LEE"
+      },
+      "officialDraftRankAtDraft": 65,
+      "modelRankAtDraft": 45,
+      "modelPositionRankAtDraft": 5,
+      "mvpConsensusRankAtDraft": 44
+    },
+    {
+      "overallPickNumber": 24,
+      "roundNumber": 4,
+      "pickInRound": 6,
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "draftPlayerId": "12",
+      "playerName": "Saka",
+      "position": "MID",
+      "club": {
+        "id": "1",
+        "name": "Arsenal",
+        "shortName": "ARS"
+      },
+      "officialDraftRankAtDraft": 3,
+      "modelRankAtDraft": 28,
+      "modelPositionRankAtDraft": 9,
+      "mvpConsensusRankAtDraft": 7
+    },
+    {
+      "overallPickNumber": 25,
+      "roundNumber": 5,
+      "pickInRound": 1,
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "draftPlayerId": "387",
+      "playerName": "O'Reilly",
+      "position": "DEF",
+      "club": {
+        "id": "15",
+        "name": "Man City",
+        "shortName": "MCI"
+      },
+      "officialDraftRankAtDraft": 34,
+      "modelRankAtDraft": 7,
+      "modelPositionRankAtDraft": 3,
+      "mvpConsensusRankAtDraft": 15
+    },
+    {
+      "overallPickNumber": 26,
+      "roundNumber": 5,
+      "pickInRound": 2,
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "draftPlayerId": "423",
+      "playerName": "Shaw",
+      "position": "DEF",
+      "club": {
+        "id": "16",
+        "name": "Man Utd",
+        "shortName": "MUN"
+      },
+      "officialDraftRankAtDraft": 399,
+      "modelRankAtDraft": 75,
+      "modelPositionRankAtDraft": 34,
+      "mvpConsensusRankAtDraft": 296
+    },
+    {
+      "overallPickNumber": 27,
+      "roundNumber": 5,
+      "pickInRound": 3,
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "draftPlayerId": "223",
+      "playerName": "Mateta",
+      "position": "FWD",
+      "club": {
+        "id": "8",
+        "name": "Crystal Palace",
+        "shortName": "CRY"
+      },
+      "officialDraftRankAtDraft": 40,
+      "modelRankAtDraft": 78,
+      "modelPositionRankAtDraft": 10,
+      "mvpConsensusRankAtDraft": 40
+    },
+    {
+      "overallPickNumber": 28,
+      "roundNumber": 5,
+      "pickInRound": 4,
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "draftPlayerId": "452",
+      "playerName": "Bruno G.",
+      "position": "MID",
+      "club": {
+        "id": "1",
+        "name": "Arsenal",
+        "shortName": "ARS"
+      },
+      "officialDraftRankAtDraft": 25,
+      "modelRankAtDraft": 57,
+      "modelPositionRankAtDraft": 16,
+      "mvpConsensusRankAtDraft": 23
+    },
+    {
+      "overallPickNumber": 29,
+      "roundNumber": 5,
+      "pickInRound": 5,
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "draftPlayerId": "542",
+      "playerName": "E.Le Fée",
+      "position": "MID",
+      "club": {
+        "id": "20",
+        "name": "Sunderland",
+        "shortName": "SUN"
+      },
+      "officialDraftRankAtDraft": 63,
+      "modelRankAtDraft": 101,
+      "modelPositionRankAtDraft": 35,
+      "mvpConsensusRankAtDraft": 56
+    },
+    {
+      "overallPickNumber": 30,
+      "roundNumber": 5,
+      "pickInRound": 6,
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "draftPlayerId": "398",
+      "playerName": "Foden",
+      "position": "MID",
+      "club": {
+        "id": "15",
+        "name": "Man City",
+        "shortName": "MCI"
+      },
+      "officialDraftRankAtDraft": 27,
+      "modelRankAtDraft": 55,
+      "modelPositionRankAtDraft": 15,
+      "mvpConsensusRankAtDraft": 24
+    },
+    {
+      "overallPickNumber": 31,
+      "roundNumber": 6,
+      "pickInRound": 1,
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "draftPlayerId": "391",
+      "playerName": "Gvardiol",
+      "position": "DEF",
+      "club": {
+        "id": "15",
+        "name": "Man City",
+        "shortName": "MCI"
+      },
+      "officialDraftRankAtDraft": 151,
+      "modelRankAtDraft": 120,
+      "modelPositionRankAtDraft": 51,
+      "mvpConsensusRankAtDraft": 123
+    },
+    {
+      "overallPickNumber": 32,
+      "roundNumber": 6,
+      "pickInRound": 2,
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "draftPlayerId": "379",
+      "playerName": "Isak",
+      "position": "FWD",
+      "club": {
+        "id": "14",
+        "name": "Liverpool",
+        "shortName": "LIV"
+      },
+      "officialDraftRankAtDraft": 5,
+      "modelRankAtDraft": 281,
+      "modelPositionRankAtDraft": 32,
+      "mvpConsensusRankAtDraft": 91
+    },
+    {
+      "overallPickNumber": 33,
+      "roundNumber": 6,
+      "pickInRound": 3,
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "draftPlayerId": "554",
+      "playerName": "Tzolis",
+      "position": "MID",
+      "club": {
+        "id": "1",
+        "name": "Arsenal",
+        "shortName": "ARS"
+      },
+      "officialDraftRankAtDraft": 55,
+      "modelRankAtDraft": null,
+      "modelPositionRankAtDraft": null,
+      "mvpConsensusRankAtDraft": 37
+    },
+    {
+      "overallPickNumber": 34,
+      "roundNumber": 6,
+      "pickInRound": 4,
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "draftPlayerId": "366",
+      "playerName": "Wirtz",
+      "position": "MID",
+      "club": {
+        "id": "14",
+        "name": "Liverpool",
+        "shortName": "LIV"
+      },
+      "officialDraftRankAtDraft": 18,
+      "modelRankAtDraft": 54,
+      "modelPositionRankAtDraft": 14,
+      "mvpConsensusRankAtDraft": 21
+    },
+    {
+      "overallPickNumber": 35,
+      "roundNumber": 6,
+      "pickInRound": 5,
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "draftPlayerId": "491",
+      "playerName": "Igor Jesus",
+      "position": "FWD",
+      "club": {
+        "id": "18",
+        "name": "Nott'm Forest",
+        "shortName": "NFO"
+      },
+      "officialDraftRankAtDraft": 77,
+      "modelRankAtDraft": 77,
+      "modelPositionRankAtDraft": 9,
+      "mvpConsensusRankAtDraft": 57
+    },
+    {
+      "overallPickNumber": 36,
+      "roundNumber": 6,
+      "pickInRound": 6,
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "draftPlayerId": "25",
+      "playerName": "Gyökeres",
+      "position": "FWD",
+      "club": {
+        "id": "1",
+        "name": "Arsenal",
+        "shortName": "ARS"
+      },
+      "officialDraftRankAtDraft": 17,
+      "modelRankAtDraft": 133,
+      "modelPositionRankAtDraft": 17,
+      "mvpConsensusRankAtDraft": 45
+    },
+    {
+      "overallPickNumber": 37,
+      "roundNumber": 7,
+      "pickInRound": 1,
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "draftPlayerId": "5",
+      "playerName": "J.Timber",
+      "position": "DEF",
+      "club": {
+        "id": "1",
+        "name": "Arsenal",
+        "shortName": "ARS"
+      },
+      "officialDraftRankAtDraft": 36,
+      "modelRankAtDraft": 14,
+      "modelPositionRankAtDraft": 6,
+      "mvpConsensusRankAtDraft": 17
+    },
+    {
+      "overallPickNumber": 38,
+      "roundNumber": 7,
+      "pickInRound": 2,
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "draftPlayerId": "237",
+      "playerName": "Ndiaye",
+      "position": "MID",
+      "club": {
+        "id": "9",
+        "name": "Everton",
+        "shortName": "EVE"
+      },
+      "officialDraftRankAtDraft": 71,
+      "modelRankAtDraft": 63,
+      "modelPositionRankAtDraft": 19,
+      "mvpConsensusRankAtDraft": 51
+    },
+    {
+      "overallPickNumber": 39,
+      "roundNumber": 7,
+      "pickInRound": 3,
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "draftPlayerId": "208",
+      "playerName": "Sarr",
+      "position": "MID",
+      "club": {
+        "id": "8",
+        "name": "Crystal Palace",
+        "shortName": "CRY"
+      },
+      "officialDraftRankAtDraft": 39,
+      "modelRankAtDraft": 65,
+      "modelPositionRankAtDraft": 20,
+      "mvpConsensusRankAtDraft": 34
+    },
+    {
+      "overallPickNumber": 40,
+      "roundNumber": 7,
+      "pickInRound": 4,
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "draftPlayerId": "248",
+      "playerName": "Beto",
+      "position": "FWD",
+      "club": {
+        "id": "9",
+        "name": "Everton",
+        "shortName": "EVE"
+      },
+      "officialDraftRankAtDraft": 133,
+      "modelRankAtDraft": 99,
+      "modelPositionRankAtDraft": 12,
+      "mvpConsensusRankAtDraft": 106
+    },
+    {
+      "overallPickNumber": 41,
+      "roundNumber": 7,
+      "pickInRound": 5,
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "draftPlayerId": "401",
+      "playerName": "Marmoush",
+      "position": "FWD",
+      "club": {
+        "id": "15",
+        "name": "Man City",
+        "shortName": "MCI"
+      },
+      "officialDraftRankAtDraft": 29,
+      "modelRankAtDraft": 235,
+      "modelPositionRankAtDraft": 24,
+      "mvpConsensusRankAtDraft": 88
+    },
+    {
+      "overallPickNumber": 42,
+      "roundNumber": 7,
+      "pickInRound": 6,
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "draftPlayerId": "14",
+      "playerName": "Eze",
+      "position": "MID",
+      "club": {
+        "id": "1",
+        "name": "Arsenal",
+        "shortName": "ARS"
+      },
+      "officialDraftRankAtDraft": 41,
+      "modelRankAtDraft": 105,
+      "modelPositionRankAtDraft": 36,
+      "mvpConsensusRankAtDraft": 48
+    },
+    {
+      "overallPickNumber": 43,
+      "roundNumber": 8,
+      "pickInRound": 1,
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "draftPlayerId": "155",
+      "playerName": "Enzo",
+      "position": "MID",
+      "club": {
+        "id": "6",
+        "name": "Chelsea",
+        "shortName": "CHE"
+      },
+      "officialDraftRankAtDraft": 24,
+      "modelRankAtDraft": 17,
+      "modelPositionRankAtDraft": 4,
+      "mvpConsensusRankAtDraft": 13
+    },
+    {
+      "overallPickNumber": 44,
+      "roundNumber": 8,
+      "pickInRound": 2,
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "draftPlayerId": "260",
+      "playerName": "Wilson",
+      "position": "MID",
+      "club": {
+        "id": "13",
+        "name": "Leeds",
+        "shortName": "LEE"
+      },
+      "officialDraftRankAtDraft": 33,
+      "modelRankAtDraft": 51,
+      "modelPositionRankAtDraft": 13,
+      "mvpConsensusRankAtDraft": 28
+    },
+    {
+      "overallPickNumber": 45,
+      "roundNumber": 8,
+      "pickInRound": 3,
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "draftPlayerId": "569",
+      "playerName": "Gonzalo",
+      "position": "FWD",
+      "club": {
+        "id": "10",
+        "name": "Fulham",
+        "shortName": "FUL"
+      },
+      "officialDraftRankAtDraft": 110,
+      "modelRankAtDraft": null,
+      "modelPositionRankAtDraft": null,
+      "mvpConsensusRankAtDraft": 86
+    },
+    {
+      "overallPickNumber": 46,
+      "roundNumber": 8,
+      "pickInRound": 4,
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "draftPlayerId": "552",
+      "playerName": "Brobbey",
+      "position": "FWD",
+      "club": {
+        "id": "20",
+        "name": "Sunderland",
+        "shortName": "SUN"
+      },
+      "officialDraftRankAtDraft": 84,
+      "modelRankAtDraft": 129,
+      "modelPositionRankAtDraft": 16,
+      "mvpConsensusRankAtDraft": 83
+    },
+    {
+      "overallPickNumber": 47,
+      "roundNumber": 8,
+      "pickInRound": 5,
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "draftPlayerId": "157",
+      "playerName": "Estêvão",
+      "position": "MID",
+      "club": {
+        "id": "6",
+        "name": "Chelsea",
+        "shortName": "CHE"
+      },
+      "officialDraftRankAtDraft": 48,
+      "modelRankAtDraft": 211,
+      "modelPositionRankAtDraft": 89,
+      "mvpConsensusRankAtDraft": 93
+    },
+    {
+      "overallPickNumber": 48,
+      "roundNumber": 8,
+      "pickInRound": 6,
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "draftPlayerId": "384",
+      "playerName": "Donnarumma",
+      "position": "GK",
+      "club": {
+        "id": "15",
+        "name": "Man City",
+        "shortName": "MCI"
+      },
+      "officialDraftRankAtDraft": 116,
+      "modelRankAtDraft": 16,
+      "modelPositionRankAtDraft": 3,
+      "mvpConsensusRankAtDraft": 60
+    },
+    {
+      "overallPickNumber": 49,
+      "roundNumber": 9,
+      "pickInRound": 1,
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "draftPlayerId": "229",
+      "playerName": "Tarkowski",
+      "position": "DEF",
+      "club": {
+        "id": "9",
+        "name": "Everton",
+        "shortName": "EVE"
+      },
+      "officialDraftRankAtDraft": 58,
+      "modelRankAtDraft": 13,
+      "modelPositionRankAtDraft": 5,
+      "mvpConsensusRankAtDraft": 29
+    },
+    {
+      "overallPickNumber": 50,
+      "roundNumber": 9,
+      "pickInRound": 2,
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "draftPlayerId": "8",
+      "playerName": "Calafiori",
+      "position": "DEF",
+      "club": {
+        "id": "1",
+        "name": "Arsenal",
+        "shortName": "ARS"
+      },
+      "officialDraftRankAtDraft": 131,
+      "modelRankAtDraft": 27,
+      "modelPositionRankAtDraft": 11,
+      "mvpConsensusRankAtDraft": 75
+    },
+    {
+      "overallPickNumber": 51,
+      "roundNumber": 9,
+      "pickInRound": 3,
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "draftPlayerId": "9",
+      "playerName": "Hincapie",
+      "position": "DEF",
+      "club": {
+        "id": "1",
+        "name": "Arsenal",
+        "shortName": "ARS"
+      },
+      "officialDraftRankAtDraft": 140,
+      "modelRankAtDraft": 154,
+      "modelPositionRankAtDraft": 66,
+      "mvpConsensusRankAtDraft": 127
+    },
+    {
+      "overallPickNumber": 52,
+      "roundNumber": 9,
+      "pickInRound": 4,
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "draftPlayerId": "200",
+      "playerName": "Lacroix",
+      "position": "DEF",
+      "club": {
+        "id": "6",
+        "name": "Chelsea",
+        "shortName": "CHE"
+      },
+      "officialDraftRankAtDraft": 61,
+      "modelRankAtDraft": 18,
+      "modelPositionRankAtDraft": 8,
+      "mvpConsensusRankAtDraft": 32
+    },
+    {
+      "overallPickNumber": 53,
+      "roundNumber": 9,
+      "pickInRound": 5,
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "draftPlayerId": "112",
+      "playerName": "Van Hecke",
+      "position": "DEF",
+      "club": {
+        "id": "19",
+        "name": "Spurs",
+        "shortName": "TOT"
+      },
+      "officialDraftRankAtDraft": 223,
+      "modelRankAtDraft": 19,
+      "modelPositionRankAtDraft": 9,
+      "mvpConsensusRankAtDraft": 135
+    },
+    {
+      "overallPickNumber": 54,
+      "roundNumber": 9,
+      "pickInRound": 6,
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "draftPlayerId": "439",
+      "playerName": "Šeško",
+      "position": "FWD",
+      "club": {
+        "id": "16",
+        "name": "Man Utd",
+        "shortName": "MUN"
+      },
+      "officialDraftRankAtDraft": 28,
+      "modelRankAtDraft": 89,
+      "modelPositionRankAtDraft": 11,
+      "mvpConsensusRankAtDraft": 36
+    },
+    {
+      "overallPickNumber": 55,
+      "roundNumber": 10,
+      "pickInRound": 1,
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "draftPlayerId": "388",
+      "playerName": "Guéhi",
+      "position": "DEF",
+      "club": {
+        "id": "15",
+        "name": "Man City",
+        "shortName": "MCI"
+      },
+      "officialDraftRankAtDraft": 56,
+      "modelRankAtDraft": 8,
+      "modelPositionRankAtDraft": 4,
+      "mvpConsensusRankAtDraft": 27
+    },
+    {
+      "overallPickNumber": 56,
+      "roundNumber": 10,
+      "pickInRound": 2,
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "draftPlayerId": "88",
+      "playerName": "Kayode",
+      "position": "DEF",
+      "club": {
+        "id": "4",
+        "name": "Brentford",
+        "shortName": "BRE"
+      },
+      "officialDraftRankAtDraft": 398,
+      "modelRankAtDraft": 76,
+      "modelPositionRankAtDraft": 35,
+      "mvpConsensusRankAtDraft": 295
+    },
+    {
+      "overallPickNumber": 57,
+      "roundNumber": 10,
+      "pickInRound": 3,
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "draftPlayerId": "502",
+      "playerName": "Robertson",
+      "position": "DEF",
+      "club": {
+        "id": "19",
+        "name": "Spurs",
+        "shortName": "TOT"
+      },
+      "officialDraftRankAtDraft": 423,
+      "modelRankAtDraft": 198,
+      "modelPositionRankAtDraft": 77,
+      "mvpConsensusRankAtDraft": 378
+    },
+    {
+      "overallPickNumber": 58,
+      "roundNumber": 10,
+      "pickInRound": 4,
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "draftPlayerId": "469",
+      "playerName": "N.Williams",
+      "position": "DEF",
+      "club": {
+        "id": "18",
+        "name": "Nott'm Forest",
+        "shortName": "NFO"
+      },
+      "officialDraftRankAtDraft": 229,
+      "modelRankAtDraft": 39,
+      "modelPositionRankAtDraft": 18,
+      "mvpConsensusRankAtDraft": 149
+    },
+    {
+      "overallPickNumber": 59,
+      "roundNumber": 10,
+      "pickInRound": 5,
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "draftPlayerId": "31",
+      "playerName": "Konsa",
+      "position": "DEF",
+      "club": {
+        "id": "2",
+        "name": "Aston Villa",
+        "shortName": "AVL"
+      },
+      "officialDraftRankAtDraft": 403,
+      "modelRankAtDraft": 97,
+      "modelPositionRankAtDraft": 42,
+      "mvpConsensusRankAtDraft": 307
+    },
+    {
+      "overallPickNumber": 60,
+      "roundNumber": 10,
+      "pickInRound": 6,
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "draftPlayerId": "367",
+      "playerName": "Gakpo",
+      "position": "MID",
+      "club": {
+        "id": "14",
+        "name": "Liverpool",
+        "shortName": "LIV"
+      },
+      "officialDraftRankAtDraft": 26,
+      "modelRankAtDraft": 23,
+      "modelPositionRankAtDraft": 7,
+      "mvpConsensusRankAtDraft": 16
+    },
+    {
+      "overallPickNumber": 61,
+      "roundNumber": 11,
+      "pickInRound": 1,
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "draftPlayerId": "498",
+      "playerName": "Senesi",
+      "position": "DEF",
+      "club": {
+        "id": "19",
+        "name": "Spurs",
+        "shortName": "TOT"
+      },
+      "officialDraftRankAtDraft": 57,
+      "modelRankAtDraft": 15,
+      "modelPositionRankAtDraft": 7,
+      "mvpConsensusRankAtDraft": 30
+    },
+    {
+      "overallPickNumber": 62,
+      "roundNumber": 11,
+      "pickInRound": 2,
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "draftPlayerId": "544",
+      "playerName": "Xhaka",
+      "position": "MID",
+      "club": {
+        "id": "20",
+        "name": "Sunderland",
+        "shortName": "SUN"
+      },
+      "officialDraftRankAtDraft": 121,
+      "modelRankAtDraft": 145,
+      "modelPositionRankAtDraft": 52,
+      "mvpConsensusRankAtDraft": 115
+    },
+    {
+      "overallPickNumber": 63,
+      "roundNumber": 11,
+      "pickInRound": 3,
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "draftPlayerId": "503",
+      "playerName": "Van de Ven",
+      "position": "DEF",
+      "club": {
+        "id": "19",
+        "name": "Spurs",
+        "shortName": "TOT"
+      },
+      "officialDraftRankAtDraft": 235,
+      "modelRankAtDraft": 58,
+      "modelPositionRankAtDraft": 29,
+      "mvpConsensusRankAtDraft": 166
+    },
+    {
+      "overallPickNumber": 64,
+      "roundNumber": 11,
+      "pickInRound": 4,
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "draftPlayerId": "43",
+      "playerName": "Tielemans",
+      "position": "MID",
+      "club": {
+        "id": "16",
+        "name": "Man Utd",
+        "shortName": "MUN"
+      },
+      "officialDraftRankAtDraft": 93,
+      "modelRankAtDraft": 178,
+      "modelPositionRankAtDraft": 71,
+      "mvpConsensusRankAtDraft": 109
+    },
+    {
+      "overallPickNumber": 65,
+      "roundNumber": 11,
+      "pickInRound": 5,
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "draftPlayerId": "526",
+      "playerName": "Solanke",
+      "position": "FWD",
+      "club": {
+        "id": "19",
+        "name": "Spurs",
+        "shortName": "TOT"
+      },
+      "officialDraftRankAtDraft": 102,
+      "modelRankAtDraft": 243,
+      "modelPositionRankAtDraft": 26,
+      "mvpConsensusRankAtDraft": 137
+    },
+    {
+      "overallPickNumber": 66,
+      "roundNumber": 11,
+      "pickInRound": 6,
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "draftPlayerId": "418",
+      "playerName": "Maguire",
+      "position": "DEF",
+      "club": {
+        "id": "16",
+        "name": "Man Utd",
+        "shortName": "MUN"
+      },
+      "officialDraftRankAtDraft": 252,
+      "modelRankAtDraft": 132,
+      "modelPositionRankAtDraft": 57,
+      "mvpConsensusRankAtDraft": 225
+    },
+    {
+      "overallPickNumber": 67,
+      "roundNumber": 12,
+      "pickInRound": 1,
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "draftPlayerId": "162",
+      "playerName": "Andrey Santos",
+      "position": "MID",
+      "club": {
+        "id": "16",
+        "name": "Man Utd",
+        "shortName": "MUN"
+      },
+      "officialDraftRankAtDraft": 286,
+      "modelRankAtDraft": 278,
+      "modelPositionRankAtDraft": 131,
+      "mvpConsensusRankAtDraft": 294
+    },
+    {
+      "overallPickNumber": 68,
+      "roundNumber": 12,
+      "pickInRound": 2,
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "draftPlayerId": "36",
+      "playerName": "Maatsen",
+      "position": "DEF",
+      "club": {
+        "id": "2",
+        "name": "Aston Villa",
+        "shortName": "AVL"
+      },
+      "officialDraftRankAtDraft": 424,
+      "modelRankAtDraft": 177,
+      "modelPositionRankAtDraft": 71,
+      "mvpConsensusRankAtDraft": 370
+    },
+    {
+      "overallPickNumber": 69,
+      "roundNumber": 12,
+      "pickInRound": 3,
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "draftPlayerId": "400",
+      "playerName": "Doku",
+      "position": "MID",
+      "club": {
+        "id": "15",
+        "name": "Man City",
+        "shortName": "MCI"
+      },
+      "officialDraftRankAtDraft": 20,
+      "modelRankAtDraft": 70,
+      "modelPositionRankAtDraft": 22,
+      "mvpConsensusRankAtDraft": 25
+    },
+    {
+      "overallPickNumber": 70,
+      "roundNumber": 12,
+      "pickInRound": 4,
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "draftPlayerId": "463",
+      "playerName": "Woltemade",
+      "position": "FWD",
+      "club": {
+        "id": "17",
+        "name": "Newcastle",
+        "shortName": "NEW"
+      },
+      "officialDraftRankAtDraft": 79,
+      "modelRankAtDraft": 110,
+      "modelPositionRankAtDraft": 13,
+      "mvpConsensusRankAtDraft": 71
+    },
+    {
+      "overallPickNumber": 71,
+      "roundNumber": 12,
+      "pickInRound": 5,
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "draftPlayerId": "11",
+      "playerName": "Mosquera",
+      "position": "DEF",
+      "club": {
+        "id": "1",
+        "name": "Arsenal",
+        "shortName": "ARS"
+      },
+      "officialDraftRankAtDraft": 178,
+      "modelRankAtDraft": 265,
+      "modelPositionRankAtDraft": 96,
+      "mvpConsensusRankAtDraft": 224
+    },
+    {
+      "overallPickNumber": 72,
+      "roundNumber": 12,
+      "pickInRound": 6,
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "draftPlayerId": "136",
+      "playerName": "Welbeck",
+      "position": "FWD",
+      "club": {
+        "id": "6",
+        "name": "Chelsea",
+        "shortName": "CHE"
+      },
+      "officialDraftRankAtDraft": 72,
+      "modelRankAtDraft": 60,
+      "modelPositionRankAtDraft": 6,
+      "mvpConsensusRankAtDraft": 50
+    },
+    {
+      "overallPickNumber": 73,
+      "roundNumber": 13,
+      "pickInRound": 1,
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "draftPlayerId": "156",
+      "playerName": "Neto",
+      "position": "MID",
+      "club": {
+        "id": "6",
+        "name": "Chelsea",
+        "shortName": "CHE"
+      },
+      "officialDraftRankAtDraft": 38,
+      "modelRankAtDraft": 81,
+      "modelPositionRankAtDraft": 26,
+      "mvpConsensusRankAtDraft": 39
+    },
+    {
+      "overallPickNumber": 74,
+      "roundNumber": 13,
+      "pickInRound": 2,
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "draftPlayerId": "159",
+      "playerName": "Caicedo",
+      "position": "MID",
+      "club": {
+        "id": "6",
+        "name": "Chelsea",
+        "shortName": "CHE"
+      },
+      "officialDraftRankAtDraft": 130,
+      "modelRankAtDraft": 168,
+      "modelPositionRankAtDraft": 64,
+      "mvpConsensusRankAtDraft": 126
+    },
+    {
+      "overallPickNumber": 75,
+      "roundNumber": 13,
+      "pickInRound": 3,
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "draftPlayerId": "78",
+      "playerName": "Kroupi.Jr",
+      "position": "MID",
+      "club": {
+        "id": "3",
+        "name": "Bournemouth",
+        "shortName": "BOU"
+      },
+      "officialDraftRankAtDraft": 21,
+      "modelRankAtDraft": 61,
+      "modelPositionRankAtDraft": 18,
+      "mvpConsensusRankAtDraft": 22
+    },
+    {
+      "overallPickNumber": 76,
+      "roundNumber": 13,
+      "pickInRound": 4,
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "draftPlayerId": "57",
+      "playerName": "Petrović",
+      "position": "GK",
+      "club": {
+        "id": "3",
+        "name": "Bournemouth",
+        "shortName": "BOU"
+      },
+      "officialDraftRankAtDraft": 394,
+      "modelRankAtDraft": 71,
+      "modelPositionRankAtDraft": 9,
+      "mvpConsensusRankAtDraft": 291
+    },
+    {
+      "overallPickNumber": 77,
+      "roundNumber": 13,
+      "pickInRound": 5,
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "draftPlayerId": "385",
+      "playerName": "Trafford",
+      "position": "GK",
+      "club": {
+        "id": "13",
+        "name": "Leeds",
+        "shortName": "LEE"
+      },
+      "officialDraftRankAtDraft": 312,
+      "modelRankAtDraft": 377,
+      "modelPositionRankAtDraft": 26,
+      "mvpConsensusRankAtDraft": 366
+    },
+    {
+      "overallPickNumber": 78,
+      "roundNumber": 13,
+      "pickInRound": 6,
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "draftPlayerId": "390",
+      "playerName": "Rúben",
+      "position": "DEF",
+      "club": {
+        "id": "15",
+        "name": "Man City",
+        "shortName": "MCI"
+      },
+      "officialDraftRankAtDraft": 127,
+      "modelRankAtDraft": 86,
+      "modelPositionRankAtDraft": 38,
+      "mvpConsensusRankAtDraft": 101
+    },
+    {
+      "overallPickNumber": 79,
+      "roundNumber": 14,
+      "pickInRound": 1,
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "draftPlayerId": "226",
+      "playerName": "Pickford",
+      "position": "GK",
+      "club": {
+        "id": "9",
+        "name": "Everton",
+        "shortName": "EVE"
+      },
+      "officialDraftRankAtDraft": 115,
+      "modelRankAtDraft": 36,
+      "modelPositionRankAtDraft": 7,
+      "mvpConsensusRankAtDraft": 66
+    },
+    {
+      "overallPickNumber": 80,
+      "roundNumber": 14,
+      "pickInRound": 2,
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "draftPlayerId": "61",
+      "playerName": "Truffert",
+      "position": "DEF",
+      "club": {
+        "id": "3",
+        "name": "Bournemouth",
+        "shortName": "BOU"
+      },
+      "officialDraftRankAtDraft": 111,
+      "modelRankAtDraft": 35,
+      "modelPositionRankAtDraft": 15,
+      "mvpConsensusRankAtDraft": 62
+    },
+    {
+      "overallPickNumber": 81,
+      "roundNumber": 14,
+      "pickInRound": 3,
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "draftPlayerId": "60",
+      "playerName": "Hill",
+      "position": "DEF",
+      "club": {
+        "id": "3",
+        "name": "Bournemouth",
+        "shortName": "BOU"
+      },
+      "officialDraftRankAtDraft": 129,
+      "modelRankAtDraft": 103,
+      "modelPositionRankAtDraft": 44,
+      "mvpConsensusRankAtDraft": 105
+    },
+    {
+      "overallPickNumber": 82,
+      "roundNumber": 14,
+      "pickInRound": 4,
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "draftPlayerId": "201",
+      "playerName": "Muñoz",
+      "position": "DEF",
+      "club": {
+        "id": "8",
+        "name": "Crystal Palace",
+        "shortName": "CRY"
+      },
+      "officialDraftRankAtDraft": 114,
+      "modelRankAtDraft": 49,
+      "modelPositionRankAtDraft": 24,
+      "mvpConsensusRankAtDraft": 72
+    },
+    {
+      "overallPickNumber": 83,
+      "roundNumber": 14,
+      "pickInRound": 5,
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "draftPlayerId": "445",
+      "playerName": "Thiaw",
+      "position": "DEF",
+      "club": {
+        "id": "17",
+        "name": "Newcastle",
+        "shortName": "NEW"
+      },
+      "officialDraftRankAtDraft": 230,
+      "modelRankAtDraft": 25,
+      "modelPositionRankAtDraft": 10,
+      "mvpConsensusRankAtDraft": 140
+    },
+    {
+      "overallPickNumber": 84,
+      "roundNumber": 14,
+      "pickInRound": 6,
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "draftPlayerId": "84",
+      "playerName": "Collins",
+      "position": "DEF",
+      "club": {
+        "id": "4",
+        "name": "Brentford",
+        "shortName": "BRE"
+      },
+      "officialDraftRankAtDraft": 119,
+      "modelRankAtDraft": 34,
+      "modelPositionRankAtDraft": 14,
+      "mvpConsensusRankAtDraft": 70
+    },
+    {
+      "overallPickNumber": 85,
+      "roundNumber": 15,
+      "pickInRound": 1,
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "draftPlayerId": "529",
+      "playerName": "Roefs",
+      "position": "GK",
+      "club": {
+        "id": "20",
+        "name": "Sunderland",
+        "shortName": "SUN"
+      },
+      "officialDraftRankAtDraft": 225,
+      "modelRankAtDraft": 12,
+      "modelPositionRankAtDraft": 2,
+      "mvpConsensusRankAtDraft": 133
+    },
+    {
+      "overallPickNumber": 86,
+      "roundNumber": 15,
+      "pickInRound": 2,
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "draftPlayerId": "496",
+      "playerName": "Kinsky",
+      "position": "GK",
+      "club": {
+        "id": "19",
+        "name": "Spurs",
+        "shortName": "TOT"
+      },
+      "officialDraftRankAtDraft": 443,
+      "modelRankAtDraft": 325,
+      "modelPositionRankAtDraft": 21,
+      "mvpConsensusRankAtDraft": 446
+    },
+    {
+      "overallPickNumber": 87,
+      "roundNumber": 15,
+      "pickInRound": 3,
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "draftPlayerId": "140",
+      "playerName": "Sánchez",
+      "position": "GK",
+      "club": {
+        "id": "6",
+        "name": "Chelsea",
+        "shortName": "CHE"
+      },
+      "officialDraftRankAtDraft": 238,
+      "modelRankAtDraft": 30,
+      "modelPositionRankAtDraft": 5,
+      "mvpConsensusRankAtDraft": 154
+    },
+    {
+      "overallPickNumber": 88,
+      "roundNumber": 15,
+      "pickInRound": 4,
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "draftPlayerId": "580",
+      "playerName": "Araujo",
+      "position": "DEF",
+      "club": {
+        "id": "14",
+        "name": "Liverpool",
+        "shortName": "LIV"
+      },
+      "officialDraftRankAtDraft": 219,
+      "modelRankAtDraft": null,
+      "modelPositionRankAtDraft": null,
+      "mvpConsensusRankAtDraft": 212
+    },
+    {
+      "overallPickNumber": 89,
+      "roundNumber": 15,
+      "pickInRound": 5,
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "draftPlayerId": "68",
+      "playerName": "Tavernier",
+      "position": "MID",
+      "club": {
+        "id": "3",
+        "name": "Bournemouth",
+        "shortName": "BOU"
+      },
+      "officialDraftRankAtDraft": 67,
+      "modelRankAtDraft": 46,
+      "modelPositionRankAtDraft": 12,
+      "mvpConsensusRankAtDraft": 46
+    },
+    {
+      "overallPickNumber": 90,
+      "roundNumber": 15,
+      "pickInRound": 6,
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "draftPlayerId": "109",
+      "playerName": "Verbruggen",
+      "position": "GK",
+      "club": {
+        "id": "5",
+        "name": "Brighton",
+        "shortName": "BHA"
+      },
+      "officialDraftRankAtDraft": 393,
+      "modelRankAtDraft": 32,
+      "modelPositionRankAtDraft": 6,
+      "mvpConsensusRankAtDraft": 277
+    }
+  ],
+  "finalRosters": [
+    {
+      "managerId": "demo-manager-1",
+      "managerName": "Vuk",
+      "positionCounts": {
+        "GK": 2,
+        "DEF": 5,
+        "MID": 5,
+        "FWD": 3
+      },
+      "players": [
+        {
+          "draftPlayerId": "411",
+          "playerName": "Haaland",
+          "position": "FWD",
+          "club": {
+            "id": "15",
+            "name": "Man City",
+            "shortName": "MCI"
+          },
+          "draftPickNumber": 1,
+          "officialDraftRankAtDraft": 1,
+          "modelRankAtDraft": 1,
+          "modelPositionRankAtDraft": 1,
+          "mvpConsensusRankAtDraft": 1
+        },
+        {
+          "draftPlayerId": "397",
+          "playerName": "Semenyo",
+          "position": "MID",
+          "club": {
+            "id": "15",
+            "name": "Man City",
+            "shortName": "MCI"
+          },
+          "draftPickNumber": 12,
+          "officialDraftRankAtDraft": 6,
+          "modelRankAtDraft": 4,
+          "modelPositionRankAtDraft": 1,
+          "mvpConsensusRankAtDraft": 3
+        },
+        {
+          "draftPlayerId": "480",
+          "playerName": "Gibbs-White",
+          "position": "MID",
+          "club": {
+            "id": "18",
+            "name": "Nott'm Forest",
+            "shortName": "NFO"
+          },
+          "draftPickNumber": 13,
+          "officialDraftRankAtDraft": 8,
+          "modelRankAtDraft": 10,
+          "modelPositionRankAtDraft": 2,
+          "mvpConsensusRankAtDraft": 6
+        },
+        {
+          "draftPlayerId": "12",
+          "playerName": "Saka",
+          "position": "MID",
+          "club": {
+            "id": "1",
+            "name": "Arsenal",
+            "shortName": "ARS"
+          },
+          "draftPickNumber": 24,
+          "officialDraftRankAtDraft": 3,
+          "modelRankAtDraft": 28,
+          "modelPositionRankAtDraft": 9,
+          "mvpConsensusRankAtDraft": 7
+        },
+        {
+          "draftPlayerId": "387",
+          "playerName": "O'Reilly",
+          "position": "DEF",
+          "club": {
+            "id": "15",
+            "name": "Man City",
+            "shortName": "MCI"
+          },
+          "draftPickNumber": 25,
+          "officialDraftRankAtDraft": 34,
+          "modelRankAtDraft": 7,
+          "modelPositionRankAtDraft": 3,
+          "mvpConsensusRankAtDraft": 15
+        },
+        {
+          "draftPlayerId": "25",
+          "playerName": "Gyökeres",
+          "position": "FWD",
+          "club": {
+            "id": "1",
+            "name": "Arsenal",
+            "shortName": "ARS"
+          },
+          "draftPickNumber": 36,
+          "officialDraftRankAtDraft": 17,
+          "modelRankAtDraft": 133,
+          "modelPositionRankAtDraft": 17,
+          "mvpConsensusRankAtDraft": 45
+        },
+        {
+          "draftPlayerId": "5",
+          "playerName": "J.Timber",
+          "position": "DEF",
+          "club": {
+            "id": "1",
+            "name": "Arsenal",
+            "shortName": "ARS"
+          },
+          "draftPickNumber": 37,
+          "officialDraftRankAtDraft": 36,
+          "modelRankAtDraft": 14,
+          "modelPositionRankAtDraft": 6,
+          "mvpConsensusRankAtDraft": 17
+        },
+        {
+          "draftPlayerId": "384",
+          "playerName": "Donnarumma",
+          "position": "GK",
+          "club": {
+            "id": "15",
+            "name": "Man City",
+            "shortName": "MCI"
+          },
+          "draftPickNumber": 48,
+          "officialDraftRankAtDraft": 116,
+          "modelRankAtDraft": 16,
+          "modelPositionRankAtDraft": 3,
+          "mvpConsensusRankAtDraft": 60
+        },
+        {
+          "draftPlayerId": "229",
+          "playerName": "Tarkowski",
+          "position": "DEF",
+          "club": {
+            "id": "9",
+            "name": "Everton",
+            "shortName": "EVE"
+          },
+          "draftPickNumber": 49,
+          "officialDraftRankAtDraft": 58,
+          "modelRankAtDraft": 13,
+          "modelPositionRankAtDraft": 5,
+          "mvpConsensusRankAtDraft": 29
+        },
+        {
+          "draftPlayerId": "367",
+          "playerName": "Gakpo",
+          "position": "MID",
+          "club": {
+            "id": "14",
+            "name": "Liverpool",
+            "shortName": "LIV"
+          },
+          "draftPickNumber": 60,
+          "officialDraftRankAtDraft": 26,
+          "modelRankAtDraft": 23,
+          "modelPositionRankAtDraft": 7,
+          "mvpConsensusRankAtDraft": 16
+        },
+        {
+          "draftPlayerId": "498",
+          "playerName": "Senesi",
+          "position": "DEF",
+          "club": {
+            "id": "19",
+            "name": "Spurs",
+            "shortName": "TOT"
+          },
+          "draftPickNumber": 61,
+          "officialDraftRankAtDraft": 57,
+          "modelRankAtDraft": 15,
+          "modelPositionRankAtDraft": 7,
+          "mvpConsensusRankAtDraft": 30
+        },
+        {
+          "draftPlayerId": "136",
+          "playerName": "Welbeck",
+          "position": "FWD",
+          "club": {
+            "id": "6",
+            "name": "Chelsea",
+            "shortName": "CHE"
+          },
+          "draftPickNumber": 72,
+          "officialDraftRankAtDraft": 72,
+          "modelRankAtDraft": 60,
+          "modelPositionRankAtDraft": 6,
+          "mvpConsensusRankAtDraft": 50
+        },
+        {
+          "draftPlayerId": "156",
+          "playerName": "Neto",
+          "position": "MID",
+          "club": {
+            "id": "6",
+            "name": "Chelsea",
+            "shortName": "CHE"
+          },
+          "draftPickNumber": 73,
+          "officialDraftRankAtDraft": 38,
+          "modelRankAtDraft": 81,
+          "modelPositionRankAtDraft": 26,
+          "mvpConsensusRankAtDraft": 39
+        },
+        {
+          "draftPlayerId": "84",
+          "playerName": "Collins",
+          "position": "DEF",
+          "club": {
+            "id": "4",
+            "name": "Brentford",
+            "shortName": "BRE"
+          },
+          "draftPickNumber": 84,
+          "officialDraftRankAtDraft": 119,
+          "modelRankAtDraft": 34,
+          "modelPositionRankAtDraft": 14,
+          "mvpConsensusRankAtDraft": 70
+        },
+        {
+          "draftPlayerId": "529",
+          "playerName": "Roefs",
+          "position": "GK",
+          "club": {
+            "id": "20",
+            "name": "Sunderland",
+            "shortName": "SUN"
+          },
+          "draftPickNumber": 85,
+          "officialDraftRankAtDraft": 225,
+          "modelRankAtDraft": 12,
+          "modelPositionRankAtDraft": 2,
+          "mvpConsensusRankAtDraft": 133
+        }
+      ]
+    },
+    {
+      "managerId": "demo-manager-2",
+      "managerName": "Diego",
+      "positionCounts": {
+        "GK": 2,
+        "DEF": 5,
+        "MID": 5,
+        "FWD": 3
+      },
+      "players": [
+        {
+          "draftPlayerId": "165",
+          "playerName": "João Pedro",
+          "position": "FWD",
+          "club": {
+            "id": "6",
+            "name": "Chelsea",
+            "shortName": "CHE"
+          },
+          "draftPickNumber": 2,
+          "officialDraftRankAtDraft": 14,
+          "modelRankAtDraft": 9,
+          "modelPositionRankAtDraft": 3,
+          "mvpConsensusRankAtDraft": 8
+        },
+        {
+          "draftPlayerId": "13",
+          "playerName": "Rice",
+          "position": "MID",
+          "club": {
+            "id": "1",
+            "name": "Arsenal",
+            "shortName": "ARS"
+          },
+          "draftPickNumber": 11,
+          "officialDraftRankAtDraft": 13,
+          "modelRankAtDraft": 59,
+          "modelPositionRankAtDraft": 17,
+          "mvpConsensusRankAtDraft": 18
+        },
+        {
+          "draftPlayerId": "412",
+          "playerName": "Lammens",
+          "position": "GK",
+          "club": {
+            "id": "16",
+            "name": "Man Utd",
+            "shortName": "MUN"
+          },
+          "draftPickNumber": 14,
+          "officialDraftRankAtDraft": 240,
+          "modelRankAtDraft": 141,
+          "modelPositionRankAtDraft": 14,
+          "mvpConsensusRankAtDraft": 221
+        },
+        {
+          "draftPlayerId": "346",
+          "playerName": "Calvert-Lewin",
+          "position": "FWD",
+          "club": {
+            "id": "13",
+            "name": "Leeds",
+            "shortName": "LEE"
+          },
+          "draftPickNumber": 23,
+          "officialDraftRankAtDraft": 65,
+          "modelRankAtDraft": 45,
+          "modelPositionRankAtDraft": 5,
+          "mvpConsensusRankAtDraft": 44
+        },
+        {
+          "draftPlayerId": "423",
+          "playerName": "Shaw",
+          "position": "DEF",
+          "club": {
+            "id": "16",
+            "name": "Man Utd",
+            "shortName": "MUN"
+          },
+          "draftPickNumber": 26,
+          "officialDraftRankAtDraft": 399,
+          "modelRankAtDraft": 75,
+          "modelPositionRankAtDraft": 34,
+          "mvpConsensusRankAtDraft": 296
+        },
+        {
+          "draftPlayerId": "491",
+          "playerName": "Igor Jesus",
+          "position": "FWD",
+          "club": {
+            "id": "18",
+            "name": "Nott'm Forest",
+            "shortName": "NFO"
+          },
+          "draftPickNumber": 35,
+          "officialDraftRankAtDraft": 77,
+          "modelRankAtDraft": 77,
+          "modelPositionRankAtDraft": 9,
+          "mvpConsensusRankAtDraft": 57
+        },
+        {
+          "draftPlayerId": "237",
+          "playerName": "Ndiaye",
+          "position": "MID",
+          "club": {
+            "id": "9",
+            "name": "Everton",
+            "shortName": "EVE"
+          },
+          "draftPickNumber": 38,
+          "officialDraftRankAtDraft": 71,
+          "modelRankAtDraft": 63,
+          "modelPositionRankAtDraft": 19,
+          "mvpConsensusRankAtDraft": 51
+        },
+        {
+          "draftPlayerId": "157",
+          "playerName": "Estêvão",
+          "position": "MID",
+          "club": {
+            "id": "6",
+            "name": "Chelsea",
+            "shortName": "CHE"
+          },
+          "draftPickNumber": 47,
+          "officialDraftRankAtDraft": 48,
+          "modelRankAtDraft": 211,
+          "modelPositionRankAtDraft": 89,
+          "mvpConsensusRankAtDraft": 93
+        },
+        {
+          "draftPlayerId": "8",
+          "playerName": "Calafiori",
+          "position": "DEF",
+          "club": {
+            "id": "1",
+            "name": "Arsenal",
+            "shortName": "ARS"
+          },
+          "draftPickNumber": 50,
+          "officialDraftRankAtDraft": 131,
+          "modelRankAtDraft": 27,
+          "modelPositionRankAtDraft": 11,
+          "mvpConsensusRankAtDraft": 75
+        },
+        {
+          "draftPlayerId": "31",
+          "playerName": "Konsa",
+          "position": "DEF",
+          "club": {
+            "id": "2",
+            "name": "Aston Villa",
+            "shortName": "AVL"
+          },
+          "draftPickNumber": 59,
+          "officialDraftRankAtDraft": 403,
+          "modelRankAtDraft": 97,
+          "modelPositionRankAtDraft": 42,
+          "mvpConsensusRankAtDraft": 307
+        },
+        {
+          "draftPlayerId": "544",
+          "playerName": "Xhaka",
+          "position": "MID",
+          "club": {
+            "id": "20",
+            "name": "Sunderland",
+            "shortName": "SUN"
+          },
+          "draftPickNumber": 62,
+          "officialDraftRankAtDraft": 121,
+          "modelRankAtDraft": 145,
+          "modelPositionRankAtDraft": 52,
+          "mvpConsensusRankAtDraft": 115
+        },
+        {
+          "draftPlayerId": "11",
+          "playerName": "Mosquera",
+          "position": "DEF",
+          "club": {
+            "id": "1",
+            "name": "Arsenal",
+            "shortName": "ARS"
+          },
+          "draftPickNumber": 71,
+          "officialDraftRankAtDraft": 178,
+          "modelRankAtDraft": 265,
+          "modelPositionRankAtDraft": 96,
+          "mvpConsensusRankAtDraft": 224
+        },
+        {
+          "draftPlayerId": "159",
+          "playerName": "Caicedo",
+          "position": "MID",
+          "club": {
+            "id": "6",
+            "name": "Chelsea",
+            "shortName": "CHE"
+          },
+          "draftPickNumber": 74,
+          "officialDraftRankAtDraft": 130,
+          "modelRankAtDraft": 168,
+          "modelPositionRankAtDraft": 64,
+          "mvpConsensusRankAtDraft": 126
+        },
+        {
+          "draftPlayerId": "445",
+          "playerName": "Thiaw",
+          "position": "DEF",
+          "club": {
+            "id": "17",
+            "name": "Newcastle",
+            "shortName": "NEW"
+          },
+          "draftPickNumber": 83,
+          "officialDraftRankAtDraft": 230,
+          "modelRankAtDraft": 25,
+          "modelPositionRankAtDraft": 10,
+          "mvpConsensusRankAtDraft": 140
+        },
+        {
+          "draftPlayerId": "496",
+          "playerName": "Kinsky",
+          "position": "GK",
+          "club": {
+            "id": "19",
+            "name": "Spurs",
+            "shortName": "TOT"
+          },
+          "draftPickNumber": 86,
+          "officialDraftRankAtDraft": 443,
+          "modelRankAtDraft": 325,
+          "modelPositionRankAtDraft": 21,
+          "mvpConsensusRankAtDraft": 446
+        }
+      ]
+    },
+    {
+      "managerId": "demo-manager-3",
+      "managerName": "Kristian",
+      "positionCounts": {
+        "GK": 2,
+        "DEF": 5,
+        "MID": 5,
+        "FWD": 3
+      },
+      "players": [
+        {
+          "draftPlayerId": "426",
+          "playerName": "B.Fernandes",
+          "position": "MID",
+          "club": {
+            "id": "16",
+            "name": "Man Utd",
+            "shortName": "MUN"
+          },
+          "draftPickNumber": 3,
+          "officialDraftRankAtDraft": 2,
+          "modelRankAtDraft": 11,
+          "modelPositionRankAtDraft": 3,
+          "mvpConsensusRankAtDraft": 2
+        },
+        {
+          "draftPlayerId": "154",
+          "playerName": "Palmer",
+          "position": "MID",
+          "club": {
+            "id": "6",
+            "name": "Chelsea",
+            "shortName": "CHE"
+          },
+          "draftPickNumber": 10,
+          "officialDraftRankAtDraft": 4,
+          "modelRankAtDraft": 79,
+          "modelPositionRankAtDraft": 25,
+          "mvpConsensusRankAtDraft": 20
+        },
+        {
+          "draftPlayerId": "6",
+          "playerName": "Saliba",
+          "position": "DEF",
+          "club": {
+            "id": "1",
+            "name": "Arsenal",
+            "shortName": "ARS"
+          },
+          "draftPickNumber": 15,
+          "officialDraftRankAtDraft": 66,
+          "modelRankAtDraft": 37,
+          "modelPositionRankAtDraft": 16,
+          "mvpConsensusRankAtDraft": 43
+        },
+        {
+          "draftPlayerId": "350",
+          "playerName": "A.Becker",
+          "position": "GK",
+          "club": {
+            "id": "14",
+            "name": "Liverpool",
+            "shortName": "LIV"
+          },
+          "draftPickNumber": 22,
+          "officialDraftRankAtDraft": 139,
+          "modelRankAtDraft": 158,
+          "modelPositionRankAtDraft": 16,
+          "mvpConsensusRankAtDraft": 128
+        },
+        {
+          "draftPlayerId": "223",
+          "playerName": "Mateta",
+          "position": "FWD",
+          "club": {
+            "id": "8",
+            "name": "Crystal Palace",
+            "shortName": "CRY"
+          },
+          "draftPickNumber": 27,
+          "officialDraftRankAtDraft": 40,
+          "modelRankAtDraft": 78,
+          "modelPositionRankAtDraft": 10,
+          "mvpConsensusRankAtDraft": 40
+        },
+        {
+          "draftPlayerId": "366",
+          "playerName": "Wirtz",
+          "position": "MID",
+          "club": {
+            "id": "14",
+            "name": "Liverpool",
+            "shortName": "LIV"
+          },
+          "draftPickNumber": 34,
+          "officialDraftRankAtDraft": 18,
+          "modelRankAtDraft": 54,
+          "modelPositionRankAtDraft": 14,
+          "mvpConsensusRankAtDraft": 21
+        },
+        {
+          "draftPlayerId": "208",
+          "playerName": "Sarr",
+          "position": "MID",
+          "club": {
+            "id": "8",
+            "name": "Crystal Palace",
+            "shortName": "CRY"
+          },
+          "draftPickNumber": 39,
+          "officialDraftRankAtDraft": 39,
+          "modelRankAtDraft": 65,
+          "modelPositionRankAtDraft": 20,
+          "mvpConsensusRankAtDraft": 34
+        },
+        {
+          "draftPlayerId": "552",
+          "playerName": "Brobbey",
+          "position": "FWD",
+          "club": {
+            "id": "20",
+            "name": "Sunderland",
+            "shortName": "SUN"
+          },
+          "draftPickNumber": 46,
+          "officialDraftRankAtDraft": 84,
+          "modelRankAtDraft": 129,
+          "modelPositionRankAtDraft": 16,
+          "mvpConsensusRankAtDraft": 83
+        },
+        {
+          "draftPlayerId": "9",
+          "playerName": "Hincapie",
+          "position": "DEF",
+          "club": {
+            "id": "1",
+            "name": "Arsenal",
+            "shortName": "ARS"
+          },
+          "draftPickNumber": 51,
+          "officialDraftRankAtDraft": 140,
+          "modelRankAtDraft": 154,
+          "modelPositionRankAtDraft": 66,
+          "mvpConsensusRankAtDraft": 127
+        },
+        {
+          "draftPlayerId": "469",
+          "playerName": "N.Williams",
+          "position": "DEF",
+          "club": {
+            "id": "18",
+            "name": "Nott'm Forest",
+            "shortName": "NFO"
+          },
+          "draftPickNumber": 58,
+          "officialDraftRankAtDraft": 229,
+          "modelRankAtDraft": 39,
+          "modelPositionRankAtDraft": 18,
+          "mvpConsensusRankAtDraft": 149
+        },
+        {
+          "draftPlayerId": "503",
+          "playerName": "Van de Ven",
+          "position": "DEF",
+          "club": {
+            "id": "19",
+            "name": "Spurs",
+            "shortName": "TOT"
+          },
+          "draftPickNumber": 63,
+          "officialDraftRankAtDraft": 235,
+          "modelRankAtDraft": 58,
+          "modelPositionRankAtDraft": 29,
+          "mvpConsensusRankAtDraft": 166
+        },
+        {
+          "draftPlayerId": "463",
+          "playerName": "Woltemade",
+          "position": "FWD",
+          "club": {
+            "id": "17",
+            "name": "Newcastle",
+            "shortName": "NEW"
+          },
+          "draftPickNumber": 70,
+          "officialDraftRankAtDraft": 79,
+          "modelRankAtDraft": 110,
+          "modelPositionRankAtDraft": 13,
+          "mvpConsensusRankAtDraft": 71
+        },
+        {
+          "draftPlayerId": "78",
+          "playerName": "Kroupi.Jr",
+          "position": "MID",
+          "club": {
+            "id": "3",
+            "name": "Bournemouth",
+            "shortName": "BOU"
+          },
+          "draftPickNumber": 75,
+          "officialDraftRankAtDraft": 21,
+          "modelRankAtDraft": 61,
+          "modelPositionRankAtDraft": 18,
+          "mvpConsensusRankAtDraft": 22
+        },
+        {
+          "draftPlayerId": "201",
+          "playerName": "Muñoz",
+          "position": "DEF",
+          "club": {
+            "id": "8",
+            "name": "Crystal Palace",
+            "shortName": "CRY"
+          },
+          "draftPickNumber": 82,
+          "officialDraftRankAtDraft": 114,
+          "modelRankAtDraft": 49,
+          "modelPositionRankAtDraft": 24,
+          "mvpConsensusRankAtDraft": 72
+        },
+        {
+          "draftPlayerId": "140",
+          "playerName": "Sánchez",
+          "position": "GK",
+          "club": {
+            "id": "6",
+            "name": "Chelsea",
+            "shortName": "CHE"
+          },
+          "draftPickNumber": 87,
+          "officialDraftRankAtDraft": 238,
+          "modelRankAtDraft": 30,
+          "modelPositionRankAtDraft": 5,
+          "mvpConsensusRankAtDraft": 154
+        }
+      ]
+    },
+    {
+      "managerId": "demo-manager-4",
+      "managerName": "Miku",
+      "positionCounts": {
+        "GK": 2,
+        "DEF": 5,
+        "MID": 5,
+        "FWD": 3
+      },
+      "players": [
+        {
+          "draftPlayerId": "40",
+          "playerName": "Rogers",
+          "position": "MID",
+          "club": {
+            "id": "6",
+            "name": "Chelsea",
+            "shortName": "CHE"
+          },
+          "draftPickNumber": 4,
+          "officialDraftRankAtDraft": 15,
+          "modelRankAtDraft": 21,
+          "modelPositionRankAtDraft": 5,
+          "mvpConsensusRankAtDraft": 11
+        },
+        {
+          "draftPlayerId": "1",
+          "playerName": "Raya",
+          "position": "GK",
+          "club": {
+            "id": "1",
+            "name": "Arsenal",
+            "shortName": "ARS"
+          },
+          "draftPickNumber": 9,
+          "officialDraftRankAtDraft": 59,
+          "modelRankAtDraft": 2,
+          "modelPositionRankAtDraft": 1,
+          "mvpConsensusRankAtDraft": 26
+        },
+        {
+          "draftPlayerId": "504",
+          "playerName": "Vuskovic",
+          "position": "DEF",
+          "club": {
+            "id": "5",
+            "name": "Brighton",
+            "shortName": "BHA"
+          },
+          "draftPickNumber": 16,
+          "officialDraftRankAtDraft": 380,
+          "modelRankAtDraft": 372,
+          "modelPositionRankAtDraft": 146,
+          "mvpConsensusRankAtDraft": 426
+        },
+        {
+          "draftPlayerId": "106",
+          "playerName": "Thiago",
+          "position": "FWD",
+          "club": {
+            "id": "4",
+            "name": "Brentford",
+            "shortName": "BRE"
+          },
+          "draftPickNumber": 21,
+          "officialDraftRankAtDraft": 9,
+          "modelRankAtDraft": 3,
+          "modelPositionRankAtDraft": 2,
+          "mvpConsensusRankAtDraft": 5
+        },
+        {
+          "draftPlayerId": "452",
+          "playerName": "Bruno G.",
+          "position": "MID",
+          "club": {
+            "id": "1",
+            "name": "Arsenal",
+            "shortName": "ARS"
+          },
+          "draftPickNumber": 28,
+          "officialDraftRankAtDraft": 25,
+          "modelRankAtDraft": 57,
+          "modelPositionRankAtDraft": 16,
+          "mvpConsensusRankAtDraft": 23
+        },
+        {
+          "draftPlayerId": "554",
+          "playerName": "Tzolis",
+          "position": "MID",
+          "club": {
+            "id": "1",
+            "name": "Arsenal",
+            "shortName": "ARS"
+          },
+          "draftPickNumber": 33,
+          "officialDraftRankAtDraft": 55,
+          "modelRankAtDraft": null,
+          "modelPositionRankAtDraft": null,
+          "mvpConsensusRankAtDraft": 37
+        },
+        {
+          "draftPlayerId": "248",
+          "playerName": "Beto",
+          "position": "FWD",
+          "club": {
+            "id": "9",
+            "name": "Everton",
+            "shortName": "EVE"
+          },
+          "draftPickNumber": 40,
+          "officialDraftRankAtDraft": 133,
+          "modelRankAtDraft": 99,
+          "modelPositionRankAtDraft": 12,
+          "mvpConsensusRankAtDraft": 106
+        },
+        {
+          "draftPlayerId": "569",
+          "playerName": "Gonzalo",
+          "position": "FWD",
+          "club": {
+            "id": "10",
+            "name": "Fulham",
+            "shortName": "FUL"
+          },
+          "draftPickNumber": 45,
+          "officialDraftRankAtDraft": 110,
+          "modelRankAtDraft": null,
+          "modelPositionRankAtDraft": null,
+          "mvpConsensusRankAtDraft": 86
+        },
+        {
+          "draftPlayerId": "200",
+          "playerName": "Lacroix",
+          "position": "DEF",
+          "club": {
+            "id": "6",
+            "name": "Chelsea",
+            "shortName": "CHE"
+          },
+          "draftPickNumber": 52,
+          "officialDraftRankAtDraft": 61,
+          "modelRankAtDraft": 18,
+          "modelPositionRankAtDraft": 8,
+          "mvpConsensusRankAtDraft": 32
+        },
+        {
+          "draftPlayerId": "502",
+          "playerName": "Robertson",
+          "position": "DEF",
+          "club": {
+            "id": "19",
+            "name": "Spurs",
+            "shortName": "TOT"
+          },
+          "draftPickNumber": 57,
+          "officialDraftRankAtDraft": 423,
+          "modelRankAtDraft": 198,
+          "modelPositionRankAtDraft": 77,
+          "mvpConsensusRankAtDraft": 378
+        },
+        {
+          "draftPlayerId": "43",
+          "playerName": "Tielemans",
+          "position": "MID",
+          "club": {
+            "id": "16",
+            "name": "Man Utd",
+            "shortName": "MUN"
+          },
+          "draftPickNumber": 64,
+          "officialDraftRankAtDraft": 93,
+          "modelRankAtDraft": 178,
+          "modelPositionRankAtDraft": 71,
+          "mvpConsensusRankAtDraft": 109
+        },
+        {
+          "draftPlayerId": "400",
+          "playerName": "Doku",
+          "position": "MID",
+          "club": {
+            "id": "15",
+            "name": "Man City",
+            "shortName": "MCI"
+          },
+          "draftPickNumber": 69,
+          "officialDraftRankAtDraft": 20,
+          "modelRankAtDraft": 70,
+          "modelPositionRankAtDraft": 22,
+          "mvpConsensusRankAtDraft": 25
+        },
+        {
+          "draftPlayerId": "57",
+          "playerName": "Petrović",
+          "position": "GK",
+          "club": {
+            "id": "3",
+            "name": "Bournemouth",
+            "shortName": "BOU"
+          },
+          "draftPickNumber": 76,
+          "officialDraftRankAtDraft": 394,
+          "modelRankAtDraft": 71,
+          "modelPositionRankAtDraft": 9,
+          "mvpConsensusRankAtDraft": 291
+        },
+        {
+          "draftPlayerId": "60",
+          "playerName": "Hill",
+          "position": "DEF",
+          "club": {
+            "id": "3",
+            "name": "Bournemouth",
+            "shortName": "BOU"
+          },
+          "draftPickNumber": 81,
+          "officialDraftRankAtDraft": 129,
+          "modelRankAtDraft": 103,
+          "modelPositionRankAtDraft": 44,
+          "mvpConsensusRankAtDraft": 105
+        },
+        {
+          "draftPlayerId": "580",
+          "playerName": "Araujo",
+          "position": "DEF",
+          "club": {
+            "id": "14",
+            "name": "Liverpool",
+            "shortName": "LIV"
+          },
+          "draftPickNumber": 88,
+          "officialDraftRankAtDraft": 219,
+          "modelRankAtDraft": null,
+          "modelPositionRankAtDraft": null,
+          "mvpConsensusRankAtDraft": 212
+        }
+      ]
+    },
+    {
+      "managerId": "demo-manager-5",
+      "managerName": "Tin",
+      "positionCounts": {
+        "GK": 2,
+        "DEF": 5,
+        "MID": 5,
+        "FWD": 3
+      },
+      "players": [
+        {
+          "draftPlayerId": "368",
+          "playerName": "Szoboszlai",
+          "position": "MID",
+          "club": {
+            "id": "14",
+            "name": "Liverpool",
+            "shortName": "LIV"
+          },
+          "draftPickNumber": 5,
+          "officialDraftRankAtDraft": 23,
+          "modelRankAtDraft": 42,
+          "modelPositionRankAtDraft": 11,
+          "mvpConsensusRankAtDraft": 19
+        },
+        {
+          "draftPlayerId": "428",
+          "playerName": "Cunha",
+          "position": "MID",
+          "club": {
+            "id": "16",
+            "name": "Man Utd",
+            "shortName": "MUN"
+          },
+          "draftPickNumber": 8,
+          "officialDraftRankAtDraft": 12,
+          "modelRankAtDraft": 29,
+          "modelPositionRankAtDraft": 10,
+          "mvpConsensusRankAtDraft": 12
+        },
+        {
+          "draftPlayerId": "82",
+          "playerName": "Kelleher",
+          "position": "GK",
+          "club": {
+            "id": "4",
+            "name": "Brentford",
+            "shortName": "BRE"
+          },
+          "draftPickNumber": 17,
+          "officialDraftRankAtDraft": 224,
+          "modelRankAtDraft": 26,
+          "modelPositionRankAtDraft": 4,
+          "mvpConsensusRankAtDraft": 138
+        },
+        {
+          "draftPlayerId": "356",
+          "playerName": "Virgil",
+          "position": "DEF",
+          "club": {
+            "id": "14",
+            "name": "Liverpool",
+            "shortName": "LIV"
+          },
+          "draftPickNumber": 20,
+          "officialDraftRankAtDraft": 32,
+          "modelRankAtDraft": 6,
+          "modelPositionRankAtDraft": 2,
+          "mvpConsensusRankAtDraft": 14
+        },
+        {
+          "draftPlayerId": "542",
+          "playerName": "E.Le Fée",
+          "position": "MID",
+          "club": {
+            "id": "20",
+            "name": "Sunderland",
+            "shortName": "SUN"
+          },
+          "draftPickNumber": 29,
+          "officialDraftRankAtDraft": 63,
+          "modelRankAtDraft": 101,
+          "modelPositionRankAtDraft": 35,
+          "mvpConsensusRankAtDraft": 56
+        },
+        {
+          "draftPlayerId": "379",
+          "playerName": "Isak",
+          "position": "FWD",
+          "club": {
+            "id": "14",
+            "name": "Liverpool",
+            "shortName": "LIV"
+          },
+          "draftPickNumber": 32,
+          "officialDraftRankAtDraft": 5,
+          "modelRankAtDraft": 281,
+          "modelPositionRankAtDraft": 32,
+          "mvpConsensusRankAtDraft": 91
+        },
+        {
+          "draftPlayerId": "401",
+          "playerName": "Marmoush",
+          "position": "FWD",
+          "club": {
+            "id": "15",
+            "name": "Man City",
+            "shortName": "MCI"
+          },
+          "draftPickNumber": 41,
+          "officialDraftRankAtDraft": 29,
+          "modelRankAtDraft": 235,
+          "modelPositionRankAtDraft": 24,
+          "mvpConsensusRankAtDraft": 88
+        },
+        {
+          "draftPlayerId": "260",
+          "playerName": "Wilson",
+          "position": "MID",
+          "club": {
+            "id": "13",
+            "name": "Leeds",
+            "shortName": "LEE"
+          },
+          "draftPickNumber": 44,
+          "officialDraftRankAtDraft": 33,
+          "modelRankAtDraft": 51,
+          "modelPositionRankAtDraft": 13,
+          "mvpConsensusRankAtDraft": 28
+        },
+        {
+          "draftPlayerId": "112",
+          "playerName": "Van Hecke",
+          "position": "DEF",
+          "club": {
+            "id": "19",
+            "name": "Spurs",
+            "shortName": "TOT"
+          },
+          "draftPickNumber": 53,
+          "officialDraftRankAtDraft": 223,
+          "modelRankAtDraft": 19,
+          "modelPositionRankAtDraft": 9,
+          "mvpConsensusRankAtDraft": 135
+        },
+        {
+          "draftPlayerId": "88",
+          "playerName": "Kayode",
+          "position": "DEF",
+          "club": {
+            "id": "4",
+            "name": "Brentford",
+            "shortName": "BRE"
+          },
+          "draftPickNumber": 56,
+          "officialDraftRankAtDraft": 398,
+          "modelRankAtDraft": 76,
+          "modelPositionRankAtDraft": 35,
+          "mvpConsensusRankAtDraft": 295
+        },
+        {
+          "draftPlayerId": "526",
+          "playerName": "Solanke",
+          "position": "FWD",
+          "club": {
+            "id": "19",
+            "name": "Spurs",
+            "shortName": "TOT"
+          },
+          "draftPickNumber": 65,
+          "officialDraftRankAtDraft": 102,
+          "modelRankAtDraft": 243,
+          "modelPositionRankAtDraft": 26,
+          "mvpConsensusRankAtDraft": 137
+        },
+        {
+          "draftPlayerId": "36",
+          "playerName": "Maatsen",
+          "position": "DEF",
+          "club": {
+            "id": "2",
+            "name": "Aston Villa",
+            "shortName": "AVL"
+          },
+          "draftPickNumber": 68,
+          "officialDraftRankAtDraft": 424,
+          "modelRankAtDraft": 177,
+          "modelPositionRankAtDraft": 71,
+          "mvpConsensusRankAtDraft": 370
+        },
+        {
+          "draftPlayerId": "385",
+          "playerName": "Trafford",
+          "position": "GK",
+          "club": {
+            "id": "13",
+            "name": "Leeds",
+            "shortName": "LEE"
+          },
+          "draftPickNumber": 77,
+          "officialDraftRankAtDraft": 312,
+          "modelRankAtDraft": 377,
+          "modelPositionRankAtDraft": 26,
+          "mvpConsensusRankAtDraft": 366
+        },
+        {
+          "draftPlayerId": "61",
+          "playerName": "Truffert",
+          "position": "DEF",
+          "club": {
+            "id": "3",
+            "name": "Bournemouth",
+            "shortName": "BOU"
+          },
+          "draftPickNumber": 80,
+          "officialDraftRankAtDraft": 111,
+          "modelRankAtDraft": 35,
+          "modelPositionRankAtDraft": 15,
+          "mvpConsensusRankAtDraft": 62
+        },
+        {
+          "draftPlayerId": "68",
+          "playerName": "Tavernier",
+          "position": "MID",
+          "club": {
+            "id": "3",
+            "name": "Bournemouth",
+            "shortName": "BOU"
+          },
+          "draftPickNumber": 89,
+          "officialDraftRankAtDraft": 67,
+          "modelRankAtDraft": 46,
+          "modelPositionRankAtDraft": 12,
+          "mvpConsensusRankAtDraft": 46
+        }
+      ]
+    },
+    {
+      "managerId": "demo-manager-6",
+      "managerName": "Deni",
+      "positionCounts": {
+        "GK": 2,
+        "DEF": 5,
+        "MID": 5,
+        "FWD": 3
+      },
+      "players": [
+        {
+          "draftPlayerId": "26",
+          "playerName": "Havertz",
+          "position": "FWD",
+          "club": {
+            "id": "1",
+            "name": "Arsenal",
+            "shortName": "ARS"
+          },
+          "draftPickNumber": 6,
+          "officialDraftRankAtDraft": 22,
+          "modelRankAtDraft": 275,
+          "modelPositionRankAtDraft": 30,
+          "mvpConsensusRankAtDraft": 99
+        },
+        {
+          "draftPlayerId": "4",
+          "playerName": "Gabriel",
+          "position": "DEF",
+          "club": {
+            "id": "1",
+            "name": "Arsenal",
+            "shortName": "ARS"
+          },
+          "draftPickNumber": 7,
+          "officialDraftRankAtDraft": 7,
+          "modelRankAtDraft": 5,
+          "modelPositionRankAtDraft": 1,
+          "mvpConsensusRankAtDraft": 4
+        },
+        {
+          "draftPlayerId": "55",
+          "playerName": "Watkins",
+          "position": "FWD",
+          "club": {
+            "id": "2",
+            "name": "Aston Villa",
+            "shortName": "AVL"
+          },
+          "draftPickNumber": 18,
+          "officialDraftRankAtDraft": 10,
+          "modelRankAtDraft": 20,
+          "modelPositionRankAtDraft": 4,
+          "mvpConsensusRankAtDraft": 9
+        },
+        {
+          "draftPlayerId": "427",
+          "playerName": "Mbeumo",
+          "position": "MID",
+          "club": {
+            "id": "16",
+            "name": "Man Utd",
+            "shortName": "MUN"
+          },
+          "draftPickNumber": 19,
+          "officialDraftRankAtDraft": 11,
+          "modelRankAtDraft": 22,
+          "modelPositionRankAtDraft": 6,
+          "mvpConsensusRankAtDraft": 10
+        },
+        {
+          "draftPlayerId": "398",
+          "playerName": "Foden",
+          "position": "MID",
+          "club": {
+            "id": "15",
+            "name": "Man City",
+            "shortName": "MCI"
+          },
+          "draftPickNumber": 30,
+          "officialDraftRankAtDraft": 27,
+          "modelRankAtDraft": 55,
+          "modelPositionRankAtDraft": 15,
+          "mvpConsensusRankAtDraft": 24
+        },
+        {
+          "draftPlayerId": "391",
+          "playerName": "Gvardiol",
+          "position": "DEF",
+          "club": {
+            "id": "15",
+            "name": "Man City",
+            "shortName": "MCI"
+          },
+          "draftPickNumber": 31,
+          "officialDraftRankAtDraft": 151,
+          "modelRankAtDraft": 120,
+          "modelPositionRankAtDraft": 51,
+          "mvpConsensusRankAtDraft": 123
+        },
+        {
+          "draftPlayerId": "14",
+          "playerName": "Eze",
+          "position": "MID",
+          "club": {
+            "id": "1",
+            "name": "Arsenal",
+            "shortName": "ARS"
+          },
+          "draftPickNumber": 42,
+          "officialDraftRankAtDraft": 41,
+          "modelRankAtDraft": 105,
+          "modelPositionRankAtDraft": 36,
+          "mvpConsensusRankAtDraft": 48
+        },
+        {
+          "draftPlayerId": "155",
+          "playerName": "Enzo",
+          "position": "MID",
+          "club": {
+            "id": "6",
+            "name": "Chelsea",
+            "shortName": "CHE"
+          },
+          "draftPickNumber": 43,
+          "officialDraftRankAtDraft": 24,
+          "modelRankAtDraft": 17,
+          "modelPositionRankAtDraft": 4,
+          "mvpConsensusRankAtDraft": 13
+        },
+        {
+          "draftPlayerId": "439",
+          "playerName": "Šeško",
+          "position": "FWD",
+          "club": {
+            "id": "16",
+            "name": "Man Utd",
+            "shortName": "MUN"
+          },
+          "draftPickNumber": 54,
+          "officialDraftRankAtDraft": 28,
+          "modelRankAtDraft": 89,
+          "modelPositionRankAtDraft": 11,
+          "mvpConsensusRankAtDraft": 36
+        },
+        {
+          "draftPlayerId": "388",
+          "playerName": "Guéhi",
+          "position": "DEF",
+          "club": {
+            "id": "15",
+            "name": "Man City",
+            "shortName": "MCI"
+          },
+          "draftPickNumber": 55,
+          "officialDraftRankAtDraft": 56,
+          "modelRankAtDraft": 8,
+          "modelPositionRankAtDraft": 4,
+          "mvpConsensusRankAtDraft": 27
+        },
+        {
+          "draftPlayerId": "418",
+          "playerName": "Maguire",
+          "position": "DEF",
+          "club": {
+            "id": "16",
+            "name": "Man Utd",
+            "shortName": "MUN"
+          },
+          "draftPickNumber": 66,
+          "officialDraftRankAtDraft": 252,
+          "modelRankAtDraft": 132,
+          "modelPositionRankAtDraft": 57,
+          "mvpConsensusRankAtDraft": 225
+        },
+        {
+          "draftPlayerId": "162",
+          "playerName": "Andrey Santos",
+          "position": "MID",
+          "club": {
+            "id": "16",
+            "name": "Man Utd",
+            "shortName": "MUN"
+          },
+          "draftPickNumber": 67,
+          "officialDraftRankAtDraft": 286,
+          "modelRankAtDraft": 278,
+          "modelPositionRankAtDraft": 131,
+          "mvpConsensusRankAtDraft": 294
+        },
+        {
+          "draftPlayerId": "390",
+          "playerName": "Rúben",
+          "position": "DEF",
+          "club": {
+            "id": "15",
+            "name": "Man City",
+            "shortName": "MCI"
+          },
+          "draftPickNumber": 78,
+          "officialDraftRankAtDraft": 127,
+          "modelRankAtDraft": 86,
+          "modelPositionRankAtDraft": 38,
+          "mvpConsensusRankAtDraft": 101
+        },
+        {
+          "draftPlayerId": "226",
+          "playerName": "Pickford",
+          "position": "GK",
+          "club": {
+            "id": "9",
+            "name": "Everton",
+            "shortName": "EVE"
+          },
+          "draftPickNumber": 79,
+          "officialDraftRankAtDraft": 115,
+          "modelRankAtDraft": 36,
+          "modelPositionRankAtDraft": 7,
+          "mvpConsensusRankAtDraft": 66
+        },
+        {
+          "draftPlayerId": "109",
+          "playerName": "Verbruggen",
+          "position": "GK",
+          "club": {
+            "id": "5",
+            "name": "Brighton",
+            "shortName": "BHA"
+          },
+          "draftPickNumber": 90,
+          "officialDraftRankAtDraft": 393,
+          "modelRankAtDraft": 32,
+          "modelPositionRankAtDraft": 6,
+          "mvpConsensusRankAtDraft": 277
+        }
+      ]
+    }
+  ]
+}

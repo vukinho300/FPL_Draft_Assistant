@@ -2,11 +2,11 @@
 
 ## Purpose
 
-FPL Draft Assistant is a personal companion application for an official Fantasy Premier League Draft. It helps a user organize draft-night information without replacing or controlling the official service.
+Kile N Others is a season-long league dashboard built from the completed official Fantasy Premier League Draft. It preserves the official draft as history, derives current project state from later processed transactions, and never replaces or controls the official service.
 
 ## Scope
 
-The implemented Phase 6.1 scope is a desktop draft-night companion: manager setup, a live ranked player board, sequential pick tracking, derived rosters and availability, undo-last-pick, Best Available, deterministic Best Fit, consecutive-turn Best Pair, and local refresh persistence. Backup/import, official-pick automation, and season-long management remain outside this phase.
+The implemented transition scope is a desktop league shell with an immutable Draft Archive, pitch-style squad views, player ownership, project-owned trades/waivers/free agents, chronological activity, and Matchday placeholders. The original Draft Room code remains in the repository. Official transaction automation, fabricated scores, and authentication workarounds remain outside scope.
 
 ## Initial stack
 
@@ -32,6 +32,18 @@ External response structures stop at the adapter boundary. Components consume st
 
 `src/domain/league.ts` owns the official roster contract, supported league-size validation, and per-position demand/target arithmetic. `src/domain/draftBoard.ts` consumes only `Player[]` to derive deterministic official-rank context. `src/domain/manager.ts` owns manager identity and configuration validation. `src/domain/draftSchedule.ts` generates the snake schedule, current picker, manager turns, and Turn Horizon. `src/domain/draftRanking.ts` combines official and optional model rank evidence without mutating either. `src/domain/draftState.ts` validates authoritative sequential pick history and derives rosters and availability. `src/domain/bestFit.ts` owns individual-selection depletion facts; `src/domain/bestPair.ts` owns consecutive-selection pair evaluation. None imports React or raw upstream response types.
 
+`src/domain/officialDraft.ts` validates the immutable Kile N Others archive against the snake schedule and roster contract, then deep-freezes an isolated clone. `src/domain/transactions.ts` owns project transaction records, positional validation, chronological roster evolution, unique ownership, the live ownership directory, and activity events. It never mutates the historical snapshot.
+
+```text
+Official Draft 2026/27 (immutable base)
+        +
+PROCESSED project transactions only
+        ↓
+Current rosters
+        ↓
+Ownership directory + dashboard views
+```
+
 Planned source areas are:
 
 - `src/domain`: project-owned types and pure business rules.
@@ -46,7 +58,17 @@ Only a source area needed by the current phase should be created.
 
 `src/storage/draftSessionStorage.ts` owns the versioned `fpl-draft-assistant:v1` localStorage contract. It persists only the ordered managers, `userManagerId`, and authoritative pick history. Completed-pick count, current picker, drafted IDs, availability, and rosters are recomputed from the schedule and history.
 
+That contract now belongs to the legacy Draft Room. Before transition, the completed browser record was backed up externally and converted into the canonical repository snapshot. The dashboard neither rewrites that browser record nor uses it as its runtime base state.
+
 Malformed JSON, unsupported schema versions, invalid manager configuration, and invalid persisted history fail closed. The UI offers a fresh-session reset instead of silently accepting the state. Data is local to one browser/origin; there is no database, account, cross-device sync, or backup import/export.
+
+The immutable snapshot is not a persistence mechanism for later transactions. The current project transaction list is empty until genuine league activity is recorded. A future persistence decision must remain behind an adapter and must not edit the archived draft.
+
+## League dashboard presentation boundary
+
+`src/LeagueDashboard.tsx` is the season shell. It reads the immutable snapshot and pure derived roster state. Pitch-style rows are a visual grouping by FPL position, not an official starting XI. The UI keeps **SQUAD** separate from **GAMEWEEK LINEUP & BENCH**, and labels unavailable lineup, availability, fixture, score, and standings fields as unconnected.
+
+The Players page joins the verified public player pool to project ownership by stable player ID. The Matchday page remains a shell until league and entry identifiers plus endpoint response contracts are verified. See `FPL_DRAFT_MATCHDAY_RESEARCH.md`.
 
 ## Deployment model
 
@@ -134,9 +156,6 @@ A later research phase may evaluate verified sources and precise contracts for e
 - FPL account authentication
 - Automatically submitting official picks
 - Modifying the official draft order
-- Trades
-- Waivers
-- Season-long league management
 - A remote database
 - AI-generated recommendation text
 - A fabricated projection for cold-start players
