@@ -21,7 +21,7 @@ Login UX should remain deliberately simple: **team name + password**.
 ## Product priorities
 1. Preserve the useful existing Draft Assistant and immutable official draft.
 2. Deploy the current app to Vercel.
-3. Make it properly usable on mobile.
+3. Preserve a strong desktop experience and add an intentionally designed mobile experience for the same application.
 4. Add persistent league data.
 5. Add the six accounts and enforce authorization/RLS.
 6. Make My Team and other pages account-aware.
@@ -91,8 +91,16 @@ The site must survive missing manager submissions.
 - Admin may correct another team's points after the Gameweek.
 - Corrections must remain distinguishable and auditable.
 
-## Mobile
-Desktop and mobile are first-class targets for the season dashboard. Mobile work should adapt the current UI rather than redesigning the whole product.
+## Desktop and mobile
+Desktop and mobile are both first-class product targets.
+
+The product remains one application with one shared data/domain layer, but presentation can adapt by viewport.
+
+Desktop should retain the richer wide-screen experience: sidebar/navigation, spacious pitch views, tables, comparisons and dense league information.
+
+Mobile should be intentionally designed for phone use: compact navigation, stacked cards, touch-friendly controls, readable pitch/squad views and safe handling of wide tables.
+
+Mobile work must not replace, downgrade or remove the desktop version. New user-facing features should normally be considered complete only when usable on both desktop and mobile unless a temporary exception is explicitly documented.
 
 ## Non-goals for the near-term foundation
 - Enterprise authentication.
