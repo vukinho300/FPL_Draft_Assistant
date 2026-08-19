@@ -30,7 +30,8 @@ Protect these invariants:
 - account authorization enforced server/database-side once auth exists;
 - missing lineup never becomes fabricated historical data;
 - admin point correction remains auditable;
-- external schema failures fail clearly rather than silently guessing.
+- external schema failures fail clearly rather than silently guessing;
+- desktop and mobile render the same underlying league state and rules.
 
 ## Deployment target
 Target: Vercel from the GitHub repository.
@@ -57,16 +58,32 @@ Verify production views:
 
 Do not make Supabase a blocker for first deployment.
 
-## Mobile sequence
-After deployment, F2 is mobile responsiveness only.
+## Desktop and mobile verification
+Desktop and mobile are both required targets of the same deployed application.
+
+Desktop verification should use a representative laptop/desktop viewport and confirm that the rich wide-screen experience remains intact.
+
+Mobile verification should use at least one narrow phone-sized viewport and confirm:
+- navigation works without relying on the desktop sidebar;
+- primary actions are touch-friendly;
+- squad/pitch content is readable;
+- cards/grids stack without clipping;
+- wide tables have intentional compact or horizontal-scroll treatment;
+- important features do not disappear solely because the viewport is mobile.
+
+Responsive work must not regress desktop. For user-facing UI phases, verify both form factors unless the task explicitly documents that only one layout is touched.
+
+## Responsive sequence
+After deployment, F2 is responsive desktop/mobile shell work only.
 
 Expected adaptations:
-- desktop sidebar -> compact mobile navigation;
-- multi-column grids -> responsive 2/1-column layouts;
-- football pitch/player cards -> smaller responsive representation;
-- wide tables -> safe horizontal scrolling/compact presentation.
+- preserve the desktop sidebar on wide screens;
+- use compact navigation on mobile;
+- multi-column grids become responsive 2/1-column layouts;
+- football pitch/player cards become smaller responsive representations;
+- wide tables use safe horizontal scrolling/compact presentation.
 
-Do not combine mobile work with auth/database changes.
+Do not combine responsive work with auth/database changes.
 
 ## Environment variables
 Keep deployment configuration outside source control.
