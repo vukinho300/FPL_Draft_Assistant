@@ -103,13 +103,27 @@ React/Vite UI on Vercel
 
 Do not rewrite the frontend framework or domain architecture to achieve this.
 
-## Current UI limitation
-The current dashboard was designed desktop-first. Responsive/mobile work is a separate narrow phase. Preserve the existing visual language while adapting navigation, pitch cards, grids and tables to smaller screens.
+## Desktop/mobile presentation architecture
+Desktop and mobile are first-class views of the same product, not separate applications.
+
+They must share:
+- the same domain logic;
+- the same normalized football data;
+- the same account/session state;
+- the same database records;
+- the same business rules and permissions.
+
+Presentation may adapt by viewport. Desktop should retain wide-screen navigation, dense tables, multi-column league views, player comparisons and spacious squad/pitch layouts. Mobile should use responsive navigation, stacked content, touch-friendly controls and compact squad/table presentations.
+
+Avoid duplicating whole feature implementations as `DesktopX` and `MobileX` unless a genuinely different presentation component is needed. Prefer shared components and responsive composition.
+
+A new user-facing feature should normally be considered complete only when usable on both desktop and mobile. Temporary single-layout exceptions must be explicit in `15_Current_Phase.md`.
 
 ## Architecture constraints
 - No external API shape directly in React.
 - No business-critical permission enforced only by hiding UI.
 - No duplicate roster truth.
+- No duplicate desktop/mobile business logic.
 - No mutable official-draft history.
 - No automatic official FPL transaction submission until explicitly designed.
 - Create new source areas only when the current narrow phase needs them.
