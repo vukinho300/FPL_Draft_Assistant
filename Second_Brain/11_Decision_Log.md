@@ -25,67 +25,72 @@ Status: APPROVED
 
 Deploy the existing current app before making Supabase/auth a dependency.
 
-## D-006 — Mobile is an early isolated phase
+## D-006 — Desktop and mobile are both first-class
 Status: APPROVED
 
-Make the deployed current shell responsive before adding the bulk of league features. Do not mix mobile work with backend/auth work.
+Kile N Others must keep a strong desktop experience and also provide an intentionally usable mobile experience within the same application. Responsive/mobile work must not replace, downgrade or remove desktop functionality. New user-facing features should normally support both layouts and share one domain/data model.
 
-## D-007 — Supabase for minimum persistent backend
+## D-007 — Responsive shell is an early isolated phase
+Status: APPROVED
+
+Make the deployed current shell responsive before adding the bulk of league features. Do not mix responsive work with backend/auth work.
+
+## D-008 — Supabase for minimum persistent backend
 Status: APPROVED ARCHITECTURE; NOT YET IMPLEMENTED
 
 Use Supabase Auth + Postgres + RLS + Storage for six accounts and project-owned persistent league state.
 
-## D-008 — Team-name login UX
+## D-009 — Team-name login UX
 Status: APPROVED
 
 The visible login uses team name + password. Internal Supabase auth identities may use hidden/generated email identifiers.
 
-## D-009 — Admin credentials cannot be shared
+## D-010 — Admin credentials cannot be shared
 Status: APPROVED SECURITY CORRECTION
 
 Jakin Goff must use a unique admin password. A shared password across all known team names would allow any member to authenticate as the league owner, making RLS unable to distinguish the real admin.
 
-## D-010 — Backend permissions, not frontend hiding
+## D-011 — Backend permissions, not frontend hiding
 Status: APPROVED
 
 Admin-sensitive and owner-sensitive permissions must be enforced via RLS/backend authorization.
 
-## D-011 — Missing Gameweek lineup stays missing
+## D-012 — Missing Gameweek lineup stays missing
 Status: APPROVED
 
 Never fabricate or reuse a previous lineup if a manager forgot to submit one.
 
-## D-012 — Score provenance is explicit
+## D-013 — Score provenance is explicit
 Status: APPROVED
 
 Prefer: admin correction > verified official FPL total > project-calculated total > unavailable. Corrections retain an audit trail and do not erase source values.
 
-## D-013 — Accepted trade is not processed trade
+## D-014 — Accepted trade is not processed trade
 Status: APPROVED
 
 An accepted in-app trade does not change current rosters until real-FPL reconciliation or explicit league-owner confirmation marks it PROCESSED.
 
-## D-014 — Prefer official/public data over scraping
+## D-015 — Prefer official/public data over scraping
 Status: APPROVED
 
 Scraping is a fallback only for genuinely missing required data.
 
-## D-015 — Premier League photos require a verified mapping contract
+## D-016 — Premier League photos require a verified mapping contract
 Status: APPROVED RESEARCH DIRECTION
 
 Investigate stable FPL/player identity -> official Premier League profile/image mapping. Do not guess CDN URLs or manually maintain hundreds of photos before proving the source contract.
 
-## D-016 — External API shapes stop at adapters
+## D-017 — External API shapes stop at adapters
 Status: APPROVED
 
 React consumes project-owned models. Undocumented FPL/FPL Draft response structures do not become UI contracts directly.
 
-## D-017 — No automatic official FPL mutations yet
+## D-018 — No automatic official FPL mutations yet
 Status: APPROVED
 
 Read/reconcile before automating any official trade, waiver, free-agent or lineup mutation.
 
-## D-018 — Model usage by task difficulty
+## D-019 — Model usage by task difficulty
 Status: APPROVED WORKFLOW
 
 Use Luna for trivial mechanical work, Terra for normal implementation, and Sol for architecture/security/data research/major verification.
