@@ -15,9 +15,17 @@ Result:
 Goal:
 Deploy the exact current `main` dashboard and existing `/api/fpl` boundary.
 
-### F2 — Mobile shell
+### F2 — Desktop + mobile responsive shell
 Goal:
-Make the existing season dashboard properly usable on phones without redesigning the product.
+Preserve the current rich desktop experience while making the same season dashboard intentionally usable on phones. This is one application with shared data/domain logic and responsive presentation, not separate desktop/mobile products.
+
+Acceptance direction:
+- desktop sidebar and wide-screen layouts remain strong;
+- mobile gets compact navigation and touch-friendly controls;
+- pitch/squad views are readable at phone widths;
+- grids/cards reflow cleanly;
+- wide tables have intentional mobile handling;
+- all seven main views remain usable on both form factors.
 
 ### F3 — Supabase foundation
 Goal:
@@ -117,6 +125,8 @@ Examples:
 - long-term league archive.
 
 ## Dependency rules
+- User-facing features should normally work on both desktop and mobile before they are considered complete.
+- Do not create separate desktop/mobile business logic or duplicate data sources.
 - Do not build trade comparison before shared player enrichment exists.
 - Do not build automatic/project scoring before lineup and player-GW contracts exist.
 - Do not automate official FPL writes before read/reconciliation behavior is proven.
