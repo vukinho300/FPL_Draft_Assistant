@@ -27,6 +27,33 @@ const navigation = [
 type LeagueView = (typeof navigation)[number][0]
 type TransactionTab = 'TRADES' | 'WAIVERS' | 'FREE AGENTS' | 'ACTIVITY'
 
+function DashboardNavigation({
+  className,
+  currentView,
+  onNavigate,
+}: {
+  readonly className: string
+  readonly currentView: LeagueView
+  readonly onNavigate: (view: LeagueView) => void
+}) {
+  return (
+    <nav className={className} aria-label="League dashboard">
+      {navigation.map(([id, label]) => (
+        <button
+          type="button"
+          key={id}
+          className={currentView === id ? 'active' : ''}
+          aria-current={currentView === id ? 'page' : undefined}
+          onClick={() => onNavigate(id)}
+        >
+          <i aria-hidden="true" />
+          {label}
+        </button>
+      ))}
+    </nav>
+  )
+}
+
 function Placeholder({ children }: { readonly children: React.ReactNode }) {
   return <span className="not-connected">{children}</span>
 }
@@ -227,11 +254,12 @@ function LeagueDashboard() {
     <div className="league-dashboard-shell">
       <aside className="league-sidebar">
         <div className="league-brand"><span>2026/27</span><strong>Kile N Others</strong><small>FPL Draft League Dashboard</small></div>
-        <nav aria-label="League dashboard">{navigation.map(([id, label]) => <button type="button" key={id} className={view === id ? 'active' : ''} aria-current={view === id ? 'page' : undefined} onClick={() => setView(id)}><i aria-hidden="true" />{label}</button>)}</nav>
+        <DashboardNavigation className="dashboard-navigation dashboard-navigation-sidebar" currentView={view} onNavigate={setView} />
         <div className="sidebar-status"><span>Official draft</span><strong>Frozen · 90/90</strong><small>Historical base state</small></div>
       </aside>
       <main className="league-main">
         <header className="league-topbar"><div><p className="dashboard-kicker">Kile N Others · 2026/27</p><h1>{currentTitle}</h1></div><div className="season-pill"><i /> Official draft archived</div></header>
+        <DashboardNavigation className="dashboard-navigation dashboard-navigation-mobile" currentView={view} onNavigate={setView} />
         {view === 'league' && <LeagueHome rosters={rosters} onArchive={() => setView('draft-archive')} />}
         {view === 'my-team' && <SquadPitch roster={vukRoster} title="Vuk's squad" />}
         {view === 'teams' && <TeamsPage rosters={rosters} />}
