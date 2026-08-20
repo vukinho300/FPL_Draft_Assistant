@@ -1,7 +1,9 @@
 # Current Architecture
 
 ## Implemented baseline
-Current `main` is the Kile N Others league dashboard introduced by merged PR #7.
+Current `main` is the Kile N Others league dashboard introduced by merged PR #7 and deployed to Vercel during completed phase F1.
+
+The production application uses the project-owned `/api/fpl` Vercel Function boundary. PR #10 added `vercel.json` so the deployed `api/fpl.ts` function explicitly includes `src/services/fpl/**`; this fixed the production `ERR_MODULE_NOT_FOUND` packaging failure.
 
 Frontend stack:
 - React 19
@@ -102,6 +104,11 @@ React/Vite UI on Vercel
 ```
 
 Do not rewrite the frontend framework or domain architecture to achieve this.
+
+## Current phase boundary
+F0 Second Brain foundation and F1 Vercel deployment are complete.
+
+F2 desktop + mobile responsive shell is current and has not yet been implemented. F2 changes presentation/responsive behavior only; it must not introduce Supabase, authentication, database state or duplicate desktop/mobile business logic.
 
 ## Desktop/mobile presentation architecture
 Desktop and mobile are first-class views of the same product, not separate applications.

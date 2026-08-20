@@ -33,30 +33,47 @@ Protect these invariants:
 - external schema failures fail clearly rather than silently guessing;
 - desktop and mobile render the same underlying league state and rules.
 
-## Deployment target
-Target: Vercel from the GitHub repository.
+## Current deployment
+F1 — Vercel Deployment is COMPLETE.
 
-Current production-oriented boundary already exists:
+Production:
+`https://fpl-draft-assistant-eight.vercel.app/`
+
+Production FPL endpoint:
+`https://fpl-draft-assistant-eight.vercel.app/api/fpl`
+
+The deployed boundary is:
+
 ```text
-Browser -> GET /api/fpl -> project FPL handler -> public FPL Draft bootstrap
+Browser -> GET /api/fpl -> project FPL handler -> project FPL service -> public FPL Draft bootstrap
 ```
 
 Local Vite mounts the same project-owned handler for development.
 
-## Deployment sequence
-F1 deployment should deploy the current `main` application before database/auth work.
+During F1, the deployed `/api/fpl` function initially failed before handler execution because Vercel did not bundle the imported `src/services/fpl` files. PR #10 fixed the deployment by adding:
 
-Verify production views:
-- League
-- My Team
-- Teams
-- Matchday
-- Players
-- Transactions
-- Draft Archive
-- `/api/fpl`
+```json
+{
+  "functions": {
+    "api/fpl.ts": {
+      "includeFiles": "src/services/fpl/**"
+    }
+  }
+}
+```
 
-Do not make Supabase a blocker for first deployment.
+This configuration is now part of the deployment baseline and must not be removed without proving an equivalent packaging solution.
+
+## Current deployment sequence
+F0 — Second Brain foundation: COMPLETE.
+
+F1 — Vercel deployment: COMPLETE.
+
+F2 — Desktop + mobile responsive shell: CURRENT, not yet implemented.
+
+F3 — Supabase foundation: NEXT after F2.
+
+Do not combine F2 responsive work with Supabase/auth/database changes.
 
 ## Desktop and mobile verification
 Desktop and mobile are both required targets of the same deployed application.
@@ -74,7 +91,7 @@ Mobile verification should use at least one narrow phone-sized viewport and conf
 Responsive work must not regress desktop. For user-facing UI phases, verify both form factors unless the task explicitly documents that only one layout is touched.
 
 ## Responsive sequence
-After deployment, F2 is responsive desktop/mobile shell work only.
+F2 is now the current phase and is responsive desktop/mobile shell work only.
 
 Expected adaptations:
 - preserve the desktop sidebar on wide screens;
