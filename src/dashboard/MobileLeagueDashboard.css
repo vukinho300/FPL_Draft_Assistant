@@ -1,0 +1,86 @@
+.mobile-league-dashboard,
+.mobile-league-dashboard *,
+.mobile-league-dashboard *::before,
+.mobile-league-dashboard *::after {
+  box-sizing: border-box;
+}
+
+.mobile-league-dashboard {
+  width: 100%;
+  min-width: 0;
+  min-height: 100vh;
+  padding: 1rem;
+  color: #163326;
+  background: #edf3ef;
+}
+
+.mobile-league-dashboard button {
+  font: inherit;
+}
+
+.mobile-league-dashboard button:focus-visible {
+  outline: 3px solid rgb(35 197 119 / 35%);
+  outline-offset: 2px;
+}
+
+.mobile-boundary-header p,
+.mobile-boundary-content > p:first-child {
+  margin: 0;
+  color: #18784a;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.mobile-boundary-header h1 {
+  margin: 0.25rem 0 1rem;
+  font-size: 2rem;
+  letter-spacing: -0.04em;
+}
+
+.mobile-boundary-navigation {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.mobile-boundary-navigation button {
+  min-width: 0;
+  min-height: 3rem;
+  padding: 0.65rem 0.5rem;
+  border: 1px solid #bfd4c7;
+  border-radius: 0.6rem;
+  color: #264f3a;
+  background: #fff;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.mobile-boundary-navigation button.active {
+  border-color: #197849;
+  color: #fff;
+  background: #197849;
+}
+
+.mobile-boundary-content {
+  min-width: 0;
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #d0dfd6;
+  border-radius: 0.8rem;
+  background: #fff;
+}
+
+.mobile-boundary-content h2 {
+  margin: 0.35rem 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+.mobile-boundary-content p:last-child {
+  margin: 0;
+  color: #526e5e;
+  font-size: 1rem;
+  line-height: 1.5;
+}
