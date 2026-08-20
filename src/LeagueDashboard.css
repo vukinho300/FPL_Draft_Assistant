@@ -818,4 +818,105 @@
   .dashboard-navigation-mobile button.active i {
     background: #a9f4cd;
   }
+
+  .page-stack {
+    gap: 0.75rem;
+  }
+
+  .league-hero,
+  .page-intro {
+    min-height: 0;
+    gap: 0.9rem;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 1.1rem;
+  }
+
+  .archive-banner {
+    padding: 1.1rem;
+  }
+
+  .league-hero h2,
+  .page-intro h2,
+  .archive-banner h2 {
+    font-size: 1.6rem;
+  }
+
+  .league-hero button {
+    min-height: 2.75rem;
+  }
+
+  .metric-grid,
+  .future-data-strip,
+  .archive-metadata,
+  .capability-card > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-columns,
+  .matchday-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-card {
+    padding: 0.9rem;
+  }
+
+  .card-heading {
+    gap: 0.45rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .manager-completeness {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .metric-grid small {
+    white-space: normal;
+  }
+
+  .matchday-grid article {
+    padding: 0.85rem;
+  }
+
+  .player-tools {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .player-tools input {
+    width: 100%;
+    min-height: 2.75rem;
+    box-sizing: border-box;
+  }
+
+  .player-tools > div {
+    flex-wrap: wrap;
+  }
+
+  .player-tools button,
+  .transaction-tabs button {
+    min-height: 2.5rem;
+  }
+
+  .transaction-tabs {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+
+  .transaction-tabs button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .archive-metadata strong {
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .directory-scroll {
+    max-width: 100%;
+    overscroll-behavior-inline: contain;
+  }
 }
