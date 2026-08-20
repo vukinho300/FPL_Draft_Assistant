@@ -747,6 +747,12 @@
 }
 
 @media (max-width: 44rem) {
+  html,
+  body,
+  #root {
+    max-width: 100%;
+  }
+
   .league-dashboard-shell {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -776,30 +782,31 @@
   }
 
   .dashboard-navigation-mobile {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.45rem;
-    width: calc(100% + 1.8rem);
-    margin: 0 -0.9rem 1rem;
-    padding: 0.2rem 0.9rem 0.7rem;
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
-    scrollbar-width: thin;
+    width: 100%;
+    margin: 0 0 1rem;
+    padding: 0;
   }
 
   .dashboard-navigation-mobile button {
-    display: inline-flex;
-    min-height: 2.75rem;
-    flex: 0 0 auto;
-    gap: 0.45rem;
+    display: flex;
+    min-height: 3rem;
+    min-width: 0;
+    gap: 0.35rem;
     align-items: center;
-    padding: 0.65rem 0.8rem;
+    justify-content: center;
+    padding: 0.5rem 0.35rem;
     border: 1px solid #c5d9cd;
     border-radius: 0.55rem;
     color: #315b46;
     background: #fff;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 800;
-    white-space: nowrap;
+    line-height: 1.15;
+    text-align: center;
+    white-space: normal;
   }
 
   .dashboard-navigation-mobile button i {
@@ -889,6 +896,7 @@
     width: 100%;
     min-height: 2.75rem;
     box-sizing: border-box;
+    font-size: 1rem;
   }
 
   .player-tools > div {
@@ -921,14 +929,15 @@
   }
 
   .manager-tabs {
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .manager-tabs button {
-    min-height: 2.5rem;
-    flex: 0 0 auto;
-    white-space: nowrap;
+    width: 100%;
+    min-width: 0;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.25rem;
   }
 
   .squad-view {
@@ -945,12 +954,14 @@
   }
 
   .squad-counts {
+    width: 100%;
+    min-width: 0;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .football-pitch {
     min-width: 0;
-    min-height: 44rem;
+    min-height: 0;
     gap: 0.65rem;
     padding: 0.75rem;
   }
@@ -961,25 +972,34 @@
 
   .pitch-line {
     min-width: 0;
-    grid-template-columns: 1.45rem minmax(0, 1fr);
-    gap: 0.35rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.45rem;
+    align-items: start;
+  }
+
+  .pitch-line h3 {
+    padding: 0.35rem 0.5rem;
+    border-radius: 0.35rem;
+    background: rgb(255 255 255 / 12%);
+    font-size: 0.68rem;
+    text-align: center;
+    writing-mode: horizontal-tb;
   }
 
   .pitch-line > div {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     min-width: 0;
-    justify-content: flex-start;
-    padding: 0.15rem 0.1rem 0.55rem;
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
-    scroll-snap-type: x proximity;
+    gap: 0.45rem;
+    padding: 0;
+    overflow: visible;
   }
 
   .pitch-player {
-    width: 8.5rem;
-    min-width: 8.5rem;
-    min-height: 8.7rem;
-    padding: 0.55rem;
-    scroll-snap-align: start;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    padding: 0.5rem;
   }
 
   .pitch-player strong {
@@ -987,7 +1007,11 @@
   }
 
   .pitch-player small {
-    font-size: 0.59rem;
+    font-size: 0.62rem;
+  }
+
+  .pitch-player .not-connected {
+    font-size: 0.62rem;
   }
 
   .lineup-placeholder {
