@@ -919,4 +919,81 @@
     max-width: 100%;
     overscroll-behavior-inline: contain;
   }
+
+  .manager-tabs {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+
+  .manager-tabs button {
+    min-height: 2.5rem;
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .squad-view {
+    padding: 0.9rem;
+  }
+
+  .squad-heading {
+    gap: 0.6rem;
+    align-items: flex-start;
+  }
+
+  .squad-heading > strong {
+    flex: 0 0 auto;
+  }
+
+  .squad-counts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .football-pitch {
+    min-width: 0;
+    min-height: 44rem;
+    gap: 0.65rem;
+    padding: 0.75rem;
+  }
+
+  .pitch-markings {
+    inset: 0.7rem;
+  }
+
+  .pitch-line {
+    min-width: 0;
+    grid-template-columns: 1.45rem minmax(0, 1fr);
+    gap: 0.35rem;
+  }
+
+  .pitch-line > div {
+    min-width: 0;
+    justify-content: flex-start;
+    padding: 0.15rem 0.1rem 0.55rem;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+  }
+
+  .pitch-player {
+    width: 8.5rem;
+    min-width: 8.5rem;
+    min-height: 8.7rem;
+    padding: 0.55rem;
+    scroll-snap-align: start;
+  }
+
+  .pitch-player strong {
+    font-size: 0.75rem;
+  }
+
+  .pitch-player small {
+    font-size: 0.59rem;
+  }
+
+  .lineup-placeholder {
+    gap: 0.65rem;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 0.85rem;
+  }
 }
