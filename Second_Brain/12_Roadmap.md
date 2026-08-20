@@ -4,7 +4,8 @@ Build in small dependency-ordered phases. Do not collapse these into one large C
 
 ## Must-have foundation
 ### F0 — Second Brain scaffold
-Status: CURRENT
+Status: COMPLETE
+
 Result:
 - concise project control manual;
 - Codex read map;
@@ -12,10 +13,17 @@ Result:
 - no application-code changes.
 
 ### F1 — Vercel deployment
-Goal:
-Deploy the exact current `main` dashboard and existing `/api/fpl` boundary.
+Status: COMPLETE
+
+Result:
+- current Kile N Others dashboard deployed to Vercel;
+- project-owned `/api/fpl` boundary deployed;
+- Vercel function packaging repaired through PR #10 by explicitly including `src/services/fpl/**`;
+- Preview/API verification completed before merge and production manually verified after merge.
 
 ### F2 — Desktop + mobile responsive shell
+Status: CURRENT — NOT YET IMPLEMENTED
+
 Goal:
 Preserve the current rich desktop experience while making the same season dashboard intentionally usable on phones. This is one application with shared data/domain logic and responsive presentation, not separate desktop/mobile products.
 
