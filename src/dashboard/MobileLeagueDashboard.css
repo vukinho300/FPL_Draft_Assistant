@@ -23,15 +23,18 @@
 }
 
 .mobile-league-dashboard button:focus-visible,
-.mobile-league-dashboard input:focus-visible {
-  outline: 3px solid rgb(35 197 119 / 42%);
-  outline-offset: 2px;
+.mobile-league-dashboard input:focus-visible,
+.mobile-archive-picks summary:focus-visible {
+  outline: 3px solid rgb(35 197 119 / 46%);
+  outline-offset: 3px;
 }
 
 .mobile-app-header {
-  padding: calc(1rem + env(safe-area-inset-top)) 1rem 0.9rem;
+  padding: calc(1rem + env(safe-area-inset-top)) 1rem 1rem;
   color: #effff6;
-  background: #0b281b;
+  background:
+    radial-gradient(circle at 88% 0%, rgb(45 219 141 / 20%), transparent 12rem),
+    #0b281b;
 }
 
 .mobile-app-header p,
@@ -49,237 +52,203 @@
   margin: 0.25rem 0 0;
   color: #fff;
   font-size: 2rem;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.05em;
   line-height: 1.05;
 }
 
 .mobile-app-main {
   width: 100%;
   min-width: 0;
-  padding: 1rem 1rem calc(6.5rem + env(safe-area-inset-bottom));
+  padding: 1rem 1rem calc(7.5rem + max(0.75rem, env(safe-area-inset-bottom)));
+}
+
+.mobile-view-transition {
+  width: 100%;
+  min-width: 0;
+  animation: mobile-view-enter 180ms ease-out both;
 }
 
 .mobile-page-stack {
   display: grid;
+  width: 100%;
   min-width: 0;
   gap: 0.9rem;
 }
 
 .mobile-card,
 .mobile-page-intro,
-.mobile-deferred-page,
-.mobile-squad {
+.mobile-squad,
+.mobile-archive-hero,
+.mobile-gameweek-hero {
   width: 100%;
   min-width: 0;
   max-width: 100%;
   border: 1px solid #d5e2da;
-  border-radius: 0.9rem;
+  border-radius: 1rem;
   background: #fff;
-  box-shadow: 0 0.6rem 1.6rem rgb(4 48 24 / 6%);
+  box-shadow: 0 0.65rem 1.6rem rgb(4 48 24 / 6%);
 }
 
 .mobile-card {
   padding: 1rem;
 }
 
-.mobile-league-hero,
-.mobile-page-intro {
-  padding: 1.15rem;
-}
-
-.mobile-league-hero {
+.mobile-page-intro,
+.mobile-gameweek-hero,
+.mobile-archive-hero {
   display: grid;
-  gap: 0.7rem;
-  width: 100%;
-  min-width: 0;
-  border-radius: 1rem;
-  color: #eafff3;
-  background:
-    radial-gradient(circle at 88% 12%, rgb(45 219 141 / 25%), transparent 11rem),
-    linear-gradient(130deg, #123f2a, #0a2d1e);
+  gap: 0.65rem;
+  padding: 1.1rem;
 }
 
-.mobile-league-hero h2,
 .mobile-page-intro h2,
 .mobile-card-heading h2,
 .mobile-squad-heading h2,
-.mobile-deferred-page h2,
-.mobile-capability-card h2 {
+.mobile-capability-card h2,
+.mobile-section-heading h2,
+.mobile-archive-hero h2,
+.mobile-gameweek-hero h2 {
   margin: 0.15rem 0 0;
   color: #173e2a;
-  font-size: 1.35rem;
-  letter-spacing: -0.035em;
-  line-height: 1.15;
+  font-size: 1.4rem;
+  letter-spacing: -0.04em;
+  line-height: 1.14;
 }
 
-.mobile-league-hero h2 {
-  color: #fff;
-  font-size: 1.8rem;
-}
-
-.mobile-league-hero > p:not(.mobile-eyebrow),
 .mobile-page-intro > p:not(.mobile-eyebrow),
-.mobile-deferred-page > p:not(.mobile-eyebrow) {
+.mobile-card > p,
+.mobile-gameweek-hero > p:not(.mobile-eyebrow),
+.mobile-archive-hero > p:not(.mobile-eyebrow) {
   margin: 0;
-  color: #b9d6c7;
-  font-size: 1rem;
+  color: #587264;
+  font-size: 0.98rem;
   line-height: 1.5;
 }
 
-.mobile-page-intro > p:not(.mobile-eyebrow),
-.mobile-deferred-page > p:not(.mobile-eyebrow) {
-  color: #587264;
+.mobile-gameweek-hero,
+.mobile-archive-hero {
+  color: #ecfff4;
+  border-color: #113c28;
+  background:
+    radial-gradient(circle at 88% 8%, rgb(45 219 141 / 24%), transparent 12rem),
+    linear-gradient(130deg, #123f2a, #0a2d1e);
 }
 
-.mobile-league-hero button {
-  width: fit-content;
-  min-width: 0;
-  min-height: 3rem;
-  padding: 0.7rem 0.9rem;
-  border: 0;
-  border-radius: 0.65rem;
-  color: #07321f;
-  background: #2add8e;
-  font-size: 0.95rem;
-  font-weight: 850;
+.mobile-gameweek-hero h2,
+.mobile-archive-hero h2 {
+  color: #fff;
+  font-size: 1.65rem;
 }
 
-.mobile-summary-grid,
-.mobile-future-list,
-.mobile-squad-counts,
-.mobile-player-grid,
-.mobile-manager-selector {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  min-width: 0;
-  gap: 0.75rem;
-}
-
-.mobile-summary-grid .mobile-card,
-.mobile-future-list .mobile-card {
-  display: grid;
-  min-width: 0;
-  gap: 0.35rem;
-  padding: 0.9rem;
-}
-
-.mobile-summary-grid span,
-.mobile-future-list span,
-.mobile-squad-counts span {
-  color: #708478;
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.mobile-summary-grid strong {
-  color: #143d29;
-  font-size: 1.4rem;
-  line-height: 1.05;
-}
-
-.mobile-summary-grid small,
-.mobile-future-list strong {
-  color: #5d7567;
-  font-size: 0.84rem;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
+.mobile-gameweek-hero > p:not(.mobile-eyebrow),
+.mobile-archive-hero > p:not(.mobile-eyebrow) {
+  color: #b9d6c7;
 }
 
 .mobile-card-heading,
 .mobile-squad-heading {
   display: flex;
   min-width: 0;
-  gap: 0.75rem;
+  gap: 0.7rem;
   align-items: flex-start;
   justify-content: space-between;
 }
 
+.mobile-card-heading > div,
+.mobile-squad-heading > div {
+  min-width: 0;
+}
+
 .mobile-card-heading > span {
   flex: 0 0 auto;
+  max-width: 46%;
   padding: 0.3rem 0.45rem;
   border-radius: 999px;
   color: #537061;
   background: #edf5f0;
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 750;
+  overflow-wrap: anywhere;
+  text-align: right;
 }
 
-.mobile-roster-list,
-.mobile-activity-list,
-.mobile-position-sections,
-.mobile-matchday-list {
+.mobile-points-card {
   display: grid;
-  min-width: 0;
-  gap: 0.65rem;
-  margin: 0.9rem 0 0;
+  gap: 0.35rem;
+  padding: 1.15rem;
+  border-color: #bfe0cc;
+  background: linear-gradient(135deg, #fff, #edf9f1);
 }
 
-.mobile-roster-list article {
+.mobile-points-card > strong {
+  color: #143d29;
+  font-size: 2rem;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.mobile-points-card > p:last-child,
+.mobile-muted-copy {
+  color: #5d7567;
+  font-size: 0.92rem;
+}
+
+.mobile-standings-columns {
   display: grid;
-  min-width: 0;
-  gap: 0.3rem;
-  padding: 0.75rem;
-  border: 1px solid #deebe3;
-  border-radius: 0.65rem;
-  background: #f8fbf9;
-}
-
-.mobile-roster-list article > div {
-  display: flex;
-  min-width: 0;
-  gap: 0.75rem;
-  justify-content: space-between;
-}
-
-.mobile-roster-list strong {
-  min-width: 0;
-  color: #183f2b;
-  font-size: 1rem;
-}
-
-.mobile-roster-list span {
-  flex: 0 0 auto;
-  color: #176d42;
-  font-size: 0.95rem;
+  grid-template-columns: 3.4rem minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+  padding: 0.65rem;
+  border-radius: 0.6rem;
+  color: #657c6e;
+  background: #f1f7f3;
+  font-size: 0.76rem;
   font-weight: 850;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-.mobile-roster-list small {
-  color: #657d6f;
-  font-size: 0.84rem;
-  line-height: 1.35;
+.mobile-standings-columns span:last-child {
+  text-align: right;
 }
 
-.mobile-activity-list {
+.mobile-events-card,
+.mobile-recent-transactions {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.mobile-transaction-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.mobile-activity-list li {
+.mobile-transaction-list li {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
   gap: 0.25rem;
+  min-width: 0;
   padding: 0.7rem 0;
   border-top: 1px solid #e4ede7;
 }
 
-.mobile-activity-list li:first-child {
+.mobile-transaction-list li:first-child {
   padding-top: 0;
   border-top: 0;
 }
 
-.mobile-activity-list span {
+.mobile-transaction-list span {
   color: #19814e;
   font-size: 0.75rem;
   font-weight: 850;
   letter-spacing: 0.06em;
 }
 
-.mobile-activity-list strong {
+.mobile-transaction-list strong {
   color: #405e4e;
-  font-size: 0.92rem;
+  font-size: 0.94rem;
   font-weight: 700;
   line-height: 1.4;
   overflow-wrap: anywhere;
@@ -298,6 +267,17 @@
   font-size: 1rem;
 }
 
+.mobile-squad-counts,
+.mobile-player-grid,
+.mobile-manager-selector,
+.mobile-position-filters,
+.mobile-archive-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-width: 0;
+  gap: 0.7rem;
+}
+
 .mobile-squad-counts {
   margin-top: 0.9rem;
 }
@@ -305,12 +285,19 @@
 .mobile-squad-counts > div {
   display: flex;
   min-width: 0;
-  gap: 0.5rem;
+  gap: 0.4rem;
   align-items: center;
   justify-content: space-between;
   padding: 0.7rem;
   border-radius: 0.6rem;
   background: #f1f7f3;
+}
+
+.mobile-squad-counts span {
+  color: #708478;
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
 }
 
 .mobile-squad-counts strong {
@@ -320,6 +307,9 @@
 }
 
 .mobile-position-sections {
+  display: grid;
+  min-width: 0;
+  gap: 1rem;
   margin-top: 1rem;
 }
 
@@ -346,11 +336,16 @@
 }
 
 .mobile-position-badge {
+  display: inline-flex;
+  min-width: 2.5rem;
+  justify-content: center;
+  align-items: center;
   justify-self: start;
   padding: 0.22rem 0.4rem;
   border-radius: 0.35rem;
   color: #fff;
   font-size: 0.72rem;
+  font-style: normal;
   font-weight: 900;
 }
 
@@ -359,7 +354,8 @@
 .position-mid { background: #248b55; }
 .position-fwd { background: #b94b43; }
 
-.mobile-player-card h4 {
+.mobile-player-card h4,
+.mobile-directory-player h3 {
   margin: 0;
   color: #173e2a;
   font-size: 1rem;
@@ -373,29 +369,38 @@
   font-size: 0.88rem;
 }
 
-.mobile-player-card dl {
+.mobile-player-card dl,
+.mobile-directory-player dl,
+.mobile-draft-pick dl {
   display: grid;
   min-width: 0;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.4rem;
+  gap: 0.45rem;
   margin: 0.1rem 0 0;
 }
 
-.mobile-player-card dl div {
+.mobile-player-card dl div,
+.mobile-directory-player dl div,
+.mobile-draft-pick dl div {
   min-width: 0;
 }
 
-.mobile-player-card dt {
+.mobile-player-card dt,
+.mobile-directory-player dt,
+.mobile-draft-pick dt {
   color: #74877d;
   font-size: 0.71rem;
   font-weight: 800;
 }
 
-.mobile-player-card dd {
+.mobile-player-card dd,
+.mobile-directory-player dd,
+.mobile-draft-pick dd {
   margin: 0.1rem 0 0;
   color: #315a46;
   font-size: 0.84rem;
   font-weight: 750;
+  overflow-wrap: anywhere;
 }
 
 .mobile-player-status {
@@ -437,7 +442,9 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.mobile-manager-selector button {
+.mobile-manager-selector button,
+.mobile-position-filters button,
+.mobile-transaction-tabs button {
   min-width: 0;
   min-height: 3rem;
   padding: 0.5rem 0.35rem;
@@ -445,19 +452,24 @@
   border-radius: 0.65rem;
   color: #264f3a;
   background: #fff;
-  font-size: 0.95rem;
+  font-size: 0.93rem;
   font-weight: 800;
+  line-height: 1.15;
   overflow-wrap: anywhere;
 }
 
-.mobile-manager-selector button.active {
+.mobile-manager-selector button.active,
+.mobile-position-filters button.active,
+.mobile-transaction-tabs button.active {
   border-color: #197849;
   color: #fff;
   background: #197849;
 }
 
 .mobile-matchday-list {
-  margin-top: 0;
+  display: grid;
+  min-width: 0;
+  gap: 0.65rem;
 }
 
 .mobile-matchday-card {
@@ -465,20 +477,9 @@
   gap: 0.25rem;
 }
 
-.mobile-matchday-card > strong {
-  color: #173f2b;
-  font-size: 1rem;
-}
-
-.mobile-matchday-card > span {
-  color: #466654;
-  font-size: 0.95rem;
-}
-
-.mobile-matchday-card > small {
-  color: #778b80;
-  font-size: 0.85rem;
-}
+.mobile-matchday-card > strong { color: #173f2b; font-size: 1rem; }
+.mobile-matchday-card > span { color: #466654; font-size: 0.95rem; }
+.mobile-matchday-card > small { color: #778b80; font-size: 0.85rem; }
 
 .mobile-capability-card ul {
   display: grid;
@@ -512,74 +513,299 @@
   letter-spacing: 0.04em;
 }
 
-.mobile-capability-card li strong.available {
-  color: #158047;
+.mobile-capability-card li strong.available { color: #158047; }
+
+.mobile-player-directory {
+  display: grid;
+  gap: 0.9rem;
 }
 
-.mobile-deferred-page {
+.mobile-player-tools {
+  display: grid;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.mobile-player-tools input {
+  width: 100%;
+  min-width: 0;
+  min-height: 3rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #b9cdc1;
+  border-radius: 0.65rem;
+  color: #1b4530;
+  background: #f9fbfa;
+  font-size: 1rem;
+}
+
+.mobile-position-filters {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.mobile-position-filters button:last-child {
+  grid-column: 2;
+}
+
+.mobile-directory-list {
+  display: grid;
+  min-width: 0;
+  gap: 0.65rem;
+}
+
+.mobile-directory-player {
+  display: grid;
+  min-width: 0;
+  gap: 0.65rem;
+  padding: 0.85rem;
+  border: 1px solid #d9e6de;
+  border-radius: 0.75rem;
+  background: #fbfdfb;
+}
+
+.mobile-directory-player header,
+.mobile-draft-pick header {
+  display: flex;
+  min-width: 0;
+  gap: 0.6rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.mobile-directory-player header > div {
+  min-width: 0;
+}
+
+.mobile-directory-player header > div > span {
+  color: #5d7567;
+  font-size: 0.86rem;
+}
+
+.mobile-empty-state {
+  display: grid;
+  min-height: 12rem;
+  gap: 0.4rem;
+  place-content: center;
+  color: #667d70;
+  text-align: center;
+}
+
+.mobile-empty-state strong { color: #365746; font-size: 1rem; }
+.mobile-empty-state p { max-width: 24rem; margin: 0; font-size: 0.9rem; line-height: 1.45; }
+
+.mobile-transaction-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-width: 0;
+  gap: 0.65rem;
+}
+
+.mobile-transaction-panel {
+  min-height: 15rem;
+}
+
+.mobile-archive-summary .mobile-card {
+  display: grid;
+  min-width: 0;
+  gap: 0.35rem;
+  padding: 0.9rem;
+}
+
+.mobile-archive-summary span {
+  color: #708478;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mobile-archive-summary strong {
+  color: #264e39;
+  font-size: 0.92rem;
+  overflow-wrap: anywhere;
+}
+
+.mobile-archive-picks {
+  display: grid;
+  min-width: 0;
+  gap: 0.7rem;
+}
+
+.mobile-section-heading h2 { margin-top: 0.2rem; }
+
+.mobile-archive-picks details {
+  min-width: 0;
+  border: 1px solid #d5e2da;
+  border-radius: 0.8rem;
+  background: #fff;
+  box-shadow: 0 0.5rem 1.2rem rgb(4 48 24 / 5%);
+}
+
+.mobile-archive-picks summary {
+  display: flex;
+  min-width: 0;
+  gap: 0.6rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem;
+  color: #214a35;
+  font-size: 0.98rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.mobile-archive-picks summary span {
+  flex: 0 0 auto;
+  color: #668074;
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.mobile-archive-picks details > div {
   display: grid;
   gap: 0.6rem;
-  padding: 1rem;
+  min-width: 0;
+  padding: 0 0.75rem 0.75rem;
+}
+
+.mobile-draft-pick {
+  display: grid;
+  min-width: 0;
+  gap: 0.6rem;
+  padding: 0.8rem;
+  border: 1px solid #dce8e0;
+  border-radius: 0.7rem;
+  background: #fbfdfb;
+}
+
+.mobile-draft-pick header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.mobile-draft-pick header > span {
+  grid-column: 1 / -1;
+  color: #668074;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.mobile-draft-pick header i {
+  justify-self: end;
+  min-width: 2.5rem;
+  padding: 0.22rem 0.4rem;
+  border-radius: 0.35rem;
+  color: #fff;
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 900;
+  text-align: center;
 }
 
 .mobile-bottom-navigation {
   position: fixed;
   z-index: 10;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  right: max(0.75rem, env(safe-area-inset-right));
+  bottom: max(0.75rem, env(safe-area-inset-bottom));
+  left: max(0.75rem, env(safe-area-inset-left));
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.4rem;
+  gap: 0.25rem;
   min-width: 0;
-  padding: 0.55rem 0.65rem calc(0.55rem + env(safe-area-inset-bottom));
-  border-top: 1px solid #cfe0d5;
-  background: rgb(255 255 255 / 97%);
-  box-shadow: 0 -0.5rem 1.5rem rgb(4 48 24 / 12%);
+  padding: 0.4rem;
+  border: 1px solid rgb(199 221 207 / 88%);
+  border-radius: 1.15rem;
+  background: rgb(255 255 255 / 94%);
+  box-shadow: 0 0.8rem 2.1rem rgb(4 48 24 / 20%);
+  backdrop-filter: blur(1rem);
 }
 
-.mobile-bottom-navigation > button,
+.mobile-bottom-navigation > button {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 3.15rem;
+  gap: 0.12rem;
+  place-items: center;
+  padding: 0.35rem 0.2rem;
+  border: 0;
+  border-radius: 0.85rem;
+  color: #5a7264;
+  background: transparent;
+  font-size: 0.74rem;
+  font-weight: 850;
+  line-height: 1.1;
+  transition: color 160ms ease, background-color 160ms ease, transform 160ms ease;
+}
+
+.mobile-bottom-navigation > button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.mobile-bottom-navigation > button.active {
+  color: #0a6d40;
+  background: #dff7e9;
+  transform: translateY(-0.1rem);
+}
+
+.mobile-bottom-navigation > button.active svg {
+  stroke-width: 2.25;
+}
+
+.mobile-more-menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.55rem);
+  left: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 0.55rem;
+  border: 1px solid #cfe0d5;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 0.8rem 2rem rgb(4 48 24 / 18%);
+  animation: mobile-menu-enter 150ms ease-out both;
+}
+
 .mobile-more-menu button {
   min-width: 0;
   min-height: 3rem;
-  padding: 0.45rem 0.25rem;
+  padding: 0.5rem;
   border: 1px solid #c5d9cd;
-  border-radius: 0.6rem;
+  border-radius: 0.65rem;
   color: #264f3a;
   background: #fff;
-  font-size: 0.88rem;
-  font-weight: 850;
-  line-height: 1.15;
+  font-size: 0.9rem;
+  font-weight: 800;
   overflow-wrap: anywhere;
 }
 
-.mobile-bottom-navigation > button.active,
 .mobile-more-menu button.active {
   border-color: #197849;
   color: #fff;
   background: #197849;
 }
 
-.mobile-more-menu {
-  position: absolute;
-  right: 0.65rem;
-  bottom: calc(100% + 0.45rem);
-  left: 0.65rem;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.45rem;
-  min-width: 0;
-  padding: 0.6rem;
-  border: 1px solid #cfe0d5;
-  border-radius: 0.75rem;
-  background: #fff;
-  box-shadow: 0 0.75rem 2rem rgb(4 48 24 / 18%);
+@keyframes mobile-view-enter {
+  from { opacity: 0; transform: translateY(0.35rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes mobile-menu-enter {
+  from { opacity: 0; transform: translateY(0.35rem); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 23rem) {
-  .mobile-summary-grid,
-  .mobile-future-list,
-  .mobile-player-grid {
+  .mobile-player-grid,
+  .mobile-archive-summary {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -589,5 +815,20 @@
 
   .mobile-app-header h1 {
     font-size: 1.8rem;
+  }
+
+  .mobile-bottom-navigation > button {
+    font-size: 0.7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-view-transition,
+  .mobile-more-menu {
+    animation: none;
+  }
+
+  .mobile-bottom-navigation > button {
+    transition: none;
   }
 }
