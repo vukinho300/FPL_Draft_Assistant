@@ -9,78 +9,585 @@
   width: 100%;
   min-width: 0;
   min-height: 100vh;
-  padding: 1rem;
   color: #163326;
   background: #edf3ef;
 }
 
-.mobile-league-dashboard button {
+.mobile-league-dashboard button,
+.mobile-league-dashboard input {
   font: inherit;
 }
 
-.mobile-league-dashboard button:focus-visible {
-  outline: 3px solid rgb(35 197 119 / 35%);
+.mobile-league-dashboard button {
+  cursor: pointer;
+}
+
+.mobile-league-dashboard button:focus-visible,
+.mobile-league-dashboard input:focus-visible {
+  outline: 3px solid rgb(35 197 119 / 42%);
   outline-offset: 2px;
 }
 
-.mobile-boundary-header p,
-.mobile-boundary-content > p:first-child {
+.mobile-app-header {
+  padding: calc(1rem + env(safe-area-inset-top)) 1rem 0.9rem;
+  color: #effff6;
+  background: #0b281b;
+}
+
+.mobile-app-header p,
+.mobile-eyebrow {
   margin: 0;
-  color: #18784a;
+  color: #2bdb8d;
   font-size: 0.75rem;
-  font-weight: 900;
+  font-weight: 850;
   letter-spacing: 0.1em;
+  line-height: 1.3;
   text-transform: uppercase;
 }
 
-.mobile-boundary-header h1 {
-  margin: 0.25rem 0 1rem;
+.mobile-app-header h1 {
+  margin: 0.25rem 0 0;
+  color: #fff;
   font-size: 2rem;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
 }
 
-.mobile-boundary-navigation {
+.mobile-app-main {
+  width: 100%;
+  min-width: 0;
+  padding: 1rem 1rem calc(6.5rem + env(safe-area-inset-bottom));
+}
+
+.mobile-page-stack {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.5rem;
+  min-width: 0;
+  gap: 0.9rem;
 }
 
-.mobile-boundary-navigation button {
+.mobile-card,
+.mobile-page-intro,
+.mobile-deferred-page,
+.mobile-squad {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  border: 1px solid #d5e2da;
+  border-radius: 0.9rem;
+  background: #fff;
+  box-shadow: 0 0.6rem 1.6rem rgb(4 48 24 / 6%);
+}
+
+.mobile-card {
+  padding: 1rem;
+}
+
+.mobile-league-hero,
+.mobile-page-intro {
+  padding: 1.15rem;
+}
+
+.mobile-league-hero {
+  display: grid;
+  gap: 0.7rem;
+  width: 100%;
+  min-width: 0;
+  border-radius: 1rem;
+  color: #eafff3;
+  background:
+    radial-gradient(circle at 88% 12%, rgb(45 219 141 / 25%), transparent 11rem),
+    linear-gradient(130deg, #123f2a, #0a2d1e);
+}
+
+.mobile-league-hero h2,
+.mobile-page-intro h2,
+.mobile-card-heading h2,
+.mobile-squad-heading h2,
+.mobile-deferred-page h2,
+.mobile-capability-card h2 {
+  margin: 0.15rem 0 0;
+  color: #173e2a;
+  font-size: 1.35rem;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+
+.mobile-league-hero h2 {
+  color: #fff;
+  font-size: 1.8rem;
+}
+
+.mobile-league-hero > p:not(.mobile-eyebrow),
+.mobile-page-intro > p:not(.mobile-eyebrow),
+.mobile-deferred-page > p:not(.mobile-eyebrow) {
+  margin: 0;
+  color: #b9d6c7;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.mobile-page-intro > p:not(.mobile-eyebrow),
+.mobile-deferred-page > p:not(.mobile-eyebrow) {
+  color: #587264;
+}
+
+.mobile-league-hero button {
+  width: fit-content;
   min-width: 0;
   min-height: 3rem;
-  padding: 0.65rem 0.5rem;
-  border: 1px solid #bfd4c7;
+  padding: 0.7rem 0.9rem;
+  border: 0;
+  border-radius: 0.65rem;
+  color: #07321f;
+  background: #2add8e;
+  font-size: 0.95rem;
+  font-weight: 850;
+}
+
+.mobile-summary-grid,
+.mobile-future-list,
+.mobile-squad-counts,
+.mobile-player-grid,
+.mobile-manager-selector {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-width: 0;
+  gap: 0.75rem;
+}
+
+.mobile-summary-grid .mobile-card,
+.mobile-future-list .mobile-card {
+  display: grid;
+  min-width: 0;
+  gap: 0.35rem;
+  padding: 0.9rem;
+}
+
+.mobile-summary-grid span,
+.mobile-future-list span,
+.mobile-squad-counts span {
+  color: #708478;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mobile-summary-grid strong {
+  color: #143d29;
+  font-size: 1.4rem;
+  line-height: 1.05;
+}
+
+.mobile-summary-grid small,
+.mobile-future-list strong {
+  color: #5d7567;
+  font-size: 0.84rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.mobile-card-heading,
+.mobile-squad-heading {
+  display: flex;
+  min-width: 0;
+  gap: 0.75rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.mobile-card-heading > span {
+  flex: 0 0 auto;
+  padding: 0.3rem 0.45rem;
+  border-radius: 999px;
+  color: #537061;
+  background: #edf5f0;
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.mobile-roster-list,
+.mobile-activity-list,
+.mobile-position-sections,
+.mobile-matchday-list {
+  display: grid;
+  min-width: 0;
+  gap: 0.65rem;
+  margin: 0.9rem 0 0;
+}
+
+.mobile-roster-list article {
+  display: grid;
+  min-width: 0;
+  gap: 0.3rem;
+  padding: 0.75rem;
+  border: 1px solid #deebe3;
+  border-radius: 0.65rem;
+  background: #f8fbf9;
+}
+
+.mobile-roster-list article > div {
+  display: flex;
+  min-width: 0;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+
+.mobile-roster-list strong {
+  min-width: 0;
+  color: #183f2b;
+  font-size: 1rem;
+}
+
+.mobile-roster-list span {
+  flex: 0 0 auto;
+  color: #176d42;
+  font-size: 0.95rem;
+  font-weight: 850;
+}
+
+.mobile-roster-list small {
+  color: #657d6f;
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+.mobile-activity-list {
+  padding: 0;
+  list-style: none;
+}
+
+.mobile-activity-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.25rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid #e4ede7;
+}
+
+.mobile-activity-list li:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.mobile-activity-list span {
+  color: #19814e;
+  font-size: 0.75rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+}
+
+.mobile-activity-list strong {
+  color: #405e4e;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.mobile-squad {
+  padding: 1rem;
+}
+
+.mobile-squad-heading > strong {
+  flex: 0 0 auto;
+  padding: 0.55rem 0.65rem;
+  border-radius: 0.65rem;
+  color: #176d42;
+  background: #e9f7ee;
+  font-size: 1rem;
+}
+
+.mobile-squad-counts {
+  margin-top: 0.9rem;
+}
+
+.mobile-squad-counts > div {
+  display: flex;
+  min-width: 0;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem;
   border-radius: 0.6rem;
+  background: #f1f7f3;
+}
+
+.mobile-squad-counts strong {
+  flex: 0 0 auto;
+  color: #1a6841;
+  font-size: 0.95rem;
+}
+
+.mobile-position-sections {
+  margin-top: 1rem;
+}
+
+.mobile-position-section {
+  min-width: 0;
+}
+
+.mobile-position-section h3 {
+  margin: 0 0 0.55rem;
+  color: #39745a;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.mobile-player-card {
+  display: grid;
+  min-width: 0;
+  gap: 0.4rem;
+  padding: 0.8rem;
+  border: 1px solid #d9e6de;
+  border-radius: 0.75rem;
+  background: #fbfdfb;
+}
+
+.mobile-position-badge {
+  justify-self: start;
+  padding: 0.22rem 0.4rem;
+  border-radius: 0.35rem;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.position-gk { background: #ad7412; }
+.position-def { background: #2476a5; }
+.position-mid { background: #248b55; }
+.position-fwd { background: #b94b43; }
+
+.mobile-player-card h4 {
+  margin: 0;
+  color: #173e2a;
+  font-size: 1rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.mobile-player-card > p {
+  margin: 0;
+  color: #5d7567;
+  font-size: 0.88rem;
+}
+
+.mobile-player-card dl {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin: 0.1rem 0 0;
+}
+
+.mobile-player-card dl div {
+  min-width: 0;
+}
+
+.mobile-player-card dt {
+  color: #74877d;
+  font-size: 0.71rem;
+  font-weight: 800;
+}
+
+.mobile-player-card dd {
+  margin: 0.1rem 0 0;
+  color: #315a46;
+  font-size: 0.84rem;
+  font-weight: 750;
+}
+
+.mobile-player-status {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 0.1rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid #e1ebe4;
+  color: #7a8c82;
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+
+.mobile-lineup-note {
+  display: grid;
+  min-width: 0;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  padding: 0.9rem;
+  border: 1px dashed #b9ccc0;
+  border-radius: 0.7rem;
+  background: #f6faf7;
+}
+
+.mobile-lineup-note h3 {
+  margin: 0;
+  color: #365746;
+  font-size: 1rem;
+}
+
+.mobile-lineup-note > p:last-child {
+  margin: 0;
+  color: #63796d;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.mobile-manager-selector {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.mobile-manager-selector button {
+  min-width: 0;
+  min-height: 3rem;
+  padding: 0.5rem 0.35rem;
+  border: 1px solid #c5d9cd;
+  border-radius: 0.65rem;
   color: #264f3a;
   background: #fff;
   font-size: 0.95rem;
   font-weight: 800;
-  cursor: pointer;
+  overflow-wrap: anywhere;
 }
 
-.mobile-boundary-navigation button.active {
+.mobile-manager-selector button.active {
   border-color: #197849;
   color: #fff;
   background: #197849;
 }
 
-.mobile-boundary-content {
-  min-width: 0;
-  margin-top: 1rem;
-  padding: 1rem;
-  border: 1px solid #d0dfd6;
-  border-radius: 0.8rem;
-  background: #fff;
+.mobile-matchday-list {
+  margin-top: 0;
 }
 
-.mobile-boundary-content h2 {
-  margin: 0.35rem 0 0.5rem;
-  font-size: 1.5rem;
+.mobile-matchday-card {
+  display: grid;
+  gap: 0.25rem;
 }
 
-.mobile-boundary-content p:last-child {
-  margin: 0;
-  color: #526e5e;
+.mobile-matchday-card > strong {
+  color: #173f2b;
   font-size: 1rem;
-  line-height: 1.5;
+}
+
+.mobile-matchday-card > span {
+  color: #466654;
+  font-size: 0.95rem;
+}
+
+.mobile-matchday-card > small {
+  color: #778b80;
+  font-size: 0.85rem;
+}
+
+.mobile-capability-card ul {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mobile-capability-card li {
+  display: flex;
+  min-width: 0;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem;
+  border-radius: 0.55rem;
+  background: #f1f6f3;
+}
+
+.mobile-capability-card li span {
+  min-width: 0;
+  color: #576f62;
+  font-size: 0.88rem;
+}
+
+.mobile-capability-card li strong {
+  flex: 0 0 auto;
+  color: #a06422;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.mobile-capability-card li strong.available {
+  color: #158047;
+}
+
+.mobile-deferred-page {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1rem;
+}
+
+.mobile-bottom-navigation {
+  position: fixed;
+  z-index: 10;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.4rem;
+  min-width: 0;
+  padding: 0.55rem 0.65rem calc(0.55rem + env(safe-area-inset-bottom));
+  border-top: 1px solid #cfe0d5;
+  background: rgb(255 255 255 / 97%);
+  box-shadow: 0 -0.5rem 1.5rem rgb(4 48 24 / 12%);
+}
+
+.mobile-bottom-navigation > button,
+.mobile-more-menu button {
+  min-width: 0;
+  min-height: 3rem;
+  padding: 0.45rem 0.25rem;
+  border: 1px solid #c5d9cd;
+  border-radius: 0.6rem;
+  color: #264f3a;
+  background: #fff;
+  font-size: 0.88rem;
+  font-weight: 850;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.mobile-bottom-navigation > button.active,
+.mobile-more-menu button.active {
+  border-color: #197849;
+  color: #fff;
+  background: #197849;
+}
+
+.mobile-more-menu {
+  position: absolute;
+  right: 0.65rem;
+  bottom: calc(100% + 0.45rem);
+  left: 0.65rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 0.6rem;
+  border: 1px solid #cfe0d5;
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: 0 0.75rem 2rem rgb(4 48 24 / 18%);
+}
+
+@media (max-width: 23rem) {
+  .mobile-summary-grid,
+  .mobile-future-list,
+  .mobile-player-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mobile-manager-selector {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mobile-app-header h1 {
+    font-size: 1.8rem;
+  }
 }
