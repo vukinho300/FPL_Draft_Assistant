@@ -19,9 +19,18 @@ export function createBootstrapFixture(): {
       { id: 4, singular_name_short: 'FWD' },
     ],
     elements: [
-      { id: 104, web_name: 'Fixture Forward', team: 20, element_type: 4 },
+      {
+        id: 104,
+        first_name: 'Fixture',
+        second_name: 'Forward',
+        web_name: 'Fixture Forward',
+        team: 20,
+        element_type: 4,
+      },
       {
         id: 102,
+        first_name: 'Fixture',
+        second_name: 'Defender',
         web_name: 'Fixture Defender',
         team: 10,
         element_type: 2,
@@ -29,6 +38,8 @@ export function createBootstrapFixture(): {
       },
       {
         id: 101,
+        first_name: 'Fixture',
+        second_name: 'Keeper',
         web_name: 'Fixture Keeper',
         team: 10,
         element_type: 1,
@@ -36,6 +47,8 @@ export function createBootstrapFixture(): {
       },
       {
         id: 103,
+        first_name: 'Fixture',
+        second_name: 'Midfielder',
         web_name: 'Fixture Midfielder',
         team: 20,
         element_type: 3,

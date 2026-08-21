@@ -44,6 +44,26 @@ function readNonEmptyString(
   return value
 }
 
+function readOptionalNonEmptyString(record: UnknownRecord, field: string, context: string): string | null {
+  const value = record[field]
+
+  if (value === undefined || value === null) return null
+  if (typeof value !== 'string') {
+    throw new FplDataError('INVALID_PLAYER', `${context}.${field} must be a string when present`)
+  }
+
+  const trimmed = value.trim()
+  return trimmed === '' ? null : trimmed
+}
+
+function readFullName(record: UnknownRecord, context: string): string | null {
+  const firstName = readOptionalNonEmptyString(record, 'first_name', context)
+  const secondName = readOptionalNonEmptyString(record, 'second_name', context)
+  const nameParts = [firstName, secondName].filter((part): part is string => part !== null)
+
+  return nameParts.length === 0 ? null : nameParts.join(' ')
+}
+
 function readOptionalDraftRank(record: UnknownRecord, context: string): number | null {
   const value = record.draft_rank
 
@@ -188,9 +208,12 @@ export function normalizeFplBootstrap(rawBootstrap: unknown): Player[] {
       )
     }
 
+    const displayName = readNonEmptyString(rawPlayer, 'web_name', context, 'INVALID_PLAYER')
+    const fullName = readFullName(rawPlayer, context)
     const player: Player = {
       id: String(sourceId),
-      displayName: readNonEmptyString(rawPlayer, 'web_name', context, 'INVALID_PLAYER'),
+      displayName,
+      ...(fullName === null ? {} : { fullName }),
       position,
       club,
       officialDraftRank: readOptionalDraftRank(rawPlayer, context),

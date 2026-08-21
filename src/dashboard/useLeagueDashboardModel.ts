@@ -14,6 +14,11 @@ import {
 } from '../services/fpl/browserClient.ts'
 import type { FplPlayerDataResponse } from '../services/fpl/contract.ts'
 import { getLeagueViewLabel, LEAGUE_NAVIGATION, type LeagueView } from './navigation.ts'
+import {
+  selectPlayerDirectory,
+  type PlayerDirectorySort,
+  type PlayerOwnershipFilter,
+} from './playerDirectory.ts'
 
 export type TransactionTab = 'TRADES' | 'WAIVERS' | 'FREE AGENTS' | 'ACTIVITY'
 export const TRANSACTION_TABS = ['TRADES', 'WAIVERS', 'FREE AGENTS', 'ACTIVITY'] as const
@@ -30,6 +35,8 @@ export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlay
   const [playerError, setPlayerError] = useState<string | null>(null)
   const [playerSearch, setPlayerSearch] = useState('')
   const [playerPosition, setPlayerPosition] = useState<Position | 'ALL'>('ALL')
+  const [playerOwnership, setPlayerOwnership] = useState<PlayerOwnershipFilter>('ALL')
+  const [playerSort, setPlayerSort] = useState<PlayerDirectorySort>('OFFICIAL')
   const playerRequestStarted = useRef(false)
   const controllerMounted = useRef(false)
 
@@ -78,15 +85,15 @@ export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlay
     () => buildPlayerOwnershipDirectory(players, rosters, officialDraft202627),
     [players, rosters],
   )
-  const filteredPlayers = useMemo(() => {
-    const query = playerSearch.trim().toLocaleLowerCase()
-    return playerDirectory.filter((entry) =>
-      (playerPosition === 'ALL' || entry.player.position === playerPosition) &&
-      (query === '' ||
-        entry.player.displayName.toLocaleLowerCase().includes(query) ||
-        entry.ownerName.toLocaleLowerCase().includes(query)),
-    )
-  }, [playerDirectory, playerPosition, playerSearch])
+  const filteredPlayers = useMemo(
+    () => selectPlayerDirectory(playerDirectory, {
+      search: playerSearch,
+      position: playerPosition,
+      ownership: playerOwnership,
+      sort: playerSort,
+    }),
+    [playerDirectory, playerOwnership, playerPosition, playerSearch, playerSort],
+  )
 
   return {
     navigation: LEAGUE_NAVIGATION,
@@ -112,6 +119,10 @@ export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlay
       setSearch: setPlayerSearch,
       position: playerPosition,
       setPosition: setPlayerPosition,
+      ownership: playerOwnership,
+      setOwnership: setPlayerOwnership,
+      sort: playerSort,
+      setSort: setPlayerSort,
       filtered: filteredPlayers,
     },
     archive: {

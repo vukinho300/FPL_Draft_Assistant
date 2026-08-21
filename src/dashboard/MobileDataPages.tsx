@@ -2,6 +2,13 @@ import type { ReactNode } from 'react'
 
 import type { Position } from '../domain/player.ts'
 import type { PlayerOwnershipEntry } from '../domain/transactions.ts'
+import {
+  getPlayerDirectoryName,
+  PLAYER_DIRECTORY_SORTS,
+  PLAYER_OWNERSHIP_FILTERS,
+  type PlayerDirectorySort,
+  type PlayerOwnershipFilter,
+} from './playerDirectory.ts'
 import type { LeagueDashboardModel } from './useLeagueDashboardModel.ts'
 
 function MobilePageIntro({ eyebrow, title, children }: {
@@ -51,6 +58,33 @@ export function MobilePlayersPage({ model }: { readonly model: LeagueDashboardMo
               </button>
             ))}
           </div>
+          <div className="mobile-ownership-filters" aria-label="Filter players by ownership">
+            {PLAYER_OWNERSHIP_FILTERS.map((ownership: PlayerOwnershipFilter) => (
+              <button
+                type="button"
+                key={ownership}
+                className={directory.ownership === ownership ? 'active' : ''}
+                aria-pressed={directory.ownership === ownership}
+                onClick={() => directory.setOwnership(ownership)}
+              >
+                {ownership === 'FREE_AGENTS' ? 'Free Agents' : ownership}
+              </button>
+            ))}
+          </div>
+          <label className="mobile-player-sort">
+            <span>Sort by</span>
+            <select
+              aria-label="Sort players"
+              value={directory.sort}
+              onChange={(event) => directory.setSort(event.target.value as PlayerDirectorySort)}
+            >
+              {PLAYER_DIRECTORY_SORTS.map((sort) => (
+                <option key={sort} value={sort}>
+                  {sort === 'OFFICIAL' ? 'Official Draft rank' : sort === 'MVP' ? 'Draft MVP rank' : 'Model rank at draft'}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
         {directory.error !== null
           ? <div className="mobile-empty-state"><strong>Live player directory unavailable</strong><p>{directory.error}</p></div>
@@ -66,7 +100,7 @@ function MobilePlayerCard({ entry }: { readonly entry: PlayerOwnershipEntry }) {
   return (
     <article className="mobile-directory-player">
       <header>
-        <div><h3>{entry.player.displayName}</h3><span>{entry.player.club.shortName}</span></div>
+        <div><h3>{getPlayerDirectoryName(entry)}</h3><span>{entry.player.club.shortName}</span></div>
         <span className={`mobile-position-badge position-${entry.player.position.toLowerCase()}`}>{entry.player.position}</span>
       </header>
       <dl>
@@ -74,6 +108,7 @@ function MobilePlayerCard({ entry }: { readonly entry: PlayerOwnershipEntry }) {
         <div><dt>Official rank</dt><dd>{entry.player.officialDraftRank ?? '—'}</dd></div>
         <div><dt>Original pick</dt><dd>{entry.originalDraftPick ?? '—'}</dd></div>
         <div><dt>Draft MVP</dt><dd>{entry.draftDayMvpRank ?? '—'}</dd></div>
+        <div><dt>Model at draft</dt><dd>{entry.modelRankAtDraft ?? '—'}</dd></div>
       </dl>
     </article>
   )

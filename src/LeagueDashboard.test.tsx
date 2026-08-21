@@ -5,6 +5,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import LeagueDashboard from './LeagueDashboard.tsx'
+import { officialDraft202627 } from './data/leagues/kile-n-others/officialDraft2026-27.ts'
 import type { Player } from './domain/player.ts'
 import { MOBILE_DASHBOARD_MEDIA_QUERY } from './dashboard/usePresentationMode.ts'
 
@@ -178,20 +179,43 @@ describe('LeagueDashboard presentation boundary', () => {
     expect(container.textContent).toContain('UNVERIFIED')
   })
 
-  it('renders the mobile Players directory from shared loaded player state without a table', async () => {
-    const players: readonly Player[] = [{
-      id: 'mobile-test-player',
-      displayName: 'Mobile Test Player',
-      position: 'MID',
-      club: { id: 'test-club', name: 'Test Club', shortName: 'TST' },
-      officialDraftRank: 12,
-    }]
-    const { container } = renderDashboard(true, players)
+  it('uses shared filtered player results with full names in mobile and desktop presentations', async () => {
+    const draftedPlayer = officialDraft202627.picks[0]
+    const players: readonly Player[] = [
+      {
+        id: draftedPlayer.draftPlayerId,
+        displayName: 'Test',
+        fullName: 'Owned Full Name',
+        position: draftedPlayer.position,
+        club: draftedPlayer.club,
+        officialDraftRank: 12,
+      },
+      {
+        id: 'mobile-free-agent',
+        displayName: 'Free',
+        fullName: 'Free Full Name',
+        position: draftedPlayer.position,
+        club: draftedPlayer.club,
+        officialDraftRank: 1,
+      },
+    ]
+    const { container, media } = renderDashboard(true, players)
     navigateFromMore(container, 'Players')
     await act(async () => Promise.resolve())
 
-    expect(container.querySelector('.mobile-directory-player')?.textContent).toContain('Mobile Test Player')
+    expect(container.textContent).toContain('Owned Full Name')
+    expect(container.textContent).toContain('Free Full Name')
     expect(container.querySelector('.mobile-player-directory table')).toBeNull()
+    expect(container.querySelectorAll('.mobile-ownership-filters button')).toHaveLength(3)
+    expect(container.querySelector('select[aria-label="Sort players"]')).not.toBeNull()
+
+    clickButton(container, 'OWNED')
+    expect(container.textContent).toContain('Owned Full Name')
+    expect(container.textContent).not.toContain('Free Full Name')
+
+    act(() => media.setMatches(false))
+    expect(container.querySelector('.player-directory')?.textContent).toContain('Owned Full Name')
+    expect(container.querySelector('.player-directory')?.textContent).not.toContain('Free Full Name')
   })
 
   it('keeps mobile transaction categories usable without changing transaction meaning', () => {

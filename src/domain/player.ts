@@ -14,6 +14,8 @@ export interface Club {
 export interface Player {
   id: PlayerId
   displayName: string
+  /** Full verified upstream identity when the FPL adapter provides it. */
+  fullName?: string
   position: Position
   club: Club
   /** Upstream Draft ordinal; null when the upstream value is absent. */

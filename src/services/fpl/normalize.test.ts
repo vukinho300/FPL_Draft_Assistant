@@ -9,6 +9,7 @@ describe('normalizeFplBootstrap', () => {
       {
         id: '101',
         displayName: 'Fixture Keeper',
+        fullName: 'Fixture Keeper',
         position: 'GK',
         club: { id: '10', name: 'Fixture City', shortName: 'FIX' },
         officialDraftRank: 1,
@@ -16,6 +17,7 @@ describe('normalizeFplBootstrap', () => {
       {
         id: '102',
         displayName: 'Fixture Defender',
+        fullName: 'Fixture Defender',
         position: 'DEF',
         club: { id: '10', name: 'Fixture City', shortName: 'FIX' },
         officialDraftRank: 2,
@@ -23,6 +25,7 @@ describe('normalizeFplBootstrap', () => {
       {
         id: '103',
         displayName: 'Fixture Midfielder',
+        fullName: 'Fixture Midfielder',
         position: 'MID',
         club: { id: '20', name: 'Example Athletic', shortName: 'EXA' },
         officialDraftRank: null,
@@ -30,6 +33,7 @@ describe('normalizeFplBootstrap', () => {
       {
         id: '104',
         displayName: 'Fixture Forward',
+        fullName: 'Fixture Forward',
         position: 'FWD',
         club: { id: '20', name: 'Example Athletic', shortName: 'EXA' },
         officialDraftRank: null,
@@ -43,6 +47,21 @@ describe('normalizeFplBootstrap', () => {
     fixture.elements.reverse()
 
     expect(normalizeFplBootstrap(fixture)).toEqual(expected)
+  })
+
+  it('falls back to the verified display name when structured full-name fields are absent', () => {
+    const fixture = createBootstrapFixture()
+    fixture.elements[0] = {
+      id: 104,
+      web_name: 'Verified Display',
+      team: 20,
+      element_type: 4,
+    }
+
+    expect(normalizeFplBootstrap(fixture).find(({ id }) => id === '104')).toMatchObject({
+      displayName: 'Verified Display',
+    })
+    expect(normalizeFplBootstrap(fixture).find(({ id }) => id === '104')).not.toHaveProperty('fullName')
   })
 
   it('rejects a changed top-level schema', () => {
