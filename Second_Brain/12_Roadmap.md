@@ -6,53 +6,51 @@ Build in small dependency-ordered phases. Do not collapse these into one large C
 ### F0 — Second Brain scaffold
 Status: COMPLETE
 
-Result:
-- concise project control manual;
-- Codex read map;
-- approved architecture/product decisions;
-- no application-code changes.
-
 ### F1 — Vercel deployment
 Status: COMPLETE
 
-Result:
-- current Kile N Others dashboard deployed to Vercel;
-- project-owned `/api/fpl` boundary deployed;
-- Vercel function packaging repaired through PR #10 by explicitly including `src/services/fpl/**`;
-- Preview/API verification completed before merge and production manually verified after merge.
-
 ### F2 — Desktop + mobile responsive shell
-Status: CURRENT — IMPLEMENTED IN PART; FINAL MOBILE PASS REMAINS
+Status: COMPLETE
+
+Result:
+- separate desktop/mobile presentation trees over one shared controller;
+- preserved desktop dashboard;
+- floating rounded mobile navigation with primary order `League / My Team / Teams / More`;
+- all seven main views intentionally usable on mobile and desktop;
+- Gameweek-first mobile League hierarchy;
+- intentional mobile Players, Transactions and Draft Archive views;
+- mobile width model no longer depends on desktop minimum widths;
+- no duplicate desktop/mobile business logic;
+- no Supabase/auth/database work mixed into F2.
+
+### P5A — Basic Players filtering/sorting
+Status: CURRENT
 
 Goal:
-Preserve the current rich desktop experience while making the same season dashboard intentionally usable on phones. This is one application with shared data/domain logic and two intentional presentation layers, not separate desktop/mobile products.
+Make the existing Players directory immediately useful with the data already present in the project, before beginning the heavier backend phase.
 
-Current implementation already includes:
-- separate desktop/mobile presentation trees over one shared controller;
-- viewport-based presentation selection;
-- preserved desktop dashboard;
-- real mobile League/My Team/Teams/Matchday pages;
-- mobile bottom navigation;
-- removal of the global desktop-only body minimum-width defect.
+Required controls:
+- search by player/owner;
+- position: ALL / GK / DEF / MID / FWD;
+- ownership: ALL / FREE AGENTS / OWNED;
+- sort by Official Draft rank;
+- sort by Draft MVP rank;
+- sort by model rank where the current trusted directory model exposes it;
+- deterministic handling of missing rank values;
+- same filtering/sorting behavior on desktop and mobile through shared state/logic.
 
-Final F2 scope before completion:
-- replace current bottom nav with the approved floating/rounded sports-app style and primary order `League / My Team / Teams / More`;
-- keep all seven views reachable, with Players moved under More;
-- redesign League home around Gameweek-first information hierarchy, removing draft-summary/roster-completeness clutter and showing truthful unavailable placeholders for data not connected yet;
-- clean Teams mobile presentation and remove roster-capacity/admin clutter;
-- implement intentional mobile Players, Transactions and Draft Archive presentations;
-- establish a reusable non-authoritative visual pitch/lineup shell only if it can be done without inventing persistent Gameweek lineup state;
-- preserve zero horizontal scrolling and normal readable phone-scale typography;
-- final rendered checks at representative phone widths and desktop;
-- final real-iPhone review across all seven views.
+Example supported use:
+`GK -> Free Agents -> Draft MVP rank`.
 
-F2 must NOT add:
-- Supabase/auth/database persistence;
-- authoritative lineup state;
-- fake standings/Gameweek points/live events;
-- guessed player-photo mappings.
+Rules:
+- Free Agent status is derived from current ownership after PROCESSED transactions, never hardcoded;
+- do not pull in P3/P4 stats/status fields yet;
+- do not invent rank values;
+- do not create separate mobile/desktop filter logic.
 
 ### F3 — Supabase foundation
+Status: NEXT AFTER P5A
+
 Goal:
 Introduce the minimum database/storage/auth infrastructure and migrations. No broad league features yet.
 
@@ -162,8 +160,20 @@ P3/G5 data may also support G5A important event derivation when the verified sou
 ### P4 — Usage classification
 Project-derived labels such as regular starter/substitute/reduced minutes. Early/insufficient evidence -> Unknown.
 
-### P5 — Players filtering/sorting
-Official rank / MVP rank / model rank / free-agent filters and useful player detail.
+### P5B — Enriched Players filtering/sorting
+Build on P5A after P3/P4 enrichment exists.
+
+Potential controls when backed by verified data:
+- total points;
+- recent points/form;
+- minutes;
+- starts;
+- availability/injury;
+- usage classification;
+- club;
+- other verified player-value fields.
+
+Do not expose filters for data that is not actually connected.
 
 ## Transactions / trading
 ### T1 — Trading Block
@@ -204,6 +214,7 @@ Examples:
 - Mobile and desktop are presentation layers over one shared domain/data/backend model.
 - Persistent mutable data must not have separate device-specific authoritative copies.
 - Do not create separate desktop/mobile business logic or duplicate data sources.
+- Free Agent/Owned player state must derive from current roster ownership.
 - Formation/lineup legality belongs in shared domain logic, not presentation code.
 - Do not build project scoring before lineup and player-GW contracts exist.
 - Automatically generated fallback lineups must remain distinguishable from submitted lineups and are not eligible for project-calculated lineup points.
