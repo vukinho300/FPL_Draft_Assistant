@@ -55,15 +55,17 @@ Status: APPROVED
 
 Admin-sensitive and owner-sensitive permissions must be enforced via RLS/backend authorization.
 
-## D-012 — Missing Gameweek lineup stays missing
-Status: APPROVED
+## D-012 — Missing Gameweek lineup remains unsubmitted
+Status: APPROVED — UPDATED
 
-Never fabricate or reuse a previous lineup if a manager forgot to submit one.
+Never reuse a previous Gameweek lineup if a manager forgot to submit one. Submission state remains explicitly missing/unsubmitted.
+
+For presentation only, Teams may display an automatically generated valid XI + bench when no lineup was submitted. That fallback must be labeled as automatic/not submitted, must not become the authoritative lineup, and receives zero project-calculated lineup points.
 
 ## D-013 — Score provenance is explicit
 Status: APPROVED
 
-Prefer: admin correction > verified official FPL total > project-calculated total > unavailable. Corrections retain an audit trail and do not erase source values.
+Prefer: admin correction > verified official FPL total > project-calculated total from a valid submitted lineup > unavailable. Corrections retain an audit trail and do not erase source values. Automatically generated unsubmitted fallback lineups are not eligible for project-calculated lineup points.
 
 ## D-014 — Accepted trade is not processed trade
 Status: APPROVED
@@ -94,3 +96,54 @@ Read/reconcile before automating any official trade, waiver, free-agent or lineu
 Status: APPROVED WORKFLOW
 
 Use Luna for trivial mechanical work, Terra for normal implementation, and Sol for architecture/security/data research/major verification.
+
+## D-020 — Codex leads repository-heavy technical planning
+Status: APPROVED WORKFLOW
+
+For problems where correct decisions depend heavily on the actual repository, Codex should inspect the codebase, plan the technical solution and implement it. This includes UI/component architecture, CSS, refactors, debugging, implementation-level state organization and focused test strategy.
+
+ChatGPT should primarily define product intent, architecture boundaries, data/security rules, roadmap constraints and acceptance criteria, then independently verify Codex's claimed repository changes. ChatGPT should not micromanage exact code structure when Codex has materially better repository visibility.
+
+## D-021 — Mobile and desktop share one persistent application state
+Status: APPROVED ARCHITECTURE
+
+Mobile and desktop are presentation layers of one application, not separate products. Persistent mutable league data must use the same backend/database contracts on both form factors.
+
+A lineup submitted on mobile must be visible on desktop, and a later desktop edit/submission must be visible on mobile after both read the shared backend state.
+
+No device-specific authoritative lineup state and no authoritative localStorage persistence.
+
+## D-022 — Formation derives from the submitted XI
+Status: APPROVED PRODUCT RULE
+
+Formation is not an independent cosmetic setting. It is derived from the positions of the 11 selected starters subject to valid FPL lineup constraints.
+
+Example: 3 DEF + 5 MID + 2 FWD is 3-5-2. Replacing a FWD starter with a DEF produces 4-5-1 if the resulting XI remains legal.
+
+Formation and lineup-validity rules belong in shared domain logic, not in mobile-only presentation code.
+
+## D-023 — Gameweek bench order is persistent meaningful data
+Status: APPROVED PRODUCT RULE
+
+The lineup bench contains one substitute goalkeeper followed by ordered outfield substitutes 1, 2 and 3. Bench order is part of the persistent Gameweek lineup entity and must be shared across mobile and desktop.
+
+## D-024 — League home is Gameweek-first
+Status: APPROVED PRODUCT DIRECTION
+
+The main League page prioritizes current Gameweek context, the logged-in manager's Gameweek points, standings, important verified football/Gameweek events and recent transactions.
+
+Draft summary metrics, roster completeness, large Draft Archive calls to action and draft-history activity are secondary and should not dominate the League home page.
+
+## D-025 — Mobile primary navigation order
+Status: APPROVED PRODUCT DIRECTION
+
+Primary mobile navigation is League, My Team, Teams and More. Players moves under More together with Matchday, Transactions and Draft Archive.
+
+The mobile navigation should be floating/rounded, safe-area aware, touch-friendly and use restrained polished animation while respecting reduced-motion preferences.
+
+## D-026 — Fantacalcio-style lineup is presentation inspiration, not copied branding
+Status: APPROVED PRODUCT DIRECTION
+
+My Team and Teams should eventually use an original football-pitch lineup presentation inspired by the supplied Fantacalcio reference: starters visually positioned by derived formation, real verified Premier League player photos when available, names visible, and an ordered bench underneath.
+
+Do not copy proprietary branding or assets. My Team owns editing controls; Teams reuses the lineup rendering model for viewing other managers.

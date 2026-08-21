@@ -22,18 +22,35 @@ Result:
 - Preview/API verification completed before merge and production manually verified after merge.
 
 ### F2 — Desktop + mobile responsive shell
-Status: CURRENT — NOT YET IMPLEMENTED
+Status: CURRENT — IMPLEMENTED IN PART; FINAL MOBILE PASS REMAINS
 
 Goal:
-Preserve the current rich desktop experience while making the same season dashboard intentionally usable on phones. This is one application with shared data/domain logic and responsive presentation, not separate desktop/mobile products.
+Preserve the current rich desktop experience while making the same season dashboard intentionally usable on phones. This is one application with shared data/domain logic and two intentional presentation layers, not separate desktop/mobile products.
 
-Acceptance direction:
-- desktop sidebar and wide-screen layouts remain strong;
-- mobile gets compact navigation and touch-friendly controls;
-- pitch/squad views are readable at phone widths;
-- grids/cards reflow cleanly;
-- wide tables have intentional mobile handling;
-- all seven main views remain usable on both form factors.
+Current implementation already includes:
+- separate desktop/mobile presentation trees over one shared controller;
+- viewport-based presentation selection;
+- preserved desktop dashboard;
+- real mobile League/My Team/Teams/Matchday pages;
+- mobile bottom navigation;
+- removal of the global desktop-only body minimum-width defect.
+
+Final F2 scope before completion:
+- replace current bottom nav with the approved floating/rounded sports-app style and primary order `League / My Team / Teams / More`;
+- keep all seven views reachable, with Players moved under More;
+- redesign League home around Gameweek-first information hierarchy, removing draft-summary/roster-completeness clutter and showing truthful unavailable placeholders for data not connected yet;
+- clean Teams mobile presentation and remove roster-capacity/admin clutter;
+- implement intentional mobile Players, Transactions and Draft Archive presentations;
+- establish a reusable non-authoritative visual pitch/lineup shell only if it can be done without inventing persistent Gameweek lineup state;
+- preserve zero horizontal scrolling and normal readable phone-scale typography;
+- final rendered checks at representative phone widths and desktop;
+- final real-iPhone review across all seven views.
+
+F2 must NOT add:
+- Supabase/auth/database persistence;
+- authoritative lineup state;
+- fake standings/Gameweek points/live events;
+- guessed player-photo mappings.
 
 ### F3 — Supabase foundation
 Goal:
@@ -61,23 +78,66 @@ Introduce the minimum database/storage/auth infrastructure and migrations. No br
 - Obtain real league ID and six entry IDs safely.
 - Verify league-specific read schemas.
 
-### G2 — League standings adapter
-- Real standings/current GW on League page.
+### G2 — League Gameweek + standings adapter
+- Real current Gameweek on League page.
+- Real league standings.
+- Manager overall/season points through the standings model.
+- Logged-in manager's current Gameweek points where the verified source supports it.
+- Do not duplicate the same points concept under multiple labels.
 
-### G3 — Lineup persistence/domain
-- Draft lineup experimentation.
-- Submit immutable-per-GW lineup record.
-- Missing submission remains missing.
+### G3 — Gameweek lineup domain + persistence
+Build the authoritative shared lineup entity used by both mobile and desktop.
 
-### G4 — Account-specific My Team Gameweek view
-- Current squad.
-- Submitted lineup/bench.
-- Verified fixtures/status where available.
+Required behavior:
+- draft/edit lineup without submitting;
+- exactly 11 starters;
+- valid FPL starting-XI positional constraints;
+- formation derived from starter positions rather than stored as a cosmetic independent setting;
+- one substitute goalkeeper;
+- ordered outfield bench positions 1, 2 and 3;
+- persistent per-manager/per-Gameweek state in the shared database;
+- explicit draft/submitted/missing submission state as appropriate;
+- submitted lineup retains enough historical information to reconstruct the Gameweek;
+- mobile submission is visible on desktop and desktop submission is visible on mobile;
+- no authoritative localStorage/device-specific lineup state.
+
+Missing-submission behavior:
+- never reuse the previous Gameweek lineup;
+- submission remains missing/unsubmitted;
+- a valid automatically selected XI + bench may be generated for display in Teams;
+- the fallback must remain distinct from submitted state;
+- fallback is not eligible for project-calculated lineup points.
+
+### G4 — Account-specific My Team + Teams Gameweek presentation
+Connect the real G3 lineup entity to desktop and mobile.
+
+Target presentation:
+- football-pitch starting XI positioned by derived formation;
+- shared lineup renderer/model for My Team and Teams;
+- My Team gets editing/submission controls only for the authenticated owner;
+- Teams shows submitted lineup for other managers without edit controls;
+- if no lineup was submitted, Teams may show clearly labeled auto-selected fallback;
+- separate ordered bench below the pitch: GK, 1, 2, 3;
+- remove roster-capacity clutter from the Gameweek lineup presentation;
+- verified player photos when P1/P2 are available, otherwise a neutral fallback silhouette.
 
 ### G5 — Gameweek scoring
 - Verified official total where available.
-- Project-calculated total for submitted lineup where justified.
+- Project-calculated total only for a valid submitted project lineup where justified.
+- Automatically generated/unsubmitted fallback lineup receives zero project-calculated lineup points.
 - Explicit source/provenance.
+
+### G5A — Important Gameweek event feed
+Provide verified significant football events for the League home page when the required player/Gameweek data contract exists.
+
+Examples:
+- goals;
+- assists;
+- goalkeeper penalty saves;
+- hat tricks;
+- other significant scoring events supported by verified data.
+
+Do not derive or display fabricated event records.
 
 ### G6 — Admin score corrections
 - League-owner-only audited correction flow.
@@ -86,11 +146,18 @@ Introduce the minimum database/storage/auth infrastructure and migrations. No br
 ### P1 — Premier League photo identity research
 Prove the mapping/image contract before production implementation.
 
+Dependency priority update:
+This should happen before or alongside final G4 visual integration because the target lineup UI relies strongly on player imagery.
+
 ### P2 — Player photos
 Use verified official Premier League mapping.
 
+Implement before the final photo-complete G4 experience where practical. Until then, use neutral fallbacks rather than guessed image URLs/IDs.
+
 ### P3 — Stats/status adapter
 Add verified points, minutes, starts, availability/news, recent usage inputs.
+
+P3/G5 data may also support G5A important event derivation when the verified source contract is sufficient.
 
 ### P4 — Usage classification
 Project-derived labels such as regular starter/substitute/reduced minutes. Early/insufficient evidence -> Unknown.
@@ -134,9 +201,14 @@ Examples:
 
 ## Dependency rules
 - User-facing features should normally work on both desktop and mobile before they are considered complete.
+- Mobile and desktop are presentation layers over one shared domain/data/backend model.
+- Persistent mutable data must not have separate device-specific authoritative copies.
 - Do not create separate desktop/mobile business logic or duplicate data sources.
+- Formation/lineup legality belongs in shared domain logic, not presentation code.
+- Do not build project scoring before lineup and player-GW contracts exist.
+- Automatically generated fallback lineups must remain distinguishable from submitted lineups and are not eligible for project-calculated lineup points.
 - Do not build trade comparison before shared player enrichment exists.
-- Do not build automatic/project scoring before lineup and player-GW contracts exist.
 - Do not automate official FPL writes before read/reconciliation behavior is proven.
 - Do not build recommendation AI on invented/unverified player status data.
+- Do not guess Premier League image URLs or identity mappings.
 - Do not let a later live feed overwrite immutable draft-day evidence.
