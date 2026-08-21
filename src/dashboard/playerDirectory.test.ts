@@ -139,6 +139,19 @@ describe('shared player directory selector', () => {
   it('composes free-agent position filtering with current-season sorting', () => {
     expect(select({ position: 'MID', ownership: 'FREE_AGENTS', sort: 'FORM' }).map(({ player }) => player.id)).toEqual(['free-mid'])
     expect(select({ position: 'GK', ownership: 'OWNED', sort: 'TOTAL_POINTS' }).map(({ player }) => player.id)).toEqual(['owned-gk'])
+
+    const freeForward = entry({
+      id: 'free-fwd',
+      fullName: 'Fran Forward',
+      position: 'FWD',
+      totalPoints: 72,
+    })
+    expect(selectPlayerDirectory([...directory, freeForward], {
+      search: '',
+      position: 'FWD',
+      ownership: 'FREE_AGENTS',
+      sort: 'TOTAL_POINTS',
+    }).map(({ player }) => player.id)).toEqual(['free-fwd'])
   })
 
   it('derives form and points leaders from the same filtered directory entries', () => {
