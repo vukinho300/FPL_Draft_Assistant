@@ -271,6 +271,7 @@
 .mobile-player-grid,
 .mobile-manager-selector,
 .mobile-position-filters,
+.mobile-ownership-filters,
 .mobile-archive-summary {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -444,6 +445,7 @@
 
 .mobile-manager-selector button,
 .mobile-position-filters button,
+.mobile-ownership-filters button,
 .mobile-transaction-tabs button {
   min-width: 0;
   min-height: 3rem;
@@ -460,6 +462,7 @@
 
 .mobile-manager-selector button.active,
 .mobile-position-filters button.active,
+.mobile-ownership-filters button.active,
 .mobile-transaction-tabs button.active {
   border-color: #197849;
   color: #fff;
@@ -544,6 +547,33 @@
 
 .mobile-position-filters button:last-child {
   grid-column: 2;
+}
+
+.mobile-ownership-filters {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.mobile-player-sort {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  min-width: 0;
+  gap: 0.65rem;
+  align-items: center;
+  color: #5d7567;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.mobile-player-sort select {
+  width: 100%;
+  min-width: 0;
+  min-height: 3rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #b9cdc1;
+  border-radius: 0.65rem;
+  color: #1b4530;
+  background: #f9fbfa;
+  font: inherit;
 }
 
 .mobile-directory-list {

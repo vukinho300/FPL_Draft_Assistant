@@ -671,13 +671,15 @@
 
 .player-tools {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 0.7rem;
   justify-content: space-between;
   margin-bottom: 0.8rem;
 }
 
 .player-tools input {
-  width: min(32rem, 55%);
+  width: min(28rem, 100%);
   padding: 0.65rem 0.75rem;
   border: 1px solid #b9cdc1;
   border-radius: 0.5rem;
@@ -685,9 +687,29 @@
   background: #f9fbfa;
 }
 
-.player-tools > div {
+.player-filter-group {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.25rem;
+}
+
+.player-sort-control {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  color: #547063;
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
+.player-sort-control select {
+  min-height: 2.35rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid #b9cdc1;
+  border-radius: 0.45rem;
+  color: #1b4530;
+  background: #f9fbfa;
+  font: inherit;
 }
 
 .directory-scroll {
