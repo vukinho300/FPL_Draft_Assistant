@@ -22,6 +22,13 @@ export interface RankedDraftPlayer {
   readonly modelSignal: DraftRankingSignal | null
 }
 
+export class DraftRankingError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'DraftRankingError'
+  }
+}
+
 function percentileScore(rank: number, population: number): number {
   if (!Number.isInteger(rank) || rank < 1) return 0
   if (population <= 1) return 1
@@ -60,7 +67,16 @@ export function rankPlayersByMvpConsensus(
   players: readonly Player[],
   signals: readonly DraftRankingSignal[],
 ): readonly RankedDraftPlayer[] {
-  const signalByPlayer = new Map(signals.map((signal) => [signal.draftPlayerId, signal]))
+  if (new Set(players.map(({ id }) => id)).size !== players.length) {
+    throw new DraftRankingError('MVP ranking player IDs must be unique')
+  }
+  const signalByPlayer = new Map<string, DraftRankingSignal>()
+  signals.forEach((signal) => {
+    if (signalByPlayer.has(signal.draftPlayerId)) {
+      throw new DraftRankingError(`Duplicate model signal for player ${signal.draftPlayerId}`)
+    }
+    signalByPlayer.set(signal.draftPlayerId, signal)
+  })
   const officialPopulation = players.filter(
     (player) => player.officialDraftRank !== null,
   ).length

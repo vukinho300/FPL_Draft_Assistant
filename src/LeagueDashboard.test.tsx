@@ -66,6 +66,13 @@ function clickButton(container: HTMLElement, label: string) {
   act(() => button.dispatchEvent(new MouseEvent('click', { bubbles: true })))
 }
 
+function changeSelect(container: HTMLElement, label: string, value: string) {
+  const select = container.querySelector<HTMLSelectElement>(`select[aria-label="${label}"]`)
+  if (select === null) throw new Error(`Could not find ${label} select`)
+  select.value = value
+  act(() => select.dispatchEvent(new Event('change', { bubbles: true })))
+}
+
 function mobileTitle(container: HTMLElement) {
   return container.querySelector('.mobile-app-header h1')?.textContent
 }
@@ -208,6 +215,23 @@ describe('LeagueDashboard presentation boundary', () => {
     expect(container.querySelector('.mobile-player-directory table')).toBeNull()
     expect(container.querySelectorAll('.mobile-ownership-filters button')).toHaveLength(3)
     expect(container.querySelector('select[aria-label="Sort players"]')).not.toBeNull()
+    expect(container.textContent).toContain('Official FPL Draft rank')
+    expect(container.textContent).toContain('MVP consensus rank')
+    expect(container.textContent).toContain('Draft model rank')
+
+    changeSelect(container, 'Sort players', 'MODEL')
+    const mobileOrder = [...container.querySelectorAll('.mobile-directory-player h3')].map(
+      ({ textContent }) => textContent,
+    )
+    expect(mobileOrder).toEqual(['Owned Full Name', 'Free Full Name'])
+
+    act(() => media.setMatches(false))
+    const desktopOrder = [...container.querySelectorAll('.player-directory tbody tr td:first-child strong')].map(
+      ({ textContent }) => textContent,
+    )
+    expect(desktopOrder).toEqual(mobileOrder)
+
+    act(() => media.setMatches(true))
 
     clickButton(container, 'OWNED')
     expect(container.textContent).toContain('Owned Full Name')
@@ -233,6 +257,9 @@ describe('LeagueDashboard presentation boundary', () => {
     expect(container.textContent).toContain('Immutable historical record')
     expect(container.querySelectorAll('.mobile-archive-picks details')).toHaveLength(15)
     expect(container.querySelector('.mobile-archive-picks table')).toBeNull()
+    expect(container.textContent).toContain('Official at draft')
+    expect(container.textContent).toContain('Model at draft')
+    expect(container.textContent).toContain('MVP at draft')
   })
 
   it('does not repeat player loading when switching presentations', async () => {

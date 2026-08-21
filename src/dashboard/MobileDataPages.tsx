@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 
 import type { Position } from '../domain/player.ts'
-import type { PlayerOwnershipEntry } from '../domain/transactions.ts'
 import {
   getPlayerDirectoryName,
   PLAYER_DIRECTORY_SORTS,
   PLAYER_OWNERSHIP_FILTERS,
+  type PlayerDirectoryEntry,
   type PlayerDirectorySort,
   type PlayerOwnershipFilter,
 } from './playerDirectory.ts'
@@ -34,7 +34,7 @@ export function MobilePlayersPage({ model }: { readonly model: LeagueDashboardMo
   return (
     <div className="mobile-page-stack">
       <MobilePageIntro eyebrow="League directory" title="Players & ownership">
-        Ownership is derived from the official draft plus processed project transactions.
+        Ownership reflects the immutable draft plus processed transactions. Official FPL Draft rank is live; MVP consensus combines it with the frozen 2026/27 draft model.
       </MobilePageIntro>
       <MobileCard className="mobile-player-directory">
         <div className="mobile-player-tools">
@@ -80,7 +80,7 @@ export function MobilePlayersPage({ model }: { readonly model: LeagueDashboardMo
             >
               {PLAYER_DIRECTORY_SORTS.map((sort) => (
                 <option key={sort} value={sort}>
-                  {sort === 'OFFICIAL' ? 'Official Draft rank' : sort === 'MVP' ? 'Draft MVP rank' : 'Model rank at draft'}
+                  {sort === 'OFFICIAL' ? 'Official FPL Draft rank' : sort === 'MVP' ? 'MVP consensus rank' : 'Draft model rank'}
                 </option>
               ))}
             </select>
@@ -90,13 +90,13 @@ export function MobilePlayersPage({ model }: { readonly model: LeagueDashboardMo
           ? <div className="mobile-empty-state"><strong>Live player directory unavailable</strong><p>{directory.error}</p></div>
           : directory.players.length === 0
             ? <div className="mobile-empty-state"><strong>Loading verified FPL players…</strong><p>Player data is requested from the project FPL boundary.</p></div>
-            : <div className="mobile-directory-list">{directory.filtered.map((entry: PlayerOwnershipEntry) => <MobilePlayerCard entry={entry} key={entry.player.id} />)}</div>}
+            : <div className="mobile-directory-list">{directory.filtered.map((entry: PlayerDirectoryEntry) => <MobilePlayerCard entry={entry} key={entry.player.id} />)}</div>}
       </MobileCard>
     </div>
   )
 }
 
-function MobilePlayerCard({ entry }: { readonly entry: PlayerOwnershipEntry }) {
+function MobilePlayerCard({ entry }: { readonly entry: PlayerDirectoryEntry }) {
   return (
     <article className="mobile-directory-player">
       <header>
@@ -105,10 +105,10 @@ function MobilePlayerCard({ entry }: { readonly entry: PlayerOwnershipEntry }) {
       </header>
       <dl>
         <div><dt>Owner</dt><dd>{entry.ownerName}</dd></div>
-        <div><dt>Official rank</dt><dd>{entry.player.officialDraftRank ?? '—'}</dd></div>
+        <div><dt>Official FPL Draft</dt><dd>{entry.player.officialDraftRank ?? '—'}</dd></div>
         <div><dt>Original pick</dt><dd>{entry.originalDraftPick ?? '—'}</dd></div>
-        <div><dt>Draft MVP</dt><dd>{entry.draftDayMvpRank ?? '—'}</dd></div>
-        <div><dt>Model at draft</dt><dd>{entry.modelRankAtDraft ?? '—'}</dd></div>
+        <div><dt>MVP consensus</dt><dd>{entry.mvpConsensusRank}</dd></div>
+        <div><dt>Draft model</dt><dd title={entry.draftModelUnavailableReason ?? undefined}>{entry.draftModelRank ?? 'Unavailable'}</dd></div>
       </dl>
     </article>
   )
@@ -176,7 +176,7 @@ export function MobileDraftArchivePage({ model }: { readonly model: LeagueDashbo
             <div>{picks.map((pick) => (
               <article className="mobile-draft-pick" key={pick.overallPickNumber}>
                 <header><span>Pick #{pick.overallPickNumber}</span><strong>{pick.playerName}</strong><i className={`position-${pick.position.toLowerCase()}`}>{pick.position}</i></header>
-                <dl><div><dt>Manager</dt><dd>{pick.managerName}</dd></div><div><dt>Club</dt><dd>{pick.club.shortName}</dd></div><div><dt>Official</dt><dd>{pick.officialDraftRankAtDraft ?? '—'}</dd></div><div><dt>Model</dt><dd>{pick.modelRankAtDraft ?? '—'}</dd></div><div><dt>Draft MVP</dt><dd>{pick.mvpConsensusRankAtDraft ?? '—'}</dd></div></dl>
+                <dl><div><dt>Manager</dt><dd>{pick.managerName}</dd></div><div><dt>Club</dt><dd>{pick.club.shortName}</dd></div><div><dt>Official at draft</dt><dd>{pick.officialDraftRankAtDraft ?? '—'}</dd></div><div><dt>Model at draft</dt><dd>{pick.modelRankAtDraft ?? '—'}</dd></div><div><dt>MVP at draft</dt><dd>{pick.mvpConsensusRankAtDraft ?? '—'}</dd></div></dl>
               </article>
             ))}</div>
           </details>

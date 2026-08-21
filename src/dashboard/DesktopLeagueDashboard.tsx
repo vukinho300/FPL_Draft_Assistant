@@ -1,13 +1,14 @@
 import type { ReactNode } from 'react'
 
 import type { Position } from '../domain/player.ts'
-import type { CurrentLeagueRoster, PlayerOwnershipEntry } from '../domain/transactions.ts'
+import type { CurrentLeagueRoster } from '../domain/transactions.ts'
 import type { LeagueDashboardModel } from './useLeagueDashboardModel.ts'
 import type { LeagueView } from './navigation.ts'
 import {
   getPlayerDirectoryName,
   PLAYER_DIRECTORY_SORTS,
   PLAYER_OWNERSHIP_FILTERS,
+  type PlayerDirectoryEntry,
   type PlayerDirectorySort,
   type PlayerOwnershipFilter,
 } from './playerDirectory.ts'
@@ -189,19 +190,19 @@ function PlayersPage({ model }: { readonly model: LeagueDashboardModel }) {
   const directory = model.playerDirectory
   return (
     <div className="page-stack">
-      <section className="page-intro"><p className="dashboard-kicker">League directory</p><h2>Players &amp; ownership</h2><p>Ownership is derived from the official draft plus processed project transactions.</p></section>
+      <section className="page-intro"><p className="dashboard-kicker">League directory</p><h2>Players &amp; ownership</h2><p>Ownership reflects the immutable draft plus processed transactions. Official FPL Draft rank is live; MVP consensus combines it with the frozen 2026/27 draft model.</p></section>
       <section className="dashboard-card player-directory">
         <div className="player-tools">
           <input type="search" aria-label="Search players or owners" placeholder="Search players or owners" value={directory.search} onChange={(event) => directory.setSearch(event.target.value)} />
           <div className="player-filter-group" aria-label="Filter players by position">{(['ALL', ...model.positions] as const).map((position: Position | 'ALL') => <button type="button" key={position} className={directory.position === position ? 'active' : ''} aria-pressed={directory.position === position} onClick={() => directory.setPosition(position)}>{position}</button>)}</div>
           <div className="player-filter-group" aria-label="Filter players by ownership">{PLAYER_OWNERSHIP_FILTERS.map((ownership: PlayerOwnershipFilter) => <button type="button" key={ownership} className={directory.ownership === ownership ? 'active' : ''} aria-pressed={directory.ownership === ownership} onClick={() => directory.setOwnership(ownership)}>{ownership === 'FREE_AGENTS' ? 'Free Agents' : ownership}</button>)}</div>
-          <label className="player-sort-control">Sort by<select aria-label="Sort players" value={directory.sort} onChange={(event) => directory.setSort(event.target.value as PlayerDirectorySort)}>{PLAYER_DIRECTORY_SORTS.map((sort) => <option key={sort} value={sort}>{sort === 'OFFICIAL' ? 'Official Draft rank' : sort === 'MVP' ? 'Draft MVP rank' : 'Model rank at draft'}</option>)}</select></label>
+          <label className="player-sort-control">Sort by<select aria-label="Sort players" value={directory.sort} onChange={(event) => directory.setSort(event.target.value as PlayerDirectorySort)}>{PLAYER_DIRECTORY_SORTS.map((sort) => <option key={sort} value={sort}>{sort === 'OFFICIAL' ? 'Official FPL Draft rank' : sort === 'MVP' ? 'MVP consensus rank' : 'Draft model rank'}</option>)}</select></label>
         </div>
         {directory.error !== null
           ? <div className="empty-state"><strong>Live player directory unavailable</strong><p>{directory.error}</p></div>
           : directory.players.length === 0
             ? <div className="empty-state"><strong>Loading verified FPL players…</strong></div>
-            : <div className="directory-scroll"><table><thead><tr><th>Player</th><th>Pos</th><th>Club</th><th>Owner</th><th>Official</th><th>Original pick</th><th>Draft MVP</th><th>Model at draft</th></tr></thead><tbody>{directory.filtered.map((entry: PlayerOwnershipEntry) => <tr key={entry.player.id}><td><strong>{getPlayerDirectoryName(entry)}</strong></td><td><span className={`player-position position-${entry.player.position.toLowerCase()}`}>{entry.player.position}</span></td><td>{entry.player.club.shortName}</td><td><b className={entry.ownerManagerId === null ? 'free-agent-owner' : ''}>{entry.ownerName}</b></td><td>{entry.player.officialDraftRank ?? '—'}</td><td>{entry.originalDraftPick ?? '—'}</td><td>{entry.draftDayMvpRank ?? '—'}</td><td>{entry.modelRankAtDraft ?? '—'}</td></tr>)}</tbody></table></div>}
+            : <div className="directory-scroll"><table><thead><tr><th>Player</th><th>Pos</th><th>Club</th><th>Owner</th><th>Official FPL Draft</th><th>Original pick</th><th>MVP consensus</th><th>Draft model</th></tr></thead><tbody>{directory.filtered.map((entry: PlayerDirectoryEntry) => <tr key={entry.player.id}><td><strong>{getPlayerDirectoryName(entry)}</strong></td><td><span className={`player-position position-${entry.player.position.toLowerCase()}`}>{entry.player.position}</span></td><td>{entry.player.club.shortName}</td><td><b className={entry.ownerManagerId === null ? 'free-agent-owner' : ''}>{entry.ownerName}</b></td><td>{entry.player.officialDraftRank ?? '—'}</td><td>{entry.originalDraftPick ?? '—'}</td><td>{entry.mvpConsensusRank}</td><td title={entry.draftModelUnavailableReason ?? undefined}>{entry.draftModelRank ?? 'Unavailable'}</td></tr>)}</tbody></table></div>}
       </section>
     </div>
   )
@@ -224,7 +225,7 @@ function DraftArchivePage({ model }: { readonly model: LeagueDashboardModel }) {
       </section>
       <section className="dashboard-card archive-table">
         <div className="card-heading"><div><p className="dashboard-kicker">Complete history</p><h2>Picks 1–90</h2></div><span>Draft Room code retained separately</span></div>
-        <div className="directory-scroll"><table><thead><tr><th>Pick</th><th>Round</th><th>Manager</th><th>Player</th><th>Pos</th><th>Club</th><th>Official</th><th>Model</th><th>Draft MVP</th></tr></thead><tbody>{model.archive.picks.map((pick) => <tr key={pick.overallPickNumber}><td><strong>#{pick.overallPickNumber}</strong></td><td>{pick.roundNumber}</td><td>{pick.managerName}</td><td><strong>{pick.playerName}</strong></td><td><span className={`player-position position-${pick.position.toLowerCase()}`}>{pick.position}</span></td><td>{pick.club.shortName}</td><td>{pick.officialDraftRankAtDraft ?? '—'}</td><td>{pick.modelRankAtDraft ?? '—'}</td><td>{pick.mvpConsensusRankAtDraft ?? '—'}</td></tr>)}</tbody></table></div>
+        <div className="directory-scroll"><table><thead><tr><th>Pick</th><th>Round</th><th>Manager</th><th>Player</th><th>Pos</th><th>Club</th><th>Official at draft</th><th>Model at draft</th><th>MVP at draft</th></tr></thead><tbody>{model.archive.picks.map((pick) => <tr key={pick.overallPickNumber}><td><strong>#{pick.overallPickNumber}</strong></td><td>{pick.roundNumber}</td><td>{pick.managerName}</td><td><strong>{pick.playerName}</strong></td><td><span className={`player-position position-${pick.position.toLowerCase()}`}>{pick.position}</span></td><td>{pick.club.shortName}</td><td>{pick.officialDraftRankAtDraft ?? '—'}</td><td>{pick.modelRankAtDraft ?? '—'}</td><td>{pick.mvpConsensusRankAtDraft ?? '—'}</td></tr>)}</tbody></table></div>
       </section>
     </div>
   )

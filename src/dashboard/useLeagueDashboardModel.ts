@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { officialDraft202627 } from '../data/leagues/kile-n-others/officialDraft2026-27.ts'
 import { kileNOthersTransactions } from '../data/leagues/kile-n-others/transactions.ts'
+import { currentDraftRankingArtifact } from '../data/currentDraftRanking.ts'
 import { POSITION_ORDER, ROSTER_REQUIREMENTS } from '../domain/league.ts'
 import type { Player, Position } from '../domain/player.ts'
 import {
@@ -15,6 +16,7 @@ import {
 import type { FplPlayerDataResponse } from '../services/fpl/contract.ts'
 import { getLeagueViewLabel, LEAGUE_NAVIGATION, type LeagueView } from './navigation.ts'
 import {
+  buildRankedPlayerDirectory,
   selectPlayerDirectory,
   type PlayerDirectorySort,
   type PlayerOwnershipFilter,
@@ -81,9 +83,16 @@ export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlay
     })
   }, [playerLoader, view])
 
-  const playerDirectory = useMemo(
+  const playerOwnershipDirectory = useMemo(
     () => buildPlayerOwnershipDirectory(players, rosters, officialDraft202627),
     [players, rosters],
+  )
+  const playerDirectory = useMemo(
+    () => buildRankedPlayerDirectory(
+      playerOwnershipDirectory,
+      currentDraftRankingArtifact.players,
+    ),
+    [playerOwnershipDirectory],
   )
   const filteredPlayers = useMemo(
     () => selectPlayerDirectory(playerDirectory, {

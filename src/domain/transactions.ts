@@ -80,9 +80,6 @@ export interface PlayerOwnershipEntry {
   readonly ownerManagerId: string | null
   readonly ownerName: string | 'FREE AGENT'
   readonly originalDraftPick: number | null
-  readonly draftDayMvpRank: number | null
-  /** Historical model evidence captured in the immutable official draft. */
-  readonly modelRankAtDraft: number | null
 }
 
 export interface LeagueActivityEvent {
@@ -308,8 +305,6 @@ export function buildPlayerOwnershipDirectory(
       ownerManagerId: owner?.managerId ?? null,
       ownerName: owner?.managerName ?? 'FREE AGENT',
       originalDraftPick: originalPick?.overallPickNumber ?? null,
-      draftDayMvpRank: originalPick?.mvpConsensusRankAtDraft ?? null,
-      modelRankAtDraft: originalPick?.modelRankAtDraft ?? null,
     })
   }))
 }
