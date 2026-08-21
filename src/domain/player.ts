@@ -20,6 +20,10 @@ export interface Player {
   club: Club
   /** Upstream Draft ordinal; null when the upstream value is absent. */
   officialDraftRank: number | null
+  /** Current official FPL Draft form value when the adapter provides it. */
+  form?: number | null
+  /** Current official FPL season points when the adapter provides them. */
+  totalPoints?: number | null
 }
 
 const positionLabels: Readonly<Record<Position, string>> = {

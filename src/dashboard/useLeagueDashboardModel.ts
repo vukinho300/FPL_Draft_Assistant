@@ -17,6 +17,7 @@ import type { FplPlayerDataResponse } from '../services/fpl/contract.ts'
 import { getLeagueViewLabel, LEAGUE_NAVIGATION, type LeagueView } from './navigation.ts'
 import {
   buildRankedPlayerDirectory,
+  getPlayerDirectoryLeaders,
   selectPlayerDirectory,
   type PlayerDirectorySort,
   type PlayerOwnershipFilter,
@@ -103,6 +104,10 @@ export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlay
     }),
     [playerDirectory, playerOwnership, playerPosition, playerSearch, playerSort],
   )
+  const playerLeaders = useMemo(() => ({
+    form: getPlayerDirectoryLeaders(filteredPlayers, 'FORM'),
+    totalPoints: getPlayerDirectoryLeaders(filteredPlayers, 'TOTAL_POINTS'),
+  }), [filteredPlayers])
 
   return {
     navigation: LEAGUE_NAVIGATION,
@@ -133,6 +138,7 @@ export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlay
       sort: playerSort,
       setSort: setPlayerSort,
       filtered: filteredPlayers,
+      leaders: playerLeaders,
     },
     archive: {
       completedAt: officialDraft202627.completedAt,

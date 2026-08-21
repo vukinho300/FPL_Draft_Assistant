@@ -196,6 +196,8 @@ describe('LeagueDashboard presentation boundary', () => {
         position: draftedPlayer.position,
         club: draftedPlayer.club,
         officialDraftRank: 12,
+        form: 4.1,
+        totalPoints: 42,
       },
       {
         id: 'mobile-free-agent',
@@ -204,6 +206,8 @@ describe('LeagueDashboard presentation boundary', () => {
         position: draftedPlayer.position,
         club: draftedPlayer.club,
         officialDraftRank: 1,
+        form: 7.8,
+        totalPoints: 58,
       },
     ]
     const { container, media } = renderDashboard(true, players)
@@ -216,14 +220,18 @@ describe('LeagueDashboard presentation boundary', () => {
     expect(container.querySelectorAll('.mobile-ownership-filters button')).toHaveLength(3)
     expect(container.querySelector('select[aria-label="Sort players"]')).not.toBeNull()
     expect(container.textContent).toContain('Official FPL Draft rank')
-    expect(container.textContent).toContain('MVP consensus rank')
-    expect(container.textContent).toContain('Draft model rank')
+    expect(container.textContent).toContain('Form')
+    expect(container.textContent).toContain('Total Points')
+    expect(container.textContent).toContain('MVP consensus')
+    expect(container.textContent).not.toContain('Draft model rank')
+    expect(container.textContent).toContain('Form leaders')
+    expect(container.textContent).toContain('Total Points leaders')
 
-    changeSelect(container, 'Sort players', 'MODEL')
+    changeSelect(container, 'Sort players', 'FORM')
     const mobileOrder = [...container.querySelectorAll('.mobile-directory-player h3')].map(
       ({ textContent }) => textContent,
     )
-    expect(mobileOrder).toEqual(['Owned Full Name', 'Free Full Name'])
+    expect(mobileOrder).toEqual(['Free Full Name', 'Owned Full Name'])
 
     act(() => media.setMatches(false))
     const desktopOrder = [...container.querySelectorAll('.player-directory tbody tr td:first-child strong')].map(

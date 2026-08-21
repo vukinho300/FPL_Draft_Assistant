@@ -13,6 +13,8 @@ describe('normalizeFplBootstrap', () => {
         position: 'GK',
         club: { id: '10', name: 'Fixture City', shortName: 'FIX' },
         officialDraftRank: 1,
+        form: 4.5,
+        totalPoints: 12,
       },
       {
         id: '102',
@@ -21,6 +23,8 @@ describe('normalizeFplBootstrap', () => {
         position: 'DEF',
         club: { id: '10', name: 'Fixture City', shortName: 'FIX' },
         officialDraftRank: 2,
+        form: 2,
+        totalPoints: 4,
       },
       {
         id: '103',
@@ -29,6 +33,8 @@ describe('normalizeFplBootstrap', () => {
         position: 'MID',
         club: { id: '20', name: 'Example Athletic', shortName: 'EXA' },
         officialDraftRank: null,
+        form: 0,
+        totalPoints: 0,
       },
       {
         id: '104',
@@ -37,6 +43,8 @@ describe('normalizeFplBootstrap', () => {
         position: 'FWD',
         club: { id: '20', name: 'Example Athletic', shortName: 'EXA' },
         officialDraftRank: null,
+        form: 3.2,
+        totalPoints: 9,
       },
     ])
   })
@@ -111,6 +119,25 @@ describe('normalizeFplBootstrap', () => {
     fixture.elements[0] = { ...fixture.elements[0], draft_rank: 0 }
 
     expect(() => normalizeFplBootstrap(fixture)).toThrowError(
+      expect.objectContaining({ code: 'INVALID_PLAYER' }),
+    )
+  })
+
+  it('normalizes official form decimal strings and total points integers', () => {
+    const player = normalizeFplBootstrap(createBootstrapFixture()).find(({ id }) => id === '101')
+    expect(player).toMatchObject({ form: 4.5, totalPoints: 12 })
+  })
+
+  it('rejects invalid official form and total points instead of inventing values', () => {
+    const invalidForm = createBootstrapFixture()
+    invalidForm.elements[0] = { ...invalidForm.elements[0], form: 'not-a-number' }
+    expect(() => normalizeFplBootstrap(invalidForm)).toThrowError(
+      expect.objectContaining({ code: 'INVALID_PLAYER' }),
+    )
+
+    const invalidPoints = createBootstrapFixture()
+    invalidPoints.elements[0] = { ...invalidPoints.elements[0], total_points: -1 }
+    expect(() => normalizeFplBootstrap(invalidPoints)).toThrowError(
       expect.objectContaining({ code: 'INVALID_PLAYER' }),
     )
   })
