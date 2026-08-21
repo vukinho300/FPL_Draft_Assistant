@@ -3,6 +3,8 @@ import type { ReactNode } from 'react'
 import type { Position } from '../domain/player.ts'
 import {
   getPlayerDirectoryName,
+  formatPlayerForm,
+  getPlayerDirectorySortLabel,
   PLAYER_DIRECTORY_SORTS,
   PLAYER_OWNERSHIP_FILTERS,
   type PlayerDirectoryEntry,
@@ -34,7 +36,7 @@ export function MobilePlayersPage({ model }: { readonly model: LeagueDashboardMo
   return (
     <div className="mobile-page-stack">
       <MobilePageIntro eyebrow="League directory" title="Players & ownership">
-        Ownership reflects the immutable draft plus processed transactions. Official FPL Draft rank is live; MVP consensus combines it with the frozen 2026/27 draft model.
+        Ownership reflects the immutable draft plus processed transactions. Official FPL Draft rank, Form and Total Points are current official data; MVP consensus remains project ranking evidence.
       </MobilePageIntro>
       <MobileCard className="mobile-player-directory">
         <div className="mobile-player-tools">
@@ -80,12 +82,13 @@ export function MobilePlayersPage({ model }: { readonly model: LeagueDashboardMo
             >
               {PLAYER_DIRECTORY_SORTS.map((sort) => (
                 <option key={sort} value={sort}>
-                  {sort === 'OFFICIAL' ? 'Official FPL Draft rank' : sort === 'MVP' ? 'MVP consensus rank' : 'Draft model rank'}
+                  {getPlayerDirectorySortLabel(sort)}
                 </option>
               ))}
             </select>
           </label>
         </div>
+        {directory.players.length > 0 && <div className="mobile-player-leaders" aria-label="Player leaders"><MobilePlayerLeaders title="Form leaders" entries={directory.leaders.form} valueFor={(entry) => formatPlayerForm(entry.player.form)} /><MobilePlayerLeaders title="Total Points leaders" entries={directory.leaders.totalPoints} valueFor={(entry) => entry.player.totalPoints ?? '—'} /></div>}
         {directory.error !== null
           ? <div className="mobile-empty-state"><strong>Live player directory unavailable</strong><p>{directory.error}</p></div>
           : directory.players.length === 0
@@ -106,11 +109,26 @@ function MobilePlayerCard({ entry }: { readonly entry: PlayerDirectoryEntry }) {
       <dl>
         <div><dt>Owner</dt><dd>{entry.ownerName}</dd></div>
         <div><dt>Official FPL Draft</dt><dd>{entry.player.officialDraftRank ?? '—'}</dd></div>
-        <div><dt>Original pick</dt><dd>{entry.originalDraftPick ?? '—'}</dd></div>
+        <div><dt>Form</dt><dd>{formatPlayerForm(entry.player.form)}</dd></div>
+        <div><dt>Total Points</dt><dd>{entry.player.totalPoints ?? '—'}</dd></div>
         <div><dt>MVP consensus</dt><dd>{entry.mvpConsensusRank}</dd></div>
-        <div><dt>Draft model</dt><dd title={entry.draftModelUnavailableReason ?? undefined}>{entry.draftModelRank ?? 'Unavailable'}</dd></div>
       </dl>
     </article>
+  )
+}
+
+function MobilePlayerLeaders({ title, entries, valueFor }: {
+  readonly title: string
+  readonly entries: readonly PlayerDirectoryEntry[]
+  readonly valueFor: (entry: PlayerDirectoryEntry) => string | number
+}) {
+  return (
+    <section className="mobile-player-leader-card">
+      <h3>{title}</h3>
+      {entries.length === 0
+        ? <p>No current values available.</p>
+        : <ol>{entries.map((entry) => <li key={entry.player.id}><span>{getPlayerDirectoryName(entry)}</span><strong>{valueFor(entry)}</strong></li>)}</ol>}
+    </section>
   )
 }
 

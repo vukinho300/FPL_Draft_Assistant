@@ -81,6 +81,39 @@ function readOptionalDraftRank(record: UnknownRecord, context: string): number |
   return value as number
 }
 
+function readOptionalForm(record: UnknownRecord, context: string): number | null {
+  const value = record.form
+
+  if (value === undefined || value === null) return null
+  if (typeof value !== 'string' || !/^\d+(?:\.\d+)?$/.test(value)) {
+    throw new FplDataError(
+      'INVALID_PLAYER',
+      `${context}.form must be a non-negative decimal string, null, or absent`,
+    )
+  }
+
+  const form = Number(value)
+  if (!Number.isFinite(form)) {
+    throw new FplDataError('INVALID_PLAYER', `${context}.form must be finite`)
+  }
+
+  return form
+}
+
+function readOptionalTotalPoints(record: UnknownRecord, context: string): number | null {
+  const value = record.total_points
+
+  if (value === undefined || value === null) return null
+  if (!Number.isSafeInteger(value) || (value as number) < 0) {
+    throw new FplDataError(
+      'INVALID_PLAYER',
+      `${context}.total_points must be a non-negative integer, null, or absent`,
+    )
+  }
+
+  return value as number
+}
+
 function readRequiredArray(root: UnknownRecord, field: string): unknown[] {
   const value = root[field]
 
@@ -217,6 +250,8 @@ export function normalizeFplBootstrap(rawBootstrap: unknown): Player[] {
       position,
       club,
       officialDraftRank: readOptionalDraftRank(rawPlayer, context),
+      form: readOptionalForm(rawPlayer, context),
+      totalPoints: readOptionalTotalPoints(rawPlayer, context),
     }
 
     return { sourceId, player }

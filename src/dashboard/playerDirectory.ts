@@ -8,8 +8,8 @@ import type { PlayerOwnershipEntry } from '../domain/transactions.ts'
 export type PlayerOwnershipFilter = 'ALL' | 'FREE_AGENTS' | 'OWNED'
 export const PLAYER_OWNERSHIP_FILTERS = ['ALL', 'FREE_AGENTS', 'OWNED'] as const
 
-export type PlayerDirectorySort = 'OFFICIAL' | 'MVP' | 'MODEL'
-export const PLAYER_DIRECTORY_SORTS = ['OFFICIAL', 'MVP', 'MODEL'] as const
+export type PlayerDirectorySort = 'OFFICIAL' | 'FORM' | 'TOTAL_POINTS' | 'MVP'
+export const PLAYER_DIRECTORY_SORTS = ['OFFICIAL', 'FORM', 'TOTAL_POINTS', 'MVP'] as const
 
 export interface PlayerDirectoryFilters {
   readonly search: string
@@ -24,6 +24,18 @@ export interface PlayerDirectoryEntry extends PlayerOwnershipEntry {
   /** Frozen 2026/27 preseason model evidence; null when no trusted exact signal exists. */
   readonly draftModelRank: number | null
   readonly draftModelUnavailableReason: string | null
+}
+
+export type PlayerDirectoryLeaderMetric = 'FORM' | 'TOTAL_POINTS'
+
+export function getPlayerDirectorySortLabel(sort: PlayerDirectorySort): string {
+  const labels: Readonly<Record<PlayerDirectorySort, string>> = {
+    OFFICIAL: 'Official FPL Draft rank',
+    FORM: 'Form',
+    TOTAL_POINTS: 'Total Points',
+    MVP: 'MVP consensus',
+  }
+  return labels[sort]
 }
 
 export function buildRankedPlayerDirectory(
@@ -64,10 +76,11 @@ export function getPlayerDirectoryName(entry: PlayerDirectoryEntry): string {
   return entry.player.fullName ?? entry.player.displayName
 }
 
-function rankFor(entry: PlayerDirectoryEntry, sort: PlayerDirectorySort): number | null {
+function valueFor(entry: PlayerDirectoryEntry, sort: PlayerDirectorySort): number | null {
   if (sort === 'OFFICIAL') return entry.player.officialDraftRank
-  if (sort === 'MVP') return entry.mvpConsensusRank
-  return entry.draftModelRank
+  if (sort === 'FORM') return entry.player.form ?? null
+  if (sort === 'TOTAL_POINTS') return entry.player.totalPoints ?? null
+  return entry.mvpConsensusRank
 }
 
 function compareDirectoryEntries(
@@ -75,17 +88,38 @@ function compareDirectoryEntries(
   right: PlayerDirectoryEntry,
   sort: PlayerDirectorySort,
 ): number {
-  const leftRank = rankFor(left, sort)
-  const rightRank = rankFor(right, sort)
-  if (leftRank !== null && rightRank === null) return -1
-  if (leftRank === null && rightRank !== null) return 1
-  if (leftRank !== null && rightRank !== null && leftRank !== rightRank) return leftRank - rightRank
+  const leftValue = valueFor(left, sort)
+  const rightValue = valueFor(right, sort)
+  if (leftValue !== null && rightValue === null) return -1
+  if (leftValue === null && rightValue !== null) return 1
+  if (leftValue !== null && rightValue !== null && leftValue !== rightValue) {
+    return sort === 'FORM' || sort === 'TOTAL_POINTS'
+      ? rightValue - leftValue
+      : leftValue - rightValue
+  }
 
   return getPlayerDirectoryName(left).localeCompare(getPlayerDirectoryName(right))
     || left.player.id.localeCompare(right.player.id)
 }
 
-/** Shared desktop/mobile player-directory filtering and deterministic best-rank-first sorting. */
+/** Top current-season performers from the same shared directory data. */
+export function getPlayerDirectoryLeaders(
+  entries: readonly PlayerDirectoryEntry[],
+  metric: PlayerDirectoryLeaderMetric,
+  limit = 3,
+): readonly PlayerDirectoryEntry[] {
+  const sort: PlayerDirectorySort = metric
+  return [...entries]
+    .filter((entry) => valueFor(entry, sort) !== null)
+    .sort((left, right) => compareDirectoryEntries(left, right, sort))
+    .slice(0, limit)
+}
+
+export function formatPlayerForm(value: number | null | undefined): string {
+  return value === null || value === undefined ? '—' : value.toFixed(1)
+}
+
+/** Shared desktop/mobile filtering plus deterministic rank- and score-aware sorting. */
 export function selectPlayerDirectory(
   entries: readonly PlayerDirectoryEntry[],
   filters: PlayerDirectoryFilters,

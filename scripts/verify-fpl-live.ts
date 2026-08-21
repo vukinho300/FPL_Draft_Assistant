@@ -44,6 +44,8 @@ try {
         playersWithNullOfficialDraftRank: result.players.filter(
           (player) => player.officialDraftRank === null,
         ).length,
+        playersWithForm: result.players.filter((player) => player.form !== null).length,
+        playersWithTotalPoints: result.players.filter((player) => player.totalPoints !== null).length,
         modelSignalCount: joinedSignals.length,
         unmatchedModelSignalCount: availableSignals.length - joinedSignals.length,
         rejectedOrSkippedRecords: 0,

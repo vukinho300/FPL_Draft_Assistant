@@ -576,6 +576,65 @@
   font: inherit;
 }
 
+.mobile-player-leaders {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-width: 0;
+  gap: 0.65rem;
+}
+
+.mobile-player-leader-card {
+  display: grid;
+  min-width: 0;
+  gap: 0.45rem;
+  padding: 0.75rem;
+  border: 1px solid #d9e6de;
+  border-radius: 0.75rem;
+  background: #fbfdfb;
+}
+
+.mobile-player-leader-card h3,
+.mobile-player-leader-card p,
+.mobile-player-leader-card ol {
+  margin: 0;
+}
+
+.mobile-player-leader-card h3 {
+  color: #224d35;
+  font-size: 0.82rem;
+}
+
+.mobile-player-leader-card p {
+  color: #71857a;
+  font-size: 0.78rem;
+}
+
+.mobile-player-leader-card ol {
+  display: grid;
+  min-width: 0;
+  gap: 0.35rem;
+  padding-left: 1.1rem;
+}
+
+.mobile-player-leader-card li {
+  display: flex;
+  min-width: 0;
+  gap: 0.35rem;
+  color: #5d7567;
+  font-size: 0.8rem;
+}
+
+.mobile-player-leader-card li span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-player-leader-card li strong {
+  margin-left: auto;
+  color: #1c7649;
+}
+
 .mobile-directory-list {
   display: grid;
   min-width: 0;

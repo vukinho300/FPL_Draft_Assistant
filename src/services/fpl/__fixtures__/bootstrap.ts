@@ -26,6 +26,8 @@ export function createBootstrapFixture(): {
         web_name: 'Fixture Forward',
         team: 20,
         element_type: 4,
+        form: '3.2',
+        total_points: 9,
       },
       {
         id: 102,
@@ -35,6 +37,8 @@ export function createBootstrapFixture(): {
         team: 10,
         element_type: 2,
         draft_rank: 2,
+        form: '2.0',
+        total_points: 4,
       },
       {
         id: 101,
@@ -44,6 +48,8 @@ export function createBootstrapFixture(): {
         team: 10,
         element_type: 1,
         draft_rank: 1,
+        form: '4.5',
+        total_points: 12,
       },
       {
         id: 103,
@@ -53,6 +59,8 @@ export function createBootstrapFixture(): {
         team: 20,
         element_type: 3,
         draft_rank: null,
+        form: '0.0',
+        total_points: 0,
       },
     ],
   }
