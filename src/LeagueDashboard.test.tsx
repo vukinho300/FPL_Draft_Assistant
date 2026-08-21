@@ -64,6 +64,15 @@ function clickButton(container: HTMLElement, label: string) {
   act(() => button.dispatchEvent(new MouseEvent('click', { bubbles: true })))
 }
 
+function mobileTitle(container: HTMLElement) {
+  return container.querySelector('.mobile-app-header h1')?.textContent
+}
+
+function openMore(container: HTMLElement) {
+  clickButton(container, 'More')
+  expect(container.querySelector('.mobile-more-menu')).not.toBeNull()
+}
+
 beforeEach(() => {
   const reactTestEnvironment = globalThis as typeof globalThis & {
     IS_REACT_ACT_ENVIRONMENT: boolean
@@ -91,14 +100,63 @@ describe('LeagueDashboard presentation boundary', () => {
     expect(container.querySelector('[data-presentation="mobile"]')).not.toBeNull()
   })
 
-  it('preserves shared view state when the presentation changes', () => {
-    const { container, media } = renderDashboard(true)
+  it('keeps all seven shared destinations reachable through mobile navigation', async () => {
+    const { container } = renderDashboard(true)
+    clickButton(container, 'My Team')
+    expect(mobileTitle(container)).toBe('My Team')
+    clickButton(container, 'Players')
+    await act(async () => Promise.resolve())
+    expect(mobileTitle(container)).toBe('Players')
+
+    openMore(container)
+    expect([...container.querySelectorAll('.mobile-more-menu button')].map((button) => button.textContent?.trim())).toEqual([
+      'Teams', 'Matchday', 'Transactions', 'Draft Archive',
+    ])
     clickButton(container, 'Teams')
-    expect(container.querySelector('.mobile-boundary-header h1')?.textContent).toBe('Teams')
+    expect(mobileTitle(container)).toBe('Teams')
+    expect(container.querySelector('.mobile-more-menu')).toBeNull()
+
+    openMore(container)
+    clickButton(container, 'Matchday')
+    expect(mobileTitle(container)).toBe('Matchday')
+    openMore(container)
+    clickButton(container, 'Transactions')
+    expect(mobileTitle(container)).toBe('Transactions')
+    openMore(container)
+    clickButton(container, 'Draft Archive')
+    expect(mobileTitle(container)).toBe('Draft Archive')
+    clickButton(container, 'League')
+    expect(mobileTitle(container)).toBe('League')
+  })
+
+  it('uses one mobile squad presentation for My Team and Teams while keeping manager state shared', () => {
+    const { container, media } = renderDashboard(true)
+    clickButton(container, 'My Team')
+    expect(container.querySelector('[data-mobile-squad]')).not.toBeNull()
+    expect(container.querySelector('.football-pitch')).toBeNull()
+    expect(container.querySelectorAll('.mobile-position-section')).toHaveLength(4)
+
+    openMore(container)
+    clickButton(container, 'Teams')
+    clickButton(container, 'Deni')
+    expect(container.querySelector('.mobile-squad-heading h2')?.textContent).toBe("Deni's squad")
+    expect(container.querySelector('[data-mobile-squad]')).not.toBeNull()
 
     act(() => media.setMatches(false))
     expect(container.querySelector('.league-topbar h1')?.textContent).toBe('Teams')
-    expect(container.querySelector('.manager-tabs')).not.toBeNull()
+    expect(container.querySelector('.squad-heading h2')?.textContent).toBe("Deni's squad")
+  })
+
+  it('renders only truthful unavailable Matchday states', () => {
+    const { container } = renderDashboard(true)
+    openMore(container)
+    clickButton(container, 'Matchday')
+
+    expect(container.querySelectorAll('.mobile-matchday-card')).toHaveLength(6)
+    expect(container.textContent).toContain('GW score —')
+    expect(container.textContent).toContain('Lineup not connected')
+    expect(container.textContent).toContain('No fabricated matchday values')
+    expect(container.textContent).toContain('UNVERIFIED')
   })
 
   it('does not repeat player loading when switching presentations', async () => {

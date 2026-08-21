@@ -47,6 +47,11 @@ export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlay
   const selectedManagerRoster = rosters.find(
     ({ managerId }) => managerId === selectedManagerId,
   ) ?? rosters[0]
+  const leagueSummary = useMemo(() => ({
+    managerCount: rosters.length,
+    completeSquadCount: rosters.filter(({ players }) => players.length === 15).length,
+    officialDraftPickCount: officialDraft202627.picks.length,
+  }), [rosters])
 
   useEffect(() => {
     controllerMounted.current = true
@@ -92,6 +97,7 @@ export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlay
     rosters,
     vukRoster,
     activity,
+    leagueSummary,
     positions: POSITION_ORDER,
     rosterRequirements: ROSTER_REQUIREMENTS,
     selectedManagerId: selectedManagerRoster.managerId,
