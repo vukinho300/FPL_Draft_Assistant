@@ -19,6 +19,7 @@ This is a deliberately small product step, not a replacement for later P3/P4 enr
 Improve Players filtering/sorting on both desktop and mobile while preserving one shared directory model/state.
 
 Required capabilities:
+- display the player's full available verified name, not surname-only and not first-name-only;
 - existing player/owner search;
 - position filter: ALL / GK / DEF / MID / FWD;
 - ownership filter: ALL / FREE AGENTS / OWNED;
@@ -30,6 +31,16 @@ Required capabilities:
 
 Example target workflow:
 `GK -> Free Agents -> Draft MVP rank`.
+
+## Player-name rule
+Use the full available name from verified/current normalized player identity data.
+
+Do not:
+- display surname-only when the normalized model contains the player's full name;
+- display first-name-only;
+- manually guess or reconstruct missing names from external assumptions.
+
+If the current player model does not expose a true full-name field, Codex should inspect the verified upstream fields and choose the safest project-owned normalization change needed to expose one without weakening identity correctness.
 
 ## Ownership rule
 Free Agent / Owned status must be derived from the current ownership directory, which itself is derived from:
@@ -98,6 +109,7 @@ Never add a filter before its underlying data contract exists.
 
 ## Acceptance criteria
 P5A is complete only when:
+- Players displays full available verified player names;
 - ownership filter supports All / Free Agents / Owned;
 - position and ownership filters compose correctly;
 - Official / MVP / supported model sorting works;
@@ -107,7 +119,7 @@ P5A is complete only when:
 - desktop and mobile show consistent result ordering;
 - mobile controls remain readable and require no horizontal scrolling;
 - existing F2 mobile navigation/layout remains intact;
-- automated tests cover shared filtering/sorting behavior;
+- automated tests cover shared filtering/sorting behavior and full-name display;
 - typecheck/test/build/lint pass.
 
 ## Verification direction
@@ -127,6 +139,7 @@ Rendered/manual verification should cover Players on:
 This is repository-heavy enough for Codex-led planning + implementation.
 
 Codex should inspect the actual current player-directory model and presentation before choosing:
+- player-name normalization path;
 - filter/sort state shape;
 - exact controls;
 - comparator/null ordering;
