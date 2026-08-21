@@ -10,14 +10,15 @@ Kile N Others is a private six-team FPL Draft league companion for the 2026/27 s
 - Frontend: React + Vite + TypeScript.
 - Tests: Vitest. Static analysis: Oxlint.
 - Runtime: Node 24.
-- Current state: F0 Second Brain foundation COMPLETE; F1 Vercel deployment COMPLETE; F2 desktop + mobile responsive shell CURRENT and not yet implemented.
-- Current `main` HEAD: `47608eab6d851807e23eced4d774d5a42ed02925`, merge commit for PR #10.
+- Current state: F0 Second Brain foundation COMPLETE; F1 Vercel deployment COMPLETE; F2 desktop + mobile responsive shell COMPLETE; P5A basic Players filtering/sorting CURRENT.
+- Current `main` HEAD: `0370b6b0bff620b58a6ef50392a3d1c7571dbe6d`, merge commit for PR #20.
 - Production application: `https://fpl-draft-assistant-eight.vercel.app/`.
 - Production FPL boundary: `https://fpl-draft-assistant-eight.vercel.app/api/fpl`.
 - Canonical historical draft: `src/data/leagues/kile-n-others/officialDraft2026-27.json`.
 - Official-draft tag: `kile-n-others-official-draft-2026-27`.
 - Live FPL boundary: project-owned `/api/fpl` adapter over the public FPL Draft bootstrap.
 - Vercel function packaging for `api/fpl.ts` explicitly includes `src/services/fpl/**` through `vercel.json`.
+- Desktop and mobile now use separate presentation trees over one shared controller/domain/data model.
 - No database, accounts, cross-device persistence, verified league IDs, or real Matchday adapter yet.
 
 ## Approved target architecture
@@ -60,6 +61,7 @@ Read only what the task needs.
 - Data/API task: `00_HOME`, `04_Data_Architecture_Sources`, `15_Current_Phase`.
 - Auth/RLS/profile task: `00_HOME`, `05_Authentication_Security`, `15_Current_Phase`.
 - League behavior/gameweek task: `00_HOME`, `07_League_Rules_Product_Behavior`, `15_Current_Phase`.
+- Player directory/filtering task: `00_HOME`, `03_Current_Architecture`, `07_League_Rules_Product_Behavior`, `12_Roadmap`, `15_Current_Phase`.
 - Trading task: `00_HOME`, `07_League_Rules_Product_Behavior`, `15_Current_Phase`.
 - Roadmap/planning task: `00_HOME`, `12_Roadmap`, `14_Project_Status`, `15_Current_Phase`.
 
@@ -68,17 +70,16 @@ Do not inspect unrelated folders unless a relevant Second Brain note or failing 
 ## Development workflow
 1. ChatGPT inspects current `main` and only the Second Brain notes relevant to the task.
 2. Repository code, tests and verified external contracts are reconciled against the Second Brain before planning.
-3. ChatGPT plans one narrow implementation step and gives Vuk one narrow Codex CLI prompt.
+3. For repository-heavy work, ChatGPT defines product/architecture constraints and acceptance criteria while Codex inspects the repository, plans the technical solution, and implements it.
 4. Codex works on a fresh short-lived implementation/fix/research branch created from current `main`.
 5. Codex must not edit `Second_Brain/`.
 6. Codex runs targeted verification, stages explicit files only, pushes its branch and opens a Draft PR. Codex never merges.
 7. ChatGPT independently inspects the actual PR, diff, commit, CI and relevant Preview/production evidence and returns PASS, PASS WITH FIXES or FAIL.
 8. Vuk alone decides whether to merge the implementation PR.
-9. Only after implementation is merged and verified does ChatGPT determine the required Second Brain changes.
-10. ChatGPT shows Vuk every proposed Second Brain edit before making it.
-11. Only after Vuk approves those edits may ChatGPT create a fresh short-lived `docs/...` branch, apply only the approved documentation changes and open a docs PR.
-12. Vuk reviews and merges the docs PR.
-13. The next implementation branch starts from the newly updated `main`.
+9. After implementation is merged and verified, ChatGPT determines any required Second Brain changes.
+10. When Vuk explicitly approves a documentation update, ChatGPT may create a fresh short-lived `docs/...` branch, apply only those documentation changes and open a docs PR.
+11. Vuk reviews and merges the docs PR.
+12. The next implementation branch starts from the newly updated `main`.
 
 Never use a permanent Codex or ChatGPT branch. Never use a docs branch for implementation code. Never describe planned functionality as implemented reality.
 

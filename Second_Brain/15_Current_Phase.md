@@ -1,188 +1,154 @@
 # Current Phase
 
-## F2 — Desktop + Mobile Responsive Shell
-Status: CURRENT — FINAL MOBILE PRESENTATION PASS REMAINS
+## P5A — Basic Players Filtering/Sorting
+Status: CURRENT
 
 ## Dependency state
 - F0 — Second Brain Foundation: COMPLETE
 - F1 — Vercel Deployment: COMPLETE
-- F2 — Desktop + Mobile Responsive Shell: CURRENT
-- F3 — Supabase Foundation: NEXT
+- F2 — Desktop + Mobile Responsive Shell: COMPLETE
+- P5A — Basic Players Filtering/Sorting: CURRENT
+- F3 — Supabase Foundation: NEXT AFTER P5A
+
+## Why P5A is now
+The responsive/mobile foundation is complete. Before beginning the heavier database phase, the existing Players directory can be made materially more useful using data that already exists in the repository and current normalized FPL boundary.
+
+This is a deliberately small product step, not a replacement for later P3/P4 enriched player data.
 
 ## Goal
-Preserve the rich desktop Kile N Others dashboard while intentionally supporting phones in the same React application.
+Improve Players filtering/sorting on both desktop and mobile while preserving one shared directory model/state.
 
-Desktop and mobile are first-class presentations of one product. They share domain logic, normalized data, controller/application state and business rules.
+Required capabilities:
+- display the player's full available verified name, not surname-only and not first-name-only;
+- existing player/owner search;
+- position filter: ALL / GK / DEF / MID / FWD;
+- ownership filter: ALL / FREE AGENTS / OWNED;
+- sort by Official Draft rank;
+- sort by Draft MVP rank;
+- sort by model rank where the current trusted player-directory data exposes it reliably;
+- deterministic behavior when a selected rank is missing;
+- same filter/sort result on desktop and mobile.
 
-F2 is presentation/responsive work only.
+Example target workflow:
+`GK -> Free Agents -> Draft MVP rank`.
 
-## Current implementation state
-Merged F2 work now includes:
-- dedicated desktop and mobile presentation trees over one shared controller;
-- React viewport-based presentation selection with one presentation mounted at a time;
-- desktop presentation preserved;
-- global phone overflow defect from desktop body minimum width removed;
-- real mobile League, My Team, Teams and Matchday presentation components;
-- real mobile bottom navigation;
-- mobile squad presentation independent of the desktop football pitch;
-- focused tests for navigation, presentation selection, state continuity and player loading.
+## Player-name rule
+Use the full available name from verified/current normalized player identity data.
 
-F2 is therefore implemented in part and must no longer be described as unimplemented.
+Do not:
+- display surname-only when the normalized model contains the player's full name;
+- display first-name-only;
+- manually guess or reconstruct missing names from external assumptions.
 
-## Current seven main views
-- League
-- My Team
-- Teams
-- Matchday
-- Players
-- Transactions
-- Draft Archive
+If the current player model does not expose a true full-name field, Codex should inspect the verified upstream fields and choose the safest project-owned normalization change needed to expose one without weakening identity correctness.
 
-All seven must remain intentionally usable on both desktop and mobile.
+## Ownership rule
+Free Agent / Owned status must be derived from the current ownership directory, which itself is derived from:
 
-## Final F2 product direction
-### Mobile navigation
-Primary navigation is:
-1. League
-2. My Team
-3. Teams
-4. More
+```text
+immutable official draft
++
+PROCESSED post-draft transactions
+=
+current ownership
+```
 
-More contains:
-- Players
-- Matchday
-- Transactions
-- Draft Archive
+Never hardcode a Free Agent list.
 
-The bottom navigation should be redesigned toward the approved polished sports-app pattern:
-- floating and rounded;
-- safe spacing from viewport edges and iPhone safe area;
-- no clipped bottom corners;
-- icons + labels where appropriate;
-- clear animated active state;
-- restrained transitions with `prefers-reduced-motion` support;
-- normal touch target sizing.
+If a future PROCESSED transaction changes ownership, the Players page must naturally reflect that new state.
 
-### Mobile viewport contract
-At representative phone widths (especially approximately 360px, 390px and 430px):
-- no document-level horizontal scrolling;
-- no primary-content sideways scrollers;
-- normal use requires vertical scrolling only;
-- no zooming is required to read or operate the app;
-- keep accessible browser zoom available;
-- content must genuinely fit rather than being hidden/scaled.
+## Ranking rule
+Only sort on ranking fields actually present in the trusted project model.
 
-### League mobile page
-The League page should become Gameweek-first.
+Current intended ranking options:
+- Official Draft rank;
+- Draft MVP rank;
+- model rank where current normalized/domain data exposes it reliably.
 
-Main heading:
-- `Kile N Others`, not simply `League`.
+Do not invent missing ranks.
 
-Remove from primary League-home presentation:
-- Open Draft Archive CTA;
-- manager-count card;
-- complete-squad card;
-- official-draft-count card;
-- roster-completeness section;
-- draft-history activity feed.
+Codex should inspect actual repository fields before deciding exact null/missing ordering and default sort direction. The behavior must be deterministic and covered by tests.
 
-Priority areas:
-- current Gameweek context;
-- My Gameweek Points;
-- league standings;
-- important verified football/Gameweek events;
-- recent transactions lower on the page.
+## Desktop/mobile architecture
+F2 established two presentation trees over one shared controller/model.
 
-Where real data is not yet connected, use intentional truthful unavailable states. F2 must not fabricate standings, scores or live events.
+P5A must preserve that architecture:
+- filtering/sorting state lives in shared model/controller logic;
+- desktop and mobile consume the same filtered/sorted result;
+- presentation controls may differ visually where appropriate;
+- do not implement two independent filtering engines.
 
-### My Team / Teams visual direction
-The long-term target is a football-pitch Gameweek lineup experience inspired by the supplied Fantacalcio reference, but persistent lineup behavior does not belong in F2.
+## Out of scope
+Do not add in P5A:
+- Supabase/database work;
+- authentication;
+- player photos;
+- points/form filters;
+- minutes/starts filters;
+- availability/injury filters;
+- usage classification;
+- fixtures;
+- new model training;
+- new external data sources;
+- trade/waiver behavior.
 
-During F2:
-- do not fake or persist a submitted XI locally;
-- do not imply the current 15-man role grouping is an official Gameweek lineup;
-- a reusable non-authoritative pitch visual foundation may be introduced only if it can be done without creating false lineup semantics or throwaway local persistence.
+Those belong to later steps, especially P3/P4/P5B and F3 onward.
 
-Teams mobile cleanup should:
-- keep a compact useful manager selector;
-- remove the explanatory `Choose a manager` content card;
-- remove 15/15 and GK/DEF/MID/FWD roster-capacity counters from the Gameweek-oriented presentation.
+## P5B later
+After verified P3/P4 enrichment exists, P5B may add useful controls such as:
+- total points;
+- recent points/form;
+- minutes;
+- starts;
+- availability/injury;
+- usage classification;
+- club;
+- other verified player-value evidence.
 
-### Remaining mobile pages
-Before F2 closes, implement intentional mobile presentations for:
-- Players;
-- Transactions;
-- Draft Archive.
-
-No primary page should fall back to a desktop table that requires sideways scrolling.
-
-## Architecture constraints
-- One application, not separate desktop/mobile applications.
-- No duplicate desktop/mobile business logic.
-- Reuse shared domain logic and normalized data.
-- Presentation-specific components are allowed where layout genuinely differs.
-- Do not introduce Supabase, authentication, database persistence or RLS in F2.
-- Do not implement authoritative lineup persistence in F2.
-- Do not guess player-photo/CDN mappings in F2.
-- Do not alter immutable official-draft history.
-- Do not rewrite unrelated domain architecture.
-
-## Deferred approved requirements after F2
-The following product requirements are approved but intentionally belong to later roadmap steps:
-- shared persistent mobile/desktop Gameweek lineup entity;
-- starter/bench editing and submission;
-- formation derived from starter positions;
-- ordered bench GK + 1 + 2 + 3;
-- automatic display fallback when a manager did not submit;
-- zero project-calculated lineup points for the unsubmitted fallback;
-- verified Premier League player photos;
-- real standings/current Gameweek/My Gameweek points;
-- verified goals/assists/penalty saves/hat-trick event feed.
-
-See `07_League_Rules_Product_Behavior.md`, `11_Decision_Log.md` and `12_Roadmap.md` for the approved downstream rules.
+Never add a filter before its underlying data contract exists.
 
 ## Acceptance criteria
-F2 is complete only when:
-- all seven main views are intentionally usable at representative desktop and phone widths;
-- desktop sidebar and rich desktop experience remain intact;
-- mobile uses the approved primary navigation order and polished floating navigation treatment;
-- mobile League page uses the approved Gameweek-first information hierarchy;
-- Teams removes roster-administration clutter from the mobile presentation;
-- Players, Transactions and Draft Archive have intentional mobile presentations;
-- primary controls are touch-friendly;
-- major grids/cards reflow without clipping;
-- there is no unintended document-level horizontal overflow;
-- normal phone use does not require zooming;
-- no duplicate business logic is introduced for mobile;
-- no Supabase/auth/database work is mixed into F2;
-- automated checks pass;
-- rendered desktop/mobile review passes;
-- real-iPhone review across all seven views passes.
+P5A is complete only when:
+- Players displays full available verified player names;
+- ownership filter supports All / Free Agents / Owned;
+- position and ownership filters compose correctly;
+- Official / MVP / supported model sorting works;
+- search composes with position + ownership + sort;
+- missing ranks are handled predictably;
+- current ownership determines Free Agent state;
+- desktop and mobile show consistent result ordering;
+- mobile controls remain readable and require no horizontal scrolling;
+- existing F2 mobile navigation/layout remains intact;
+- automated tests cover shared filtering/sorting behavior and full-name display;
+- typecheck/test/build/lint pass.
 
 ## Verification direction
-For meaningful F2 pre-merge verification, normally run:
+Run:
 - `npm run typecheck`
 - `npm test`
 - `npm run build`
 - `npm run lint`
 
-`npm run verify:fpl-live` is not required unless F2 unexpectedly changes the live FPL boundary.
+`npm run verify:fpl-live` is not required unless the implementation unexpectedly changes the live FPL boundary.
 
-Rendered/manual verification must cover approximately:
-- 360px
-- 390px
-- 430px
-- 1440px desktop
-
-At mobile widths, verify each completed view against:
-`document.documentElement.scrollWidth === document.documentElement.clientWidth`
-
-Real-device iPhone review is required before F2 is declared complete.
+Rendered/manual verification should cover Players on:
+- mobile around 390px;
+- desktop around 1440px.
 
 ## Codex workflow
-For repository-heavy implementation work, Codex should inspect the current implementation, plan the technical solution and implement it. ChatGPT provides product constraints/acceptance criteria and independently verifies repository changes rather than prescribing unnecessary low-level code structure.
+This is repository-heavy enough for Codex-led planning + implementation.
+
+Codex should inspect the actual current player-directory model and presentation before choosing:
+- player-name normalization path;
+- filter/sort state shape;
+- exact controls;
+- comparator/null ordering;
+- where shared logic belongs;
+- smallest test changes.
+
+ChatGPT provides product constraints and verifies the PR rather than prescribing unnecessary implementation details.
 
 ## Next phase
 ### F3 — Supabase Foundation
 
-F3 begins only after the final F2 presentation pass is merged and all-seven-view desktop/mobile verification passes.
+F3 begins after P5A is merged, verified and reconciled.
