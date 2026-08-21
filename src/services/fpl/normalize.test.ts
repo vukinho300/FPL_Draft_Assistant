@@ -4,7 +4,7 @@ import { createBootstrapFixture } from './__fixtures__/bootstrap.ts'
 import { normalizeFplBootstrap } from './normalize.ts'
 
 describe('normalizeFplBootstrap', () => {
-  it('normalizes players, clubs, positions, ranks, and stable string IDs', () => {
+  it('normalizes live official FPL Draft rank from draft_rank with stable string IDs', () => {
     expect(normalizeFplBootstrap(createBootstrapFixture())).toEqual([
       {
         id: '101',

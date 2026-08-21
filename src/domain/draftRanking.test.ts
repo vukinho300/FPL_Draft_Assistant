@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { Player } from './player.ts'
 import {
   filterAvailableRankedPlayers,
+  DraftRankingError,
   OFFICIAL_RANK_WEIGHT,
   MODEL_RANK_WEIGHT,
   rankPlayersByMvpConsensus,
@@ -91,5 +92,15 @@ describe('MVP consensus ranking', () => {
         ({ player: item }) => item.id,
       ),
     ).toEqual(['3'])
+  })
+
+  it('rejects duplicate player or signal identities instead of silently remapping evidence', () => {
+    expect(() => rankPlayersByMvpConsensus([player('1', 1), player('1', 2)], [])).toThrowError(
+      DraftRankingError,
+    )
+    expect(() => rankPlayersByMvpConsensus(
+      [player('1', 1)],
+      [signal('1', 1), signal('1', 2)],
+    )).toThrowError(DraftRankingError)
   })
 })
