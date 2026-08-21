@@ -29,7 +29,8 @@ Status: CURRENT
 Goal:
 Make the existing Players directory immediately useful with the data already present in the project, before beginning the heavier backend phase.
 
-Required controls:
+Required controls/behavior:
+- display the player's full available name, not surname-only and not first-name-only;
 - search by player/owner;
 - position: ALL / GK / DEF / MID / FWD;
 - ownership: ALL / FREE AGENTS / OWNED;
@@ -43,6 +44,7 @@ Example supported use:
 `GK -> Free Agents -> Draft MVP rank`.
 
 Rules:
+- player names must come from verified/current normalized player identity data; do not guess or manually reconstruct missing names;
 - Free Agent status is derived from current ownership after PROCESSED transactions, never hardcoded;
 - do not pull in P3/P4 stats/status fields yet;
 - do not invent rank values;
@@ -214,6 +216,7 @@ Examples:
 - Mobile and desktop are presentation layers over one shared domain/data/backend model.
 - Persistent mutable data must not have separate device-specific authoritative copies.
 - Do not create separate desktop/mobile business logic or duplicate data sources.
+- Player display names should use the full verified available player name rather than surname-only/first-name-only shortcuts.
 - Free Agent/Owned player state must derive from current roster ownership.
 - Formation/lineup legality belongs in shared domain logic, not presentation code.
 - Do not build project scoring before lineup and player-GW contracts exist.
