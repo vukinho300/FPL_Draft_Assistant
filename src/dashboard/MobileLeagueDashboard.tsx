@@ -1,6 +1,11 @@
 import type { ReactNode } from 'react'
 
 import { MobileBottomNavigation } from './MobileBottomNavigation.tsx'
+import {
+  MobileDraftArchivePage,
+  MobilePlayersPage,
+  MobileTransactionsPage,
+} from './MobileDataPages.tsx'
 import { MobileSquad } from './MobileSquad.tsx'
 import type { LeagueView } from './navigation.ts'
 import type { LeagueDashboardModel } from './useLeagueDashboardModel.ts'
@@ -9,7 +14,7 @@ import './MobileLeagueDashboard.css'
 function MobilePageHeader({ title }: { readonly title: string }) {
   return (
     <header className="mobile-app-header">
-      <p>Kile N Others · 2026/27</p>
+      <p>2026/27 FPL Draft League</p>
       <h1>{title}</h1>
     </header>
   )
@@ -20,48 +25,37 @@ function MobileCard({ children, className = '' }: { readonly children: ReactNode
 }
 
 function MobileLeaguePage({ model }: { readonly model: LeagueDashboardModel }) {
-  const { leagueSummary } = model
   return (
     <div className="mobile-page-stack">
-      <section className="mobile-league-hero">
-        <p className="mobile-eyebrow">2026/27 season hub</p>
-        <h2>Kile N Others</h2>
-        <p>The completed official draft is frozen. Season data will be layered on without rewriting that history.</p>
-        <button type="button" onClick={() => model.navigate('draft-archive')}>Open Draft Archive</button>
+      <section className="mobile-gameweek-hero">
+        <p className="mobile-eyebrow">Current Gameweek</p>
+        <h2>Gameweek data is not connected</h2>
+        <p>A verified Gameweek source will appear here when it is available for this league.</p>
       </section>
 
-      <section className="mobile-summary-grid" aria-label="League summary">
-        <MobileCard><span>Managers</span><strong>{leagueSummary.managerCount}</strong><small>Kile N Others league</small></MobileCard>
-        <MobileCard><span>Complete squads</span><strong>{leagueSummary.completeSquadCount}/{leagueSummary.managerCount}</strong><small>Every roster validates at 15 players</small></MobileCard>
-        <MobileCard><span>Official draft</span><strong>{leagueSummary.officialDraftPickCount}</strong><small>Immutable sequential picks</small></MobileCard>
-        <MobileCard><span>Current Gameweek</span><strong>—</strong><small>Not yet connected</small></MobileCard>
-      </section>
-
-      <MobileCard>
-        <div className="mobile-card-heading"><div><p className="mobile-eyebrow">League squads</p><h2>Roster completeness</h2></div><span>Base state</span></div>
-        <div className="mobile-roster-list">
-          {model.rosters.map((roster) => (
-            <article key={roster.managerId}>
-              <div><strong>{roster.managerName}</strong><span>{roster.players.length}/15</span></div>
-              <small>{model.positions.map((position) => `${position} ${roster.positionCounts[position]}`).join(' · ')}</small>
-            </article>
-          ))}
-        </div>
+      <MobileCard className="mobile-points-card">
+        <p className="mobile-eyebrow">My Gameweek Points</p>
+        <strong>Unavailable</strong>
+        <p>Verified Gameweek points are not connected yet.</p>
       </MobileCard>
 
-      <MobileCard>
-        <div className="mobile-card-heading"><div><p className="mobile-eyebrow">League activity</p><h2>Latest recorded events</h2></div><span>Draft archive</span></div>
-        <ol className="mobile-activity-list">
-          {model.activity.slice(0, 6).map((event) => <li key={event.id}><span>{event.kind}</span><strong>{event.description}</strong></li>)}
-        </ol>
+      <MobileCard className="mobile-standings-card">
+        <div className="mobile-card-heading"><div><p className="mobile-eyebrow">League standings</p><h2>Standings unavailable</h2></div><span>Not connected</span></div>
+        <div className="mobile-standings-columns" aria-hidden="true"><span>Rank</span><span>Manager</span><span>Points</span></div>
+        <p>Verified league standings will appear here when the league Gameweek adapter is connected.</p>
       </MobileCard>
 
-      <section className="mobile-future-list" aria-label="Future data availability">
-        <MobileCard><span>Standings</span><strong>Source not verified</strong></MobileCard>
-        <MobileCard><span>Gameweek points</span><strong>Source not verified</strong></MobileCard>
-        <MobileCard><span>Live points</span><strong>Source not verified</strong></MobileCard>
-        <MobileCard><span>Recent transactions</span><strong>No recorded transactions</strong></MobileCard>
-      </section>
+      <MobileCard className="mobile-events-card">
+        <div className="mobile-card-heading"><div><p className="mobile-eyebrow">Important Gameweek events</p><h2>No verified events available</h2></div><span>Not connected</span></div>
+        <p>Goals, assists and other significant verified Gameweek events will appear here when their data source is available.</p>
+      </MobileCard>
+
+      <MobileCard className="mobile-recent-transactions">
+        <div className="mobile-card-heading"><div><p className="mobile-eyebrow">Recent transactions</p><h2>League activity</h2></div><span>Lower priority</span></div>
+        {model.recentTransactions.length === 0
+          ? <p className="mobile-muted-copy">No league transactions are recorded.</p>
+          : <ol className="mobile-transaction-list">{model.recentTransactions.slice(0, 5).map((event) => <li key={event.id}><span>{event.gameweek === null ? 'League' : `GW${event.gameweek}`}</span><strong>{event.description}</strong></li>)}</ol>}
+      </MobileCard>
     </div>
   )
 }
@@ -69,11 +63,6 @@ function MobileLeaguePage({ model }: { readonly model: LeagueDashboardModel }) {
 function MobileTeamsPage({ model }: { readonly model: LeagueDashboardModel }) {
   return (
     <div className="mobile-page-stack">
-      <section className="mobile-page-intro">
-        <p className="mobile-eyebrow">League squads</p>
-        <h2>Choose a manager</h2>
-        <p>Each squad is grouped by role and does not imply a Gameweek lineup.</p>
-      </section>
       <div className="mobile-manager-selector" aria-label="Choose manager">
         {model.rosters.map((roster) => (
           <button
@@ -87,7 +76,12 @@ function MobileTeamsPage({ model }: { readonly model: LeagueDashboardModel }) {
           </button>
         ))}
       </div>
-      <MobileSquad model={model} roster={model.selectedManagerRoster} title={`${model.selectedManagerRoster.managerName}'s squad`} />
+      <MobileSquad
+        model={model}
+        roster={model.selectedManagerRoster}
+        title={`${model.selectedManagerRoster.managerName}'s squad`}
+        showRosterCapacity={false}
+      />
     </div>
   )
 }
@@ -123,33 +117,24 @@ function MobileMatchdayPage({ model }: { readonly model: LeagueDashboardModel })
   )
 }
 
-function MobileDeferredPage({ title }: { readonly title: string }) {
-  return (
-    <section className="mobile-deferred-page">
-      <p className="mobile-eyebrow">Mobile presentation</p>
-      <h2>{title}</h2>
-      <p>The phone-first {title} view is scheduled for the next F2 implementation step.</p>
-    </section>
-  )
-}
-
 function CurrentMobileView({ model }: { readonly model: LeagueDashboardModel }) {
   const views: Record<LeagueView, ReactNode> = {
     league: <MobileLeaguePage model={model} />,
     'my-team': <MobileSquad model={model} roster={model.vukRoster} title="Vuk's squad" />,
     teams: <MobileTeamsPage model={model} />,
     matchday: <MobileMatchdayPage model={model} />,
-    players: <MobileDeferredPage title="Players" />,
-    transactions: <MobileDeferredPage title="Transactions" />,
-    'draft-archive': <MobileDeferredPage title="Draft Archive" />,
+    players: <MobilePlayersPage model={model} />,
+    transactions: <MobileTransactionsPage model={model} />,
+    'draft-archive': <MobileDraftArchivePage model={model} />,
   }
-  return views[model.view]
+  return <div className="mobile-view-transition" key={model.view}>{views[model.view]}</div>
 }
 
 export function MobileLeagueDashboard({ model }: { readonly model: LeagueDashboardModel }) {
+  const title = model.view === 'league' ? 'Kile N Others' : model.currentTitle
   return (
     <div className="mobile-league-dashboard" data-presentation="mobile">
-      <MobilePageHeader title={model.currentTitle} />
+      <MobilePageHeader title={title} />
       <main className="mobile-app-main">
         <CurrentMobileView model={model} />
       </main>
