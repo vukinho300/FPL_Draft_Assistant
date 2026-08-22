@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { createSupabaseBrowserClient } from './client.ts'
+import { createSupabaseBrowserClient, SUPABASE_BROWSER_AUTH_OPTIONS } from './client.ts'
 
 describe('Supabase browser client boundary', () => {
   it('creates a client from valid public configuration without contacting a remote project', () => {
@@ -11,5 +11,10 @@ describe('Supabase browser client boundary', () => {
 
     expect(client).toBeDefined()
     expect(client.auth).toBeDefined()
+  })
+
+  it('uses Supabase-managed browser persistence and refresh without custom project storage', () => {
+    expect(SUPABASE_BROWSER_AUTH_OPTIONS).toEqual({ autoRefreshToken: true, detectSessionInUrl: true, persistSession: true })
+    expect(SUPABASE_BROWSER_AUTH_OPTIONS).not.toHaveProperty('storage')
   })
 })

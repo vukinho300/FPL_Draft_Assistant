@@ -6,17 +6,20 @@ import {
 } from './config.ts'
 import type { Database } from './database.types.ts'
 
+/** Browser SPA auth uses Supabase-managed local persistence and token refresh. */
+export const SUPABASE_BROWSER_AUTH_OPTIONS = Object.freeze({
+  autoRefreshToken: true,
+  detectSessionInUrl: true,
+  persistSession: true,
+})
+
 /** Creates the public browser client. It never reads or accepts privileged server credentials. */
 export function createSupabaseBrowserClient(
   environment: SupabaseBrowserEnvironment,
 ): SupabaseClient<Database> {
   const config = readSupabaseBrowserConfig(environment)
   return createClient(config.url, config.publishableKey, {
-    auth: {
-      autoRefreshToken: true,
-      detectSessionInUrl: true,
-      persistSession: true,
-    },
+    auth: SUPABASE_BROWSER_AUTH_OPTIONS,
   })
 }
 

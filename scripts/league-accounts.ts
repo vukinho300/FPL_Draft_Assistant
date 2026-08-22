@@ -1,3 +1,8 @@
+import {
+  LEAGUE_TEAM_LOGIN_IDENTITIES,
+  internalLoginEmail,
+} from '../src/services/supabase/leagueIdentity.ts'
+
 export type LeagueAccountRole = 'MEMBER' | 'LEAGUE_OWNER'
 
 export interface InitialLeagueAccount {
@@ -14,49 +19,41 @@ export interface InitialLeagueAccount {
  */
 export const INITIAL_LEAGUE_ACCOUNTS = Object.freeze([
   {
-    teamSlug: 'jakin-goff',
-    teamName: 'Jakin Goff',
+    ...LEAGUE_TEAM_LOGIN_IDENTITIES[0],
     managerName: 'Vuk',
     role: 'LEAGUE_OWNER',
     passwordEnvironmentKey: 'LEAGUE_ACCOUNT_JAKIN_GOFF_PASSWORD',
   },
   {
-    teamSlug: 'dindi',
-    teamName: 'Dindi',
+    ...LEAGUE_TEAM_LOGIN_IDENTITIES[1],
     managerName: 'Kristian',
     role: 'MEMBER',
     passwordEnvironmentKey: 'LEAGUE_ACCOUNT_DINDI_PASSWORD',
   },
   {
-    teamSlug: '22nd-oblock',
-    teamName: '22nd oBlock',
+    ...LEAGUE_TEAM_LOGIN_IDENTITIES[2],
     managerName: 'Diego',
     role: 'MEMBER',
     passwordEnvironmentKey: 'LEAGUE_ACCOUNT_22ND_OBLOCK_PASSWORD',
   },
   {
-    teamSlug: 'miku007',
-    teamName: 'Miku007',
+    ...LEAGUE_TEAM_LOGIN_IDENTITIES[3],
     managerName: 'Lovro',
     role: 'MEMBER',
     passwordEnvironmentKey: 'LEAGUE_ACCOUNT_MIKU007_PASSWORD',
   },
   {
-    teamSlug: 'rod-wave-disciples',
-    teamName: 'Rod Wave Disciples',
+    ...LEAGUE_TEAM_LOGIN_IDENTITIES[4],
     managerName: 'Deni',
     role: 'MEMBER',
     passwordEnvironmentKey: 'LEAGUE_ACCOUNT_ROD_WAVE_DISCIPLES_PASSWORD',
   },
   {
-    teamSlug: 'tintilinic',
-    teamName: 'Tintilinic',
+    ...LEAGUE_TEAM_LOGIN_IDENTITIES[5],
     managerName: 'Tin',
     role: 'MEMBER',
     passwordEnvironmentKey: 'LEAGUE_ACCOUNT_TINTILINIC_PASSWORD',
   },
 ] as const satisfies readonly InitialLeagueAccount[])
 
-export function internalLoginEmail(teamSlug: string): string {
-  return `${teamSlug}@auth.kile-n-others.invalid`
-}
+export { internalLoginEmail }
