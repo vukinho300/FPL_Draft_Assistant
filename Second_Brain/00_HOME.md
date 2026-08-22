@@ -4,31 +4,41 @@
 This folder is the project control manual. The GitHub repository, committed code, migrations, database state, tests, and verified external contracts remain the technical source of truth. The Second Brain records approved architecture, product rules, current status, and the next narrow task so Codex does not repeatedly rediscover the project.
 
 ## Current product
-Kile N Others is a private six-team FPL Draft league companion for the 2026/27 season. It evolved from the original FPL Draft Assistant and must preserve the useful Draft Room, rankings, model evidence, scarcity, Turn Horizon, Best Fit, Best Pair, immutable official draft, current roster derivation, Teams/Players/Transactions foundations, and Draft Archive.
+Kile N Others is a private six-team FPL Draft league companion for the 2026/27 season. It evolved from the original FPL Draft Assistant and preserves the useful Draft Room, rankings/model evidence, immutable official draft, current roster derivation, Players/Teams/Transactions foundations and Draft Archive while moving toward a persistent season-long league app.
 
 ## Current technical baseline
 - Frontend: React + Vite + TypeScript.
 - Tests: Vitest. Static analysis: Oxlint.
 - Runtime: Node 24.
-- Current state: F0 Second Brain foundation COMPLETE; F1 Vercel deployment COMPLETE; F2 desktop + mobile responsive shell COMPLETE; P5A basic Players filtering/sorting CURRENT.
-- Current `main` HEAD: `0370b6b0bff620b58a6ef50392a3d1c7571dbe6d`, merge commit for PR #20.
+- F0 Second Brain: COMPLETE.
+- F1 Vercel deployment: COMPLETE.
+- F2 desktop/mobile responsive shell: COMPLETE.
+- P5A Players filtering/sorting + live Form/Total Points: COMPLETE.
+- F3 Supabase Foundation: CURRENT.
+- Current verified `main` baseline after PR #24: `fc5d2587b676b6c6b89a490de05148ea714ade6d`.
 - Production application: `https://fpl-draft-assistant-eight.vercel.app/`.
 - Production FPL boundary: `https://fpl-draft-assistant-eight.vercel.app/api/fpl`.
 - Canonical historical draft: `src/data/leagues/kile-n-others/officialDraft2026-27.json`.
 - Official-draft tag: `kile-n-others-official-draft-2026-27`.
-- Live FPL boundary: project-owned `/api/fpl` adapter over the public FPL Draft bootstrap.
-- Vercel function packaging for `api/fpl.ts` explicitly includes `src/services/fpl/**` through `vercel.json`.
-- Desktop and mobile now use separate presentation trees over one shared controller/domain/data model.
-- No database, accounts, cross-device persistence, verified league IDs, or real Matchday adapter yet.
+- Live FPL boundary: project-owned `/api/fpl` adapter over public official FPL Draft data.
+- Desktop and mobile use separate presentation trees over one shared controller/domain/data model.
+- No Supabase database/accounts/cross-device mutable persistence yet; F3 is introducing that foundation next.
+
+## League authority
+- Jakin Goff is the backend `LEAGUE_OWNER` account.
+- Product-facing title: **Commissioner**.
+- Authorization continues to rely on backend role/RLS, not the display label.
+- Members may create/edit/submit only their own lineup before the verified Gameweek start/deadline.
+- After kickoff, normal member lineup writes lock; only the Commissioner may insert/edit/replace a lineup for itself or another manager.
+- Commissioner post-start lineup writes must be backend-enforced and auditable when G3 lineup persistence is implemented.
 
 ## Approved target architecture
 ```text
 React/Vite UI on Vercel
         |
         +--> Supabase Auth/Postgres/Storage/RLS
-        |       - accounts
-        |       - profiles
-        |       - lineups
+        |       - accounts / profiles
+        |       - lineups + audit metadata
         |       - scores/corrections
         |       - trading block
         |       - trade proposals/history
@@ -56,53 +66,34 @@ current league rosters
 ## Codex read map
 Read only what the task needs.
 
-- Deployment task: `00_HOME`, `09_Testing_Deployment`, `15_Current_Phase`.
-- Mobile/UI task: `00_HOME`, `03_Current_Architecture`, `09_Testing_Deployment`, `15_Current_Phase`.
-- Data/API task: `00_HOME`, `04_Data_Architecture_Sources`, `15_Current_Phase`.
-- Auth/RLS/profile task: `00_HOME`, `05_Authentication_Security`, `15_Current_Phase`.
-- League behavior/gameweek task: `00_HOME`, `07_League_Rules_Product_Behavior`, `15_Current_Phase`.
-- Player directory/filtering task: `00_HOME`, `03_Current_Architecture`, `07_League_Rules_Product_Behavior`, `12_Roadmap`, `15_Current_Phase`.
-- Trading task: `00_HOME`, `07_League_Rules_Product_Behavior`, `15_Current_Phase`.
-- Roadmap/planning task: `00_HOME`, `12_Roadmap`, `14_Project_Status`, `15_Current_Phase`.
+- Deployment: `00_HOME`, `09_Testing_Deployment`, `15_Current_Phase`.
+- Mobile/UI: `00_HOME`, `03_Current_Architecture`, `09_Testing_Deployment`, `15_Current_Phase`.
+- Data/API: `00_HOME`, `04_Data_Architecture_Sources`, `15_Current_Phase`.
+- Supabase/Auth/RLS: `00_HOME`, `05_Authentication_Security`, `12_Roadmap`, `15_Current_Phase`.
+- League/Gameweek: `00_HOME`, `07_League_Rules_Product_Behavior`, `15_Current_Phase`.
+- Players: `00_HOME`, `03_Current_Architecture`, `07_League_Rules_Product_Behavior`, `12_Roadmap`, `15_Current_Phase`.
+- Roadmap/planning: `00_HOME`, `12_Roadmap`, `14_Project_Status`, `15_Current_Phase`.
 
 Do not inspect unrelated folders unless a relevant Second Brain note or failing test requires it.
 
 ## Development workflow
-1. ChatGPT inspects current `main` and only the Second Brain notes relevant to the task.
-2. Repository code, tests and verified external contracts are reconciled against the Second Brain before planning.
-3. For repository-heavy work, ChatGPT defines product/architecture constraints and acceptance criteria while Codex inspects the repository, plans the technical solution, and implements it.
-4. Codex works on a fresh short-lived implementation/fix/research branch created from current `main`.
-5. Codex must not edit `Second_Brain/`.
-6. Codex runs targeted verification, stages explicit files only, pushes its branch and opens a Draft PR. Codex never merges.
-7. ChatGPT independently inspects the actual PR, diff, commit, CI and relevant Preview/production evidence and returns PASS, PASS WITH FIXES or FAIL.
-8. Vuk alone decides whether to merge the implementation PR.
-9. After implementation is merged and verified, ChatGPT determines any required Second Brain changes.
-10. When Vuk explicitly approves a documentation update, ChatGPT may create a fresh short-lived `docs/...` branch, apply only those documentation changes and open a docs PR.
-11. Vuk reviews and merges the docs PR.
-12. The next implementation branch starts from the newly updated `main`.
+1. ChatGPT inspects current `main` and relevant Second Brain notes.
+2. Repository code/tests/contracts are reconciled against the Second Brain.
+3. ChatGPT defines product/architecture/security boundaries; Codex leads repository-heavy technical planning/implementation.
+4. Codex uses a fresh short-lived branch from current `main`.
+5. Codex does not edit `Second_Brain/` during implementation tasks.
+6. Codex verifies, stages explicit files, pushes and opens a Draft PR; Codex never merges.
+7. ChatGPT independently reviews the actual PR/diff/CI and returns PASS/FIX/FAIL.
+8. Vuk alone merges implementation PRs.
+9. After merged/verified implementation, ChatGPT updates Second Brain only when approved, on a short-lived docs branch and Draft PR.
+10. Vuk reviews and merges docs PRs.
 
-Never use a permanent Codex or ChatGPT branch. Never use a docs branch for implementation code. Never describe planned functionality as implemented reality.
-
-Optimize for correctness, low token/credit usage, and small verifiable changes.
-
-## Codex task shape
-Every implementation prompt should contain:
-- GOAL
-- FILES LIKELY TO CHANGE
-- DO NOT CHANGE
-- ACCEPTANCE CRITERIA
-- TARGETED TESTS
-- GIT INSTRUCTIONS
-- SHORT FINAL RESPONSE FORMAT
-
-Avoid broad repository rediscovery, repeated architecture explanations, unrelated refactors, and full-suite testing for small changes.
+Never use permanent Codex/ChatGPT branches. Never use a docs branch for implementation code. Never document planned functionality as implemented reality.
 
 ## Model usage
-- Luna: trivial/mechanical edits, small CSS, simple tests, rename/copy/filter changes.
-- Terra: normal React/TypeScript work, Supabase integration, migrations, API adapters, non-trivial bugs.
-- Sol: architecture, security/RLS review, data-source investigation, major PR verification.
-
-Default to the cheapest model that can reliably execute the already-approved decision.
+- Luna: trivial/mechanical work.
+- Terra: normal React/TypeScript/Supabase implementation.
+- Sol: architecture, security/RLS review, data-source investigation, major verification.
 
 ## Next phase
-See `15_Current_Phase.md`.
+See `15_Current_Phase.md`: F3 — Supabase Foundation.
