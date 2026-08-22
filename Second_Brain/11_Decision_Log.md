@@ -36,7 +36,7 @@ Status: APPROVED
 Make the deployed current shell responsive before adding the bulk of league features. Do not mix responsive work with backend/auth work.
 
 ## D-008 — Supabase for minimum persistent backend
-Status: APPROVED ARCHITECTURE; F3 CURRENT
+Status: APPROVED ARCHITECTURE; F3 COMPLETE
 
 Use Supabase Auth + Postgres + RLS + Storage for six accounts and project-owned persistent league state.
 
@@ -161,3 +161,19 @@ Before a Gameweek starts, each MEMBER may create, edit and submit only their own
 Once the verified Gameweek start/deadline is reached, MEMBER accounts may no longer insert, edit, replace or submit a lineup for that Gameweek.
 
 Jakin Goff / `LEAGUE_OWNER` / Commissioner may insert, edit or replace a lineup for itself or any other manager after kickoff as a privileged administrative action. These writes must be enforced through backend/RLS authorization and audited when lineup persistence is implemented. The lock must not depend only on client-side time.
+
+## D-029 — Successful login persists on the device without storing the password
+Status: APPROVED AUTHENTICATION RULE
+
+After a successful team-name + password login, the browser/device should restore a still-valid Supabase Auth session automatically across refreshes and later reopening so the user does not need to enter the password every time.
+
+Project code must never persist the password. Supabase-managed session/access/refresh-token behavior provides persistence and refresh. Explicit logout clears the persistent authenticated session.
+
+Session restoration is an authentication convenience only. MEMBER/LEAGUE_OWNER authorization remains database/RLS controlled and must never be inferred from local browser state.
+
+## D-030 — Auth-dependent UI waits for session initialization
+Status: APPROVED AUTH UX RULE
+
+The account-aware shell must distinguish `INITIALIZING`, `AUTHENTICATED`, and `UNAUTHENTICATED` states. It should not briefly show the login state while a valid persisted Supabase session is still being restored.
+
+A2 should consume the project-owned auth session service rather than create a second session lifecycle or duplicate Supabase client.
