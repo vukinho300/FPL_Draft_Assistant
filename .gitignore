@@ -18,6 +18,10 @@ coverage
 .env.*
 !.env.example
 
+# Supabase CLI local state (configuration and migrations are committed)
+supabase/.branches/
+supabase/.temp/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

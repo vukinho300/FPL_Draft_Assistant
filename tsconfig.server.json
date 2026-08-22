@@ -17,5 +17,5 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["api", "scripts", "src/domain", "src/services"]
+  "include": ["api", "scripts", "src/domain", "src/services/fpl"]
 }

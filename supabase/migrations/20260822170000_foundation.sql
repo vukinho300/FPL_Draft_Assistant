@@ -1,0 +1,2 @@
+-- F3 establishes the reproducible migration pipeline without creating application schema.
+-- The first account/role tables and their RLS policies belong to A1.

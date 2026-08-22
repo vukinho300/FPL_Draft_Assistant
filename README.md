@@ -21,6 +21,31 @@ npm run dev
 
 The Vite development server exposes the same project-owned `/api/fpl` boundary used by production, backed by the existing FPL adapter. The production Vercel Function remains `api/fpl.ts`.
 
+## Supabase foundation
+
+Supabase is initialized as the future shared Auth/Postgres/Storage backend. F3 does not require authentication and does not create application tables or users, so the current dashboard still runs without Supabase environment variables. Later features must obtain the browser client through `src/services/supabase`; React code should not construct independent clients.
+
+Copy `.env.example` to `.env.local` when a Supabase-backed feature is being developed, then provide the project URL and current browser-safe publishable key:
+
+```text
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_your-project-key
+```
+
+Only the publishable key belongs in Vite configuration. Supabase secret keys and legacy `service_role` keys are server-only and must never use a `VITE_` prefix.
+
+The repository pins the Supabase CLI as a development dependency. Docker must be running for the local stack:
+
+```bash
+npm run supabase:start
+npm run supabase:status
+npm run supabase:db:reset
+npm run supabase:db:lint
+npm run supabase:stop
+```
+
+Committed schema changes belong in timestamped files under `supabase/migrations/`. No database types are generated until the first application schema exists; when A1 adds that schema, type generation should be added as a reproducible CLI script rather than handwritten.
+
 ## Verification
 
 ```bash
