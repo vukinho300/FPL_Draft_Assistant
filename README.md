@@ -23,7 +23,7 @@ The Vite development server exposes the same project-owned `/api/fpl` boundary u
 
 ## Supabase foundation
 
-Supabase is initialized as the future shared Auth/Postgres/Storage backend. F3 does not require authentication and does not create application tables or users, so the current dashboard still runs without Supabase environment variables. Later features must obtain the browser client through `src/services/supabase`; React code should not construct independent clients.
+Supabase is the shared Auth/Postgres/Storage backend foundation. The current dashboard still runs without Supabase environment variables; account-aware UI belongs to a later phase. React code must obtain any browser client through `src/services/supabase`, never construct independent clients.
 
 Copy `.env.example` to `.env.local` when a Supabase-backed feature is being developed, then provide the project URL and current browser-safe publishable key:
 
@@ -41,10 +41,24 @@ npm run supabase:start
 npm run supabase:status
 npm run supabase:db:reset
 npm run supabase:db:lint
+npm run supabase:gen:types
+npm run supabase:verify:rls
 npm run supabase:stop
 ```
 
-Committed schema changes belong in timestamped files under `supabase/migrations/`. No database types are generated until the first application schema exists; when A1 adds that schema, type generation should be added as a reproducible CLI script rather than handwritten.
+Committed schema changes belong in timestamped files under `supabase/migrations/`. Generated `src/services/supabase/database.types.ts` is produced from the running local schema with `npm run supabase:gen:types`; do not hand-edit it.
+
+### League account provisioning
+
+The `league_accounts` migration seeds the six approved league identities but intentionally does not contain production Auth UUIDs or passwords. A trusted local/admin process binds each record to an Auth user using a deterministic internal, non-deliverable identifier derived from its team slug. The later UI will accept team name plus password; users never need this internal identifier.
+
+After applying the migration to a hosted Supabase project, supply `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, and a unique password for every account that still needs creating, then run:
+
+```bash
+npm run provision:league-accounts
+```
+
+This command is admin-only: it uses the Supabase secret key, must never run in a browser or Vercel build, never changes an existing password, and fails if an existing binding disagrees with the approved registry. Do not commit its environment values. `npm run supabase:verify:rls` creates only disposable local Auth fixtures and refuses to target a hosted URL.
 
 ## Verification
 
@@ -156,7 +170,7 @@ Current trust statuses are:
 - No validated opponent-selection or survival-probability model
 - Best Pair is deterministic scenario analysis, not an opponent-behavior or player-survival model
 - No prices, budgets, three-per-club rule, or health diagnosis
-- No database, accounts, cross-device sync, or backup import/export
+- No account-aware UI, hosted account provisioning, cross-device league-state persistence, or backup import/export yet
 - No production Understat, bookmaker, ClubElo, scraping, or XGBoost integration
 - The public FPL Draft endpoint and its schema are not formally guaranteed
 
