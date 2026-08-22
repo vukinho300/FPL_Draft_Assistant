@@ -120,7 +120,7 @@ function MobileMatchdayPage({ model }: { readonly model: LeagueDashboardModel })
 function CurrentMobileView({ model }: { readonly model: LeagueDashboardModel }) {
   const views: Record<LeagueView, ReactNode> = {
     league: <MobileLeaguePage model={model} />,
-    'my-team': <MobileSquad model={model} roster={model.vukRoster} title="Vuk's squad" />,
+    'my-team': <MobileSquad model={model} roster={model.vukRoster} title={`${model.vukRoster.managerName}'s squad`} />,
     teams: <MobileTeamsPage model={model} />,
     matchday: <MobileMatchdayPage model={model} />,
     players: <MobilePlayersPage model={model} />,

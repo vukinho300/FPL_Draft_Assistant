@@ -28,7 +28,7 @@ export const TRANSACTION_TABS = ['TRADES', 'WAIVERS', 'FREE AGENTS', 'ACTIVITY']
 
 export type PlayerLoader = () => Promise<FplPlayerDataResponse>
 
-export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlayerData) {
+export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlayerData, currentManagerName?: string) {
   const [view, setView] = useState<LeagueView>('league')
   const [selectedManagerId, setSelectedManagerId] = useState(
     officialDraft202627.managers[0].id,
@@ -52,7 +52,7 @@ export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlay
     [],
   )
   const vukRoster = rosters.find(
-    ({ managerId }) => managerId === officialDraft202627.leagueSettings.userManagerId,
+    ({ managerName }) => managerName === currentManagerName,
   ) ?? rosters[0]
   const selectedManagerRoster = rosters.find(
     ({ managerId }) => managerId === selectedManagerId,
