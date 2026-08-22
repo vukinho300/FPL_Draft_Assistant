@@ -15,6 +15,8 @@ Original manager identities:
 
 Visible team-account names are documented in `01_Project_Purpose_Requirements.md`.
 
+Jakin Goff is the `LEAGUE_OWNER` account. Its product-facing league title is **Commissioner**.
+
 ## Squad contract
 Per manager:
 - GK 2
@@ -70,13 +72,27 @@ Until standings, Gameweek points or event sources are verified, the UI must show
 Managers should be able to:
 - experiment with possible XI/bench without submitting;
 - submit an actual Gameweek lineup;
-- see only their own editing controls.
+- see only their own editing controls before the Gameweek starts.
 
 A submitted lineup must record enough information to reconstruct that Gameweek without later roster/UI changes altering history.
 
 The authoritative Gameweek lineup is shared persistent application data. Mobile and desktop are two presentations of the same lineup record. A lineup submitted on one device must be visible on the other after reading the shared backend state.
 
 Do not use mobile-only or desktop-only authoritative lineup state, and do not use localStorage as the source of truth for submitted lineups.
+
+### Lineup edit authority and Gameweek lock
+Before a Gameweek starts:
+- each MEMBER may create, edit and submit only their own lineup;
+- members may not insert or edit another manager's lineup;
+- Jakin Goff / `LEAGUE_OWNER` / **Commissioner** may manage its own lineup and retains commissioner authority over league lineup records where an administrative correction is required.
+
+Once the Gameweek starts:
+- normal members can no longer insert, edit, replace or submit lineups for that Gameweek;
+- only the Commissioner may insert, edit or replace a lineup for Jakin Goff or any other manager;
+- commissioner post-start lineup actions are privileged administrative operations and must be enforced by backend/RLS authorization, not only hidden in the UI;
+- when persistence is implemented, commissioner post-start inserts/changes must be auditable with commissioner identity, target manager, Gameweek, timestamp, and a reason/note where appropriate.
+
+The deadline/lock must be derived from verified Gameweek timing rather than a client-only clock assumption.
 
 ### Starting XI and formation
 The starting XI contains exactly 11 players and must satisfy valid FPL lineup constraints.
@@ -96,7 +112,7 @@ The bench is ordered and meaningful Gameweek data:
 - outfield substitute 2;
 - outfield substitute 3.
 
-My Team should eventually present a football-pitch XI with a separate bench directly underneath. Teams should reuse the same lineup rendering model but without edit controls for other managers.
+My Team should eventually present a football-pitch XI with a separate bench directly underneath. Teams should reuse the same lineup rendering model but without edit controls for other managers except commissioner administration where explicitly allowed.
 
 ### Missing submission and automatic fallback
 If a manager does not submit an official project lineup for the Gameweek:
@@ -108,6 +124,8 @@ If a manager does not submit an official project lineup for the Gameweek:
 - project-calculated lineup points for that fallback are zero.
 
 A verified official FPL total may still be shown where the score provenance contract allows it.
+
+The Commissioner may later insert an authoritative lineup after kickoff when league administration requires it; that action is distinct from the automatic display-only fallback and must be recorded as a privileged commissioner operation.
 
 ## Gameweek score provenance
 Preferred precedence for the displayed league total:
@@ -139,7 +157,7 @@ Examples include:
 Do not fabricate event records before a verified player/Gameweek data source exists.
 
 ## Admin corrections
-Jakin Goff / LEAGUE_OWNER can correct another team's points after a Gameweek.
+Jakin Goff / `LEAGUE_OWNER` / Commissioner can correct another team's points after a Gameweek and can perform the approved post-start lineup administration described above.
 
 Correction records should retain:
 - target team/gameweek;
@@ -171,7 +189,7 @@ Each team eventually shows:
 - automatically generated display fallback when no lineup was submitted;
 - Trading Block players.
 
-The Teams Gameweek view should reuse the same lineup renderer/model as My Team while removing edit permissions for other managers.
+The Teams Gameweek view should reuse the same lineup renderer/model as My Team. Normal members get read-only access to other managers' lineups; the Commissioner may receive explicit administrative lineup controls according to the Gameweek lock rule.
 
 Avoid roster-administration clutter such as 15/15 and per-position roster-capacity counts in the Gameweek lineup presentation.
 
