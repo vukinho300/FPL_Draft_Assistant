@@ -130,7 +130,7 @@ function CurrentMobileView({ model }: { readonly model: LeagueDashboardModel }) 
   return <div className="mobile-view-transition" key={model.view}>{views[model.view]}</div>
 }
 
-export function MobileLeagueDashboard({ model }: { readonly model: LeagueDashboardModel }) {
+export function MobileLeagueDashboard({ model, account, onLogout }: { readonly model: LeagueDashboardModel; readonly account?: { readonly teamName: string; readonly isCommissioner: boolean }; readonly onLogout?: () => void }) {
   const title = model.view === 'league' ? 'Kile N Others' : model.currentTitle
   return (
     <div className="mobile-league-dashboard" data-presentation="mobile">
@@ -138,7 +138,7 @@ export function MobileLeagueDashboard({ model }: { readonly model: LeagueDashboa
       <main className="mobile-app-main">
         <CurrentMobileView model={model} />
       </main>
-      <MobileBottomNavigation model={model} />
+      <MobileBottomNavigation model={model} account={account} onLogout={onLogout} />
     </div>
   )
 }

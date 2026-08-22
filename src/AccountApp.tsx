@@ -15,7 +15,12 @@ function Login({ onLogin }: { readonly onLogin: () => void }) {
 }
 
 export default function AccountApp() {
-  const service = getSupabaseAuthSessionService()
+  let service
+  try { service = getSupabaseAuthSessionService() } catch { return <main className="auth-page"><section className="auth-card"><h1>Configuration required</h1><p>Supabase browser configuration is missing or invalid.</p></section></main> }
+  return <ConfiguredAccountApp service={service} />
+}
+
+function ConfiguredAccountApp({ service }: { readonly service: ReturnType<typeof getSupabaseAuthSessionService> }) {
   const [session, setSession] = useState<AuthSessionState>(() => service.getState())
   const [account, setAccount] = useState<LeagueAccount | null>(null)
   const [accountError, setAccountError] = useState<string | null>(null)
@@ -25,5 +30,5 @@ export default function AccountApp() {
   if (session.status === 'UNAUTHENTICATED') return <Login onLogin={() => undefined} />
   if (accountError !== null) return <main className="auth-page"><section className="auth-card"><h1>Account setup required</h1><p>{accountError}</p><button type="button" onClick={() => void service.signOut()}>Log out</button></section></main>
   if (account === null) return <main className="auth-page"><p className="auth-loading">Loading league account…</p></main>
-  return <div className="authenticated-app"><div className="account-banner"><span>{account.team_name}{account.role === 'LEAGUE_OWNER' ? ' · Commissioner' : ''}</span><button type="button" onClick={() => void service.signOut()}>Log out</button></div><LeagueDashboard currentManagerName={account.manager_name} /></div>
+  return <div className="authenticated-app"><div className="account-banner"><span>{account.team_name}{account.role === 'LEAGUE_OWNER' ? ' · Commissioner' : ''}</span><button type="button" onClick={() => void service.signOut()}>Log out</button></div><LeagueDashboard currentManagerName={account.manager_name} account={{ teamName: account.team_name, isCommissioner: account.role === 'LEAGUE_OWNER' }} onLogout={() => void service.signOut()} /></div>
 }
