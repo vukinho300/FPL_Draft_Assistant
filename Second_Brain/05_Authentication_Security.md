@@ -14,7 +14,7 @@ Do not add enterprise identity infrastructure.
 
 ## Account model
 Exactly six initial team accounts:
-- Jakin Goff — Vuk — LEAGUE_OWNER
+- Jakin Goff — Vuk — LEAGUE_OWNER — product-facing title: Commissioner
 - Dindi — Kristian — MEMBER
 - 22nd oBlock — Diego — MEMBER
 - Miku007 — Lovro — MEMBER
@@ -22,6 +22,8 @@ Exactly six initial team accounts:
 - Tintilinic — Tin — MEMBER
 
 No public self-sign-up is required.
+
+`Commissioner` is the product-facing league title for Jakin Goff. Backend authorization should continue to use the stable `LEAGUE_OWNER` role rather than treating UI copy as a security primitive.
 
 ## Login UX
 The visible login form should use:
@@ -43,7 +45,7 @@ Important permissions must be enforced in Supabase/Postgres RLS or equivalent ba
 
 Frontend visibility is UX only, not security.
 
-Suggested roles:
+Roles:
 - MEMBER
 - LEAGUE_OWNER
 
@@ -53,15 +55,22 @@ All authenticated league members may:
 - read current league squads and submitted league-visible lineups;
 - read league player/transaction/trading-block data intended for members;
 - update their own permitted profile fields;
-- submit/update their own pre-deadline lineup;
+- create/edit/submit only their own lineup before the verified Gameweek start/deadline;
 - manage their own Trading Block entries;
 - create/respond to trade proposals where they are a participant.
 
-Only LEAGUE_OWNER may:
+After the Gameweek starts, MEMBER accounts may not insert, edit, replace or submit lineups for that Gameweek.
+
+Only LEAGUE_OWNER / Commissioner may:
+- insert, edit or replace a lineup for Jakin Goff or any other manager after the Gameweek starts;
 - correct another team's points;
 - perform approved maintenance/reconciliation operations;
 - repair incorrect roster/sync state through explicit admin workflows;
 - access other admin-only controls.
+
+Commissioner post-start lineup writes must be enforced at the backend/RLS level and should be auditable with actor, target manager, Gameweek, timestamp and reason/note where appropriate.
+
+The Gameweek lock must be based on verified server/backend Gameweek timing rather than only a client-side clock.
 
 ## Team profile photos
 Use Supabase Storage, conceptually:
@@ -88,7 +97,7 @@ For every table added:
 2. Define who may read it.
 3. Define who may insert/update/delete it.
 4. Add focused policy tests/manual verification.
-5. Verify admin privileges at the backend level.
+5. Verify commissioner/admin privileges at the backend level.
 
 Do not rely on `isAdmin` React conditionals as the permission boundary.
 
@@ -98,6 +107,6 @@ Initial auth phase should only establish:
 - login/logout/session;
 - account identity -> team mapping;
 - RLS foundation;
-- admin role.
+- LEAGUE_OWNER role / Commissioner identity.
 
 Do not mix Trading Block, scoring, Matchday sync, or complex profiles into the initial auth task.
