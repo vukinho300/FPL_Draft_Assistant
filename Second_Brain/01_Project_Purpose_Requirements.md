@@ -14,7 +14,7 @@ Exactly six normal team accounts initially:
 - Deni -> Rod Wave Disciples
 - Tin -> Tintilinic
 
-Jakin Goff is the league owner/admin account.
+Jakin Goff is the league owner/admin account. Its product-facing league label is **Commissioner**. The backend authorization role remains `LEAGUE_OWNER`; `Commissioner` is the user-facing title for that privileged league role.
 
 Login UX should remain deliberately simple: **team name + password**.
 
@@ -59,18 +59,22 @@ Account-specific page for the logged-in manager:
 - Current squad.
 - Player photos.
 - Starting XI / bench experimentation.
-- Submit Gameweek lineup.
+- Submit Gameweek lineup before the Gameweek deadline.
 - Status, fixtures, useful stats and rankings.
 - Later start/bench decision support.
 
+Before a Gameweek starts, each manager may create, edit and submit only their own lineup. After the Gameweek starts, normal members can no longer insert, edit or replace lineups. The Jakin Goff Commissioner account may insert or correct a lineup for itself or any manager after kickoff, with the action treated as privileged commissioner activity and audited when persistence is implemented.
+
 ## Players
-Must retain existing ranking evidence and support clear filtering/sorting for:
-- Official Draft rank.
-- MVP/Draft rank.
-- Model rank.
-- Free agents.
-- All players.
-- Position and search.
+The current Players page supports shared desktop/mobile filtering and sorting using verified current data.
+
+Primary in-season sort options:
+- Official FPL Draft Rank.
+- Form.
+- Total Points.
+- MVP Consensus.
+
+Draft Model Rank is preserved as project/model evidence but is not a primary Players-page sort option. Free Agent / Owned state derives from current roster ownership, not a hardcoded list.
 
 ## Transactions
 Target capability:
@@ -88,8 +92,9 @@ The site must survive missing manager submissions.
 - Do not reuse/invent a previous lineup.
 - Official team total may still be displayed if verified from FPL Draft.
 - Project-calculated totals require a submitted lineup.
+- Commissioner may insert/correct a lineup after the Gameweek starts when required for league administration.
 - Admin may correct another team's points after the Gameweek.
-- Corrections must remain distinguishable and auditable.
+- Privileged corrections/inserts must remain distinguishable and auditable.
 
 ## Desktop and mobile
 Desktop and mobile are both first-class product targets.

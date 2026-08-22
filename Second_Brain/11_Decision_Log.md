@@ -36,7 +36,7 @@ Status: APPROVED
 Make the deployed current shell responsive before adding the bulk of league features. Do not mix responsive work with backend/auth work.
 
 ## D-008 — Supabase for minimum persistent backend
-Status: APPROVED ARCHITECTURE; NOT YET IMPLEMENTED
+Status: APPROVED ARCHITECTURE; F3 CURRENT
 
 Use Supabase Auth + Postgres + RLS + Storage for six accounts and project-owned persistent league state.
 
@@ -147,3 +147,17 @@ Status: APPROVED PRODUCT DIRECTION
 My Team and Teams should eventually use an original football-pitch lineup presentation inspired by the supplied Fantacalcio reference: starters visually positioned by derived formation, real verified Premier League player photos when available, names visible, and an ordered bench underneath.
 
 Do not copy proprietary branding or assets. My Team owns editing controls; Teams reuses the lineup rendering model for viewing other managers.
+
+## D-027 — Jakin Goff is the league Commissioner
+Status: APPROVED PRODUCT / AUTHORIZATION RULE
+
+Jakin Goff remains the backend `LEAGUE_OWNER` account and is displayed in the product as **Commissioner**. The title is user-facing; authorization continues to rely on the stable backend role and RLS policies.
+
+## D-028 — Gameweek lineup writes lock for members at kickoff
+Status: APPROVED PRODUCT / SECURITY RULE
+
+Before a Gameweek starts, each MEMBER may create, edit and submit only their own lineup.
+
+Once the verified Gameweek start/deadline is reached, MEMBER accounts may no longer insert, edit, replace or submit a lineup for that Gameweek.
+
+Jakin Goff / `LEAGUE_OWNER` / Commissioner may insert, edit or replace a lineup for itself or any other manager after kickoff as a privileged administrative action. These writes must be enforced through backend/RLS authorization and audited when lineup persistence is implemented. The lock must not depend only on client-side time.

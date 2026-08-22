@@ -1,154 +1,93 @@
 # Current Phase
 
-## P5A — Basic Players Filtering/Sorting
+## F3 — Supabase Foundation
 Status: CURRENT
 
 ## Dependency state
 - F0 — Second Brain Foundation: COMPLETE
 - F1 — Vercel Deployment: COMPLETE
 - F2 — Desktop + Mobile Responsive Shell: COMPLETE
-- P5A — Basic Players Filtering/Sorting: CURRENT
-- F3 — Supabase Foundation: NEXT AFTER P5A
+- P5A — Players filtering/sorting + live Form/Total Points: COMPLETE
+- F3 — Supabase Foundation: CURRENT
+- A1 — Six accounts + RLS: NEXT AFTER F3
 
-## Why P5A is now
-The responsive/mobile foundation is complete. Before beginning the heavier database phase, the existing Players directory can be made materially more useful using data that already exists in the repository and current normalized FPL boundary.
+## Why F3 is now
+The responsive shell and Players-page foundation are complete. The next dependency is a shared persistent backend so accounts, lineups, profiles, transactions and later league state do not rely on device-local state.
 
-This is a deliberately small product step, not a replacement for later P3/P4 enriched player data.
+## F3 goal
+Introduce the minimum Supabase foundation without prematurely implementing the higher-level league features.
 
-## Goal
-Improve Players filtering/sorting on both desktop and mobile while preserving one shared directory model/state.
+Approved backend components:
+- Supabase Auth;
+- Postgres;
+- Row Level Security;
+- Storage foundation where needed;
+- migrations committed to the repository;
+- environment/configuration boundaries that keep privileged secrets server-only.
 
-Required capabilities:
-- display the player's full available verified name, not surname-only and not first-name-only;
-- existing player/owner search;
-- position filter: ALL / GK / DEF / MID / FWD;
-- ownership filter: ALL / FREE AGENTS / OWNED;
-- sort by Official Draft rank;
-- sort by Draft MVP rank;
-- sort by model rank where the current trusted player-directory data exposes it reliably;
-- deterministic behavior when a selected rank is missing;
-- same filter/sort result on desktop and mobile.
+F3 should establish the project-owned database/auth foundation and schema conventions needed by later A1/G3 work, but should not attempt to implement the full lineup UI, standings, trades or scoring in the same step.
 
-Example target workflow:
-`GK -> Free Agents -> Draft MVP rank`.
+## Account/role direction
+The league will have exactly six initial team accounts.
 
-## Player-name rule
-Use the full available name from verified/current normalized player identity data.
+Roles:
+- `MEMBER`
+- `LEAGUE_OWNER`
 
-Do not:
-- display surname-only when the normalized model contains the player's full name;
-- display first-name-only;
-- manually guess or reconstruct missing names from external assumptions.
+Jakin Goff is the `LEAGUE_OWNER` account. Its product-facing title is **Commissioner**.
 
-If the current player model does not expose a true full-name field, Codex should inspect the verified upstream fields and choose the safest project-owned normalization change needed to expose one without weakening identity correctness.
+Authorization decisions must be enforced through backend/RLS policies rather than only frontend conditionals.
 
-## Ownership rule
-Free Agent / Owned status must be derived from the current ownership directory, which itself is derived from:
+## Approved future lineup authorization contract
+This rule must shape F3/A1/G3 schema and RLS design even though lineup persistence itself belongs to G3.
 
-```text
-immutable official draft
-+
-PROCESSED post-draft transactions
-=
-current ownership
-```
+Before a verified Gameweek start/deadline:
+- each member may create, edit and submit only their own lineup;
+- a member cannot edit another manager's lineup.
 
-Never hardcode a Free Agent list.
+After the Gameweek starts:
+- MEMBER accounts cannot insert, edit, replace or submit a lineup for that Gameweek;
+- only Jakin Goff / `LEAGUE_OWNER` / Commissioner may insert, edit or replace a lineup for itself or any other manager;
+- commissioner post-start writes must be auditable when lineup persistence is implemented;
+- the lock must use verified server/backend Gameweek timing, not only a client-side clock.
 
-If a future PROCESSED transaction changes ownership, the Players page must naturally reflect that new state.
+## P5A completion state
+The Players page now uses shared desktop/mobile logic and verified live official FPL Draft data.
 
-## Ranking rule
-Only sort on ranking fields actually present in the trusted project model.
+Available Players sort options:
+- Official FPL Draft Rank;
+- Form;
+- Total Points;
+- MVP Consensus.
 
-Current intended ranking options:
-- Official Draft rank;
-- Draft MVP rank;
-- model rank where current normalized/domain data exposes it reliably.
+Draft Model Rank remains preserved as project/model evidence but is no longer a primary Players-page sort option.
 
-Do not invent missing ranks.
+The Players page also exposes compact Form Leaders and Total Points Leaders from the same shared filtered directory.
 
-Codex should inspect actual repository fields before deciding exact null/missing ordering and default sort direction. The behavior must be deterministic and covered by tests.
+## F3 acceptance direction
+F3 should be complete only when:
+- Supabase project configuration is represented safely in the app/repository;
+- schema/migration workflow is established;
+- minimum league/account persistence primitives needed by A1 are defined;
+- RLS is enabled on project-owned mutable tables introduced by F3;
+- privileged secrets are not committed;
+- local/development environment setup is documented sufficiently for the next Codex task;
+- existing Vercel/FPL functionality remains intact;
+- typecheck/tests/build/lint pass as appropriate.
 
-## Desktop/mobile architecture
-F2 established two presentation trees over one shared controller/model.
-
-P5A must preserve that architecture:
-- filtering/sorting state lives in shared model/controller logic;
-- desktop and mobile consume the same filtered/sorted result;
-- presentation controls may differ visually where appropriate;
-- do not implement two independent filtering engines.
-
-## Out of scope
-Do not add in P5A:
-- Supabase/database work;
-- authentication;
+## Out of scope for F3
+Do not implement in the same phase:
+- the six production account credentials;
+- full account-aware UI;
+- Gameweek lineup persistence/UI;
+- standings/Gameweek adapter;
+- Trading Block;
+- trade proposals;
 - player photos;
-- points/form filters;
-- minutes/starts filters;
-- availability/injury filters;
-- usage classification;
-- fixtures;
-- new model training;
-- new external data sources;
-- trade/waiver behavior.
-
-Those belong to later steps, especially P3/P4/P5B and F3 onward.
-
-## P5B later
-After verified P3/P4 enrichment exists, P5B may add useful controls such as:
-- total points;
-- recent points/form;
-- minutes;
-- starts;
-- availability/injury;
-- usage classification;
-- club;
-- other verified player-value evidence.
-
-Never add a filter before its underlying data contract exists.
-
-## Acceptance criteria
-P5A is complete only when:
-- Players displays full available verified player names;
-- ownership filter supports All / Free Agents / Owned;
-- position and ownership filters compose correctly;
-- Official / MVP / supported model sorting works;
-- search composes with position + ownership + sort;
-- missing ranks are handled predictably;
-- current ownership determines Free Agent state;
-- desktop and mobile show consistent result ordering;
-- mobile controls remain readable and require no horizontal scrolling;
-- existing F2 mobile navigation/layout remains intact;
-- automated tests cover shared filtering/sorting behavior and full-name display;
-- typecheck/test/build/lint pass.
-
-## Verification direction
-Run:
-- `npm run typecheck`
-- `npm test`
-- `npm run build`
-- `npm run lint`
-
-`npm run verify:fpl-live` is not required unless the implementation unexpectedly changes the live FPL boundary.
-
-Rendered/manual verification should cover Players on:
-- mobile around 390px;
-- desktop around 1440px.
-
-## Codex workflow
-This is repository-heavy enough for Codex-led planning + implementation.
-
-Codex should inspect the actual current player-directory model and presentation before choosing:
-- player-name normalization path;
-- filter/sort state shape;
-- exact controls;
-- comparator/null ordering;
-- where shared logic belongs;
-- smallest test changes.
-
-ChatGPT provides product constraints and verifies the PR rather than prescribing unnecessary implementation details.
+- scoring;
+- recommendation AI.
 
 ## Next phase
-### F3 — Supabase Foundation
+### A1 — Six Accounts + RLS
 
-F3 begins after P5A is merged, verified and reconciled.
+A1 will build the six actual league identities and authorization policies on top of the F3 foundation, including the unique Jakin Goff Commissioner/LEAGUE_OWNER identity.
