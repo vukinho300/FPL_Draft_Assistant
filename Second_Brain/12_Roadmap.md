@@ -37,28 +37,77 @@ Implemented:
 - live official Form and Total Points normalized at the FPL adapter boundary.
 
 ### F3 — Supabase foundation
-Status: CURRENT
+Status: COMPLETE
 
-Goal:
-Introduce the minimum Supabase Auth/Postgres/RLS/Storage foundation, repository migrations and safe environment/configuration boundaries. Do not mix broad league features into F3.
-
-F3 must prepare for the later account and lineup authorization model without implementing the full lineup feature yet.
+Implemented:
+- project-owned Supabase browser client boundary;
+- safe public environment contract;
+- repository-pinned Supabase CLI/local workflow;
+- migration-first Supabase project structure;
+- Auth/Postgres/RLS/Storage local foundation;
+- no premature application feature schema.
 
 ## League accounts
 ### A1 — Six accounts + RLS
-Status: NEXT AFTER F3
+Status: COMPLETE
 
-- Pre-create six accounts.
-- Team-name login UX.
-- MEMBER / LEAGUE_OWNER authorization.
-- Jakin Goff uses unique admin credentials.
-- Jakin Goff's product-facing title is **Commissioner** while backend role remains `LEAGUE_OWNER`.
-- Backend/RLS policies, not UI hiding, enforce privileged operations.
+Implemented:
+- six league account/team identities;
+- auth-user to league-account mapping foundation;
+- constrained `MEMBER` / `LEAGUE_OWNER` roles;
+- Jakin Goff as the single `LEAGUE_OWNER`;
+- product-facing title **Commissioner**;
+- RLS/private authorization helpers preventing member privilege escalation;
+- secure provisioning workflow without committed passwords;
+- generated database types and local RLS verification.
+
+### A1.5 — Persistent Session / Automatic Login
+Status: COMPLETE
+
+Implemented:
+- one project-owned Supabase Auth session service over the shared browser client;
+- startup states `INITIALIZING`, `AUTHENTICATED`, `UNAUTHENTICATED`;
+- Supabase-managed persistent browser sessions and automatic token refresh;
+- successful login can be restored across refresh/reopen while the session remains valid;
+- no project password storage or parallel custom auth storage;
+- explicit sign-out clears authenticated state;
+- shared team-name to internal Auth identity resolver;
+- no A2 UI/auth gate pulled forward.
 
 ### A2 — Account-aware shell
-- Session identity available throughout app.
-- My Team resolves to logged-in team.
-- Commissioner/member UI derived from real permissions.
+Status: CURRENT
+
+Goal:
+Connect the completed A1/A1.5 identity/session foundations to the actual application shell.
+
+Required behavior:
+- initialize/restore Supabase session before rendering auth-dependent UI;
+- while auth is `INITIALIZING`, show a neutral loading/splash state rather than a false login screen;
+- unauthenticated users see the team-name + password login experience;
+- authenticated users enter the league application automatically;
+- authenticated Supabase user resolves to exactly one league account/team;
+- My Team resolves to the logged-in team;
+- member/Commissioner UI derives from real account role/data;
+- Jakin Goff displays **Commissioner** while backend authorization remains `LEAGUE_OWNER`;
+- expose an explicit logout action;
+- valid persisted sessions survive page refresh and browser reopen without asking for the password again;
+- logout prevents automatic re-entry until the user signs in again;
+- desktop/mobile consume the same authenticated account/session model.
+
+Security rules:
+- do not store passwords;
+- do not hardcode Commissioner authority in React;
+- do not trust role strings from localStorage or other client-only persistence;
+- backend/RLS remains the permission boundary;
+- do not create a second Supabase client or duplicate auth-session lifecycle.
+
+Out of scope for A2:
+- Gameweek lineup persistence/locking;
+- standings or league-ID integration;
+- team avatar/profile feature;
+- Trading Block/trades;
+- scoring;
+- player photos.
 
 ### A3 — Team profiles + avatars
 - Team profile table.
@@ -166,6 +215,8 @@ Observe verified FPL history/ownership and explicitly reconcile before marking p
 ## Dependency rules
 - Mobile and desktop are presentation layers over one shared domain/data/backend model.
 - Persistent mutable data must not have device-specific authoritative copies.
+- Authentication sessions may persist per browser/device, but passwords must never be stored by project code.
+- Auth-dependent UI must wait for session restoration before deciding authenticated vs unauthenticated.
 - Authorization-sensitive writes must be enforced in backend/RLS policies.
 - Player display names use the full verified available name.
 - Free Agent/Owned state derives from current roster ownership.

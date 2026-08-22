@@ -14,15 +14,18 @@ Kile N Others is a private six-team FPL Draft league companion for the 2026/27 s
 - F1 Vercel deployment: COMPLETE.
 - F2 desktop/mobile responsive shell: COMPLETE.
 - P5A Players filtering/sorting + live Form/Total Points: COMPLETE.
-- F3 Supabase Foundation: CURRENT.
-- Current verified `main` baseline after PR #24: `fc5d2587b676b6c6b89a490de05148ea714ade6d`.
+- F3 Supabase Foundation: COMPLETE.
+- A1 Six Accounts + RLS: COMPLETE.
+- A1.5 Persistent Session / Automatic Login foundation: COMPLETE.
+- A2 Account-aware Shell: CURRENT.
+- Current verified `main` baseline after PR #28: `524b794d56fde92ffe7d9a4d88093ed03a3a4eeb`.
 - Production application: `https://fpl-draft-assistant-eight.vercel.app/`.
 - Production FPL boundary: `https://fpl-draft-assistant-eight.vercel.app/api/fpl`.
 - Canonical historical draft: `src/data/leagues/kile-n-others/officialDraft2026-27.json`.
 - Official-draft tag: `kile-n-others-official-draft-2026-27`.
 - Live FPL boundary: project-owned `/api/fpl` adapter over public official FPL Draft data.
 - Desktop and mobile use separate presentation trees over one shared controller/domain/data model.
-- No Supabase database/accounts/cross-device mutable persistence yet; F3 is introducing that foundation next.
+- Supabase client/config/migration foundation exists; six league identities and MEMBER/LEAGUE_OWNER RLS foundation exist; browser session persistence/refresh lifecycle exists; A2 now connects that identity/session layer to the product shell.
 
 ## League authority
 - Jakin Goff is the backend `LEAGUE_OWNER` account.
@@ -32,12 +35,23 @@ Kile N Others is a private six-team FPL Draft league companion for the 2026/27 s
 - After kickoff, normal member lineup writes lock; only the Commissioner may insert/edit/replace a lineup for itself or another manager.
 - Commissioner post-start lineup writes must be backend-enforced and auditable when G3 lineup persistence is implemented.
 
+## Authentication/session rule
+- Visible login UX is team name + password.
+- Internal Supabase Auth email identifiers are an implementation detail and should not be exposed to users.
+- Passwords are never stored by project code.
+- Browser authentication uses Supabase-managed persistent sessions and refresh tokens.
+- After a successful login on a browser/device, refresh or later reopening should restore the valid session automatically without re-entering the password.
+- Auth startup must distinguish `INITIALIZING`, `AUTHENTICATED`, and `UNAUTHENTICATED` so the product does not briefly treat a restorable session as logged out.
+- Explicit logout clears the persistent authenticated session.
+- Session persistence proves authentication only; roles/Commissioner authorization remain database/RLS controlled.
+
 ## Approved target architecture
 ```text
 React/Vite UI on Vercel
         |
         +--> Supabase Auth/Postgres/Storage/RLS
-        |       - accounts / profiles
+        |       - league accounts / profiles
+        |       - persistent sessions handled by Supabase Auth
         |       - lineups + audit metadata
         |       - scores/corrections
         |       - trading block
@@ -70,6 +84,7 @@ Read only what the task needs.
 - Mobile/UI: `00_HOME`, `03_Current_Architecture`, `09_Testing_Deployment`, `15_Current_Phase`.
 - Data/API: `00_HOME`, `04_Data_Architecture_Sources`, `15_Current_Phase`.
 - Supabase/Auth/RLS: `00_HOME`, `05_Authentication_Security`, `12_Roadmap`, `15_Current_Phase`.
+- Account-aware shell: `00_HOME`, `03_Current_Architecture`, `05_Authentication_Security`, `12_Roadmap`, `15_Current_Phase`.
 - League/Gameweek: `00_HOME`, `07_League_Rules_Product_Behavior`, `15_Current_Phase`.
 - Players: `00_HOME`, `03_Current_Architecture`, `07_League_Rules_Product_Behavior`, `12_Roadmap`, `15_Current_Phase`.
 - Roadmap/planning: `00_HOME`, `12_Roadmap`, `14_Project_Status`, `15_Current_Phase`.
@@ -96,4 +111,4 @@ Never use permanent Codex/ChatGPT branches. Never use a docs branch for implemen
 - Sol: architecture, security/RLS review, data-source investigation, major verification.
 
 ## Next phase
-See `15_Current_Phase.md`: F3 — Supabase Foundation.
+See `15_Current_Phase.md`: A2 — Account-aware Shell.
