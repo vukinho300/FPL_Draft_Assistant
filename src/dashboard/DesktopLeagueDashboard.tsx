@@ -252,7 +252,7 @@ function DraftArchivePage({ model }: { readonly model: LeagueDashboardModel }) {
 function CurrentDesktopView({ model }: { readonly model: LeagueDashboardModel }) {
   const views: Record<LeagueView, ReactNode> = {
     league: <LeagueHome model={model} />,
-    'my-team': <SquadPitch model={model} roster={model.vukRoster} title="Vuk's squad" />,
+    'my-team': <SquadPitch model={model} roster={model.vukRoster} title={`${model.vukRoster.managerName}'s squad`} />,
     teams: <TeamsPage model={model} />,
     matchday: <MatchdayPage model={model} />,
     players: <PlayersPage model={model} />,

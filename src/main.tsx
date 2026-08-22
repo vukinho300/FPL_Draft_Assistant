@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import LeagueDashboard from './LeagueDashboard.tsx'
+import AccountApp from './AccountApp.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-      <LeagueDashboard />
+      <AccountApp />
   </StrictMode>,
 )

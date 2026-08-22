@@ -17,7 +17,7 @@ function NavigationIcon({ view }: { readonly view: LeagueView | 'more' }) {
   return <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="19" cy="12" r="1.5" /></svg>
 }
 
-export function MobileBottomNavigation({ model }: { readonly model: LeagueDashboardModel }) {
+export function MobileBottomNavigation({ model, account, onLogout }: { readonly model: LeagueDashboardModel; readonly account?: { readonly teamName: string; readonly isCommissioner: boolean }; readonly onLogout?: () => void }) {
   const [moreOpen, setMoreOpen] = useState(false)
   const moreMenuId = useId()
   const primaryItems = model.navigation.filter(({ id }) => isPrimaryView(id))
@@ -38,6 +38,7 @@ export function MobileBottomNavigation({ model }: { readonly model: LeagueDashbo
     >
       {moreOpen && (
         <div className="mobile-more-menu" id={moreMenuId} aria-label="More dashboard views">
+          {account !== undefined && <section className="mobile-account-surface"><strong>{account.teamName}</strong>{account.isCommissioner && <span>Commissioner</span>}{onLogout !== undefined && <button type="button" onClick={onLogout}>Log out</button>}</section>}
           {moreItems.map(({ id, label }) => (
             <button
               type="button"

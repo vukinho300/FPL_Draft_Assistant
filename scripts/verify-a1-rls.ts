@@ -214,6 +214,14 @@ async function verifyRls(): Promise<void> {
   assert(memberResult.error === null && memberResult.data?.length === 6, 'A league member must read all six league identities')
   const ownerResult = await owner.from('league_accounts').select('id, team_name, role')
   assert(ownerResult.error === null && ownerResult.data?.length === 6, 'The league owner must read all six league identities')
+  assert(
+    ownerResult.data.some((account) => account.team_name === 'Jakin Goff' && account.role === 'LEAGUE_OWNER'),
+    'The authenticated Jakin Goff local fixture must resolve as LEAGUE_OWNER',
+  )
+  assert(
+    memberResult.data.some((account) => account.team_name === 'Dindi' && account.role === 'MEMBER'),
+    'The authenticated Dindi local fixture must resolve as MEMBER',
+  )
 
   const dindi = initialAccounts.find((account) => account.team_slug === 'dindi')
   const jakin = initialAccounts.find((account) => account.team_slug === 'jakin-goff')
@@ -287,7 +295,12 @@ async function verifyRls(): Promise<void> {
     'Denied writes must preserve the Jakin Goff LEAGUE_OWNER mapping',
   )
 
-  console.log('A1 local RLS verification passed: anonymous denial, member read access, mutation denial, and constrained owner access.')
+  const { error: memberSignOutError } = await member.auth.signOut()
+  assert(memberSignOutError === null, `Unable to sign out local member fixture: ${memberSignOutError?.message}`)
+  const { error: ownerSignOutError } = await owner.auth.signOut()
+  assert(ownerSignOutError === null, `Unable to sign out local owner fixture: ${ownerSignOutError?.message}`)
+
+  console.log('A1/A2 local verification passed: authenticated account resolution, anonymous denial, member read access, mutation denial, constrained owner access, and sign-out.')
 }
 
 verifyRls().catch((error: unknown) => {
