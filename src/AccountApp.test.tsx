@@ -218,6 +218,31 @@ describe('AccountApp', () => {
     expect(container.querySelector('[data-testid="league-dashboard"]')).toBeNull()
   })
 
+  it('clears the previous account dashboard while a different authenticated user resolves', async () => {
+    let emitSession: ((state: AuthSessionState) => void) | undefined
+    configure(sessionState('AUTHENTICATED', 'jakin-auth'), {
+      data: { id: 'jakin-account', auth_user_id: 'jakin-auth', team_name: 'Jakin Goff', manager_name: 'Vuk', role: 'LEAGUE_OWNER' },
+      error: null,
+    })
+    mocks.subscribe.mockImplementation((listener: (next: AuthSessionState) => void) => {
+      emitSession = listener
+      listener(sessionState('AUTHENTICATED', 'jakin-auth'))
+      return vi.fn()
+    })
+    mocks.from
+      .mockReturnValueOnce({ select: vi.fn().mockReturnValue({ eq: vi.fn().mockReturnValue({ maybeSingle: vi.fn().mockResolvedValue({ data: { id: 'jakin-account', auth_user_id: 'jakin-auth', team_name: 'Jakin Goff', manager_name: 'Vuk', role: 'LEAGUE_OWNER' }, error: null }) }) }) })
+      .mockReturnValueOnce({ select: vi.fn().mockReturnValue({ eq: vi.fn().mockReturnValue({ maybeSingle: vi.fn().mockReturnValue(new Promise(() => undefined)) }) }) })
+
+    const container = await renderApp()
+    await settle()
+    expect(container.querySelector('[data-testid="league-dashboard"]')?.textContent).toContain('demo-manager-1')
+
+    act(() => emitSession?.(sessionState('AUTHENTICATED', 'miku-auth')))
+
+    expect(container.querySelector('[data-testid="league-dashboard"]')).toBeNull()
+    expect(container.textContent).toContain('Loading league account')
+  })
+
   it('uses the real sign-out service from the desktop account surface', async () => {
     configure(sessionState('AUTHENTICATED', 'jakin-auth'), {
       data: { id: 'jakin-account', auth_user_id: 'jakin-auth', team_name: 'Jakin Goff', manager_name: 'Vuk', role: 'LEAGUE_OWNER' },
