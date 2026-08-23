@@ -5,6 +5,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import LeagueDashboard from './LeagueDashboard.tsx'
+import { KILE_N_OTHERS_ACCOUNT_ROSTER_IDENTITIES } from './data/leagues/kile-n-others/accountRosterIdentity.ts'
 import { officialDraft202627 } from './data/leagues/kile-n-others/officialDraft2026-27.ts'
 import type { Player } from './domain/player.ts'
 import { MOBILE_DASHBOARD_MEDIA_QUERY } from './dashboard/usePresentationMode.ts'
@@ -41,7 +42,11 @@ class MatchMediaController {
 
 const mountedRoots: { root: Root; container: HTMLDivElement }[] = []
 
-function renderDashboard(matchesMobile: boolean, players: readonly Player[] = []) {
+function renderDashboard(
+  matchesMobile: boolean,
+  players: readonly Player[] = [],
+  currentManagerId?: string,
+) {
   const media = new MatchMediaController(matchesMobile)
   vi.stubGlobal('matchMedia', vi.fn(media.matchMedia))
   const container = document.createElement('div')
@@ -53,7 +58,7 @@ function renderDashboard(matchesMobile: boolean, players: readonly Player[] = []
     players: [...players],
   }))
 
-  act(() => root.render(<LeagueDashboard playerLoader={playerLoader} />))
+  act(() => root.render(<LeagueDashboard playerLoader={playerLoader} currentManagerId={currentManagerId} />))
   mountedRoots.push({ root, container })
   return { container, media, playerLoader }
 }
@@ -173,6 +178,20 @@ describe('LeagueDashboard presentation boundary', () => {
     act(() => media.setMatches(false))
     expect(container.querySelector('.league-topbar h1')?.textContent).toBe('Teams')
     expect(container.querySelector('.squad-heading h2')?.textContent).toBe("Deni's squad")
+  })
+
+  it('uses the selected authenticated manager ID for every approved account roster', () => {
+    KILE_N_OTHERS_ACCOUNT_ROSTER_IDENTITIES.forEach((identity) => {
+      const { container } = renderDashboard(true, [], identity.rosterManagerId)
+      clickButton(container, 'My Team')
+      const expectedManager = officialDraft202627.managers.find(
+        (manager) => manager.id === identity.rosterManagerId,
+      )
+
+      expect(container.querySelector('.mobile-squad-heading h2')?.textContent).toBe(
+        `${expectedManager?.displayName}'s squad`,
+      )
+    })
   })
 
   it('renders only truthful unavailable Matchday states', () => {

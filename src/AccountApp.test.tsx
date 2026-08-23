@@ -31,8 +31,8 @@ vi.mock('./services/supabase/index.ts', () => ({
 }))
 
 vi.mock('./LeagueDashboard.tsx', () => ({
-  default: ({ currentManagerName }: { readonly currentManagerName?: string }) => (
-    <div data-testid="league-dashboard">Dashboard for {currentManagerName}</div>
+  default: ({ currentManagerId }: { readonly currentManagerId?: string }) => (
+    <div data-testid="league-dashboard">Dashboard for {currentManagerId}</div>
   ),
 }))
 
@@ -167,7 +167,7 @@ describe('AccountApp', () => {
     })
     await settle()
     expect(mocks.from).toHaveBeenCalledWith('league_accounts')
-    expect(container.querySelector('[data-testid="league-dashboard"]')?.textContent).toContain('Vuk')
+    expect(container.querySelector('[data-testid="league-dashboard"]')?.textContent).toContain('demo-manager-1')
     expect(container.textContent).toContain('Jakin Goff · Commissioner')
   })
 
@@ -179,13 +179,38 @@ describe('AccountApp', () => {
     const container = await renderApp()
     await settle()
 
-    expect(container.querySelector('[data-testid="league-dashboard"]')?.textContent).toContain('Kristian')
+    expect(container.querySelector('[data-testid="league-dashboard"]')?.textContent).toContain('demo-manager-3')
     expect(container.textContent).toContain('Dindi')
     expect(container.textContent).not.toContain('Commissioner')
   })
 
   it('fails closed for an authenticated user without a league account mapping', async () => {
     configure(sessionState('AUTHENTICATED', 'unbound-auth'))
+    const container = await renderApp()
+    await settle()
+
+    expect(container.textContent).toContain('Account setup required')
+    expect(container.querySelector('[data-testid="league-dashboard"]')).toBeNull()
+  })
+
+  it('maps Miku007/Lovro to the Miku draft roster rather than Jakin Goff', async () => {
+    configure(sessionState('AUTHENTICATED', 'miku-auth'), {
+      data: { id: 'miku-account', auth_user_id: 'miku-auth', team_name: 'Miku007', manager_name: 'Lovro', role: 'MEMBER' },
+      error: null,
+    })
+    const container = await renderApp()
+    await settle()
+
+    expect(container.querySelector('[data-testid="league-dashboard"]')?.textContent).toContain('demo-manager-4')
+    expect(container.querySelector('[data-testid="league-dashboard"]')?.textContent).not.toContain('demo-manager-1')
+    expect(container.textContent).not.toContain('Commissioner')
+  })
+
+  it('fails closed when a database account does not match an approved roster identity', async () => {
+    configure(sessionState('AUTHENTICATED', 'mismatch-auth'), {
+      data: { id: 'mismatch-account', auth_user_id: 'mismatch-auth', team_name: 'Miku007', manager_name: 'Vuk', role: 'MEMBER' },
+      error: null,
+    })
     const container = await renderApp()
     await settle()
 

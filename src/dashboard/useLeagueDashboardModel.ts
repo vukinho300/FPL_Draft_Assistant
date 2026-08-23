@@ -28,7 +28,7 @@ export const TRANSACTION_TABS = ['TRADES', 'WAIVERS', 'FREE AGENTS', 'ACTIVITY']
 
 export type PlayerLoader = () => Promise<FplPlayerDataResponse>
 
-export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlayerData, currentManagerName?: string) {
+export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlayerData, currentManagerId?: string) {
   const [view, setView] = useState<LeagueView>('league')
   const [selectedManagerId, setSelectedManagerId] = useState(
     officialDraft202627.managers[0].id,
@@ -51,9 +51,12 @@ export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlay
     () => buildLeagueActivity(officialDraft202627, kileNOthersTransactions),
     [],
   )
-  const vukRoster = rosters.find(
-    ({ managerName }) => managerName === currentManagerName,
-  ) ?? rosters[0]
+  const currentManagerRoster = currentManagerId === undefined
+    ? rosters[0]
+    : rosters.find(({ managerId }) => managerId === currentManagerId)
+  if (currentManagerRoster === undefined) {
+    throw new Error('Authenticated account does not map to an official draft manager')
+  }
   const selectedManagerRoster = rosters.find(
     ({ managerId }) => managerId === selectedManagerId,
   ) ?? rosters[0]
@@ -115,7 +118,7 @@ export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlay
     currentTitle: getLeagueViewLabel(view),
     navigate: setView,
     rosters,
-    vukRoster,
+    currentManagerRoster,
     activity,
     recentTransactions,
     positions: POSITION_ORDER,

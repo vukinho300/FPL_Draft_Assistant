@@ -85,10 +85,10 @@ function readOptionalForm(record: UnknownRecord, context: string): number | null
   const value = record.form
 
   if (value === undefined || value === null) return null
-  if (typeof value !== 'string' || !/^\d+(?:\.\d+)?$/.test(value)) {
+  if (typeof value !== 'string' || !/^-?\d+(?:\.\d+)?$/.test(value)) {
     throw new FplDataError(
       'INVALID_PLAYER',
-      `${context}.form must be a non-negative decimal string, null, or absent`,
+      `${context}.form must be a signed decimal string, null, or absent`,
     )
   }
 
@@ -104,10 +104,10 @@ function readOptionalTotalPoints(record: UnknownRecord, context: string): number
   const value = record.total_points
 
   if (value === undefined || value === null) return null
-  if (!Number.isSafeInteger(value) || (value as number) < 0) {
+  if (!Number.isSafeInteger(value)) {
     throw new FplDataError(
       'INVALID_PLAYER',
-      `${context}.total_points must be a non-negative integer, null, or absent`,
+      `${context}.total_points must be a signed integer, null, or absent`,
     )
   }
 
