@@ -1,10 +1,10 @@
 # Kile N Others — Second Brain
 
 ## Purpose
-This folder is the project control manual. The GitHub repository, committed code, migrations, database state, tests, and verified external contracts remain the technical source of truth. The Second Brain records approved architecture, product rules, current status, and the next narrow task so Codex does not repeatedly rediscover the project.
+This folder is the project control manual. The GitHub repository, committed code, migrations, database state, tests, and verified deployed state remain the technical source of truth. The Second Brain records approved architecture, product rules, current status, and the next narrow task so Codex does not repeatedly rediscover the project.
 
 ## Current product
-Kile N Others is a private six-team FPL Draft league companion for the 2026/27 season. It evolved from the original FPL Draft Assistant and preserves the useful Draft Room, rankings/model evidence, immutable official draft, current roster derivation, Players/Teams/Transactions foundations and Draft Archive while moving toward a persistent season-long league app.
+Kile N Others is a private six-team FPL Draft league companion for the 2026/27 season. It preserves the useful Draft Room, rankings/model evidence, immutable official draft, current roster derivation, Players/Teams/Transactions foundations and Draft Archive while evolving into a persistent season-long league app.
 
 ## Current technical baseline
 - Frontend: React + Vite + TypeScript.
@@ -16,34 +16,65 @@ Kile N Others is a private six-team FPL Draft league companion for the 2026/27 s
 - P5A Players filtering/sorting + live Form/Total Points: COMPLETE.
 - F3 Supabase Foundation: COMPLETE.
 - A1 Six Accounts + RLS: COMPLETE.
-- A1.5 Persistent Session / Automatic Login foundation: COMPLETE.
-- A2 Account-aware Shell: CURRENT.
-- Current verified `main` baseline after PR #28: `524b794d56fde92ffe7d9a4d88093ed03a3a4eeb`.
+- A1.5 Persistent Session / Automatic Login: COMPLETE.
+- A2 Account-aware Shell: COMPLETE and production-verified.
+- A3 Team Profiles + Avatars: CURRENT / NEXT implementation phase.
+- Current verified `main`: `db33831caf6f88c17e4c6420560b8b81dbb045b9`.
 - Production application: `https://fpl-draft-assistant-eight.vercel.app/`.
 - Production FPL boundary: `https://fpl-draft-assistant-eight.vercel.app/api/fpl`.
 - Canonical historical draft: `src/data/leagues/kile-n-others/officialDraft2026-27.json`.
 - Official-draft tag: `kile-n-others-official-draft-2026-27`.
 - Live FPL boundary: project-owned `/api/fpl` adapter over public official FPL Draft data.
 - Desktop and mobile use separate presentation trees over one shared controller/domain/data model.
-- Supabase client/config/migration foundation exists; six league identities and MEMBER/LEAGUE_OWNER RLS foundation exist; browser session persistence/refresh lifecycle exists; A2 now connects that identity/session layer to the product shell.
+
+## Hosted Supabase production state
+Hosted project: **KNO** (`asrrkwyqerfkynhjypov`).
+
+Applied repository migrations:
+- `20260822170000_foundation.sql`
+- `20260822180000_league_accounts.sql`
+
+Verified hosted state:
+- `league_accounts` contains six rows;
+- exactly one `LEAGUE_OWNER` and five `MEMBER` rows;
+- Jakin Goff -> Vuk -> `LEAGUE_OWNER` / Commissioner;
+- RLS enabled;
+- anonymous account access blocked;
+- intended authenticated account reads allowed;
+- public signup disabled while email/password authentication remains enabled;
+- six production Supabase Auth users provisioned with private passwords held by Vuk;
+- Vercel production has browser-safe `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`;
+- no Supabase secret/service-role credential is exposed to the frontend;
+- production has been redeployed against hosted Supabase and authentication works.
+
+## Account/session state
+A2 is complete and verified in production:
+- visible login uses team name + password;
+- Supabase-managed sessions persist and restore across normal refresh/reopen while valid;
+- logout clears authenticated state;
+- project code does not store passwords;
+- each authenticated account resolves to the correct immutable roster manager ID;
+- My Team is account-specific;
+- Jakin Goff alone receives Commissioner presentation from real account role;
+- MEMBER accounts retain normal member presentation;
+- roster identity and Commissioner authorization are separate concerns.
+
+PR #33 (`fix: isolate account rosters and live players`) fixed:
+- stable account -> immutable roster-manager-ID resolution;
+- fail-closed behavior for unknown/inconsistent identities instead of falling back to Jakin/Vuk;
+- Miku007 / Lovro -> Miku roster correction;
+- stale previous-account dashboard state during account switching;
+- separation of Commissioner role from roster identity;
+- acceptance of valid signed official Form and Total Points values;
+- restoration of live Players data.
+
+Manual post-merge verification confirmed account-specific My Team, the corrected Miku007 roster, the correct Jakin Goff/Vuk roster, and live Players data.
 
 ## League authority
 - Jakin Goff is the backend `LEAGUE_OWNER` account.
 - Product-facing title: **Commissioner**.
 - Authorization continues to rely on backend role/RLS, not the display label.
-- Members may create/edit/submit only their own lineup before the verified Gameweek start/deadline.
-- After kickoff, normal member lineup writes lock; only the Commissioner may insert/edit/replace a lineup for itself or another manager.
-- Commissioner post-start lineup writes must be backend-enforced and auditable when G3 lineup persistence is implemented.
-
-## Authentication/session rule
-- Visible login UX is team name + password.
-- Internal Supabase Auth email identifiers are an implementation detail and should not be exposed to users.
-- Passwords are never stored by project code.
-- Browser authentication uses Supabase-managed persistent sessions and refresh tokens.
-- After a successful login on a browser/device, refresh or later reopening should restore the valid session automatically without re-entering the password.
-- Auth startup must distinguish `INITIALIZING`, `AUTHENTICATED`, and `UNAUTHENTICATED` so the product does not briefly treat a restorable session as logged out.
-- Explicit logout clears the persistent authenticated session.
-- Session persistence proves authentication only; roles/Commissioner authorization remain database/RLS controlled.
+- Future Gameweek lineup permission/lock rules remain as defined in `07_League_Rules_Product_Behavior.md` and later G3 work.
 
 ## Approved target architecture
 ```text
@@ -52,16 +83,12 @@ React/Vite UI on Vercel
         +--> Supabase Auth/Postgres/Storage/RLS
         |       - league accounts / profiles
         |       - persistent sessions handled by Supabase Auth
-        |       - lineups + audit metadata
-        |       - scores/corrections
-        |       - trading block
-        |       - trade proposals/history
-        |       - sync metadata
+        |       - future lineups + audit metadata
+        |       - future scores/corrections
+        |       - future trading block / trades
         |
         +--> Vercel Functions /api/fpl/*
-                - official/public FPL Draft data
-                - official FPL data
-                - verified Premier League data
+                - verified official/public FPL data
 
 Existing pure domain layer remains authoritative for project rules.
 ```
@@ -79,47 +106,30 @@ current league rosters
 
 ## Codex read map
 Read only what the task needs.
-
 - Deployment: `00_HOME`, `09_Testing_Deployment`, `15_Current_Phase`.
 - Mobile/UI: `00_HOME`, `03_Current_Architecture`, `09_Testing_Deployment`, `15_Current_Phase`.
 - Data/API: `00_HOME`, `04_Data_Architecture_Sources`, `15_Current_Phase`.
 - Supabase/Auth/RLS: `00_HOME`, `05_Authentication_Security`, `12_Roadmap`, `15_Current_Phase`.
-- Account-aware shell: `00_HOME`, `03_Current_Architecture`, `05_Authentication_Security`, `12_Roadmap`, `15_Current_Phase`.
+- Team profiles/avatars: `00_HOME`, `03_Current_Architecture`, `05_Authentication_Security`, `12_Roadmap`, `15_Current_Phase`.
 - League/Gameweek: `00_HOME`, `07_League_Rules_Product_Behavior`, `15_Current_Phase`.
-- Players: `00_HOME`, `03_Current_Architecture`, `07_League_Rules_Product_Behavior`, `12_Roadmap`, `15_Current_Phase`.
 - Roadmap/planning: `00_HOME`, `12_Roadmap`, `14_Project_Status`, `15_Current_Phase`.
 
 Do not inspect unrelated folders unless a relevant Second Brain note or failing test requires it.
 
 ## Development workflow
-1. ChatGPT inspects current `main` and relevant Second Brain notes, then defines the product goal, non-negotiable architecture/data/security rules, scope boundaries, and acceptance criteria.
-2. Codex inspects the repository and owns the implementation plan. It should choose the exact files, component structure, SQL/RLS shape, refactors, CSS approach, test seams, and command sequence that best fit the actual codebase.
-3. ChatGPT prompts should be direct about outcomes and invariants but should not micromanage implementation details that Codex can reason about better from repository context.
-4. Prescriptive implementation instructions are reserved for true invariants: security boundaries, immutable history, source-of-truth rules, migration safety, and explicit previously approved architecture decisions.
-5. Codex may choose a different implementation approach than a suggestion when repository evidence supports a safer, simpler, faster, or more maintainable solution; it should explain material deviations in its final report.
-6. Codex uses a fresh short-lived branch from current `main` and does not edit `Second_Brain/` during normal implementation tasks.
-7. Codex performs every verification it can reliably perform itself: relevant tests, typecheck, lint, build, local integration checks, database/RLS checks, and repository inspection.
-8. Codex must not report a check as passed unless it actually ran it. If a check genuinely requires Vuk, a real device/browser, unavailable credentials, or subjective visual judgment, the final report includes a concise **Manual verification for Vuk** section with the exact minimal steps and expected result. If no manual verification is needed, say so.
-9. Codex stages explicit files, pushes, and opens a Draft PR; Codex never merges.
-10. ChatGPT independently reviews the actual PR/diff/CI and returns PASS/FIX/FAIL.
-11. Vuk alone merges implementation PRs.
-12. After merged/verified implementation, ChatGPT updates Second Brain only when approved, on a short-lived docs branch and Draft PR; Vuk reviews and merges docs PRs.
+1. ChatGPT inspects current `main` and relevant Second Brain notes, then defines product goal, non-negotiable architecture/data/security rules, scope boundaries, roadmap ordering, and acceptance criteria.
+2. Codex inspects the repository and owns implementation strategy, exact files/components/SQL/CSS/refactors, debugging, and test execution.
+3. Prompts are outcome-oriented and avoid micromanaging implementation details Codex can determine better from repository context.
+4. Reuse known working Codex session/tool access; do not repeat setup/authentication unless access is actually missing or expired.
+5. Codex performs every verification it can reliably perform itself.
+6. Checks that genuinely require Vuk go in a concise **Manual verification for Vuk** section with only exact action, expected result, and failure signal; one manual-only check must not block unrelated work.
+7. Use a fresh short-lived implementation branch for code or docs branch for Second Brain work; open a Draft PR; never merge.
+8. ChatGPT independently reviews the actual PR/diff/CI.
+9. Vuk alone merges implementation and documentation PRs.
 
-Never use permanent Codex/ChatGPT branches. Never use a docs branch for implementation code. Never document planned functionality as implemented reality.
-
-## Prompting rule
-A good Codex prompt should primarily answer four things:
-- What outcome does Vuk want?
-- What project/product/security constraints cannot change?
-- What is in scope and out of scope?
-- What evidence is required before the task can be considered complete?
-
-The prompt should normally leave execution details to Codex after it inspects the repository. Avoid long step-by-step implementation recipes unless the step itself is an invariant or Codex has already shown it needs a specific correction.
-
-## Model usage
-- Luna: trivial/mechanical work.
-- Terra: normal React/TypeScript/Supabase implementation.
-- Sol: architecture, security/RLS review, data-source investigation, major verification.
+Never use permanent Codex/ChatGPT branches. Never use worktrees without a real Git reason. Never document planned functionality as implemented reality.
 
 ## Next phase
-See `15_Current_Phase.md`: A2 — Account-aware Shell.
+See `15_Current_Phase.md`: **A3 — Team Profiles + Avatars**.
+
+Do not skip to G1 unless A3 is completed or Vuk explicitly changes the roadmap.

@@ -1,14 +1,11 @@
 # Testing and Deployment
 
 ## Testing philosophy
-Use the smallest meaningful test surface for each narrow Codex task.
+Use the smallest meaningful test surface during implementation, then run the full relevant merge-confidence checks before a meaningful PR is considered ready.
 
-During implementation:
-- run the specific Vitest file(s) related to the changed domain/component;
-- run `npm run typecheck` when TypeScript surfaces change;
-- run focused manual/rendered verification only when UI behavior changed.
+Codex should perform every verification it can reliably perform itself. A check belongs to Vuk only when it genuinely requires private credentials, a real device/browser, unavailable external authenticated access, or subjective product judgment.
 
-Do not automatically run the entire repository suite after every small change.
+A manual-only check must not automatically block unrelated technical work.
 
 ## PR/merge checkpoint
 Before merge of a meaningful implementation PR, normally run:
@@ -16,22 +13,26 @@ Before merge of a meaningful implementation PR, normally run:
 - `npm test`
 - `npm run build`
 - `npm run lint`
+- `git diff --check`
 
-Run `npm run verify:fpl-live` only when the live FPL boundary or current-player/ranking join is relevant.
+Run `npm run verify:fpl-live` when the live FPL boundary or current-player/ranking join is relevant.
 
-Run Python/research tests only when `research/` or ranking-generation behavior changes.
+Run Supabase/RLS verification when database/auth/storage policy behavior changes.
+
+Never report a test/browser/deployment check as passed unless it was actually performed.
 
 ## Regression priorities
 Protect these invariants:
 - immutable 90-pick official draft remains valid;
-- current roster evolution never mutates the archived draft;
-- unique player ownership;
-- exact 2/5/5/3 squad composition after processed transactions;
-- account authorization enforced server/database-side once auth exists;
-- missing lineup never becomes fabricated historical data;
-- admin point correction remains auditable;
+- current roster evolution never mutates archived draft history;
+- unique player ownership and legal roster composition remain intact;
 - external schema failures fail clearly rather than silently guessing;
-- desktop and mobile render the same underlying league state and rules.
+- valid signed official Form/Total Points values are accepted;
+- authenticated account identity resolves to the correct immutable roster manager ID;
+- unknown/inconsistent account identity fails closed rather than falling back to Jakin/Vuk;
+- Commissioner authorization remains separate from roster identity;
+- desktop and mobile render the same underlying league/account/data state;
+- authorization-sensitive writes are backend/RLS enforced.
 
 ## Current deployment
 F1 — Vercel Deployment is COMPLETE.
@@ -42,88 +43,91 @@ Production:
 Production FPL endpoint:
 `https://fpl-draft-assistant-eight.vercel.app/api/fpl`
 
-The deployed boundary is:
+The deployed FPL boundary remains:
 
 ```text
 Browser -> GET /api/fpl -> project FPL handler -> project FPL service -> public FPL Draft bootstrap
 ```
 
-Local Vite mounts the same project-owned handler for development.
+Vercel packaging for `api/fpl.ts` must continue to include `src/services/fpl/**` or an equivalent proven solution.
 
-During F1, the deployed `/api/fpl` function initially failed before handler execution because Vercel did not bundle the imported `src/services/fpl` files. PR #10 fixed the deployment by adding:
+## Hosted Supabase production deployment
+Hosted Supabase project:
+- name: KNO
+- project ref: `asrrkwyqerfkynhjypov`
 
-```json
-{
-  "functions": {
-    "api/fpl.ts": {
-      "includeFiles": "src/services/fpl/**"
-    }
-  }
-}
-```
+Applied hosted repository migrations:
+- `20260822170000_foundation.sql`
+- `20260822180000_league_accounts.sql`
 
-This configuration is now part of the deployment baseline and must not be removed without proving an equivalent packaging solution.
+Verified hosted state:
+- six league account rows;
+- one `LEAGUE_OWNER`, five `MEMBER`;
+- RLS active;
+- anonymous account reads blocked;
+- intended authenticated account reads allowed;
+- public signup disabled;
+- six production Auth accounts provisioned outside source control;
+- production authentication works.
+
+Production Vercel browser configuration:
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+
+No Supabase secret/service-role key belongs in browser/Vite environment variables.
+
+## A2 production verification
+A2 — Account-aware Shell is COMPLETE and verified in production.
+
+Verified behavior includes:
+- team-name + password login;
+- persistent Supabase-managed session restoration;
+- explicit logout;
+- account-specific My Team;
+- Jakin Goff Commissioner presentation;
+- normal MEMBER presentation for other accounts;
+- correct Miku007 / Lovro roster mapping;
+- correct Jakin Goff / Vuk roster mapping;
+- live Players directory after PR #33.
+
+PR #33 verification reported:
+- `npm run typecheck`
+- `npm test`
+- `npm run build`
+- `npm run lint`
+- `npm run verify:fpl-live`
+
+Manual post-merge production checks confirmed the account/roster and live-player behavior above.
 
 ## Current deployment sequence
-F0 — Second Brain foundation: COMPLETE.
+- F0 Second Brain foundation: COMPLETE.
+- F1 Vercel deployment: COMPLETE.
+- F2 desktop/mobile responsive shell: COMPLETE.
+- P5A Players filtering/sorting + live Form/Total Points: COMPLETE.
+- F3 Supabase foundation: COMPLETE.
+- A1 Six Accounts + RLS: COMPLETE.
+- A1.5 persistent session foundation: COMPLETE.
+- A2 account-aware shell: COMPLETE.
+- A3 Team Profiles + Avatars: CURRENT / NEXT.
 
-F1 — Vercel deployment: COMPLETE.
-
-F2 — Desktop + mobile responsive shell: CURRENT, not yet implemented.
-
-F3 — Supabase foundation: NEXT after F2.
-
-Do not combine F2 responsive work with Supabase/auth/database changes.
+Do not skip to G1 while A3 is current unless Vuk explicitly changes the roadmap.
 
 ## Desktop and mobile verification
 Desktop and mobile are both required targets of the same deployed application.
 
-Desktop verification should use a representative laptop/desktop viewport and confirm that the rich wide-screen experience remains intact.
+User-facing changes should verify representative desktop and narrow mobile layouts when the affected UI is shared across both. Mobile must remain normal-phone usable without required zoom and without unintended page-level horizontal overflow.
 
-Mobile verification should use at least one narrow phone-sized viewport and confirm:
-- navigation works without relying on the desktop sidebar;
-- primary actions are touch-friendly;
-- squad/pitch content is readable;
-- cards/grids stack without clipping;
-- wide tables have intentional compact or horizontal-scroll treatment;
-- important features do not disappear solely because the viewport is mobile.
+## A3 verification direction
+A3 should prove, at minimum, the profile/avatar persistence and authorization contract it introduces, plus Teams page consumption on both desktop and mobile where affected.
 
-Responsive work must not regress desktop. For user-facing UI phases, verify both form factors unless the task explicitly documents that only one layout is touched.
+Codex should choose the exact technical test strategy after inspecting the repository.
 
-## Responsive sequence
-F2 is now the current phase and is responsive desktop/mobile shell work only.
+If a production avatar upload/login flow genuinely requires Vuk's private credentials or browser interaction, the final report should isolate only that check under:
 
-Expected adaptations:
-- preserve the desktop sidebar on wide screens;
-- use compact navigation on mobile;
-- multi-column grids become responsive 2/1-column layouts;
-- football pitch/player cards become smaller responsive representations;
-- wide tables use safe horizontal scrolling/compact presentation.
-
-Do not combine responsive work with auth/database changes.
-
-## Environment variables
-Keep deployment configuration outside source control.
-
-When Supabase is introduced:
-- public client configuration may use Vercel environment variables where appropriate;
-- service-role/privileged secrets are server-only;
-- never commit credentials.
+**Manual verification for Vuk**
+- exact action;
+- expected result;
+- failure signal.
 
 ## CI philosophy
-CI is a merge confidence boundary, not a substitute for targeted local tests.
-
-Avoid adding expensive broad workflows unless a concrete failure mode justifies them.
-
-## Codex final report
-For normal implementation tasks, request a compact report:
-```text
-Changed:
-Tests:
-Result:
-Files:
-SHA:
-Known issue:
-```
-
-Large multi-section reports are reserved for architecture/research checkpoints.
+CI is a merge-confidence boundary, not a substitute for targeted local tests. Avoid adding expensive broad workflows without a concrete failure mode.

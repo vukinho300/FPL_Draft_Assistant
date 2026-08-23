@@ -1,7 +1,9 @@
 # Current Phase
 
-## A2 — Account-aware Shell
-Status: CURRENT
+## A3 — Team Profiles + Avatars
+Status: CURRENT / NEXT
+
+Do not start G1 while A3 is current unless Vuk explicitly changes the roadmap.
 
 ## Dependency state
 - F0 — Second Brain Foundation: COMPLETE
@@ -11,164 +13,130 @@ Status: CURRENT
 - F3 — Supabase Foundation: COMPLETE
 - A1 — Six Accounts + RLS: COMPLETE
 - A1.5 — Persistent Session / Automatic Login: COMPLETE
-- A2 — Account-aware Shell: CURRENT
+- A2 — Account-aware Shell: COMPLETE and production-verified
+- A3 — Team Profiles + Avatars: CURRENT / NEXT
 
-## Why A2 is now
-The backend/auth foundations are now in place:
-- Supabase client/config/migration foundation exists;
-- six league identities and MEMBER/LEAGUE_OWNER authorization/RLS foundation exist;
-- Jakin Goff is the single `LEAGUE_OWNER` and product-facing **Commissioner**;
-- a project-owned Supabase Auth session service exists;
-- Supabase-managed persistent sessions and automatic refresh are configured;
-- team-name login can resolve to the internal Auth identity;
-- no project password storage is used.
+## Verified baseline entering A3
+Current verified `main`:
+`db33831caf6f88c17e4c6420560b8b81dbb045b9`
 
-The next dependency is to connect those foundations to the actual application shell without pulling later league/Gameweek features into the same task.
+A2 is complete and working in production.
 
-## A2 goal
-Make the league app genuinely account-aware on both desktop and mobile.
-
-Required flow:
-
-```text
-app starts
-   |
-   +--> INITIALIZING
-           |
-           +--> valid restored session --> authenticated league app
-           |
-           +--> no valid session --------> login screen
-```
-
-A2 should consume the existing auth session service rather than create another client/session lifecycle.
-
-## Login behavior
-Unauthenticated users should see a simple league login experience using:
-- Team name
-- Password
-
-The visible UI should not expose internal Supabase Auth email identifiers.
-
-A successful login should enter the app as the matching league account.
-
-Passwords must never be stored by project code.
-
-## Automatic login / persistent session
-A successful login on a browser/device should remain authenticated across normal refresh and later browser reopen while the Supabase session remains valid.
-
-A2 must:
-- wait for session initialization before deciding whether to show login;
-- avoid login-screen flicker during valid session restoration;
-- preserve Supabase-managed token refresh;
-- provide explicit logout;
-- after logout, refreshing/reopening must not automatically re-enter the league app until another successful login.
-
-Real browser refresh/reopen/logout should be manually verified once hosted Supabase configuration/accounts are available.
-
-## Account resolution
-For an authenticated Supabase user, A2 must resolve the real application league-account row established by A1.
-
-The shell should have a shared current-account model containing the minimum trusted application identity needed by the UI, such as:
-- league account/team ID;
-- team name;
-- manager name;
-- role.
-
-Do not treat client-supplied/localStorage role data as authoritative.
-
-If an authenticated Auth user has no valid application league-account mapping, fail closed with a clear error/recovery path rather than guessing an identity.
-
-## My Team behavior
-`My Team` must resolve to the authenticated manager/team rather than a hardcoded default manager.
-
-Examples:
-- Jakin Goff login -> My Team = Jakin Goff roster/context;
-- Dindi login -> My Team = Dindi roster/context;
-- 22nd oBlock login -> My Team = 22nd oBlock roster/context.
-
-This should apply consistently on mobile and desktop through shared account-aware state.
-
-A2 does not yet create the G3 persistent Gameweek lineup entity.
-
-## Commissioner behavior
-Jakin Goff:
-- backend role: `LEAGUE_OWNER`;
-- user-facing title: **Commissioner**.
-
-A2 may display the Commissioner label and expose account-aware UI cues based on the resolved account role.
-
-However:
-- frontend checks do not replace RLS;
-- do not create a client-authoritative `isCommissioner` persistence mechanism;
-- do not implement future lineup/score admin mutation flows in A2.
-
-## Desktop/mobile architecture
-Desktop and mobile should consume the same authenticated session/current-account model.
-
-Different visual placement is acceptable, but do not create separate mobile/desktop authentication engines.
-
-The established responsive shell and zero-horizontal-overflow mobile behavior must remain intact.
-
-## Hosted Supabase boundary
-A2 should distinguish code correctness from environment/provisioning availability.
-
-Where production/preview Supabase environment variables and accounts are configured, perform a real login/session restoration test.
-
-If hosted setup is still unavailable, do not invent success. Keep local/unit verification strong and report the exact remaining manual hosted setup.
-
-Never commit credentials.
-
-## Out of scope for A2
-Do not implement:
-- Gameweek lineup persistence/edit locking;
-- Commissioner post-kickoff lineup override;
-- standings/Gameweek API integration;
-- team avatars/profile feature;
-- Trading Block/trade proposals;
-- scores/corrections;
-- player photos;
-- notifications.
-
-Those remain later roadmap phases.
-
-## A2 acceptance criteria
-A2 is complete only when:
-- app auth initialization uses the existing A1.5 session service;
-- unauthenticated state displays team-name + password login;
-- valid authentication enters the league application;
-- current Auth user resolves to one valid A1 league account;
+Verified account/session behavior:
+- team-name + password login;
+- Supabase-managed session restoration across normal refresh/reopen while valid;
+- explicit logout;
+- no project password storage;
+- current Auth user resolves to one valid league account;
 - My Team resolves to the authenticated team;
-- Jakin Goff is visibly Commissioner based on real account data;
-- member vs Commissioner presentation uses resolved account role;
-- explicit logout works;
-- no password is stored by project code;
-- no role/authorization authority is moved into localStorage/client state;
-- persistent valid session restores without requiring a password again;
-- mobile and desktop share one account/session model;
-- existing League/Players/Teams/Transactions/Draft Archive behavior is not unintentionally regressed;
-- mobile remains vertical-only with no horizontal page overflow;
-- typecheck/tests/build/lint pass;
-- real browser login/refresh/reopen/logout is verified when hosted Supabase setup permits it.
+- Jakin Goff alone displays Commissioner from real account role;
+- other accounts behave as normal MEMBER accounts;
+- desktop and mobile share the same authenticated account/session model.
 
-## Recommended verification
-Run:
-- `npm run typecheck`
-- `npm test`
-- `npm run build`
-- `npm run lint`
-- `git diff --check`
+Hosted Supabase production is established in KNO (`asrrkwyqerfkynhjypov`):
+- repository migrations `20260822170000_foundation.sql` and `20260822180000_league_accounts.sql` are applied;
+- six league account rows exist;
+- one `LEAGUE_OWNER`, five `MEMBER`;
+- RLS enabled;
+- anonymous account reads blocked;
+- intended authenticated account reads allowed;
+- public signup disabled;
+- six private production Auth users provisioned;
+- Vercel browser-safe Supabase variables configured;
+- no service-role/secret credential exposed to the frontend;
+- production authentication works.
 
-Use local Supabase verification where the implementation touches account lookup/auth behavior.
+PR #33 is part of the baseline and must not be regressed:
+- stable approved account -> immutable roster manager ID mapping;
+- fail closed on unknown/inconsistent roster identity;
+- no fallback to Jakin/Vuk;
+- Miku007 / Lovro -> Miku roster correction;
+- stale previous-account dashboard prevention on account switch;
+- Commissioner authorization separated from roster identity;
+- valid signed official Form / Total Points accepted;
+- live Players data restored.
 
-Rendered checks should cover desktop and ~390px mobile for:
-- INITIALIZING state;
-- login state;
-- authenticated shell;
-- My Team for at least one MEMBER and Jakin Goff;
-- Commissioner label;
-- logout;
-- refresh/session restoration;
-- zero mobile horizontal overflow.
+## Why A3 is now
+The roadmap intentionally places A3 after the account-aware shell and before real FPL Draft league/entry identity work.
 
-## Next phase after A2
-After A2 is merged, verified and reconciled, continue with the dependency-ordered league data work, beginning with G1 — Real FPL Draft league/entry identity, unless a small approved profile/photo dependency is intentionally scheduled first.
+The product now has:
+- persistent authenticated league identities;
+- stable account-to-roster identity;
+- backend role/RLS foundation;
+- shared desktop/mobile account-aware UI;
+- hosted Supabase production infrastructure.
+
+The next dependency is to give those six authenticated teams persistent league-visible profile data and avatars before moving into G1 league/entry integration.
+
+## A3 product outcome
+Each of the six league teams should have a persistent profile backed by Supabase, including an avatar that can be uploaded/replaced according to approved authorization rules, and the Teams page should consume that persistent profile data.
+
+The experience should work as one shared league feature across desktop and mobile.
+
+## Approved A3 scope
+In scope:
+- persistent Team profile table/data model;
+- avatar upload/update using Supabase Storage or the repository-consistent equivalent approved backend path;
+- Teams page reads and displays persistent profile/avatar data;
+- owner-scoped profile/avatar updates for the authenticated team;
+- narrowly justified Commissioner repair/admin capability if repository evidence shows it is needed;
+- backend/RLS/storage policies protecting reads/writes;
+- deterministic tests and verification appropriate to the chosen implementation.
+
+## Non-negotiable architecture / security rules
+- Supabase Auth/Postgres/RLS/Storage remains the persistent backend.
+- Persistent profile/avatar state must not use localStorage as authoritative truth.
+- Normal members may modify only fields explicitly permitted for their own account/team.
+- Any Commissioner-only repair capability must derive from backend `LEAGUE_OWNER` authorization, not a React-only flag.
+- No Supabase secret/service-role credential may be exposed to browser code or Vite public variables.
+- Do not request, store, commit, or log Vuk's production passwords.
+- Preserve the existing six league-account identities and stable account -> immutable roster manager ID mapping.
+- Do not let profile display names become roster identity authority.
+- Desktop/mobile must consume one shared profile data contract rather than maintaining separate persistent state.
+- Preserve immutable official draft history and current roster derivation rules.
+- Avoid broad public/anonymous profile mutation.
+
+## Out of scope for A3
+Do not implement:
+- G1 real FPL Draft league ID / six entry IDs;
+- G2 standings/Gameweek adapter;
+- Gameweek lineup persistence or locking;
+- Commissioner post-kickoff lineup administration;
+- scoring/corrections;
+- Trading Block/trade proposals;
+- Premier League player-photo identity work;
+- unrelated Players enrichment;
+- automatic official FPL writes.
+
+## Acceptance direction
+A3 is complete when repository evidence and testing demonstrate that:
+- all six teams can be represented by persistent profiles linked to the existing league-account identity model;
+- authenticated league members can read the league-visible profiles needed by Teams;
+- a normal MEMBER cannot update another team's protected profile/avatar data;
+- a team can update its permitted own profile/avatar data;
+- avatar storage/read/update authorization is enforced through backend policies, not only UI hiding;
+- Teams page consumes persistent profile data on the shared desktop/mobile model;
+- missing avatar/profile data has a truthful fallback state rather than fabricated data;
+- account-to-roster identity behavior from PR #33 is unchanged;
+- existing login/session/logout/member/Commissioner behavior is not regressed;
+- no secret/password is added to source control or browser configuration;
+- relevant typecheck/tests/build/lint/database/RLS/storage checks pass;
+- any genuinely manual-only production/browser check is isolated under **Manual verification for Vuk** with exact action, expected result, and failure signal.
+
+Codex should inspect the repository and choose the exact schema, policy, storage path, component structure, state flow, migration shape, and test strategy. ChatGPT should not prescribe unnecessary file-level implementation.
+
+## Workflow for the eventual A3 implementation
+- continue the same Codex session while its existing repository/tool context remains useful;
+- use a fresh short-lived implementation branch from current `main`;
+- Codex performs every check it can itself;
+- do not stop unrelated work because one private-password/browser-only check remains;
+- open one Draft PR;
+- ChatGPT independently reviews the actual PR/diff/CI;
+- Vuk alone merges.
+
+## Next phase after A3
+After A3 is merged, verified, and reconciled in the Second Brain, proceed to:
+
+**G1 — Real FPL Draft league/entry identity**
+
+unless Vuk explicitly changes the roadmap ordering.
