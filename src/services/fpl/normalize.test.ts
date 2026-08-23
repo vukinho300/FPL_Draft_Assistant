@@ -128,6 +128,16 @@ describe('normalizeFplBootstrap', () => {
     expect(player).toMatchObject({ form: 4.5, totalPoints: 12 })
   })
 
+  it('preserves valid negative official form and total points', () => {
+    const fixture = createBootstrapFixture()
+    fixture.elements[0] = { ...fixture.elements[0], form: '-1.0', total_points: -2 }
+
+    expect(normalizeFplBootstrap(fixture).find(({ id }) => id === String(fixture.elements[0].id))).toMatchObject({
+      form: -1,
+      totalPoints: -2,
+    })
+  })
+
   it('rejects invalid official form and total points instead of inventing values', () => {
     const invalidForm = createBootstrapFixture()
     invalidForm.elements[0] = { ...invalidForm.elements[0], form: 'not-a-number' }
@@ -136,7 +146,7 @@ describe('normalizeFplBootstrap', () => {
     )
 
     const invalidPoints = createBootstrapFixture()
-    invalidPoints.elements[0] = { ...invalidPoints.elements[0], total_points: -1 }
+    invalidPoints.elements[0] = { ...invalidPoints.elements[0], total_points: 2.5 }
     expect(() => normalizeFplBootstrap(invalidPoints)).toThrowError(
       expect.objectContaining({ code: 'INVALID_PLAYER' }),
     )

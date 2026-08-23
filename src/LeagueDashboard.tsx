@@ -8,13 +8,13 @@ import { usePresentationMode } from './dashboard/usePresentationMode.ts'
 
 interface LeagueDashboardProps {
   readonly playerLoader?: PlayerLoader
-  readonly currentManagerName?: string
+  readonly currentManagerId?: string
   readonly account?: { readonly teamName: string; readonly isCommissioner: boolean }
   readonly onLogout?: () => void
 }
 
-function LeagueDashboard({ playerLoader, currentManagerName, account, onLogout }: LeagueDashboardProps) {
-  const model = useLeagueDashboardModel(playerLoader, currentManagerName)
+function LeagueDashboard({ playerLoader, currentManagerId, account, onLogout }: LeagueDashboardProps) {
+  const model = useLeagueDashboardModel(playerLoader, currentManagerId)
   const presentation = usePresentationMode()
 
   return presentation === 'mobile'
