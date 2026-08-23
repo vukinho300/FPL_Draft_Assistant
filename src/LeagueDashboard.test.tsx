@@ -176,13 +176,20 @@ describe('LeagueDashboard presentation boundary', () => {
     expect(container.querySelector('.football-pitch')).toBeNull()
     expect(container.querySelector('[data-lineup-preview="unavailable"]')).not.toBeNull()
     expect(container.querySelectorAll('.mobile-position-section')).toHaveLength(4)
+    expect(container.querySelector('.mobile-squad-counts')).toBeNull()
+    expect(container.querySelector('.mobile-squad-heading > strong')).toBeNull()
+    expect(container.querySelectorAll('.mobile-player-identity')).toHaveLength(15)
+    expect(container.querySelector('.mobile-player-status')).toBeNull()
+    expect(container.querySelector('.mobile-squad-heading small')?.textContent).toContain('Availability and fixtures are not connected')
+    expect(container.querySelector('.mobile-squad-heading h2')?.textContent).toBe('Current squad')
 
     clickButton(container, 'Teams')
     expect(container.textContent).not.toContain('Choose a manager')
     expect(container.querySelector('.mobile-squad-counts')).toBeNull()
     expect(container.querySelector('.mobile-squad-heading > strong')).toBeNull()
     clickButton(container, 'Rod Wave Disciples')
-    expect(container.querySelector('.mobile-squad-heading h2')?.textContent).toBe('Rod Wave Disciples current squad')
+    expect(container.querySelector('.team-profile-header')?.textContent).toContain('Rod Wave Disciples')
+    expect(container.querySelector('.mobile-squad-heading h2')?.textContent).toBe('Current squad')
 
     act(() => media.setMatches(false))
     expect(container.querySelector('.league-topbar h1')?.textContent).toBe('Teams')
@@ -193,9 +200,16 @@ describe('LeagueDashboard presentation boundary', () => {
     KILE_N_OTHERS_ACCOUNT_ROSTER_IDENTITIES.forEach((identity) => {
       const { container } = renderDashboard(true, [], identity.rosterManagerId)
       clickButton(container, 'My Team')
-      expect(container.querySelector('.mobile-squad-heading h2')?.textContent).toBe(
-        `${identity.teamName} current squad`,
+      const expectedManager = officialDraft202627.managers.find(
+        (manager) => manager.id === identity.rosterManagerId,
       )
+      expect(container.querySelector('.mobile-squad-heading h2')?.textContent).toBe(
+        'Current squad',
+      )
+      expect(container.querySelector('[data-mobile-squad]')?.getAttribute('aria-label')).toBe(
+        `${expectedManager?.displayName} squad`,
+      )
+      expect(container.querySelector('.team-profile-header')?.textContent).toContain(identity.teamName)
     })
   })
 
@@ -237,6 +251,7 @@ describe('LeagueDashboard presentation boundary', () => {
     expect(container.querySelector('.team-profile-header')?.textContent).toContain('Jakin Goff')
     expect(container.querySelector('.team-profile-header')?.textContent).toContain('Managed by Vuk')
     expect(container.querySelector('.team-profile-header')?.textContent).toContain('Commissioner')
+    expect(container.querySelector('.team-profile-header')?.textContent).not.toContain('shared across devices')
     expect(container.querySelector('.mobile-bottom-navigation button[aria-label="My Team"] img')?.getAttribute('src')).toBe('https://signed.example/jakin-avatar')
 
     const input = container.querySelector<HTMLInputElement>('.team-avatar-input')

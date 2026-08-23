@@ -76,7 +76,7 @@ function MobileMyTeamPage({ model, profiles }: { readonly model: LeagueDashboard
       <MobileSquad
         model={model}
         roster={model.currentManagerRoster}
-        title={`${profiles.current.teamName} current squad`}
+        title="Current squad"
       />
     </div>
   )
@@ -106,7 +106,7 @@ function MobileTeamsPage({ model, profiles }: { readonly model: LeagueDashboardM
       <MobileSquad
         model={model}
         roster={model.selectedManagerRoster}
-        title={`${profiles.selected.teamName} current squad`}
+        title="Current squad"
         showRosterCapacity={false}
       />
     </div>

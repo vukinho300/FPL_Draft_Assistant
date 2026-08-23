@@ -255,7 +255,19 @@
 }
 
 .mobile-squad {
-  padding: 1rem;
+  padding: 0.8rem;
+}
+
+.mobile-squad-heading h2 {
+  font-size: 1.2rem;
+}
+
+.mobile-squad-heading small {
+  display: block;
+  margin-top: 0.2rem;
+  color: #708478;
+  font-size: 0.74rem;
+  line-height: 1.3;
 }
 
 .mobile-squad-heading > strong {
@@ -281,6 +293,11 @@
 
 .mobile-squad-counts {
   margin-top: 0.9rem;
+}
+
+.mobile-player-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.45rem;
 }
 
 .mobile-squad-counts > div {
@@ -310,8 +327,8 @@
 .mobile-position-sections {
   display: grid;
   min-width: 0;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
 }
 
 .mobile-position-section {
@@ -319,7 +336,7 @@
 }
 
 .mobile-position-section h3 {
-  margin: 0 0 0.55rem;
+  margin: 0 0 0.35rem;
   color: #39745a;
   font-size: 0.78rem;
   font-weight: 900;
@@ -328,12 +345,25 @@
 
 .mobile-player-card {
   display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   min-width: 0;
-  gap: 0.4rem;
-  padding: 0.8rem;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.58rem 0.65rem;
   border: 1px solid #d9e6de;
   border-radius: 0.75rem;
   background: #fbfdfb;
+}
+
+.mobile-player-identity {
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.mobile-player-identity > div {
+  min-width: 0;
 }
 
 .mobile-position-badge {
@@ -364,10 +394,10 @@
   overflow-wrap: anywhere;
 }
 
-.mobile-player-card > p {
+.mobile-player-identity p {
   margin: 0;
   color: #5d7567;
-  font-size: 0.88rem;
+  font-size: 0.78rem;
 }
 
 .mobile-player-card dl,
@@ -378,6 +408,13 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.45rem;
   margin: 0.1rem 0 0;
+}
+
+.mobile-player-card dl {
+  grid-template-columns: repeat(2, auto);
+  gap: 0.35rem;
+  margin: 0;
+  text-align: right;
 }
 
 .mobile-player-card dl div,
@@ -394,6 +431,8 @@
   font-weight: 800;
 }
 
+.mobile-player-card dt { font-size: 0.64rem; }
+
 .mobile-player-card dd,
 .mobile-directory-player dd,
 .mobile-draft-pick dd {
@@ -404,39 +443,29 @@
   overflow-wrap: anywhere;
 }
 
-.mobile-player-status {
-  display: grid;
-  gap: 0.2rem;
-  margin-top: 0.1rem;
-  padding-top: 0.45rem;
-  border-top: 1px solid #e1ebe4;
-  color: #7a8c82;
-  font-size: 0.75rem;
-  line-height: 1.3;
-}
+.mobile-player-card dd { font-size: 0.78rem; }
 
 .mobile-lineup-note {
   display: grid;
   min-width: 0;
-  gap: 0.35rem;
-  margin-top: 1rem;
-  padding: 0.9rem;
+  gap: 0.18rem;
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.75rem;
   border: 1px dashed #b9ccc0;
   border-radius: 0.7rem;
   background: #f6faf7;
 }
 
-.mobile-lineup-note h3 {
-  margin: 0;
+.mobile-lineup-note strong {
   color: #365746;
-  font-size: 1rem;
+  font-size: 0.88rem;
 }
 
 .mobile-lineup-note > p:last-child {
   margin: 0;
   color: #63796d;
-  font-size: 0.9rem;
-  line-height: 1.45;
+  font-size: 0.78rem;
+  line-height: 1.35;
 }
 
 .mobile-manager-selector {
