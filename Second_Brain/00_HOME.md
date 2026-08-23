@@ -92,18 +92,29 @@ Read only what the task needs.
 Do not inspect unrelated folders unless a relevant Second Brain note or failing test requires it.
 
 ## Development workflow
-1. ChatGPT inspects current `main` and relevant Second Brain notes.
-2. Repository code/tests/contracts are reconciled against the Second Brain.
-3. ChatGPT defines product/architecture/security boundaries; Codex leads repository-heavy technical planning/implementation.
-4. Codex uses a fresh short-lived branch from current `main`.
-5. Codex does not edit `Second_Brain/` during implementation tasks.
-6. Codex verifies, stages explicit files, pushes and opens a Draft PR; Codex never merges.
-7. ChatGPT independently reviews the actual PR/diff/CI and returns PASS/FIX/FAIL.
-8. Vuk alone merges implementation PRs.
-9. After merged/verified implementation, ChatGPT updates Second Brain only when approved, on a short-lived docs branch and Draft PR.
-10. Vuk reviews and merges docs PRs.
+1. ChatGPT inspects current `main` and relevant Second Brain notes, then defines the product goal, non-negotiable architecture/data/security rules, scope boundaries, and acceptance criteria.
+2. Codex inspects the repository and owns the implementation plan. It should choose the exact files, component structure, SQL/RLS shape, refactors, CSS approach, test seams, and command sequence that best fit the actual codebase.
+3. ChatGPT prompts should be direct about outcomes and invariants but should not micromanage implementation details that Codex can reason about better from repository context.
+4. Prescriptive implementation instructions are reserved for true invariants: security boundaries, immutable history, source-of-truth rules, migration safety, and explicit previously approved architecture decisions.
+5. Codex may choose a different implementation approach than a suggestion when repository evidence supports a safer, simpler, faster, or more maintainable solution; it should explain material deviations in its final report.
+6. Codex uses a fresh short-lived branch from current `main` and does not edit `Second_Brain/` during normal implementation tasks.
+7. Codex performs every verification it can reliably perform itself: relevant tests, typecheck, lint, build, local integration checks, database/RLS checks, and repository inspection.
+8. Codex must not report a check as passed unless it actually ran it. If a check genuinely requires Vuk, a real device/browser, unavailable credentials, or subjective visual judgment, the final report includes a concise **Manual verification for Vuk** section with the exact minimal steps and expected result. If no manual verification is needed, say so.
+9. Codex stages explicit files, pushes, and opens a Draft PR; Codex never merges.
+10. ChatGPT independently reviews the actual PR/diff/CI and returns PASS/FIX/FAIL.
+11. Vuk alone merges implementation PRs.
+12. After merged/verified implementation, ChatGPT updates Second Brain only when approved, on a short-lived docs branch and Draft PR; Vuk reviews and merges docs PRs.
 
 Never use permanent Codex/ChatGPT branches. Never use a docs branch for implementation code. Never document planned functionality as implemented reality.
+
+## Prompting rule
+A good Codex prompt should primarily answer four things:
+- What outcome does Vuk want?
+- What project/product/security constraints cannot change?
+- What is in scope and out of scope?
+- What evidence is required before the task can be considered complete?
+
+The prompt should normally leave execution details to Codex after it inspects the repository. Avoid long step-by-step implementation recipes unless the step itself is an invariant or Codex has already shown it needs a specific correction.
 
 ## Model usage
 - Luna: trivial/mechanical work.

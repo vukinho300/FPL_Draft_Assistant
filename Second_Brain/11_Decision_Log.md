@@ -98,11 +98,15 @@ Status: APPROVED WORKFLOW
 Use Luna for trivial mechanical work, Terra for normal implementation, and Sol for architecture/security/data research/major verification.
 
 ## D-020 — Codex leads repository-heavy technical planning
-Status: APPROVED WORKFLOW
+Status: APPROVED WORKFLOW — EXPANDED
 
-For problems where correct decisions depend heavily on the actual repository, Codex should inspect the codebase, plan the technical solution and implement it. This includes UI/component architecture, CSS, refactors, debugging, implementation-level state organization and focused test strategy.
+For repository implementation work, Codex should inspect the codebase, relevant tests/contracts and Second Brain notes, then own the technical execution plan. This includes choosing exact files, component structure, CSS techniques, refactors, SQL/RLS implementation details, state organization, testing seams, debugging strategy and command sequence.
 
-ChatGPT should primarily define product intent, architecture boundaries, data/security rules, roadmap constraints and acceptance criteria, then independently verify Codex's claimed repository changes. ChatGPT should not micromanage exact code structure when Codex has materially better repository visibility.
+ChatGPT should primarily turn Vuk's ideas into clear task goals, define non-negotiable product/architecture/data/security constraints, define scope boundaries and acceptance criteria, and independently verify the resulting PR. ChatGPT should not normally prescribe step-by-step implementation details when Codex can make a better decision from direct repository context.
+
+Prescriptive implementation instructions are appropriate only when they protect a real invariant, such as security boundaries, immutable history, source-of-truth rules, migration safety, or an explicit previously approved architecture decision.
+
+Codex may depart from a suggested implementation approach when repository evidence supports a safer, simpler, faster or more maintainable solution, provided the task's outcome and invariants remain satisfied. Material deviations should be explained in the final report.
 
 ## D-021 — Mobile and desktop share one persistent application state
 Status: APPROVED ARCHITECTURE
@@ -177,3 +181,21 @@ Status: APPROVED AUTH UX RULE
 The account-aware shell must distinguish `INITIALIZING`, `AUTHENTICATED`, and `UNAUTHENTICATED` states. It should not briefly show the login state while a valid persisted Supabase session is still being restored.
 
 A2 should consume the project-owned auth session service rather than create a second session lifecycle or duplicate Supabase client.
+
+## D-031 — Codex owns implementation execution; prompts define outcomes and invariants
+Status: APPROVED WORKFLOW
+
+ChatGPT/Codex prompts should be concise and outcome-oriented. They should tell Codex what Vuk wants, which product/security/architecture rules cannot change, what is in/out of scope, and what evidence is required for completion.
+
+Codex should then inspect the repository and determine how to execute the task. Avoid unnecessarily prescribing exact code structure or step-by-step implementation because repository-local reasoning is usually stronger in Codex than browser-side planning without direct execution context.
+
+Token efficiency remains important: provide enough context to prevent rediscovery or constraint violations, but do not repeat large implementation recipes Codex can derive itself.
+
+## D-032 — Codex performs available verification and clearly assigns manual checks
+Status: APPROVED WORKFLOW
+
+Codex should perform every verification it can reliably perform itself, including relevant automated tests, type checking, linting, builds, local integration checks, database/RLS checks and repository inspection.
+
+Checks should be left to Vuk only when they genuinely require a real device/browser, unavailable credentials or external authenticated UI, or subjective visual/product judgment. In those cases Codex's final report must include a concise **Manual verification for Vuk** section containing the exact test, expected result and minimum steps.
+
+Codex must never claim that an unperformed test passed. If no manual verification is required, it should state that explicitly.
