@@ -77,7 +77,6 @@ export function TeamProfileHeader({
           {profile.role === 'LEAGUE_OWNER' && <span className="commissioner-badge">Commissioner</span>}
         </div>
         <p>Managed by <strong>{profile.managerName}</strong></p>
-        {editable && <small>Your avatar is shared across devices and visible to league members.</small>}
         {error !== null && <p className="team-profile-error" role="alert">{error}</p>}
       </div>
     </section>
