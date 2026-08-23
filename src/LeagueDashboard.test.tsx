@@ -9,6 +9,11 @@ import { KILE_N_OTHERS_ACCOUNT_ROSTER_IDENTITIES } from './data/leagues/kile-n-o
 import { officialDraft202627 } from './data/leagues/kile-n-others/officialDraft2026-27.ts'
 import type { Player } from './domain/player.ts'
 import { MOBILE_DASHBOARD_MEDIA_QUERY } from './dashboard/usePresentationMode.ts'
+import {
+  assembleLeagueTeamProfiles,
+  type TeamProfileService,
+} from './services/supabase/teamProfiles.ts'
+import type { AuthenticatedDashboardAccount } from './dashboard/useLeagueTeamProfiles.ts'
 
 class MatchMediaController {
   private matches: boolean
@@ -46,6 +51,8 @@ function renderDashboard(
   matchesMobile: boolean,
   players: readonly Player[] = [],
   currentManagerId?: string,
+  account?: AuthenticatedDashboardAccount,
+  profileService?: TeamProfileService,
 ) {
   const media = new MatchMediaController(matchesMobile)
   vi.stubGlobal('matchMedia', vi.fn(media.matchMedia))
@@ -58,14 +65,16 @@ function renderDashboard(
     players: [...players],
   }))
 
-  act(() => root.render(<LeagueDashboard playerLoader={playerLoader} currentManagerId={currentManagerId} />))
+  act(() => root.render(<LeagueDashboard playerLoader={playerLoader} currentManagerId={currentManagerId} account={account} profileService={profileService} />))
   mountedRoots.push({ root, container })
   return { container, media, playerLoader }
 }
 
 function clickButton(container: HTMLElement, label: string) {
   const button = [...container.querySelectorAll('button')].find(
-    (candidate) => candidate.textContent?.trim() === label,
+    (candidate) => candidate.textContent?.trim() === label
+      || candidate.getAttribute('aria-label') === label
+      || candidate.lastElementChild?.textContent?.trim() === label,
   )
   if (button === undefined) throw new Error(`Could not find ${label} button`)
   act(() => button.dispatchEvent(new MouseEvent('click', { bubbles: true })))
@@ -123,7 +132,7 @@ describe('LeagueDashboard presentation boundary', () => {
   it('uses League, My Team, Teams and More as the primary mobile navigation', () => {
     const { container } = renderDashboard(true)
     const primaryLabels = [...container.querySelectorAll('.mobile-bottom-navigation > button')].map(
-      (button) => button.textContent?.trim(),
+      (button) => button.getAttribute('aria-label'),
     )
     expect(primaryLabels).toEqual(['League', 'My Team', 'Teams', 'More'])
 
@@ -172,26 +181,80 @@ describe('LeagueDashboard presentation boundary', () => {
     expect(container.textContent).not.toContain('Choose a manager')
     expect(container.querySelector('.mobile-squad-counts')).toBeNull()
     expect(container.querySelector('.mobile-squad-heading > strong')).toBeNull()
-    clickButton(container, 'Deni')
-    expect(container.querySelector('.mobile-squad-heading h2')?.textContent).toBe("Deni's squad")
+    clickButton(container, 'Rod Wave Disciples')
+    expect(container.querySelector('.mobile-squad-heading h2')?.textContent).toBe('Rod Wave Disciples current squad')
 
     act(() => media.setMatches(false))
     expect(container.querySelector('.league-topbar h1')?.textContent).toBe('Teams')
-    expect(container.querySelector('.squad-heading h2')?.textContent).toBe("Deni's squad")
+    expect(container.querySelector('.squad-heading h2')?.textContent).toBe('Rod Wave Disciples current squad')
   })
 
   it('uses the selected authenticated manager ID for every approved account roster', () => {
     KILE_N_OTHERS_ACCOUNT_ROSTER_IDENTITIES.forEach((identity) => {
       const { container } = renderDashboard(true, [], identity.rosterManagerId)
       clickButton(container, 'My Team')
-      const expectedManager = officialDraft202627.managers.find(
-        (manager) => manager.id === identity.rosterManagerId,
-      )
-
       expect(container.querySelector('.mobile-squad-heading h2')?.textContent).toBe(
-        `${expectedManager?.displayName}'s squad`,
+        `${identity.teamName} current squad`,
       )
     })
+  })
+
+  it('uses one persistent profile source for My Team, Teams and both navigation presentations', async () => {
+    const accounts = KILE_N_OTHERS_ACCOUNT_ROSTER_IDENTITIES.map((identity, index) => ({
+      id: `account-${index + 1}`,
+      team_name: identity.teamName,
+      manager_name: identity.accountManagerName,
+      role: identity.teamName === 'Jakin Goff' ? 'LEAGUE_OWNER' as const : 'MEMBER' as const,
+    }))
+    const profiles = assembleLeagueTeamProfiles(
+      accounts,
+      accounts.map(({ id }, index) => ({
+        account_id: id,
+        avatar_path: index === 0 ? `${id}/avatar` : null,
+      })),
+      new Map([['account-1/avatar', 'https://signed.example/jakin-avatar']]),
+    )
+    const profileService = {
+      loadProfiles: vi.fn().mockResolvedValue(profiles),
+      uploadAvatar: vi.fn().mockResolvedValue(profiles),
+    } satisfies TeamProfileService
+    const account: AuthenticatedDashboardAccount = {
+      id: 'account-1',
+      teamName: 'Jakin Goff',
+      managerName: 'Vuk',
+      role: 'LEAGUE_OWNER',
+    }
+    const { container, media } = renderDashboard(
+      true,
+      [],
+      'demo-manager-1',
+      account,
+      profileService,
+    )
+    await act(async () => Promise.resolve())
+
+    clickButton(container, 'My Team')
+    expect(container.querySelector('.team-profile-header')?.textContent).toContain('Jakin Goff')
+    expect(container.querySelector('.team-profile-header')?.textContent).toContain('Managed by Vuk')
+    expect(container.querySelector('.team-profile-header')?.textContent).toContain('Commissioner')
+    expect(container.querySelector('.mobile-bottom-navigation button[aria-label="My Team"] img')?.getAttribute('src')).toBe('https://signed.example/jakin-avatar')
+
+    const input = container.querySelector<HTMLInputElement>('.team-avatar-input')
+    const file = new File(['avatar'], 'team.png', { type: 'image/png' })
+    Object.defineProperty(input, 'files', { configurable: true, value: [file] })
+    await act(async () => input!.dispatchEvent(new Event('change', { bubbles: true })))
+    expect(profileService.uploadAvatar).toHaveBeenCalledWith('account-1', file, 'account-1/avatar')
+
+    clickButton(container, 'Teams')
+    clickButton(container, 'Miku007')
+    expect(container.querySelector('.team-profile-header')?.textContent).toContain('Miku007')
+    expect(container.querySelector('.team-profile-header')?.textContent).toContain('Managed by Lovro')
+    expect(container.querySelector('.team-profile-header .team-avatar-fallback')?.textContent).toBe('M')
+
+    act(() => media.setMatches(false))
+    expect(container.querySelector('.league-sidebar button[aria-label="My Team"] img')?.getAttribute('src')).toBe('https://signed.example/jakin-avatar')
+    expect(container.querySelector('.team-profile-header')?.textContent).toContain('Miku007')
+    expect(profileService.loadProfiles).toHaveBeenCalledTimes(1)
   })
 
   it('renders only truthful unavailable Matchday states', () => {

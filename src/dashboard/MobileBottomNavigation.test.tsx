@@ -6,7 +6,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { LEAGUE_NAVIGATION } from './navigation.ts'
 import { MobileBottomNavigation } from './MobileBottomNavigation.tsx'
+import { createFallbackLeagueTeamProfiles } from '../services/supabase/teamProfiles.ts'
 import type { LeagueDashboardModel } from './useLeagueDashboardModel.ts'
+import type { LeagueTeamProfilesModel } from './useLeagueTeamProfiles.ts'
 
 const roots: { root: Root; container: HTMLDivElement }[] = []
 
@@ -21,10 +23,22 @@ function renderNavigation(isCommissioner: boolean) {
     view: 'league',
     navigate,
   } as unknown as LeagueDashboardModel
+  const profileList = createFallbackLeagueTeamProfiles()
+  const profiles = {
+    profiles: profileList,
+    current: profileList[isCommissioner ? 0 : 1],
+    selected: profileList[0],
+    loading: false,
+    uploading: false,
+    error: null,
+    uploadCurrentAvatar: vi.fn(),
+    profileForRoster: (managerId: string) => profileList.find((profile) => profile.rosterManagerId === managerId)!,
+  } as LeagueTeamProfilesModel
   act(() => root.render(
     <MobileBottomNavigation
       model={model}
-      account={{ teamName: isCommissioner ? 'Jakin Goff' : 'Dindi', isCommissioner }}
+      profiles={profiles}
+      account={{ id: isCommissioner ? 'jakin' : 'dindi', teamName: isCommissioner ? 'Jakin Goff' : 'Dindi', managerName: isCommissioner ? 'Vuk' : 'Kristian', role: isCommissioner ? 'LEAGUE_OWNER' : 'MEMBER' }}
       onLogout={onLogout}
     />,
   ))
@@ -47,7 +61,8 @@ describe('MobileBottomNavigation account surface', () => {
   it('keeps the four primary destinations and puts Commissioner/logout inside More', () => {
     const { container, onLogout } = renderNavigation(true)
     const primaryButtons = [...container.querySelectorAll('.mobile-bottom-navigation > button')]
-    expect(primaryButtons.map((button) => button.textContent?.trim())).toEqual(['League', 'My Team', 'Teams', 'More'])
+    expect(primaryButtons.map((button) => button.getAttribute('aria-label'))).toEqual(['League', 'My Team', 'Teams', 'More'])
+    expect(container.querySelector('button[aria-label="My Team"] .team-avatar-fallback')?.textContent).toBe('J')
 
     act(() => primaryButtons.at(-1)!.dispatchEvent(new MouseEvent('click', { bubbles: true })))
     expect(container.querySelector('.mobile-account-surface')?.textContent).toContain('Jakin Goff')

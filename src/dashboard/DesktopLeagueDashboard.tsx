@@ -3,7 +3,9 @@ import type { ReactNode } from 'react'
 import type { Position } from '../domain/player.ts'
 import type { CurrentLeagueRoster } from '../domain/transactions.ts'
 import type { LeagueDashboardModel } from './useLeagueDashboardModel.ts'
+import type { LeagueTeamProfilesModel } from './useLeagueTeamProfiles.ts'
 import type { LeagueView } from './navigation.ts'
+import { TeamAvatar, TeamProfileHeader } from './TeamProfile.tsx'
 import {
   getPlayerDirectoryName,
   formatPlayerForm,
@@ -18,8 +20,10 @@ import './DesktopLeagueDashboard.css'
 
 function DashboardNavigation({
   model,
+  profiles,
 }: {
   readonly model: LeagueDashboardModel
+  readonly profiles: LeagueTeamProfilesModel
 }) {
   return (
     <nav className="dashboard-navigation dashboard-navigation-sidebar" aria-label="League dashboard">
@@ -27,11 +31,14 @@ function DashboardNavigation({
         <button
           type="button"
           key={id}
+          aria-label={label}
           className={model.view === id ? 'active' : ''}
           aria-current={model.view === id ? 'page' : undefined}
           onClick={() => model.navigate(id)}
         >
-          <i aria-hidden="true" />
+          {id === 'my-team'
+            ? <TeamAvatar profile={profiles.current} size="small" decorative />
+            : <i aria-hidden="true" />}
           {label}
         </button>
       ))}
@@ -133,25 +140,50 @@ function LeagueHome({ model }: { readonly model: LeagueDashboardModel }) {
   )
 }
 
-function TeamsPage({ model }: { readonly model: LeagueDashboardModel }) {
+function MyTeamPage({ model, profiles }: { readonly model: LeagueDashboardModel; readonly profiles: LeagueTeamProfilesModel }) {
+  return (
+    <div className="page-stack team-profile-page">
+      <TeamProfileHeader
+        profile={profiles.current}
+        editable
+        loading={profiles.loading}
+        uploading={profiles.uploading}
+        error={profiles.error}
+        onAvatarSelected={(file) => void profiles.uploadCurrentAvatar(file)}
+      />
+      <SquadPitch
+        model={model}
+        roster={model.currentManagerRoster}
+        title={`${profiles.current.teamName} current squad`}
+      />
+    </div>
+  )
+}
+
+function TeamsPage({ model, profiles }: { readonly model: LeagueDashboardModel; readonly profiles: LeagueTeamProfilesModel }) {
   return (
     <div className="page-stack">
       <div className="manager-tabs" aria-label="Choose manager">
-        {model.rosters.map((roster) => (
-          <button
-            type="button"
-            key={roster.managerId}
-            className={roster.managerId === model.selectedManagerId ? 'active' : ''}
-            onClick={() => model.selectManager(roster.managerId)}
-          >
-            {roster.managerName}
-          </button>
-        ))}
+        {model.rosters.map((roster) => {
+          const profile = profiles.profileForRoster(roster.managerId)
+          return (
+            <button
+              type="button"
+              key={roster.managerId}
+              className={roster.managerId === model.selectedManagerId ? 'active' : ''}
+              onClick={() => model.selectManager(roster.managerId)}
+            >
+              <TeamAvatar profile={profile} size="small" decorative />
+              <span>{profile.teamName}</span>
+            </button>
+          )
+        })}
       </div>
+      <TeamProfileHeader profile={profiles.selected} error={profiles.error} />
       <SquadPitch
         model={model}
         roster={model.selectedManagerRoster}
-        title={`${model.selectedManagerRoster.managerName}'s squad`}
+        title={`${profiles.selected.teamName} current squad`}
       />
     </div>
   )
@@ -249,11 +281,11 @@ function DraftArchivePage({ model }: { readonly model: LeagueDashboardModel }) {
   )
 }
 
-function CurrentDesktopView({ model }: { readonly model: LeagueDashboardModel }) {
+function CurrentDesktopView({ model, profiles }: { readonly model: LeagueDashboardModel; readonly profiles: LeagueTeamProfilesModel }) {
   const views: Record<LeagueView, ReactNode> = {
     league: <LeagueHome model={model} />,
-    'my-team': <SquadPitch model={model} roster={model.currentManagerRoster} title={`${model.currentManagerRoster.managerName}'s squad`} />,
-    teams: <TeamsPage model={model} />,
+    'my-team': <MyTeamPage model={model} profiles={profiles} />,
+    teams: <TeamsPage model={model} profiles={profiles} />,
     matchday: <MatchdayPage model={model} />,
     players: <PlayersPage model={model} />,
     transactions: <TransactionsPage model={model} />,
@@ -262,17 +294,17 @@ function CurrentDesktopView({ model }: { readonly model: LeagueDashboardModel })
   return views[model.view]
 }
 
-export function DesktopLeagueDashboard({ model }: { readonly model: LeagueDashboardModel }) {
+export function DesktopLeagueDashboard({ model, profiles }: { readonly model: LeagueDashboardModel; readonly profiles: LeagueTeamProfilesModel }) {
   return (
     <div className="league-dashboard-shell desktop-league-dashboard" data-presentation="desktop">
       <aside className="league-sidebar">
         <div className="league-brand"><span>2026/27</span><strong>Kile N Others</strong><small>FPL Draft League Dashboard</small></div>
-        <DashboardNavigation model={model} />
+        <DashboardNavigation model={model} profiles={profiles} />
         <div className="sidebar-status"><span>Official draft</span><strong>Frozen · 90/90</strong><small>Historical base state</small></div>
       </aside>
       <main className="league-main">
         <header className="league-topbar"><div><p className="dashboard-kicker">Kile N Others · 2026/27</p><h1>{model.currentTitle}</h1></div><div className="season-pill"><i /> Official draft archived</div></header>
-        <CurrentDesktopView model={model} />
+        <CurrentDesktopView model={model} profiles={profiles} />
       </main>
     </div>
   )

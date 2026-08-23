@@ -97,6 +97,10 @@
   background: #4e7460;
 }
 
+.league-sidebar nav button .team-avatar {
+  margin-left: -0.18rem;
+}
+
 .league-sidebar nav button:hover {
   color: #effff6;
   background: #143a27;
@@ -425,6 +429,12 @@
   background: #eef5f1;
   font-size: 0.68rem;
   font-weight: 850;
+}
+
+.manager-tabs button {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
 }
 
 .manager-tabs button.active,

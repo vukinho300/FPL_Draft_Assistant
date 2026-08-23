@@ -460,6 +460,19 @@
   overflow-wrap: anywhere;
 }
 
+.mobile-manager-selector button {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.mobile-manager-selector button span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .mobile-manager-selector button.active,
 .mobile-position-filters button.active,
 .mobile-ownership-filters button.active,
@@ -834,6 +847,12 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 1.8;
+}
+
+.mobile-bottom-navigation > button .team-avatar {
+  width: 1.35rem;
+  height: 1.35rem;
+  border-width: 1px;
 }
 
 .mobile-bottom-navigation > button.active {

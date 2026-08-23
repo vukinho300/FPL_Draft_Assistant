@@ -7,8 +7,10 @@ import {
   MobileTransactionsPage,
 } from './MobileDataPages.tsx'
 import { MobileSquad } from './MobileSquad.tsx'
+import { TeamAvatar, TeamProfileHeader } from './TeamProfile.tsx'
 import type { LeagueView } from './navigation.ts'
 import type { LeagueDashboardModel } from './useLeagueDashboardModel.ts'
+import type { AuthenticatedDashboardAccount, LeagueTeamProfilesModel } from './useLeagueTeamProfiles.ts'
 import './MobileLeagueDashboard.css'
 
 function MobilePageHeader({ title }: { readonly title: string }) {
@@ -60,26 +62,51 @@ function MobileLeaguePage({ model }: { readonly model: LeagueDashboardModel }) {
   )
 }
 
-function MobileTeamsPage({ model }: { readonly model: LeagueDashboardModel }) {
+function MobileMyTeamPage({ model, profiles }: { readonly model: LeagueDashboardModel; readonly profiles: LeagueTeamProfilesModel }) {
+  return (
+    <div className="mobile-page-stack team-profile-page">
+      <TeamProfileHeader
+        profile={profiles.current}
+        editable
+        loading={profiles.loading}
+        uploading={profiles.uploading}
+        error={profiles.error}
+        onAvatarSelected={(file) => void profiles.uploadCurrentAvatar(file)}
+      />
+      <MobileSquad
+        model={model}
+        roster={model.currentManagerRoster}
+        title={`${profiles.current.teamName} current squad`}
+      />
+    </div>
+  )
+}
+
+function MobileTeamsPage({ model, profiles }: { readonly model: LeagueDashboardModel; readonly profiles: LeagueTeamProfilesModel }) {
   return (
     <div className="mobile-page-stack">
       <div className="mobile-manager-selector" aria-label="Choose manager">
-        {model.rosters.map((roster) => (
-          <button
-            type="button"
-            key={roster.managerId}
-            className={roster.managerId === model.selectedManagerId ? 'active' : ''}
-            aria-pressed={roster.managerId === model.selectedManagerId}
-            onClick={() => model.selectManager(roster.managerId)}
-          >
-            {roster.managerName}
-          </button>
-        ))}
+        {model.rosters.map((roster) => {
+          const profile = profiles.profileForRoster(roster.managerId)
+          return (
+            <button
+              type="button"
+              key={roster.managerId}
+              className={roster.managerId === model.selectedManagerId ? 'active' : ''}
+              aria-pressed={roster.managerId === model.selectedManagerId}
+              onClick={() => model.selectManager(roster.managerId)}
+            >
+              <TeamAvatar profile={profile} size="small" decorative />
+              <span>{profile.teamName}</span>
+            </button>
+          )
+        })}
       </div>
+      <TeamProfileHeader profile={profiles.selected} error={profiles.error} />
       <MobileSquad
         model={model}
         roster={model.selectedManagerRoster}
-        title={`${model.selectedManagerRoster.managerName}'s squad`}
+        title={`${profiles.selected.teamName} current squad`}
         showRosterCapacity={false}
       />
     </div>
@@ -117,11 +144,11 @@ function MobileMatchdayPage({ model }: { readonly model: LeagueDashboardModel })
   )
 }
 
-function CurrentMobileView({ model }: { readonly model: LeagueDashboardModel }) {
+function CurrentMobileView({ model, profiles }: { readonly model: LeagueDashboardModel; readonly profiles: LeagueTeamProfilesModel }) {
   const views: Record<LeagueView, ReactNode> = {
     league: <MobileLeaguePage model={model} />,
-    'my-team': <MobileSquad model={model} roster={model.currentManagerRoster} title={`${model.currentManagerRoster.managerName}'s squad`} />,
-    teams: <MobileTeamsPage model={model} />,
+    'my-team': <MobileMyTeamPage model={model} profiles={profiles} />,
+    teams: <MobileTeamsPage model={model} profiles={profiles} />,
     matchday: <MobileMatchdayPage model={model} />,
     players: <MobilePlayersPage model={model} />,
     transactions: <MobileTransactionsPage model={model} />,
@@ -130,15 +157,15 @@ function CurrentMobileView({ model }: { readonly model: LeagueDashboardModel }) 
   return <div className="mobile-view-transition" key={model.view}>{views[model.view]}</div>
 }
 
-export function MobileLeagueDashboard({ model, account, onLogout }: { readonly model: LeagueDashboardModel; readonly account?: { readonly teamName: string; readonly isCommissioner: boolean }; readonly onLogout?: () => void }) {
+export function MobileLeagueDashboard({ model, profiles, account, onLogout }: { readonly model: LeagueDashboardModel; readonly profiles: LeagueTeamProfilesModel; readonly account?: AuthenticatedDashboardAccount; readonly onLogout?: () => void }) {
   const title = model.view === 'league' ? 'Kile N Others' : model.currentTitle
   return (
     <div className="mobile-league-dashboard" data-presentation="mobile">
       <MobilePageHeader title={title} />
       <main className="mobile-app-main">
-        <CurrentMobileView model={model} />
+        <CurrentMobileView model={model} profiles={profiles} />
       </main>
-      <MobileBottomNavigation model={model} account={account} onLogout={onLogout} />
+      <MobileBottomNavigation model={model} profiles={profiles} account={account} onLogout={onLogout} />
     </div>
   )
 }

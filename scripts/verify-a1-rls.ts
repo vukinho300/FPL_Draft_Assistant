@@ -173,6 +173,17 @@ async function verifyRls(): Promise<void> {
     initialAccounts.some((account) => account.team_slug === 'jakin-goff' && account.role === 'LEAGUE_OWNER'),
     'Expected Jakin Goff to be the LEAGUE_OWNER',
   )
+  const { data: initialProfiles, error: initialProfilesError } = await admin
+    .from('team_profiles')
+    .select('account_id, avatar_path')
+  assert(initialProfilesError === null && initialProfiles !== null, `Unable to read local team profiles: ${initialProfilesError?.message}`)
+  assert(initialProfiles.length === 6, 'Expected exactly six seeded team profiles')
+  assert(initialProfiles.every(({ avatar_path }) => avatar_path === null), 'Fresh team profiles must use avatar fallbacks')
+
+  const { data: avatarBucket, error: avatarBucketError } = await admin.storage.getBucket('team-avatars')
+  assert(avatarBucketError === null && avatarBucket !== null, `Unable to read the team avatar bucket: ${avatarBucketError?.message}`)
+  assert(avatarBucket.public === false, 'Team avatars must remain in a private bucket')
+  assert(avatarBucket.file_size_limit === 2 * 1024 * 1024, 'Team avatar bucket must enforce the 2 MB limit')
 
   const fixtureUserIds = new Map<string, string>()
   for (const definition of INITIAL_LEAGUE_ACCOUNTS) {
@@ -207,6 +218,10 @@ async function verifyRls(): Promise<void> {
   const anonymous = createPublicClient(status)
   const anonymousResult = await anonymous.from('league_accounts').select('id')
   assertDenied(anonymousResult, 'Anonymous clients must not read league accounts')
+  assertDenied(
+    await anonymous.from('team_profiles').select('account_id'),
+    'Anonymous clients must not read team profiles',
+  )
 
   const member = await signIn(status, internalLoginEmail('dindi'))
   const owner = await signIn(status, internalLoginEmail('jakin-goff'))
@@ -218,6 +233,10 @@ async function verifyRls(): Promise<void> {
     ownerResult.data.some((account) => account.team_name === 'Jakin Goff' && account.role === 'LEAGUE_OWNER'),
     'The authenticated Jakin Goff local fixture must resolve as LEAGUE_OWNER',
   )
+  const memberProfiles = await member.from('team_profiles').select('account_id, avatar_path')
+  assert(memberProfiles.error === null && memberProfiles.data?.length === 6, 'A league member must read all six team profiles')
+  const ownerProfiles = await owner.from('team_profiles').select('account_id, avatar_path')
+  assert(ownerProfiles.error === null && ownerProfiles.data?.length === 6, 'The league owner must read all six team profiles')
   assert(
     memberResult.data.some((account) => account.team_name === 'Dindi' && account.role === 'MEMBER'),
     'The authenticated Dindi local fixture must resolve as MEMBER',
@@ -226,6 +245,70 @@ async function verifyRls(): Promise<void> {
   const dindi = initialAccounts.find((account) => account.team_slug === 'dindi')
   const jakin = initialAccounts.find((account) => account.team_slug === 'jakin-goff')
   assert(dindi !== undefined && jakin !== undefined, 'Expected Dindi and Jakin Goff fixture accounts')
+
+  const firstAvatarPath = `${dindi.id}/local-avatar-one`
+  const secondAvatarPath = `${dindi.id}/local-avatar-two`
+  const avatar = new Blob([new Uint8Array([137, 80, 78, 71])], { type: 'image/png' })
+  const firstUpload = await member.storage.from('team-avatars').upload(firstAvatarPath, avatar, {
+    contentType: 'image/png',
+    upsert: false,
+  })
+  assert(firstUpload.error === null, `A member must upload their own avatar: ${firstUpload.error?.message}`)
+  const overwrite = await member.storage.from('team-avatars').upload(firstAvatarPath, avatar, {
+    contentType: 'image/png',
+    upsert: true,
+  })
+  assert(overwrite.error === null, `A member must replace their own avatar object: ${overwrite.error?.message}`)
+  const ownProfileUpdate = await member
+    .from('team_profiles')
+    .update({ avatar_path: firstAvatarPath })
+    .eq('account_id', dindi.id)
+    .select('account_id, avatar_path')
+    .single()
+  assert(ownProfileUpdate.error === null && ownProfileUpdate.data?.avatar_path === firstAvatarPath, 'A member must update their own avatar path')
+  const signedAvatar = await member.storage.from('team-avatars').createSignedUrl(firstAvatarPath, 60)
+  assert(signedAvatar.error === null && signedAvatar.data?.signedUrl !== undefined, 'A league member must create an authenticated signed avatar URL')
+  const downloadedAvatar = await owner.storage.from('team-avatars').download(firstAvatarPath)
+  assert(downloadedAvatar.error === null && downloadedAvatar.data !== null, 'Another league member must read a league-visible avatar')
+
+  const secondUpload = await member.storage.from('team-avatars').upload(secondAvatarPath, avatar, {
+    contentType: 'image/png',
+    upsert: false,
+  })
+  assert(secondUpload.error === null, `A member must upload a replacement avatar: ${secondUpload.error?.message}`)
+  const replaceProfile = await member
+    .from('team_profiles')
+    .update({ avatar_path: secondAvatarPath })
+    .eq('account_id', dindi.id)
+    .select('avatar_path')
+    .single()
+  assert(replaceProfile.error === null && replaceProfile.data?.avatar_path === secondAvatarPath, 'A replacement avatar path must persist')
+  const oldAvatarRemoval = await member.storage.from('team-avatars').remove([firstAvatarPath])
+  assert(oldAvatarRemoval.error === null, `A member must remove their own previous avatar: ${oldAvatarRemoval.error?.message}`)
+
+  assertDenied(
+    await member.from('team_profiles').update({ avatar_path: `${jakin.id}/attack` }).eq('account_id', jakin.id).select('account_id'),
+    'A member must not update another team profile',
+  )
+  assertDenied(
+    await member.storage.from('team-avatars').upload(`${jakin.id}/attack`, avatar, { contentType: 'image/png' }),
+    'A member must not upload into another team folder',
+  )
+  assertDenied(
+    await owner.storage.from('team-avatars').upload(`${dindi.id}/owner-overreach`, avatar, { contentType: 'image/png' }),
+    'LEAGUE_OWNER must not receive unrequested avatar repair access',
+  )
+  const ownerAvatarPath = `${jakin.id}/local-owner-avatar`
+  const ownerAvatarUpload = await owner.storage.from('team-avatars').upload(ownerAvatarPath, avatar, { contentType: 'image/png' })
+  assert(ownerAvatarUpload.error === null, `The league owner must upload only its own avatar: ${ownerAvatarUpload.error?.message}`)
+  assertDenied(
+    await member.storage.from('team-avatars').remove([ownerAvatarPath]),
+    'A member must not remove another team avatar',
+  )
+  assertDenied(
+    await anonymous.storage.from('team-avatars').download(secondAvatarPath),
+    'Anonymous clients must not read private team avatars',
+  )
 
   assertDenied(
     await member
@@ -300,7 +383,7 @@ async function verifyRls(): Promise<void> {
   const { error: ownerSignOutError } = await owner.auth.signOut()
   assert(ownerSignOutError === null, `Unable to sign out local owner fixture: ${ownerSignOutError?.message}`)
 
-  console.log('A1/A2 local verification passed: authenticated account resolution, anonymous denial, member read access, mutation denial, constrained owner access, and sign-out.')
+  console.log('A1/A2/A3 local verification passed: account resolution, profile reads, owner-scoped avatar upload/replace, private league avatar access, cross-team denial, constrained owner access, and sign-out.')
 }
 
 verifyRls().catch((error: unknown) => {
