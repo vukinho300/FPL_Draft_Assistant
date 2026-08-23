@@ -110,7 +110,12 @@ function ConfiguredAccountApp({ service }: { readonly service: ReturnType<typeof
       </div>
       <LeagueDashboard
         currentManagerId={currentManagerId}
-        account={{ teamName: account.team_name, isCommissioner: account.role === 'LEAGUE_OWNER' }}
+        account={{
+          id: account.id,
+          teamName: account.team_name,
+          managerName: account.manager_name,
+          role: account.role,
+        }}
         onLogout={() => void service.signOut()}
       />
     </div>

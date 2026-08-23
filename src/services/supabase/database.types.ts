@@ -42,6 +42,35 @@ export type Database = {
         }
         Relationships: []
       }
+      team_profiles: {
+        Row: {
+          account_id: string
+          avatar_path: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          account_id: string
+          avatar_path?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string
+          avatar_path?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_profiles_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: true
+            referencedRelation: "league_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

@@ -22,3 +22,16 @@ export {
   type SupabaseBrowserConfig,
   type SupabaseBrowserEnvironment,
 } from './config.ts'
+export {
+  assembleLeagueTeamProfiles,
+  createFallbackLeagueTeamProfiles,
+  getSupabaseTeamProfileService,
+  getTeamAvatarInitial,
+  SupabaseTeamProfileService,
+  TEAM_AVATAR_ACCEPTED_TYPES,
+  TEAM_AVATAR_BUCKET,
+  TEAM_AVATAR_MAX_BYTES,
+  validateTeamAvatarFile,
+  type LeagueTeamProfile,
+  type TeamProfileService,
+} from './teamProfiles.ts'
