@@ -1,158 +1,212 @@
 # Current Phase
 
-## G1 — Real FPL Draft league/entry identity
-Status: CURRENT / NEXT
+## G2 — Official League State Contracts
+Status: CURRENT / NEXT after G1 PR #38 merges
 
-The A family is complete and production-verified. G1 is the first G-family step.
+This phase definition intentionally supersedes the old G2/G3 manual-lineup plan because G1 proved that the project can safely identify and read the real Kile N Others FPL Draft league.
 
-## Verified baseline entering G1
-Current verified `main`:
-`a62d027d310efa08dbdd22dc53bf17818a863fec`
+## Dependency
+G2 must start only after G1 PR #38 is merged.
 
-Hosted KNO Supabase has all current repository migrations applied:
-- `20260822170000_foundation.sql`
-- `20260822180000_league_accounts.sql`
-- `20260823163233_team_profiles_avatars.sql`
+G1 verified:
+- official league ID `45938`;
+- exactly six official entry IDs;
+- exactly six league-entry IDs;
+- exact mapping to the six product identities and immutable custom-draft roster IDs;
+- project-owned league-details/draft-choice adapters;
+- fail-closed identity validation;
+- reproducible live league verifier.
 
-A-family production behavior is working:
-- team-name + password authentication;
-- persistent Supabase-managed sessions;
-- logout;
-- six authoritative league accounts;
-- stable account -> immutable roster manager identity;
-- no fallback to Jakin/Vuk;
-- Jakin Goff alone as Commissioner;
-- persistent team profiles;
-- private owner-managed avatars;
-- shared My Team/Teams profile state;
-- compact mobile profile/current-roster presentation;
-- live Players data.
+## Product principle for G2+
+FPL Draft should supply factual current/live league state that it already knows. Our app should use those facts to provide a better league experience rather than ask users to enter the same information again.
 
-## Why G1 is now
-The application knows who its six product users/teams are, but it does **not yet know the verified official FPL Draft identity of the real Kile N Others league**.
+The repository custom draft remains historical draft authority. Official FPL Draft becomes the target live/current authority for state such as active lineups, ownership and finalized results once each contract is verified.
 
-Before the League page can safely consume real standings, Gameweek data, official entry squads, ownership or transaction history, the project needs a trustworthy bridge between:
+## Plain-English G2 goal
+Find out exactly what the current 2026/27 official FPL Draft APIs give us for:
+- what Gameweek we are in and whether it is active/finalized;
+- each manager's actual Gameweek XI/bench;
+- each player's live points/events;
+- current ownership/free-agent state;
+- fixtures and game status;
+- finalized standings/season totals;
+- official transactions/waivers/trades where useful.
 
-```text
-our six product identities
-        ↕
-real FPL Draft league + six official entries
-```
+Then turn only the verified useful parts into project-owned normalized contracts with strong tests.
 
-G1 builds and verifies that bridge.
+G2 is the evidence/data-contract foundation for G3-G6. It is not the final UI phase.
 
-## Plain-English goal
-Find the real official FPL Draft identifier for **Kile N Others**, identify the six official entries/managers inside that league, and prove exactly which official entry belongs to each of our six existing teams.
+## Verified league identities to use
+- Jakin Goff / Vuk -> entry `240560`, league-entry `242345`
+- Dindi / Kristian -> entry `240676`, league-entry `242463`
+- 22nd oBlock / Diego -> entry `240707`, league-entry `242494`
+- Miku007 / Lovro -> entry `240723`, league-entry `242510`
+- Rod Wave Disciples / Deni -> entry `261369`, league-entry `263632`
+- Tintilinic / Tin -> entry `261515`, league-entry `263779`
 
-Then verify the relevant read-only FPL Draft response structure well enough that G2 can safely build real Gameweek/standings data on top of it.
+Do not remap these by response order or fuzzy names.
 
-G1 establishes identity and evidence. It does not yet redesign the League page or display real standings.
-
-## Product identities that must map exactly
-- Jakin Goff -> Vuk -> immutable Vuk roster -> `LEAGUE_OWNER` / Commissioner
-- Dindi -> Kristian -> immutable Kristian roster -> `MEMBER`
-- 22nd oBlock -> Diego -> immutable Diego roster -> `MEMBER`
-- Miku007 -> Lovro -> immutable Miku roster -> `MEMBER`
-- Rod Wave Disciples -> Deni -> immutable Deni roster -> `MEMBER`
-- Tintilinic -> Tin -> immutable Tin roster -> `MEMBER`
-
-Do not infer mapping from array position, draft order, role, first result, or fuzzy name similarity when stronger evidence is available.
-
-## Required outcome
-1. Verified real FPL Draft league ID for Kile N Others.
-2. Exactly six verified official entry IDs belonging to that league.
-3. Explicit one-to-one mapping from each official entry to one existing project account/team and immutable roster manager ID.
-4. Verified read-only league-specific endpoint/schema evidence sufficient for G2.
-5. Fail-closed handling for missing, duplicate or conflicting identities.
-6. Concise provenance/evidence for how the mapping was established.
-
-## Candidate read routes
-Existing research has identified candidates including:
-- `/api/league/{league}/details`
-- `/api/entry/{entry}/event/{event}`
-- `/api/league/{league}/element-status`
-- `/api/draft/league/{league}/transactions`
-- `/api/draft/league/{league}/trades`
-
-Global/public candidates remain:
+## Candidate contracts to verify
+Candidate routes already identified include:
 - `/api/game`
 - `/api/event/{event}/fixtures`
 - `/api/event/{event}/live`
+- `/api/entry/{entry}/event/{event}`
+- `/api/league/45938/element-status`
+- `/api/league/45938/details`
+- official transaction/waiver/trade read routes discovered from current FPL Draft behavior/repository research.
 
-Codex must verify what is actually useful now rather than assuming every candidate route is valid.
+Do not assume historical/community endpoint shapes are current. Observe actual 2026/27 responses.
 
-## Security / privacy boundary
-G1 is read-only.
-- do not request/store Vuk's FPL Draft password;
-- do not commit browser cookies, auth tokens or private FPL credentials;
-- do not add an automated official FPL login flow;
-- do not add mutation/write calls;
-- league IDs and entry IDs are identity references, not authorization authority.
+## Required G2 outcomes
 
-If the league URL/ID can only be obtained from Vuk's authenticated FPL Draft browser, Codex should complete all other available work first and then give one minimal **Manual verification for Vuk** action.
+### A. Current Gameweek contract
+Verify:
+- current Gameweek/event identifier;
+- deadline/timing fields;
+- how to determine pre-GW vs active vs finished/finalized safely;
+- any difference between fixture completion and FPL Draft finalization.
+
+### B. Official lineup contract
+For all six verified entry IDs, verify the entry/event response and determine:
+- which 15 players are returned;
+- exact starting XI semantics;
+- exact bench/order semantics;
+- any substitute/captain-like fields that exist;
+- whether the endpoint changes during/after the Gameweek;
+- behavior before the Gameweek is available;
+- player ID identity contract needed to join current player/live data.
+
+This contract is what will eliminate manual lineup submission.
+
+### C. Live player scoring/event contract
+Verify event-live data needed later for:
+- live per-player Gameweek points;
+- goals;
+- assists;
+- yellow/red cards;
+- penalty saves;
+- bonus/other scoring fields where relevant;
+- update/freshness behavior.
+
+Do not invent event semantics from field names alone when ambiguous.
+
+### D. Fixture/activity contract
+Verify fixture data needed to know:
+- kickoff times;
+- started/finished/provisional state;
+- whether the Gameweek is actively changing;
+- when live refresh should increase/decrease.
+
+### E. Current ownership/free-agent contract
+Verify league element-status semantics:
+- available/owned/locked status;
+- owner identity field;
+- join owner to G1 official entry/league-entry identity;
+- whether all current roster players/free agents can be derived safely;
+- behavior immediately after waiver/free-agent/trade changes.
+
+Once proven, this contract is the target live current-roster authority.
+
+### F. Standings/finalization contract
+Using league details and any other necessary official read, verify:
+- rank;
+- Gameweek/event total;
+- season total;
+- when those fields update;
+- whether they lag while matches are live;
+- what signal means the values are finalized enough for Archive/reconciliation.
+
+Do not implement the final LIVE standings engine here; only provide the facts/contracts G3 needs.
+
+### G. Transaction read contracts
+Narrowly investigate official transaction/waiver/trade reads if available and useful.
+
+G2 does not need to implement the Transactions page. The goal is to determine whether later G5/T4 can automatically identify ownership changes and classify their provenance.
+
+### H. Archive feasibility
+Determine what historical completed-GW lineup/score/standings data can be read retrospectively and what later needs project snapshots to guarantee stable Archive history.
+
+Do not build Archive yet.
 
 ## Architecture rules
-- external FPL/FPL Draft shapes stop at project-owned boundaries;
-- official identity mappings should be explicit and independently testable;
-- existing `league_accounts` remain application identity authority;
-- existing immutable roster-manager mapping remains roster identity authority;
-- official entry identity is an integration mapping and must not rewrite either authority;
-- identity conflicts fail closed;
-- do not mutate immutable official draft history;
-- do not introduce G2/G3 persistence or presentation early.
+- raw official responses stop at project-owned service/adapter boundaries;
+- use the existing G1 identity artifact rather than duplicate IDs;
+- current official state never rewrites the immutable custom draft;
+- no authoritative localStorage;
+- do not add Supabase tables simply to duplicate official current facts;
+- if later snapshots are needed, document the evidence/reason but do not pull full Archive persistence into G2 unless essential to proving the contract;
+- ambiguous/missing identity or schema must fail closed;
+- keep desktop/mobile UI out of external schema contracts.
 
-## In scope
-- repository investigation relevant to league/entry identity;
-- safe acquisition/verification of the real league ID;
-- safe acquisition/verification of six entry IDs;
-- exact mapping to the six project identities;
-- focused project-owned identity/config/domain/adapter contracts if justified;
-- read-only endpoint/schema verification;
-- deterministic mapping/validation tests;
-- concise evidence/provenance sufficient for G2.
+## Live product requirements G2 must prepare for
+Later G3 must be able to calculate:
+- six LIVE team totals;
+- LIVE/provisional standings;
+- rank movement immediately when official live player points change;
+- points gaps;
+- finalized reconciliation.
 
-## Out of scope
-Do not implement:
-- G2 real standings/Gameweek UI;
-- current Gameweek points presentation;
-- G3 lineup persistence/locking;
-- G4 football-pitch lineup presentation;
-- G5/G5A scoring/live event UI;
-- G6 Commissioner score corrections;
-- player-photo work;
-- Trading Block/trades;
-- automatic official FPL mutations.
+Later G4 must be able to show:
+- inactive-GW lineup tester;
+- active-GW official lineup;
+- live team points above lineup;
+- live points on each player;
+- formation/list/bench.
+
+Later G5 must be able to show:
+- live scoring events;
+- ownership/waiver/trade changes;
+- league-relevant event impact.
+
+G2 should design normalized contracts that make these possible without prematurely implementing them.
+
+## Security/privacy
+Read-only official FPL Draft work only.
+
+Do not:
+- ask for/store FPL passwords;
+- commit cookies/tokens/private credentials;
+- automate official lineup/trade/waiver/free-agent mutations;
+- expose privileged Supabase keys.
+
+## Out of scope for G2
+Do not build:
+- final League-page LIVE table UI;
+- final My Team/Teams pitch/list lineup UI;
+- automatic polling UX;
+- player-photo UI;
+- lineup planner persistence;
+- Trading Block/proposal flows;
+- Archive UI/history persistence;
+- notifications;
+- Commissioner score/lineup corrections;
+- official FPL write paths.
 
 ## Acceptance criteria
-G1 is complete only when:
-- the real Kile N Others league ID is verified;
-- exactly six official entry IDs are verified as members of that league;
-- each official entry maps uniquely to one existing project identity and immutable roster manager ID;
-- no mapping relies on positional/first-row fallback;
-- contradictory identity evidence fails closed;
-- relevant league-specific read schemas were actually observed rather than invented;
-- project-owned contracts introduced are tested;
-- no passwords/tokens/cookies/private FPL credentials are committed or exposed;
-- no official FPL write path is introduced;
-- A-family login/session/profile/roster behavior is not regressed;
-- relevant checks pass;
-- any manual-only external-browser step is isolated under **Manual verification for Vuk** with exact action, expected result and failure signal.
+G2 is complete when repository evidence demonstrates that:
+- the current Gameweek/activity contract is verified;
+- official lineup semantics are verified for all six G1 entries or failures are clearly explained;
+- live per-player scoring/event fields needed by later phases are verified;
+- fixtures/activity/finalization signals are understood sufficiently for later refresh/reconciliation logic;
+- current ownership/free-agent semantics are verified and join uniquely to G1 identities;
+- official standings/event/season total timing/provenance is observed rather than assumed;
+- useful transaction reads are verified or explicitly ruled unavailable/out of scope with evidence;
+- Archive historical-read/snapshot needs are understood;
+- project-owned normalized contracts/adapters and deterministic tests exist where implementation is justified;
+- fail-closed behavior covers malformed/duplicate/missing mappings;
+- no official writes or private credentials are introduced;
+- relevant typecheck/tests/build/lint and live verification pass.
 
-## Workflow for G1
-- continue the current Codex session while useful;
-- start from current `main` on one fresh short-lived G1 branch;
-- Codex owns repository/external-contract investigation, implementation strategy and tests;
-- prefer one coherent commit and avoid unnecessary progress commits;
+## Workflow
+- continue the same Codex session while useful;
+- branch fresh from `main` after both G1 and this product-direction docs correction are merged;
+- one narrow G2 implementation branch;
+- prefer one coherent commit;
 - open one Draft PR;
-- ChatGPT independently reviews the actual diff/evidence;
+- ChatGPT reviews actual diff/evidence/CI;
 - Vuk alone merges;
-- do **not** edit `Second_Brain/**` during G1 implementation.
+- do not edit Second Brain during G2 unless another material architecture correction becomes necessary.
 
-Second Brain will not be reconciled after G1 alone. Continue through the approved G-family roadmap, with one consolidated G-family reconciliation after the G work is complete unless an earlier correction becomes necessary.
-
-## Next phase after G1
-After G1 is merged and verified, proceed to:
-
-**G2 — League Gameweek + standings adapter**
-
-G2 will use the verified identity/read contracts from G1 to bring real current Gameweek and league standings data into the application.
+## Next phase after G2
+**G3 — Live Scoring + LIVE Standings Engine**.

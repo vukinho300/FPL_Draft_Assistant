@@ -5,114 +5,97 @@ Use the smallest meaningful test surface during implementation, then run the ful
 
 Codex performs every verification it can reliably perform itself. A check belongs to Vuk only when it genuinely requires private credentials, a real device/browser, unavailable authenticated external access, or subjective product judgment.
 
-A manual-only check must not automatically block unrelated technical work.
+Never report an unperformed check as passed.
 
-## PR/merge checkpoint
-Before merge of a meaningful implementation PR, normally run:
+## Standard merge-confidence checks
+Normally run:
 - `npm run typecheck`
 - `npm test`
 - `npm run build`
 - `npm run lint`
 - `git diff --check`
 
-Run `npm run verify:fpl-live` when the live FPL boundary or current-player/ranking join is relevant. Run Supabase/RLS/Storage verification when backend authorization/storage changes.
+Run the existing live FPL verifiers when their contracts are relevant. G1 adds `npm run verify:fpl-league-live` for league/entry identity.
 
-Never report a check as passed unless it was actually performed.
+Run Supabase/RLS/Storage verification when project-created persistent state or authorization changes.
 
 ## Regression priorities
-Protect these invariants:
-- immutable official draft remains valid;
-- current roster evolution never mutates archived draft history;
-- external schema failures fail clearly rather than guessing;
-- valid signed official Form/Total Points values remain accepted;
-- authenticated account identity resolves to the correct immutable roster manager ID;
-- unknown/inconsistent identity fails closed rather than falling back to Jakin/Vuk;
-- Commissioner authorization remains separate from roster identity;
-- team profile data never becomes account/roster identity authority;
-- account switching does not leak stale profile state;
-- desktop/mobile consume the same underlying account/profile/data state;
-- authorization-sensitive writes are backend/RLS enforced.
+Protect:
+- immutable custom 90-pick draft history;
+- stable six product account -> roster identities;
+- G1 official league/entry mapping;
+- no fuzzy/positional identity fallback;
+- external schema failures fail clearly;
+- valid signed official Form/Total Points remain accepted;
+- profiles/avatars never become identity authority;
+- account switching does not leak stale state;
+- desktop/mobile consume one underlying live/domain state;
+- official current ownership never rewrites custom draft history;
+- no manual official-state database silently overrides verified official data;
+- live/provisional and finalized values remain distinguishable;
+- no secret/password/cookie/token enters source/browser public configuration.
 
 ## Current deployment
 Production:
 `https://fpl-draft-assistant-eight.vercel.app/`
 
-Production FPL endpoint:
+Existing project FPL boundary:
 `https://fpl-draft-assistant-eight.vercel.app/api/fpl`
 
-The existing project-owned FPL boundary and Vercel packaging must remain intact unless an equivalent solution is proven.
+New official league/event reads should remain behind project-owned service/adapter boundaries and use a Vercel/server boundary where appropriate for caching, normalization and stable frontend contracts.
 
-## Hosted Supabase production
+## Hosted Supabase
 KNO project ref: `asrrkwyqerfkynhjypov`.
 
-Applied hosted migrations:
+Applied migrations:
 - `20260822170000_foundation.sql`
 - `20260822180000_league_accounts.sql`
 - `20260823163233_team_profiles_avatars.sql`
 
-Verified hosted state:
-- six league accounts;
-- six team profiles;
-- one `LEAGUE_OWNER`, five `MEMBER`;
-- private 2 MB JPEG/PNG/WebP avatar bucket;
-- RLS active;
-- anonymous protected access blocked;
-- authenticated league profile/avatar reads allowed;
-- owner-scoped avatar/profile writes;
-- public signup disabled;
-- six production Auth users provisioned outside source control;
-- production authentication and A3 profile/avatar behavior work.
+A-family authentication/profile/avatar behavior is production-verified.
 
-Browser-safe Vercel configuration:
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_PUBLISHABLE_KEY`
+Supabase remains for project-created companion state. Do not add migrations merely to duplicate official lineups, standings, scores or current ownership.
 
-No Supabase service-role/secret credential belongs in browser/Vite variables.
+## G1 verification
+G1 verified official league `45938` and six entry/league-entry identities through project-owned league-details/draft-choice adapters plus exact immutable-roster identity proof.
 
-## A-family verification
-A1/A1.5/A2/A3 are COMPLETE and production-verified.
+The G1 live verifier must remain a regression check whenever official league identity contracts change.
 
-A2 verification includes login, persistent sessions, logout, account-specific My Team, correct MEMBER/Commissioner behavior, correct Miku007/Lovro and Jakin Goff/Vuk roster mappings, and live Players data.
+## G2 verification direction — Official League State Contracts
+G2 is primarily a read-contract/research/adapter phase. It should actually observe current 2026/27 official responses rather than assume community/historical shapes.
 
-A3 PR #35 verification reported:
-- typecheck;
-- 187 tests;
-- build;
-- lint;
-- Supabase reset/lint;
-- local database advisors;
-- RLS/Storage verification;
-- `git diff --check`.
+G2 should verify, where available:
+- current Gameweek and timing/state;
+- entry/event team response for all six verified entry IDs;
+- exact starter/bench/order semantics;
+- event-live player points and event/stat fields needed for later live scoring/events;
+- fixtures/kickoff/finished state needed to know when play is active/finalized;
+- element-status ownership/free-agent/locked semantics and owner identity join;
+- official standings/event-total/season-total semantics and their lag/finalization behavior;
+- transaction/waiver/trade read contracts only if this can be done narrowly without turning G2 into transaction implementation.
 
-A3 corrective PR #36 verification reported:
-- typecheck;
-- 188 tests;
-- build;
-- lint;
-- Supabase reset/lint;
-- A1/A2/A3 RLS and Storage verification;
-- account-switch profile isolation and mobile-density regression coverage.
+The purpose is to prove contracts for later G3+ work, not to build final UI in G2.
 
-Post-merge production/manual verification is complete: profile/avatar loading and upload work, shared avatar display works, and the corrected mobile My Team/profile/current-roster layout works on the real phone.
+## Live-scoring test requirements for later G3
+Before calling live standings correct, tests must cover:
+- six official lineups joined to six verified entries;
+- live player-point changes altering the correct team's provisional total;
+- rank movement when totals cross;
+- tied totals according to explicitly approved tie semantics;
+- missing/duplicate player or entry mappings fail closed;
+- finalized official results reconcile provisional values;
+- stale/failed upstream data produces truthful freshness/error state rather than invented numbers.
 
-## Current phase
-- Foundation phases: COMPLETE.
-- A family: COMPLETE.
-- **G1 Real FPL Draft league/entry identity: CURRENT / NEXT.**
+Do not invent autosub/bonus/finalization rules. Verify them first in G2.
 
-## G1 verification direction
-G1 should prove identity and read contracts rather than build G2 presentation.
+## Live refresh/freshness
+The product goal is automatic active-GW updating. Before choosing polling frequency, Codex should inspect endpoint behavior, cache headers/rate considerations and existing Vercel architecture.
 
-Verification should establish:
-- one real Kile N Others FPL Draft league ID;
-- exactly six real official entry IDs;
-- explicit unique mapping to the six existing project identities/rosters;
-- observed read-only league endpoint behavior and relevant schema evidence;
-- failure on duplicate/missing/conflicting identity;
-- no official FPL write/mutation behavior;
-- no credentials/private browser tokens added to source control.
-
-Codex should perform all public/read-contract verification it can. If the league URL/ID can only be obtained from Vuk's authenticated FPL Draft browser, isolate only that minimal manual action.
+Requirements:
+- active matches refresh automatically at a useful cadence;
+- quiet/inactive periods back off substantially;
+- UI exposes freshness such as `LIVE · updated … ago`;
+- "immediate" means as soon as the official upstream feed reflects the event, not before.
 
 ## CI philosophy
-CI is a merge-confidence boundary, not a substitute for targeted local tests. Avoid broad workflows without a concrete failure mode.
+CI is a merge-confidence boundary, not a substitute for targeted live-contract verification. Keep live external checks reproducible and separate from deterministic CI when upstream availability would make CI flaky.

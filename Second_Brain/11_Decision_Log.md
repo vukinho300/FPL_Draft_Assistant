@@ -1,16 +1,18 @@
 # Decision Log
 
-## D-001 — Preserve the official draft as immutable history
-Status: APPROVED
+## D-001 — Preserve the custom 2026/27 draft as immutable history
+Status: APPROVED — CLARIFIED
 
-The completed 2026/27 Kile N Others draft remains the canonical historical base. Later trades, waivers, free-agent moves, scoring, profiles and lineups must not rewrite it.
+The repository's completed 2026/27 Kile N Others custom draft is the canonical historical draft authority. The league used a custom draft process and only afterwards entered those selections into the Premier League Draft platform.
+
+Official FPL Draft choices may be used as integration/identity evidence but must never replace or rewrite the custom draft archive.
 
 ## D-002 — Evolve, do not replace, the Draft Assistant
 Status: APPROVED
 
-Keep the useful original draft functionality and model evidence in the repository while the default product becomes a season-long league dashboard.
+Keep useful original draft functionality and model evidence while the default product becomes a season-long league companion.
 
-## D-003 — Repository/code/database are technical truth
+## D-003 — Repository/code/database/verified deployed state are technical truth
 Status: APPROVED
 
 Second Brain is a concise control manual, not a replacement for implementation truth.
@@ -18,83 +20,79 @@ Second Brain is a concise control manual, not a replacement for implementation t
 ## D-004 — Narrow Codex tasks; family-level Second Brain reconciliation
 Status: APPROVED — UPDATED
 
-Codex implementation tasks remain narrow and dependency-ordered. Read only relevant Second Brain notes, implement one roadmap step, run the appropriate verification, and open a reviewable implementation PR.
+Codex implementation tasks remain narrow and dependency-ordered. By default reconcile the Second Brain at the end of a roadmap letter family, not after every numbered step.
 
-Do not create a Second Brain reconciliation after every numbered step by default. Reconcile the Second Brain once a roadmap letter family is complete, for example after all A steps or after all approved G steps.
-
-An earlier documentation correction is appropriate only when the control manual becomes materially false, unsafe, or likely to send the next task down the wrong dependency path.
+An earlier documentation correction is appropriate when the control manual becomes materially false, unsafe, or likely to send the next task down the wrong dependency path. This mid-G correction is justified by discovery of official league/live-state APIs that supersede the old manual-lineup architecture.
 
 ## D-005 — Vercel is the deployment target
 Status: APPROVED
 
-Deploy the existing current app before making Supabase/auth a dependency.
-
 ## D-006 — Desktop and mobile are both first-class
 Status: APPROVED
 
-Kile N Others must keep a strong desktop experience and also provide an intentionally usable mobile experience within the same application. Responsive/mobile work must not replace, downgrade or remove desktop functionality. New user-facing features should normally support both layouts and share one domain/data model.
+Both presentations consume one domain/data model. Responsive/mobile work must not replace or degrade desktop functionality.
 
 ## D-007 — Responsive shell is an early isolated phase
 Status: APPROVED
 
-Make the deployed current shell responsive before adding the bulk of league features. Do not mix responsive work with backend/auth work.
+## D-008 — Supabase for project-created persistent state
+Status: APPROVED ARCHITECTURE — UPDATED
 
-## D-008 — Supabase for minimum persistent backend
-Status: APPROVED ARCHITECTURE; F3 COMPLETE
+Use Supabase Auth + Postgres + RLS + Storage for accounts and companion-app state such as profiles, avatars, planner state, Trading Block, trade proposals, preferences and historical snapshots when needed.
 
-Use Supabase Auth + Postgres + RLS + Storage for six accounts and project-owned persistent league state.
+Do not use Supabase to create manually maintained duplicate truth for official lineups, current ownership, standings or Gameweek scores when reliable official reads exist.
 
 ## D-009 — Team-name login UX
 Status: APPROVED
 
-The visible login uses team name + password. Internal Supabase auth identities may use hidden/generated email identifiers.
+Visible login uses team name + password. Internal Supabase auth identities remain implementation details.
 
 ## D-010 — Admin credentials cannot be shared
 Status: APPROVED SECURITY CORRECTION
 
-Jakin Goff must use a unique admin password. A shared password across all known team names would allow any member to authenticate as the league owner, making RLS unable to distinguish the real admin.
+Jakin Goff uses a unique private password. Never commit passwords.
 
 ## D-011 — Backend permissions, not frontend hiding
 Status: APPROVED
 
-Admin-sensitive and owner-sensitive permissions must be enforced via RLS/backend authorization.
+Authorization-sensitive project writes remain enforced through backend/RLS.
 
-## D-012 — Missing Gameweek lineup remains unsubmitted
+## D-012 — Project manual Gameweek submission model
+Status: SUPERSEDED by D-035
+
+The earlier plan treated a project-submitted lineup as authoritative and included missing-submission/fallback behavior. This is no longer the target architecture because verified official FPL Draft entry/Gameweek reads can provide the real lineup.
+
+## D-013 — Old score provenance / Commissioner correction precedence
+Status: SUPERSEDED by D-036
+
+The earlier `admin correction > official total > project-calculated submitted lineup` model is retired. Manual score entry/correction is not part of the target.
+
+## D-014 — Accepted trade is not official ownership change
 Status: APPROVED — UPDATED
 
-Never reuse a previous Gameweek lineup if a manager forgot to submit one. Submission state remains explicitly missing/unsubmitted.
+An accepted in-app trade proposal means the managers agreed inside this companion app. It does not change live ownership.
 
-For presentation only, Teams may display an automatically generated valid XI + bench when no lineup was submitted. That fallback must be labeled as automatic/not submitted, must not become the authoritative lineup, and receives zero project-calculated lineup points.
-
-## D-013 — Score provenance is explicit
-Status: APPROVED
-
-Prefer: admin correction > verified official FPL total > project-calculated total from a valid submitted lineup > unavailable. Corrections retain an audit trail and do not erase source values. Automatically generated unsubmitted fallback lineups are not eligible for project-calculated lineup points.
-
-## D-014 — Accepted trade is not processed trade
-Status: APPROVED
-
-An accepted in-app trade does not change current rosters until real-FPL reconciliation or explicit league-owner confirmation marks it PROCESSED.
+Official ownership changes only when the move is actually executed in FPL Draft and later appears in verified official ownership/transaction state. That official change should reconcile the companion proposal as completed/processed automatically where possible.
 
 ## D-015 — Prefer official/public data over scraping
 Status: APPROVED
 
-Scraping is a fallback only for genuinely missing required data.
+Scraping is fallback-only for genuinely missing required data.
 
-## D-016 — Premier League photos require a verified mapping contract
+## D-016 — Premier League photos require verified mapping
 Status: APPROVED RESEARCH DIRECTION
 
-Investigate stable FPL/player identity -> official Premier League profile/image mapping. Do not guess CDN URLs or manually maintain hundreds of photos before proving the source contract.
+Do not guess CDN URLs or manually maintain unverified photo mappings.
 
 ## D-017 — External API shapes stop at adapters
 Status: APPROVED
 
-React consumes project-owned models. Undocumented FPL/FPL Draft response structures do not become UI contracts directly.
+React consumes project-owned normalized models. Undocumented raw FPL/FPL Draft response shapes never become direct UI contracts.
 
 ## D-018 — No automatic official FPL mutations yet
 Status: APPROVED
 
-Read/reconcile before automating any official trade, waiver, free-agent or lineup mutation.
+The project may read and reconcile official FPL Draft state. Do not automate official lineup/trade/waiver/free-agent writes without separate explicit future approval.
 
 ## D-019 — Model usage by task difficulty
 Status: APPROVED WORKFLOW
@@ -104,116 +102,131 @@ Use Luna for trivial mechanical work, Terra for normal implementation, and Sol f
 ## D-020 — Codex leads repository-heavy technical planning
 Status: APPROVED WORKFLOW — EXPANDED
 
-For repository implementation work, Codex should inspect the codebase, relevant tests/contracts and Second Brain notes, then own the technical execution plan. This includes choosing exact files, component structure, CSS techniques, refactors, SQL/RLS implementation details, state organization, testing seams, debugging strategy and command sequence.
+ChatGPT defines product outcomes, invariants, scope and acceptance criteria. Codex inspects the repository and owns exact technical execution, refactors, tests and debugging.
 
-ChatGPT should primarily turn Vuk's ideas into clear task goals, define non-negotiable product/architecture/data/security constraints, define scope boundaries and acceptance criteria, and independently verify the resulting PR. ChatGPT should not normally prescribe step-by-step implementation details when Codex can make a better decision from direct repository context.
+## D-021 — Mobile and desktop share one application state
+Status: APPROVED — UPDATED
 
-Prescriptive implementation instructions are appropriate only when they protect a real invariant, such as security boundaries, immutable history, source-of-truth rules, migration safety, or an explicit previously approved architecture decision.
+Mobile and desktop consume the same authenticated account, official live league state and project-created companion state.
 
-Codex may depart from a suggested implementation approach when repository evidence supports a safer, simpler, faster or more maintainable solution, provided the task's outcome and invariants remain satisfied. Material deviations should be explained in the final report.
+Pre-GW planner state may persist across devices, but it is explicitly non-authoritative. Official active/completed lineups come from verified FPL Draft reads.
 
-## D-021 — Mobile and desktop share one persistent application state
-Status: APPROVED ARCHITECTURE
+## D-022 — Formation derives from the XI
+Status: APPROVED — UPDATED
 
-Mobile and desktop are presentation layers of one application, not separate products. Persistent mutable league data must use the same backend/database contracts on both form factors.
+Formation is never a cosmetic independent setting. It is derived from the positions of the 11 selected starters.
 
-A lineup submitted on mobile must be visible on desktop, and a later desktop edit/submission must be visible on mobile after both read the shared backend state.
+For planner mode it derives from the experimental XI. For active/completed Gameweeks it derives from the verified official XI.
 
-No device-specific authoritative lineup state and no authoritative localStorage persistence.
+## D-023 — Bench order is meaningful lineup data
+Status: APPROVED — UPDATED
 
-## D-022 — Formation derives from the submitted XI
-Status: APPROVED PRODUCT RULE
-
-Formation is not an independent cosmetic setting. It is derived from the positions of the 11 selected starters subject to valid FPL lineup constraints.
-
-Example: 3 DEF + 5 MID + 2 FWD is 3-5-2. Replacing a FWD starter with a DEF produces 4-5-1 if the resulting XI remains legal.
-
-Formation and lineup-validity rules belong in shared domain logic, not in mobile-only presentation code.
-
-## D-023 — Gameweek bench order is persistent meaningful data
-Status: APPROVED PRODUCT RULE
-
-The lineup bench contains one substitute goalkeeper followed by ordered outfield substitutes 1, 2 and 3. Bench order is part of the persistent Gameweek lineup entity and must be shared across mobile and desktop.
+Bench order remains meaningful. In planner mode it is project-created plan data. In active/completed Gameweeks the official entry/event contract is authoritative once its exact semantics are verified.
 
 ## D-024 — League home is Gameweek-first
+Status: APPROVED — EXPANDED
+
+During an active Gameweek the League page prioritizes authenticated-manager LIVE points, continuously updating LIVE/provisional standings, rank movement/points gaps, important league-relevant football events, ownership/transaction changes and freshness.
+
+Do not wait for delayed official standings when verified official lineup + live player data are sufficient to calculate the provisional table safely.
+
+## D-025 — Mobile primary navigation
+Status: APPROVED — UPDATED
+
+Primary mobile navigation remains League, My Team, Teams and More. The long-term secondary destination label becomes **Archive** rather than Draft Archive.
+
+## D-026 — Fantacalcio-style lineup is inspiration, not copied branding
 Status: APPROVED PRODUCT DIRECTION
 
-The main League page prioritizes current Gameweek context, the logged-in manager's Gameweek points, standings, important verified football/Gameweek events and recent transactions.
+Use an original football-pitch presentation with derived formation, verified player photos when available, names, live points/events and ordered bench.
 
-Draft summary metrics, roster completeness, large Draft Archive calls to action and draft-history activity are secondary and should not dominate the League home page.
+## D-027 — Jakin Goff is Commissioner
+Status: APPROVED — CLARIFIED
 
-## D-025 — Mobile primary navigation order
-Status: APPROVED PRODUCT DIRECTION
+Jakin Goff remains backend `LEAGUE_OWNER` and displays **Commissioner**. This role governs project/account administration where needed, but it no longer implies authority to edit official FPL lineups or scores in the companion app.
 
-Primary mobile navigation is League, My Team, Teams and More. Players moves under More together with Matchday, Transactions and Draft Archive.
+## D-028 — Project lineup write lock / Commissioner post-kickoff overrides
+Status: SUPERSEDED by D-035
 
-The mobile navigation should be floating/rounded, safe-area aware, touch-friendly and use restrained polished animation while respecting reduced-motion preferences.
+The old manual-submission locking/override model is removed because the companion no longer owns the official Gameweek submission.
 
-## D-026 — Fantacalcio-style lineup is presentation inspiration, not copied branding
-Status: APPROVED PRODUCT DIRECTION
+## D-029 — Successful login persists without storing password
+Status: APPROVED
 
-My Team and Teams should eventually use an original football-pitch lineup presentation inspired by the supplied Fantacalcio reference: starters visually positioned by derived formation, real verified Premier League player photos when available, names visible, and an ordered bench underneath.
-
-Do not copy proprietary branding or assets. My Team owns editing controls; Teams reuses the lineup rendering model for viewing other managers.
-
-## D-027 — Jakin Goff is the league Commissioner
-Status: APPROVED PRODUCT / AUTHORIZATION RULE
-
-Jakin Goff remains the backend `LEAGUE_OWNER` account and is displayed in the product as **Commissioner**. The title is user-facing; authorization continues to rely on the stable backend role and RLS policies.
-
-## D-028 — Gameweek lineup writes lock for members at kickoff
-Status: APPROVED PRODUCT / SECURITY RULE
-
-Before a Gameweek starts, each MEMBER may create, edit and submit only their own lineup.
-
-Once the verified Gameweek start/deadline is reached, MEMBER accounts may no longer insert, edit, replace or submit a lineup for that Gameweek.
-
-Jakin Goff / `LEAGUE_OWNER` / Commissioner may insert, edit or replace a lineup for itself or any other manager after kickoff as a privileged administrative action. These writes must be enforced through backend/RLS authorization and audited when lineup persistence is implemented. The lock must not depend only on client-side time.
-
-## D-029 — Successful login persists on the device without storing the password
-Status: APPROVED AUTHENTICATION RULE
-
-After a successful team-name + password login, the browser/device should restore a still-valid Supabase Auth session automatically across refreshes and later reopening so the user does not need to enter the password every time.
-
-Project code must never persist the password. Supabase-managed session/access/refresh-token behavior provides persistence and refresh. Explicit logout clears the persistent authenticated session.
-
-Session restoration is an authentication convenience only. MEMBER/LEAGUE_OWNER authorization remains database/RLS controlled and must never be inferred from local browser state.
+Supabase-managed sessions restore while valid; explicit logout clears them; project code never stores passwords.
 
 ## D-030 — Auth-dependent UI waits for session initialization
-Status: APPROVED AUTH UX RULE
+Status: APPROVED
 
-The account-aware shell must distinguish `INITIALIZING`, `AUTHENTICATED`, and `UNAUTHENTICATED` states. It should not briefly show the login state while a valid persisted Supabase session is still being restored.
-
-A2 should consume the project-owned auth session service rather than create a second session lifecycle or duplicate Supabase client.
-
-## D-031 — Codex owns implementation execution; prompts define outcomes and invariants
+## D-031 — Prompts define outcomes and invariants
 Status: APPROVED WORKFLOW
 
-ChatGPT/Codex prompts should be concise and outcome-oriented. They should tell Codex what Vuk wants, which product/security/architecture rules cannot change, what is in/out of scope, and what evidence is required for completion.
-
-Codex should then inspect the repository and determine how to execute the task. Avoid unnecessarily prescribing exact code structure or step-by-step implementation because repository-local reasoning is usually stronger in Codex than browser-side planning without direct execution context.
-
-Token efficiency remains important: provide enough context to prevent rediscovery or constraint violations, but do not repeat large implementation recipes Codex can derive itself.
-
-## D-032 — Codex performs available verification and clearly assigns manual checks
+## D-032 — Codex performs available verification and isolates manual checks
 Status: APPROVED WORKFLOW
 
-Codex should perform every verification it can reliably perform itself, including relevant automated tests, type checking, linting, builds, local integration checks, database/RLS checks and repository inspection.
-
-Checks should be left to Vuk only when they genuinely require a real device/browser, unavailable credentials or external authenticated UI, or subjective visual/product judgment. In those cases Codex's final report must include a concise **Manual verification for Vuk** section containing the exact action, expected result and failure signal.
-
-Codex must never claim that an unperformed test passed. If no manual verification is required, it should state that explicitly.
+Manual-only checks must appear under **Manual verification for Vuk** with exact action, expected result and failure signal.
 
 ## D-033 — Keep Git history compact
 Status: APPROVED WORKFLOW
 
-For a normal narrow roadmap step, prefer one coherent implementation commit rather than many checkpoint/progress commits. Additional review/fix commits are acceptable when useful. Vuk may use squash merge to keep `main` history compact.
-
-Fewer commits must not be achieved by collapsing multiple roadmap steps into one oversized task.
+Prefer one coherent commit per narrow roadmap step. Do not collapse multiple roadmap steps solely to reduce commit count.
 
 ## D-034 — Team profiles are presentation data, not identity authority
 Status: APPROVED ARCHITECTURE / SECURITY RULE
 
-A3 team profiles and avatars are mutable league presentation data linked one-to-one to authoritative `league_accounts`.
+Profile/avatar fields never decide authenticated account identity, Commissioner authorization or immutable roster manager identity.
 
-Profile/avatar fields must never decide authenticated account identity, Commissioner authorization, or immutable roster manager identity. Normal writes remain owner-scoped unless a later explicitly approved backend-authorized administrative capability is added.
+## D-035 — Official FPL Draft lineup is active/completed Gameweek authority
+Status: APPROVED PRODUCT / DATA RULE
+
+Do not ask managers to manually submit their real Gameweek lineup into this app.
+
+When a Gameweek is not active, My Team may maintain a non-authoritative lineup tester/planner.
+
+When the Gameweek becomes active, the app automatically consumes the verified official FPL Draft entry/Gameweek lineup for that manager. Teams does the same for all six managers.
+
+If the official lineup contract cannot be verified/read, show an unavailable state rather than inventing or reusing a previous lineup.
+
+## D-036 — LIVE provisional scoring and finalized official reconciliation
+Status: APPROVED PRODUCT / DATA RULE
+
+During active play, calculate LIVE/provisional team totals from verified official lineup + verified official live player data.
+
+Build the six-team LIVE/provisional table continuously so rank changes occur as soon as the upstream official live feed reflects scoring events.
+
+Label provisional values and expose freshness. Once the official Gameweek is finalized, reconcile to official finalized Gameweek/season totals and standings.
+
+No manual score entry or Commissioner correction system is part of the target.
+
+## D-037 — Official current ownership is live roster authority
+Status: APPROVED PRODUCT / DATA RULE
+
+Once the 2026/27 ownership contract is verified, official FPL Draft ownership/free-agent state becomes current live roster authority.
+
+The custom draft remains immutable historical starting-state authority. Current ownership changes must never rewrite draft history.
+
+## D-038 — FPL supplies facts; the companion adds value
+Status: APPROVED PRODUCT PRINCIPLE
+
+Do not rebuild Premier League Draft features merely to duplicate them.
+
+Use official FPL Draft data for factual league state already available there, then improve the experience with faster live standings, richer lineup presentation, planning/research tools, Trading Block, proposals, comparisons, waiver research, archive/history, analytics and recommendations.
+
+## D-039 — Transactions app is negotiation/research, not official execution
+Status: APPROVED PRODUCT RULE
+
+Trading Block, trade proposals, responses/counters, comparisons and waiver research are companion-app features.
+
+Official ownership remains unchanged until users execute the move in FPL Draft. Verified official state then confirms/reconciles completion.
+
+## D-040 — Draft Archive evolves into Archive
+Status: APPROVED PRODUCT DIRECTION
+
+Archive should contain both the canonical custom draft and completed Gameweek/season history: official lineups/bench, player points, team Gameweek scores, season totals, positions/rank movement and standings snapshots, with later season analytics.
+
+## D-041 — Live views must expose freshness and provisional/finalized state
+Status: APPROVED UX / DATA RULE
+
+Live values should clearly indicate freshness such as `LIVE · updated … ago` and whether they are provisional or finalized.
+
+"Immediate" means as soon as the verified official upstream feed reflects the event; never fabricate an event before the source does.

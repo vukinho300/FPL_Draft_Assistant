@@ -1,94 +1,104 @@
 # Current Architecture
 
 ## Verified baseline
-Current verified `main` is `a62d027d310efa08dbdd22dc53bf17818a863fec` after A3 PR #35 and corrective PR #36.
+A family is complete and production-verified. G1 introduces the verified official league/entry bridge for league `45938` and six official entries.
 
-The deployed application now includes:
-- responsive desktop/mobile shell;
-- live Players data through the project-owned FPL boundary;
-- Supabase Auth/Postgres/RLS/Storage foundation;
-- six persistent league accounts and Supabase-managed sessions;
-- account-aware My Team;
-- persistent team profiles and private team avatars.
-
-## Core flows
+## Three-source architecture
 ```text
-External FPL data -> project adapter -> normalized models -> domain logic -> shared dashboard model -> desktop/mobile UI
+1. Canonical custom draft history
+   repository immutable snapshot
+
+2. Official FPL Draft live state
+   league / entry / event / live / ownership / transaction reads
+   -> project-owned adapters
+   -> normalized internal contracts
+
+3. Project-created companion state
+   Supabase Auth/Postgres/Storage/RLS
+   -> accounts, profiles, avatars, planner state,
+      Trading Block, trade proposals, preferences,
+      historical snapshots where needed
 ```
 
-```text
-Supabase Auth session
-  -> RLS-protected league_accounts
-  -> stable approved account -> immutable roster manager ID
-  -> shared dashboard model
-  -> RLS-protected team_profiles/private avatars
-  -> shared My Team / Teams / navigation profile state
-```
-
-Raw external response shapes stop at project-owned boundaries. Backend/RLS remains authoritative for permissions.
+React must consume project-owned models, not raw undocumented external shapes.
 
 ## Historical truth
-`src/data/leagues/kile-n-others/officialDraft2026-27.json` is immutable draft history.
+`src/data/leagues/kile-n-others/officialDraft2026-27.json` is the canonical real 2026/27 Kile N Others draft.
 
-Current rosters derive from immutable final draft rosters plus PROCESSED post-draft transactions. Profile/account/live-data work must never rewrite the historical draft.
+The Premier League Draft choices endpoint mirrors selections that were entered into the platform after the league's custom draft. It may prove integration identity but must not replace custom draft history.
 
-## Current persistent backend
-Hosted Supabase project: KNO (`asrrkwyqerfkynhjypov`).
+Custom draft history is immutable even when current official ownership changes.
 
-Applied hosted migrations:
-- `20260822170000_foundation.sql`
-- `20260822180000_league_accounts.sql`
-- `20260823163233_team_profiles_avatars.sql`
+## Account and official identity
+Application account authority remains `league_accounts` plus the approved immutable account -> roster manager mapping.
 
-Persistent state now includes:
-- six `league_accounts` identities;
-- one `LEAGUE_OWNER`, five `MEMBER`;
-- Auth bindings and persistent sessions;
-- six one-to-one `team_profiles`;
-- private `team-avatars` Storage with owner-scoped writes and authenticated league reads.
+G1 adds a separate official integration mapping:
+- league ID `45938`;
+- six official entry IDs;
+- six league-entry IDs.
 
-Season-long shared mutable state uses Supabase rather than authoritative localStorage. Legacy Draft Room localStorage remains isolated draft-night behavior.
+Official display names do not control application identity. Mapping conflicts fail closed.
 
-## Account/roster identity
-A2 is complete and production-verified. PR #33 remains a critical invariant:
-- stable account -> immutable roster manager ID;
-- unknown/inconsistent identity fails closed;
-- no Jakin/Vuk fallback;
-- Miku007/Lovro -> Miku roster;
-- stale account state cleared on account switch;
-- Commissioner authorization does not determine roster identity.
+## Live league state direction
+Verified official FPL Draft reads should become the factual source for:
+- current Gameweek;
+- official entry/Gameweek lineup;
+- current official player ownership/free-agent state;
+- live per-player Gameweek scoring/events;
+- official finalized Gameweek/season totals;
+- official transactions/waivers/trades where the relevant read contracts are proven.
 
-## Team profiles + avatars
-A3 is complete and production-verified.
-- `team_profiles` is one-to-one with authoritative accounts;
-- editable profile data is presentation data, not account/role/roster identity authority;
-- avatars are private Storage objects;
-- normal members write only their own avatar/profile path;
-- authenticated league members read league-visible profiles/avatars;
-- Commissioner has no implicit blanket cross-team avatar editing;
-- missing avatar uses deterministic team-name initial fallback;
-- one shared profile model sits above desktop/mobile presentations;
-- My Team, Teams and My Team navigation consume the same profile state;
-- account switches isolate previous profile state;
-- mobile profile/current-roster presentation is compact and remains explicitly not a submitted Gameweek XI.
+During an active Gameweek, the app should derive its own **LIVE / provisional standings** from verified official lineup + live player data so rank changes do not wait for delayed finalized league standings.
 
-## Current phase boundary
-- F0/F1/F2/P5A/F3: COMPLETE.
-- A1/A1.5/A2/A3: COMPLETE.
-- **A family: COMPLETE.**
-- **G1 Real FPL Draft league/entry identity: CURRENT / NEXT.**
+When official Gameweek results finalize, finalized official values supersede provisional calculations while historical provenance remains clear.
 
-G1 establishes verified official league/entry identity and read-contract evidence. It must not pull G2 standings/Gameweek UI, G3 lineup persistence, or official FPL mutations forward.
+## My Team / Teams modes
+Inactive Gameweek:
+- My Team is an app-specific lineup tester / decision workspace;
+- planner state is non-authoritative and may be persisted in Supabase;
+- Teams remains primarily roster/profile/current-state viewing.
+
+Active Gameweek:
+- official FPL Draft lineup is automatically consumed;
+- My Team and Teams use one shared normalized lineup/live-scoring model;
+- live team points and live player points update automatically;
+- no duplicate manual lineup submission.
+
+## Supabase responsibilities
+Supabase remains authoritative for project-created state:
+- authentication/session/account bindings;
+- profiles/avatars;
+- optional lineup-planner state;
+- Trading Block;
+- trade proposals/responses;
+- app preferences/watchlists;
+- historical snapshots/analytics facts that need preservation beyond upstream availability.
+
+Supabase should not become a manually maintained duplicate of official lineups, current ownership, standings or Gameweek scores.
+
+## Transactions architecture
+Official ownership is the target live roster authority once its contract is verified.
+
+The app's transaction layer remains useful for research and negotiation. In-app proposal acceptance does not mutate official ownership. A verified official ownership/transaction change later reconciles the move as actually completed.
+
+## Archive architecture
+The existing Draft Archive evolves into Archive:
+- immutable custom draft section;
+- historical completed Gameweeks;
+- lineups/bench, player points, team GW totals, season totals, positions and standings snapshots;
+- later season/rank analytics.
 
 ## Architecture constraints
 - no external API shape directly in React;
-- no business-critical permission enforced only by UI hiding;
-- no duplicate roster truth;
+- no duplicate manual official-state database when a reliable official read exists;
+- live calculations expose provisional/finalized provenance;
+- live views expose data freshness;
 - no duplicate desktop/mobile business logic;
-- no mutable official-draft history;
-- persistent mutable league state uses shared backend contracts;
-- roster identity fails closed;
-- Commissioner authorization and roster identity remain separate;
-- profile presentation data is not identity authority;
-- real league/entry identity must be verified before league-specific FPL Draft data is trusted;
-- no official FPL mutations until explicitly approved.
+- custom draft history is immutable;
+- current official ownership never rewrites draft history;
+- account/profile/official-entry identities remain separate concerns;
+- no official FPL writes without separate explicit approval;
+- secrets/private browser credentials never enter source/browser public config.
+
+## Current phase boundary
+G1 identity is complete once PR #38 merges. Next: **G2 — Official League State Contracts**.
