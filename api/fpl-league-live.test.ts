@@ -51,7 +51,7 @@ function contract(hasLiveFixture: boolean): RetrievedLiveLeagueState {
       calculationStatus: 'PROVISIONAL',
       reconciliationStatus: 'NOT_PROVEN',
       freshness: {
-        retrievedAt: '2026-08-24T12:00:00Z', ageMs: 0, staleAfterMs: 90_000, status: 'FRESH',
+        retrievedAt: '2026-08-24T12:00:00Z', staleAfterMs: 90_000,
       },
     },
     eventStatus: { days: [], leagueTableStatus: null },

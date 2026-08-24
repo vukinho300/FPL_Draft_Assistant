@@ -48,5 +48,11 @@ two minutes during active quiet periods, five minutes during post-football proce
 15 minutes before play. It exposes loading/refreshing/error/last-success state and rejects
 out-of-order responses so stale requests cannot overwrite newer data.
 
+The serialized response carries only the durable upstream retrieval timestamp and stale
+threshold. Browser/controller state derives current age and `FRESH`/`STALE` from its own
+clock whenever state is read; cached response bodies therefore cannot freeze freshness at
+origin-generation time. Browser receipt time remains separately available as the last
+successful refresh time and never replaces the upstream timestamp.
+
 The active cadence is a maintainable polling choice, not a claim about exact upstream event
 latency. `npm run verify:fpl-live-standings` checks the current read-only official state.

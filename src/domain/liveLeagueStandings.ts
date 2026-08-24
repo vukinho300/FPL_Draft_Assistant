@@ -7,10 +7,13 @@ import type { FplDraftLiveEvent } from '../services/fpl/liveEvent.ts'
 
 export type LiveLeagueFreshnessStatus = 'FRESH' | 'STALE'
 
-export interface LiveLeagueFreshness {
+export interface LiveLeagueFreshnessSource {
   readonly retrievedAt: string
-  readonly ageMs: number
   readonly staleAfterMs: number
+}
+
+export interface LiveLeagueFreshness extends LiveLeagueFreshnessSource {
+  readonly ageMs: number
   readonly status: LiveLeagueFreshnessStatus
 }
 
@@ -103,7 +106,8 @@ export interface LiveLeagueStandingsSnapshot {
   readonly standings: AvailableLiveLeagueStandings | UnavailableLiveLeagueStandings
   readonly calculationStatus: 'PROVISIONAL'
   readonly reconciliationStatus: 'NOT_PROVEN'
-  readonly freshness: LiveLeagueFreshness
+  /** Durable source facts. Current age/status must be derived at the consuming boundary. */
+  readonly freshness: LiveLeagueFreshnessSource
 }
 
 export interface BuildLiveLeagueStandingsInput {
@@ -115,7 +119,6 @@ export interface BuildLiveLeagueStandingsInput {
   readonly histories?: readonly FplDraftEntryHistory[]
   readonly leagueDetails: FplDraftLeagueDetails
   readonly retrievedAt: string
-  readonly now?: Date
   readonly staleAfterMs?: number
   /** Optional only after a future source has independently met the finalized-baseline contract. */
   readonly seasonBaseline?: LiveSeasonBaseline
@@ -384,6 +387,11 @@ function buildRanks(
 export function buildLiveLeagueStandings(
   input: BuildLiveLeagueStandingsInput,
 ): LiveLeagueStandingsSnapshot {
+  const validatedFreshness = deriveLiveLeagueFreshness(
+    input.retrievedAt,
+    new Date(input.retrievedAt),
+    input.staleAfterMs ?? DEFAULT_STALE_AFTER_MS,
+  )
   const { lineupByEntry, livePointsByPlayer, standingByLeagueEntry } = validateIdentityAndSources(input)
   const teamScores = Object.freeze(input.identity.participants.map((identity) => {
     const lineup = lineupByEntry.get(identity.officialEntryId)
@@ -432,10 +440,9 @@ export function buildLiveLeagueStandings(
     standings,
     calculationStatus: 'PROVISIONAL',
     reconciliationStatus: 'NOT_PROVEN',
-    freshness: deriveLiveLeagueFreshness(
-      input.retrievedAt,
-      input.now,
-      input.staleAfterMs,
-    ),
+    freshness: Object.freeze({
+      retrievedAt: validatedFreshness.retrievedAt,
+      staleAfterMs: validatedFreshness.staleAfterMs,
+    }),
   })
 }

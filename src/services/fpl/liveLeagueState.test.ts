@@ -49,9 +49,7 @@ function snapshot(
     reconciliationStatus: 'NOT_PROVEN',
     freshness: {
       retrievedAt: '2026-08-24T12:00:00Z',
-      ageMs: 0,
       staleAfterMs: 90_000,
-      status: 'FRESH',
     },
   }
 }
@@ -69,6 +67,35 @@ describe('shared live league refresh foundation', () => {
     expect(fetchImplementation).toHaveBeenCalledWith('/api/fpl-league-live', {
       headers: { accept: 'application/json' },
     })
+  })
+
+  it('re-derives cached-response freshness from source time without replacing it with receipt time', async () => {
+    const cachedBody = structuredClone(retrieved(1)) as RetrievedLiveLeagueState & {
+      snapshot: { freshness: Record<string, unknown> }
+    }
+    cachedBody.snapshot.freshness.ageMs = 0
+    cachedBody.snapshot.freshness.status = 'FRESH'
+    let currentTime = new Date('2026-08-24T12:00:20Z')
+    const controller = new LiveLeagueStateController({
+      load: () => loadKileNOthersLiveLeagueState(async () => Response.json(cachedBody)),
+      now: () => currentTime,
+    })
+
+    await controller.refresh()
+    const received = controller.getState()
+    expect(received.lastSuccessfulAt).toBe('2026-08-24T12:00:20.000Z')
+    expect(received.data?.snapshot.freshness).toEqual({
+      retrievedAt: '2026-08-24T12:00:00Z',
+      staleAfterMs: 90_000,
+    })
+    expect(received.freshness).toMatchObject({
+      retrievedAt: '2026-08-24T12:00:00Z',
+      ageMs: 20_000,
+      status: 'FRESH',
+    })
+
+    currentTime = new Date('2026-08-24T12:02:00Z')
+    expect(controller.getState().freshness).toMatchObject({ ageMs: 120_000, status: 'STALE' })
   })
 
   it('uses an active-football cadence and backs off outside live play', () => {
@@ -99,21 +126,25 @@ describe('shared live league refresh foundation', () => {
 
   it('retains the last successful data and reports refresh errors truthfully', async () => {
     let shouldFail = false
+    let currentTime = new Date('2026-08-24T12:00:30Z')
     const controller = new LiveLeagueStateController({
       load: async () => {
         if (shouldFail) throw new Error('upstream unavailable')
         return retrieved(1)
       },
-      now: () => new Date('2026-08-24T12:00:00Z'),
+      now: () => currentTime,
     })
     await controller.refresh()
+    expect(controller.getState().freshness?.status).toBe('FRESH')
     shouldFail = true
+    currentTime = new Date('2026-08-24T12:02:00Z')
     await controller.refresh()
     expect(controller.getState()).toMatchObject({
       status: 'ERROR',
       data: { snapshot: { eventId: 1 } },
-      lastSuccessfulAt: '2026-08-24T12:00:00.000Z',
+      lastSuccessfulAt: '2026-08-24T12:00:30.000Z',
       errorMessage: 'upstream unavailable',
+      freshness: { ageMs: 120_000, status: 'STALE' },
     })
   })
 })

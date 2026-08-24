@@ -1,4 +1,5 @@
 import { retrieveKileNOthersLiveLeagueState } from '../src/services/fpl/liveLeagueState.ts'
+import { deriveLiveLeagueFreshness } from '../src/domain/liveLeagueStandings.ts'
 
 const { snapshot, eventStatus } = await retrieveKileNOthersLiveLeagueState()
 const standings = snapshot.standings.status === 'AVAILABLE'
@@ -37,5 +38,9 @@ console.log(JSON.stringify({
   })),
   standings,
   eventStatus,
-  freshness: snapshot.freshness,
+  freshness: deriveLiveLeagueFreshness(
+    snapshot.freshness.retrievedAt,
+    new Date(),
+    snapshot.freshness.staleAfterMs,
+  ),
 }, null, 2))

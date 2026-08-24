@@ -128,7 +128,6 @@ function fixtureInput(options: {
     histories,
     leagueDetails,
     retrievedAt: '2026-08-24T12:00:00Z',
-    now: new Date('2026-08-24T12:00:30Z'),
   }
 }
 

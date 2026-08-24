@@ -1,6 +1,8 @@
 import { officialLeagueIdentity202627 } from '../../data/leagues/kile-n-others/officialLeagueIdentity2026-27.ts'
 import {
   buildLiveLeagueStandings,
+  deriveLiveLeagueFreshness,
+  type LiveLeagueFreshness,
   type LiveLeagueStandingsSnapshot,
 } from '../../domain/liveLeagueStandings.ts'
 import type { FetchImplementation } from './client.ts'
@@ -44,6 +46,10 @@ function isRetrievedLiveLeagueState(value: unknown): value is RetrievedLiveLeagu
       || candidate.snapshot.standings?.status === 'UNAVAILABLE')
     && candidate.snapshot.calculationStatus === 'PROVISIONAL'
     && candidate.snapshot.reconciliationStatus === 'NOT_PROVEN'
+    && typeof candidate.snapshot.freshness?.retrievedAt === 'string'
+    && !Number.isNaN(Date.parse(candidate.snapshot.freshness?.retrievedAt ?? ''))
+    && Number.isFinite(candidate.snapshot.freshness?.staleAfterMs)
+    && (candidate.snapshot.freshness?.staleAfterMs ?? 0) > 0
     && typeof candidate.eventStatus === 'object'
     && candidate.eventStatus !== null
     && Array.isArray(candidate.eventStatus.days)
@@ -71,7 +77,16 @@ export async function loadKileNOthersLiveLeagueState(
   if (!isRetrievedLiveLeagueState(body)) {
     throw new Error('The live league response did not match the project contract')
   }
-  return body
+  return Object.freeze({
+    ...body,
+    snapshot: Object.freeze({
+      ...body.snapshot,
+      freshness: Object.freeze({
+        retrievedAt: body.snapshot.freshness.retrievedAt,
+        staleAfterMs: body.snapshot.freshness.staleAfterMs,
+      }),
+    }),
+  })
 }
 
 export async function retrieveKileNOthersLiveLeagueState(
@@ -123,7 +138,6 @@ export async function retrieveKileNOthersLiveLeagueState(
       liveEvent,
       leagueDetails,
       retrievedAt,
-      now: new Date(retrievedAt),
       staleAfterMs: getLiveLeagueRefreshIntervalForState(gameweekState) * 2,
     }),
     eventStatus,
@@ -153,7 +167,11 @@ export interface LiveLeagueRefreshState {
   readonly data: RetrievedLiveLeagueState | null
   readonly lastSuccessfulAt: string | null
   readonly errorMessage: string | null
+  /** Re-derived from the upstream retrieval timestamp whenever controller state is read. */
+  readonly freshness: LiveLeagueFreshness | null
 }
+
+type StoredLiveLeagueRefreshState = Omit<LiveLeagueRefreshState, 'freshness'>
 
 type TimerHandle = ReturnType<typeof setTimeout>
 type TimerStarter = (callback: () => void, delayMs: number) => TimerHandle
@@ -172,7 +190,7 @@ export class LiveLeagueStateController {
   readonly #startTimer: TimerStarter
   readonly #stopTimer: TimerStopper
   readonly #listeners = new Set<(state: LiveLeagueRefreshState) => void>()
-  #state: LiveLeagueRefreshState = Object.freeze({
+  #state: StoredLiveLeagueRefreshState = Object.freeze({
     status: 'IDLE', data: null, lastSuccessfulAt: null, errorMessage: null,
   })
   #latestRequestId = 0
@@ -187,12 +205,21 @@ export class LiveLeagueStateController {
   }
 
   getState(): LiveLeagueRefreshState {
-    return this.#state
+    return Object.freeze({
+      ...this.#state,
+      freshness: this.#state.data === null
+        ? null
+        : deriveLiveLeagueFreshness(
+            this.#state.data.snapshot.freshness.retrievedAt,
+            this.#now(),
+            this.#state.data.snapshot.freshness.staleAfterMs,
+          ),
+    })
   }
 
   subscribe(listener: (state: LiveLeagueRefreshState) => void): () => void {
     this.#listeners.add(listener)
-    listener(this.#state)
+    listener(this.getState())
     return () => this.#listeners.delete(listener)
   }
 
@@ -237,9 +264,10 @@ export class LiveLeagueStateController {
     }
   }
 
-  #setState(state: LiveLeagueRefreshState): void {
+  #setState(state: StoredLiveLeagueRefreshState): void {
     this.#state = Object.freeze(state)
-    this.#listeners.forEach((listener) => listener(this.#state))
+    const current = this.getState()
+    this.#listeners.forEach((listener) => listener(current))
   }
 
   #schedule(delayMs: number): void {
