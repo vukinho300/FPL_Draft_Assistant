@@ -5,264 +5,174 @@ Name: Kile N Others
 Season: 2026/27
 Managers: 6
 
-Original manager identities:
-1. Vuk
-2. Diego
-3. Kristian
-4. Miku/Lovro
-5. Tin
-6. Deni
+Jakin Goff is the `LEAGUE_OWNER` account and is displayed as **Commissioner**. Commissioner is an account/league role, not authority to rewrite official FPL Draft lineups or scores.
 
-Visible team-account names are documented in `01_Project_Purpose_Requirements.md`.
+## Canonical custom draft
+The repository's 2026/27 90-pick custom draft is immutable historical truth.
 
-Jakin Goff is the `LEAGUE_OWNER` account. Its product-facing league title is **Commissioner**.
+The league used a custom draft process and later entered those picks into the Premier League Draft platform. Therefore platform draft choices do not replace the custom draft archive.
 
-## Squad contract
-Per manager:
-- GK 2
-- DEF 5
-- MID 5
-- FWD 3
-- Total 15
+## Live season state
+For in-season factual state, prefer verified official FPL Draft reads over manual duplication.
 
-Current official draft contains 90 unique players and six complete legal rosters.
+Target official live authority includes:
+- current Gameweek/timing;
+- official entry Gameweek lineup;
+- current ownership/free-agent state;
+- live player Gameweek points/events;
+- finalized Gameweek/season totals;
+- official ownership changes/transactions where verified.
 
-## Draft history
-The 2026/27 official draft is immutable historical truth. Later roster changes must be represented as transactions layered after the draft.
+## League page
+The League page is Gameweek-first.
 
-## Mobile navigation product rule
-Primary mobile navigation order:
-1. League
-2. My Team
-3. Teams
-4. More
+During an active Gameweek it should prioritize:
+- current Gameweek;
+- authenticated manager's LIVE points;
+- LIVE/provisional standings;
+- rank movement and points gaps;
+- important verified football events affecting league teams;
+- official ownership/waiver/trade changes;
+- recent league transactions;
+- data freshness.
 
-More contains the remaining destinations, including:
-- Players
-- Matchday
-- Transactions
-- Draft Archive
+The live table should update as soon as the verified official live feed changes, rather than waiting for the Premier League Draft standings page to finalize its daily results.
 
-The mobile bottom navigation should feel like a polished sports app: floating/rounded, safe-area aware, touch-friendly, visually animated, and never clipped by the viewport. The page itself must remain fixed to the phone width with vertical scrolling only and no required zooming for normal use.
+LIVE/provisional values must be labeled as such. Finalized official totals/standings replace provisional calculations after reconciliation.
 
-## League home page priority
-The League page is a Gameweek-first dashboard, not a draft-summary page.
+## My Team — inactive Gameweek
+When the Gameweek is not active, My Team is a lineup tester / decision workspace.
 
-Prominent content should prioritize:
-- league name `Kile N Others` as the main heading;
-- current Gameweek context;
-- the logged-in manager's current Gameweek points;
-- league standings;
-- important verified football/Gameweek events;
-- recent league transactions lower on the page.
+Managers should be able to experiment with possible XI/bench combinations without pretending to submit anything to official FPL Draft.
 
-Do not spend primary League-page space on:
-- manager count;
-- complete-squad count;
-- official-draft pick count;
-- roster completeness;
-- large Draft Archive calls to action;
-- draft-history activity.
+Target decision support includes:
+- current official roster;
+- experimental XI and ordered bench;
+- formation derived from chosen XI;
+- fixtures;
+- form and points;
+- availability/injury evidence;
+- player stats/detail modal;
+- later starting-likelihood classification and recommendations.
 
-Draft-focused summary information belongs in Draft Archive or other secondary contexts.
+Planner state may persist across devices but remains non-authoritative project state.
 
-Until standings, Gameweek points or event sources are verified, the UI must show truthful unavailable states rather than fabricated values.
+## My Team — active Gameweek
+Once the Gameweek is active:
+- automatically load the verified official FPL Draft lineup for the authenticated entry;
+- show LIVE team points above the lineup;
+- show live points for each player in formation/list views;
+- preserve official XI/bench semantics from the verified entry/event contract;
+- update automatically as official live player data changes;
+- do not ask the manager to manually submit or re-enter the lineup.
 
-## Gameweek lineup
-Managers should be able to:
-- experiment with possible XI/bench without submitting;
-- submit an actual Gameweek lineup;
-- see only their own editing controls before the Gameweek starts.
+## Teams
+Teams uses the same normalized official/live state as My Team for all six managers.
 
-A submitted lineup must record enough information to reconstruct that Gameweek without later roster/UI changes altering history.
+During an active Gameweek each team should show:
+- profile/team identity;
+- official XI/bench;
+- LIVE team points;
+- live player points;
+- live event indicators;
+- formation/list presentations.
 
-The authoritative Gameweek lineup is shared persistent application data. Mobile and desktop are two presentations of the same lineup record. A lineup submitted on one device must be visible on the other after reading the shared backend state.
+Outside active play it can emphasize current official roster, profile and finalized historical context.
 
-Do not use mobile-only or desktop-only authoritative lineup state, and do not use localStorage as the source of truth for submitted lineups.
+## Formation and bench
+Formation remains derived from the starting XI and must satisfy valid FPL lineup constraints.
 
-### Lineup edit authority and Gameweek lock
-Before a Gameweek starts:
-- each MEMBER may create, edit and submit only their own lineup;
-- members may not insert or edit another manager's lineup;
-- Jakin Goff / `LEAGUE_OWNER` / **Commissioner** may manage its own lineup and retains commissioner authority over league lineup records where an administrative correction is required.
+The bench is ordered meaningful data. Exact official entry/event semantics must be verified before production use.
 
-Once the Gameweek starts:
-- normal members can no longer insert, edit, replace or submit lineups for that Gameweek;
-- only the Commissioner may insert, edit or replace a lineup for Jakin Goff or any other manager;
-- commissioner post-start lineup actions are privileged administrative operations and must be enforced by backend/RLS authorization, not only hidden in the UI;
-- when persistence is implemented, commissioner post-start inserts/changes must be auditable with commissioner identity, target manager, Gameweek, timestamp, and a reason/note where appropriate.
+## Live scoring and standings
+During active play, project-calculated values are allowed only when built entirely from verified official inputs and clearly labeled LIVE/provisional.
 
-The deadline/lock must be derived from verified Gameweek timing rather than a client-only clock assumption.
+Target live table formula:
+- last finalized season baseline;
+- plus current verified live Gameweek team total for each manager;
+- rank all six continuously;
+- expose rank movement and points gaps.
 
-### Starting XI and formation
-The starting XI contains exactly 11 players and must satisfy valid FPL lineup constraints.
+Do not wait for delayed official standings if the official live inputs are already sufficient to calculate the league table safely.
 
-Formation is derived from the selected starters, not chosen independently for presentation.
+Autosub, bonus, captain-equivalent or any other semantics must never be assumed; verify the Draft contract/scoring behavior first.
 
-Example:
-- 3 DEF + 5 MID + 2 FWD => 3-5-2
-- replacing one FWD starter with one DEF starter => 4 DEF + 5 MID + 1 FWD => 4-5-1
+## Finalized score provenance
+Preferred provenance:
+1. LIVE/provisional project calculation from verified official inputs while the Gameweek is active.
+2. Official finalized FPL Draft Gameweek/season result once finalized.
+3. Unavailable if a required verified source is missing.
 
-Formation validity belongs in shared domain logic, not only in mobile/desktop UI components.
+The target no longer includes manual score entry or Commissioner score corrections.
 
-### Bench
-The bench is ordered and meaningful Gameweek data:
-- substitute goalkeeper;
-- outfield substitute 1;
-- outfield substitute 2;
-- outfield substitute 3.
-
-My Team should eventually present a football-pitch XI with a separate bench directly underneath. Teams should reuse the same lineup rendering model but without edit controls for other managers except commissioner administration where explicitly allowed.
-
-### Missing submission and automatic fallback
-If a manager does not submit an official project lineup for the Gameweek:
-- do not reuse the previous Gameweek lineup;
-- preserve submission state as missing/unsubmitted;
-- the Teams view may display an automatically selected valid XI and bench for readability;
-- the fallback must be clearly labeled as automatically generated / not submitted;
-- the fallback is display-only and must not be treated as the official submitted lineup;
-- project-calculated lineup points for that fallback are zero.
-
-A verified official FPL total may still be shown where the score provenance contract allows it.
-
-The Commissioner may later insert an authoritative lineup after kickoff when league administration requires it; that action is distinct from the automatic display-only fallback and must be recorded as a privileged commissioner operation.
-
-## Gameweek score provenance
-Preferred precedence for the displayed league total:
-1. Admin correction, if one exists.
-2. Verified official FPL Draft total.
-3. Project-calculated total from a valid submitted lineup.
-4. Unavailable.
-
-Automatically generated fallback lineups are not eligible for project-calculated lineup points.
-
-Always expose provenance where useful:
-- Official FPL
-- Project calculated
-- Admin corrected
-- Unavailable
-
-Admin correction must not erase the underlying original/calculated value.
-
-## Gameweek event feed
-The League page's important-event feed should represent verified football/Gameweek events rather than draft history.
-
-Examples include:
-- goals;
-- assists;
-- goalkeeper penalty saves;
-- hat tricks;
-- other genuinely important scoring events when supported by verified data.
-
-Do not fabricate event records before a verified player/Gameweek data source exists.
-
-## Admin corrections
-Jakin Goff / `LEAGUE_OWNER` / Commissioner can correct another team's points after a Gameweek and can perform the approved post-start lineup administration described above.
-
-Correction records should retain:
-- target team/gameweek;
-- old/source value where available;
-- corrected value;
-- admin identity;
-- reason/note;
-- timestamp.
-
-## My Team presentation
-The long-term My Team target is a Fantacalcio-style football lineup presentation adapted to this product:
-- green pitch;
-- 11 starters positioned by derived formation;
-- verified Premier League player photos when the mapping contract exists;
-- readable player names;
-- separate ordered bench underneath;
-- mobile and desktop may render differently but consume the same lineup entity.
-
-Do not imply a role-grouped 15-man squad is a submitted Gameweek XI.
-
-## Teams page
-Each team eventually shows:
-- profile photo;
-- team name;
-- total points;
-- Gameweek points where available;
-- current squad;
-- actual submitted lineup where one exists;
-- automatically generated display fallback when no lineup was submitted;
-- Trading Block players.
-
-The Teams Gameweek view should reuse the same lineup renderer/model as My Team. Normal members get read-only access to other managers' lineups; the Commissioner may receive explicit administrative lineup controls according to the Gameweek lock rule.
-
-Avoid roster-administration clutter such as 15/15 and per-position roster-capacity counts in the Gameweek lineup presentation.
-
-Never imply a pitch-grouped 15-man squad is the submitted Gameweek XI.
-
-## Player photos
-Starting XI and bench presentations should eventually use verified official Premier League player photos.
-
-Do not guess CDN URLs, image identifiers or identity mappings. Use the approved Premier League photo identity research/mapping contract before production implementation. A neutral fallback silhouette is acceptable until that mapping is verified.
-
-## Trading Block
-A manager can list/unlist only their own currently owned players.
-
-Trading Block entries are league-visible and can be surfaced on:
-- My Team
-- Teams
-- Transactions
-- player detail/context
-
-A listing does not change ownership and does not require the owner to accept any offer.
-
-## Trade proposals
-Support one or multiple players on each side where league positional legality permits.
-
-The existing project transaction status vocabulary is preserved:
-- PROPOSED
-- ACCEPTED
-- REJECTED
-- WITHDRAWN
-- INVALID
-- VETOED
-- EXPIRED
-- PROCESSED
-
-Important distinction:
-- ACCEPTED = participants agreed in this app.
-- PROCESSED = roster ownership is actually changed in project state after approved reconciliation/confirmation.
-
-Do not mutate current rosters on PROPOSED or merely ACCEPTED trades.
-
-## Positional trade rule
-The exchanged positional composition must match in both directions.
+## Important events
+The League feed should show league-relevant verified events rather than generic football noise.
 
 Examples:
-- MID for MID -> legal.
-- MID + FWD for MID + FWD -> legal.
-- MID + MID for MID + FWD -> illegal.
+- goal / assist / card / goalkeeper penalty save for a player owned by one of the six teams;
+- meaningful resulting rank movement;
+- verified waiver/free-agent/trade ownership change;
+- other important scoring events only when supported by verified official data.
 
-Waiver/free-agent replacement must preserve position under the current project contract.
+Example presentation concept:
+`Saka goal · Jakin Goff +5 · LIVE 3rd → 2nd`
 
-## Trade visibility
-Recommended default:
-- Trading Block: entire league.
-- Pending proposal: participants + league owner.
-- Processed transaction history: entire league.
+## Current ownership
+After the ownership contract is verified, official FPL Draft ownership is current live roster authority.
 
-## Player comparison
-Trade comparison should reuse a shared player-data model, not duplicate its own football-stat pipeline.
+The custom draft remains immutable historical starting state.
 
-Target comparison fields when reliable:
-- photo
-- position
-- club
-- points
-- recent performance
-- minutes/starts
-- availability/injury
-- usage/starter classification
-- official rank
-- MVP rank
-- model rank
+Free Agent/Owned filters and team current rosters should eventually use verified official ownership rather than manual project roster maintenance.
 
-Unknown data must display as unknown/unavailable, not be guessed.
+## Trading Block and proposals
+The app should improve the trade/waiver experience rather than copy FPL Draft.
 
-## Current vs official FPL state
-The companion app must not silently diverge from real FPL Draft ownership. Future real-league reconciliation should explicitly classify mismatches before updating project state.
+Trading Block:
+- owner may list/unlist only their own currently owned players;
+- listing is visible to the league;
+- listing does not change official ownership.
+
+Trade proposals:
+- support one/multiple players where positional legality permits;
+- allow accept/reject/withdraw/counter-style workflow where implemented;
+- provide strong comparison/research context;
+- accepted proposal means agreement inside this app only;
+- official ownership changes only when the move is actually executed in FPL Draft;
+- verified official state should later reconcile the proposal as completed/processed automatically.
+
+## Waiver research
+Transactions should eventually provide a dedicated waiver/free-agent research experience using verified available-player state plus form, points, fixtures, minutes, availability, usage, rankings and later recommendations.
+
+## Archive
+Rename/evolve Draft Archive into **Archive**.
+
+Archive contains:
+- canonical custom Draft history;
+- completed Gameweek official lineups/bench;
+- player points for that Gameweek;
+- team Gameweek totals;
+- season totals after the Gameweek;
+- league position/rank movement after the Gameweek;
+- final standings snapshot;
+- later season progression and manager analytics.
+
+Historical snapshots should be preserved when required so later upstream changes do not alter old Gameweek views.
+
+## Player photos
+Lineup/bench presentation should eventually use verified official Premier League player photos. Never guess CDN URLs or identity mappings.
+
+## Removed/superseded product rules
+The target no longer includes:
+- manual project Gameweek lineup submission;
+- member lineup-write locks because the official lineup is read rather than submitted here;
+- Commissioner post-kickoff lineup editing;
+- manual Gameweek score correction;
+- manually maintained current ownership when official ownership is available;
+- automatically generated fake submitted lineup fallback.
+
+Before official lineup data is available, show truthful unavailable/not-yet-connected states rather than fabricate a submission.
+
+## Mobile navigation
+Primary mobile navigation remains League, My Team, Teams, More. Archive replaces Draft Archive in the long-term navigation label.
+
+Phone use must remain vertical, touch-friendly, safe-area aware and usable without required zoom.

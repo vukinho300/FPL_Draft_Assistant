@@ -1,103 +1,130 @@
 # Project Status
 
-## Current baseline
-Date context: August 24, 2026.
+## Date context
+August 24, 2026.
 
-Current verified `main`:
-`a62d027d310efa08dbdd22dc53bf17818a863fec`
+## Baseline
+A family is complete and production-verified.
 
-This baseline includes the responsive Kile N Others dashboard, live Players data, Supabase foundation, completed A-family account/auth/profile work, and the A3 mobile-density correction.
+G1 is implemented in PR #38 (`feature/g1-official-league-identity`, commit `ec1197ebbf615e63390b6a156a59fe403e292dc8`) and is the dependency for this documentation correction. This docs PR must not merge before G1.
 
-Recent relevant merges:
-- PR #33 `fix: isolate account rosters and live players` -> `db33831caf6f88c17e4c6420560b8b81dbb045b9`
-- PR #34 docs reconciliation -> `233f958791241ba78601ffc050119aa575cdbe53`
-- PR #35 A3 Team Profiles + Avatars -> `ac5b5c1206b36e154e79a3ba5697928ad496b607`
-- PR #36 A3 mobile profile density correction -> `a62d027d310efa08dbdd22dc53bf17818a863fec`
+Once PR #38 is merged, G1 is COMPLETE and G2 becomes CURRENT / NEXT.
 
-Current phase state:
-- F0 — COMPLETE
-- F1 — COMPLETE
-- F2 — COMPLETE
-- P5A — COMPLETE
-- F3 — COMPLETE
-- A1 — COMPLETE
-- A1.5 — COMPLETE
-- A2 — COMPLETE
-- A3 — COMPLETE
-- **A family — COMPLETE**
-- **G1 — Real FPL Draft league/entry identity: CURRENT / NEXT**
+## G1 verified identity
+Official FPL Draft league:
+- ID: `45938`
+- official name: `Kile n Others`
 
-## Hosted Supabase / production state
-Hosted KNO project ref: `asrrkwyqerfkynhjypov`.
+Mappings:
+- Jakin Goff / Vuk / `demo-manager-1` -> entry `240560`, league-entry `242345`
+- Dindi / Kristian / `demo-manager-3` -> entry `240676`, league-entry `242463`
+- 22nd oBlock / Diego / `demo-manager-2` -> entry `240707`, league-entry `242494`
+- Miku007 / Lovro / `demo-manager-4` -> entry `240723`, league-entry `242510`
+- Rod Wave Disciples / Deni / `demo-manager-6` -> entry `261369`, league-entry `263632`
+- Tintilinic / Tin / `demo-manager-5` -> entry `261515`, league-entry `263779`
 
-Applied hosted migrations:
-- `20260822170000_foundation.sql`
-- `20260822180000_league_accounts.sql`
-- `20260823163233_team_profiles_avatars.sql`
+Official naming differences are not product identity authority. G1 proves mappings through exact 15-player platform-choice sets against the immutable project custom-draft rosters.
 
-Verified hosted state:
-- six `league_accounts` rows;
-- exactly one `LEAGUE_OWNER` and five `MEMBER` rows;
-- six `team_profiles` rows;
-- private `team-avatars` bucket with 2 MB JPEG/PNG/WebP contract;
-- RLS enabled;
-- intended authenticated account/profile/avatar reads allowed;
-- profile/avatar writes owner-scoped;
-- public signup disabled;
-- six real Supabase Auth users provisioned using private passwords;
-- production authentication and A3 profile/avatar flow work.
+Observed G1 contracts:
+- `GET /api/league/45938/details`
+- `GET /api/draft/45938/choices`
 
-## A-family completed behavior
-- team-name + password login;
-- Supabase-managed persistent sessions;
-- logout;
-- no project password storage;
-- stable account -> immutable roster manager ID mapping;
-- no fallback to Jakin/Vuk;
-- Miku007 / Lovro -> Miku roster correction;
-- stale-account-state prevention;
-- Jakin Goff alone as Commissioner;
-- one persistent profile per account;
-- private owner-managed avatars with deterministic initial fallback;
-- shared My Team/Teams profile state;
-- My Team navigation avatar/fallback;
-- account-switch profile isolation;
-- compact mobile profile/current-roster rendering;
-- live Players data with signed official Form/Total Points accepted.
+G1 added project-owned adapters, committed identity/provenance evidence, fail-closed validation and `npm run verify:fpl-league-live`.
 
-## Not implemented yet
-- real Kile N Others league/entry IDs (G1);
-- real league standings/Gameweek adapter (G2);
-- persistent submitted project lineups (G3);
-- Gameweek lineup presentation (G4);
-- scoring/event feed/corrections (G5/G5A/G6);
-- verified Premier League player photos;
-- richer minutes/availability enrichment;
-- Trading Block/trades;
-- real FPL transaction reconciliation.
+## Critical product correction after G1 discovery
+The earlier G roadmap assumed this app would own manual Gameweek lineup submission, score calculation/correction and manually maintained current roster state.
 
-## Known boundaries
-- official draft history is immutable;
-- mobile and desktop share one domain/data/backend model;
-- persistent mutable league data does not use localStorage as authority;
-- account roster identity fails closed;
-- Commissioner authorization and roster identity are separate concerns;
-- profile/avatar data is presentation data, not identity authority;
-- league-specific FPL Draft endpoints remain unverified until G1;
-- no automatic official FPL mutations before read/reconciliation behavior is proven.
+That direction is now superseded.
 
-## Workflow checkpoint
-This is the consolidated **end-of-A** reconciliation.
+The target architecture is:
+- **custom repository draft** = immutable real draft history;
+- **official FPL Draft read APIs** = factual live/current league state once each contract is verified;
+- **Supabase** = project-created companion state;
+- **our app** = faster/richer experience over those facts, not a duplicate Premier League Draft app.
 
-Second Brain updates now happen at the end of a roadmap letter family rather than after each numbered step, unless an earlier correction is needed because the control manual becomes materially false or unsafe.
+## Custom draft clarification
+The Kile N Others league conducted a custom draft. The Premier League Draft platform's timed/random-order draft was not the league's real drafting process. After the custom draft, the league manually entered the chosen players into FPL Draft.
 
-Implementation steps remain narrow. Prefer one coherent commit per narrow task and avoid unnecessary checkpoint/progress commits. Vuk alone merges and may squash when appropriate.
+Therefore:
+- repository 90-pick snapshot is canonical draft history;
+- platform choices are integration evidence only;
+- later official ownership changes do not rewrite draft history.
 
-## Immediate next milestones
-1. G1 — Real FPL Draft league/entry identity.
-2. G2 — Real Gameweek/standings adapter.
-3. G3 — Persistent lineup domain.
-4. G4 — My Team/Teams Gameweek lineup presentation.
-5. G5/G5A/G6 — scoring, event feed and Commissioner corrections.
+## New Gameweek direction
+No manual Gameweek lineup submission into this app.
 
-See `15_Current_Phase.md` for the current task.
+Inactive GW:
+- My Team = lineup tester / decision workspace;
+- planner is non-authoritative project state.
+
+Active GW:
+- automatically consume official FPL Draft lineup;
+- show LIVE team points;
+- show live points/events on players;
+- Teams uses same live state for all six managers;
+- League computes continuously updating LIVE/provisional standings rather than waiting for delayed finalized FPL standings.
+
+Finalized GW:
+- reconcile provisional calculations to official finalized totals/standings;
+- preserve completed-GW history for Archive.
+
+## Current ownership direction
+Once G2 verifies element-status semantics, official FPL Draft current ownership/free-agent state becomes live roster authority.
+
+Trades, waivers and free-agent moves should update automatically from verified official state. The custom draft remains unchanged.
+
+## Transactions direction
+Transactions remains a major companion-app upgrade area:
+- Trading Block;
+- trade offers/responses/counters;
+- multi-player proposals;
+- player/roster comparison;
+- waiver/free-agent research;
+- later recommendation/value models.
+
+In-app acceptance records agreement only. Official FPL execution changes ownership; verified official reads reconcile completion.
+
+## Archive direction
+Draft Archive evolves to **Archive**:
+- custom Draft history;
+- completed GW lineups/bench;
+- player GW points;
+- team GW points;
+- season total after GW;
+- league position/rank movement;
+- standings snapshots;
+- later season progression/analytics.
+
+## Removed from target
+- manual Gameweek lineup submission;
+- manual score entry;
+- manual standings entry;
+- manual current-GW selection;
+- manual roster maintenance when verified official ownership exists;
+- Commissioner lineup overrides;
+- Commissioner score corrections.
+
+Jakin Goff remains Commissioner/`LEAGUE_OWNER` for product/account administration where needed.
+
+## Current phase state after G1 merge
+- Foundation: COMPLETE
+- A family: COMPLETE
+- G1: COMPLETE
+- **G2 Official League State Contracts: CURRENT / NEXT**
+- G3 Live Scoring + LIVE Standings Engine: AFTER G2
+- G4 My Team + Teams Gameweek Experience: AFTER G3 / required photo dependencies
+- G5 Live League Events + Official Ownership Sync: AFTER G4
+- G6 Archive + Gameweek/Season History: AFTER G5
+
+## Next implementation milestone
+G2 must verify and normalize the official contracts needed for:
+- current Gameweek/timing;
+- six official lineups and bench semantics;
+- live player scoring/events;
+- fixtures/activity/finalization;
+- current ownership/free-agent state;
+- official standings/finalized totals;
+- relevant transaction reads;
+- historical availability/snapshot needs for Archive.
+
+G2 should not build the final live UI yet.

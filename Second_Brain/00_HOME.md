@@ -1,150 +1,105 @@
 # Kile N Others — Second Brain
 
 ## Purpose
-This folder is the project control manual. The GitHub repository, committed code, migrations, database state, tests, and verified deployed state remain the technical source of truth. The Second Brain records approved architecture, product rules, current status, and the current roadmap family so Codex does not repeatedly rediscover the project.
+This folder is the project control manual. The GitHub repository, committed code, migrations, database state, tests, and verified deployed state remain the technical source of truth. The Second Brain records approved architecture, product rules, current status, and roadmap intent so Codex does not repeatedly rediscover the project.
 
-## Current product
-Kile N Others is a private six-team FPL Draft league companion for the 2026/27 season. It preserves the useful Draft Room, rankings/model evidence, immutable official draft, current roster derivation, Players/Teams/Transactions foundations and Draft Archive while evolving into a persistent season-long league app.
+## Product principle
+Kile N Others is a private six-team FPL Draft companion that should be **better than the Premier League Draft app, not a copy of it**.
 
-## Current technical baseline
-- Frontend: React + Vite + TypeScript.
-- Tests: Vitest. Static analysis: Oxlint.
-- Runtime: Node 24.
-- F0 Second Brain: COMPLETE.
-- F1 Vercel deployment: COMPLETE.
-- F2 desktop/mobile responsive shell: COMPLETE.
-- P5A Players filtering/sorting + live Form/Total Points: COMPLETE.
-- F3 Supabase Foundation: COMPLETE.
-- A1 Six Accounts + RLS: COMPLETE.
-- A1.5 Persistent Session / Automatic Login: COMPLETE.
-- A2 Account-aware Shell: COMPLETE and production-verified.
-- A3 Team Profiles + Avatars: COMPLETE and production-verified.
-- **A family: COMPLETE.**
-- **G1 Real FPL Draft league/entry identity: CURRENT / NEXT.**
-- Current verified `main`: `a62d027d310efa08dbdd22dc53bf17818a863fec`.
-- Production application: `https://fpl-draft-assistant-eight.vercel.app/`.
-- Production FPL boundary: `https://fpl-draft-assistant-eight.vercel.app/api/fpl`.
-- Canonical historical draft: `src/data/leagues/kile-n-others/officialDraft2026-27.json`.
-- Official-draft tag: `kile-n-others-official-draft-2026-27`.
-- Live FPL boundary: project-owned `/api/fpl` adapter over public official FPL Draft data.
-- Desktop and mobile use separate presentation trees over shared controller/domain/data/profile state.
+Use official/public FPL Draft data for factual league state that already exists there. Use this app to provide faster live standings, richer live lineup presentation, research, planning, trading workflows, historical analysis, profiles, and other league-specific features FPL Draft does not provide well.
 
-## Hosted Supabase production state
-Hosted project: **KNO** (`asrrkwyqerfkynhjypov`).
+Do not ask managers to manually duplicate reliable official information.
 
-Applied repository migrations:
-- `20260822170000_foundation.sql`
-- `20260822180000_league_accounts.sql`
-- `20260823163233_team_profiles_avatars.sql`
+## Canonical draft truth
+The repository's 2026/27 custom draft is the real Kile N Others draft:
+`src/data/leagues/kile-n-others/officialDraft2026-27.json`.
 
-Verified hosted state:
-- `league_accounts` contains six rows;
-- exactly one `LEAGUE_OWNER` and five `MEMBER` rows;
-- Jakin Goff -> Vuk -> `LEAGUE_OWNER` / Commissioner;
-- six `team_profiles` rows exist, one per authoritative league account;
-- private `team-avatars` Storage bucket exists with a 2 MB JPEG/PNG/WebP contract;
-- authenticated league members can read league-visible profile/avatar data;
-- profile/avatar writes are owner-scoped through backend RLS/Storage policies;
-- Commissioner status does not grant blanket cross-team avatar editing;
-- RLS is active and anonymous protected data access is blocked;
-- public signup is disabled while email/password authentication remains enabled;
-- six production Supabase Auth users are provisioned with private passwords held by Vuk;
-- Vercel production has browser-safe `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`;
-- no Supabase secret/service-role credential is exposed to the frontend;
-- production authentication, profile loading, avatar upload/persistence and shared Teams display are working.
+The league used a custom draft process and then manually entered those selections into the Premier League Draft platform. Therefore the FPL Draft `/api/draft/{league}/choices` result is useful integration/identity evidence, but it is **not** the historical draft authority.
 
-## A-family outcome
-The account/profile foundation is complete.
+Never rewrite the custom draft archive to mirror later platform state.
 
-A1/A1.5/A2/A3 now provide:
-- six persistent authenticated product identities;
-- real MEMBER / LEAGUE_OWNER authorization foundation;
-- Supabase-managed persistent sessions and logout;
-- team-name + password login without project password storage;
-- stable approved account -> immutable roster manager ID resolution;
-- fail-closed behavior for unknown/inconsistent roster identity;
-- account-specific My Team;
-- Jakin Goff as the only Commissioner;
-- one persistent team profile per account;
-- private owner-managed team avatars with deterministic initial fallback;
-- shared profile state across desktop/mobile and My Team/Teams;
-- authenticated-team avatar/initial in My Team navigation;
-- compact phone profile/current-roster presentation that remains truthful about not yet being a submitted Gameweek XI.
+## Current baseline
+- F0/F1/F2/P5A/F3: COMPLETE.
+- A1/A1.5/A2/A3: COMPLETE and production-verified.
+- A family: COMPLETE.
+- G1 official league/entry identity: COMPLETE in PR #38 / commit `ec1197ebbf615e63390b6a156a59fe403e292dc8` once merged.
+- Real FPL Draft league ID: `45938`.
+- G2 Official League State Contracts: CURRENT / NEXT after G1 merge.
+- Production: `https://fpl-draft-assistant-eight.vercel.app/`.
+- Hosted Supabase: KNO (`asrrkwyqerfkynhjypov`).
 
-PR #33 remains part of the baseline:
-- Miku007 / Lovro -> Miku roster correction;
-- no fallback to Jakin/Vuk;
-- stale previous-account dashboard prevention;
-- Commissioner authorization separated from roster identity;
-- valid signed official Form / Total Points values accepted;
-- live Players data restored.
+## Verified official league identity
+G1 establishes one explicit fail-closed bridge from the six product identities to the official FPL Draft league and entries.
 
-A3 was delivered through:
-- PR #35 `feat: add team profiles and avatars`;
-- PR #36 `fix: compact mobile team profile`.
+| Product team | Manager | Roster ID | Entry ID | League-entry ID |
+|---|---|---|---:|---:|
+| Jakin Goff | Vuk | `demo-manager-1` | 240560 | 242345 |
+| Dindi | Kristian | `demo-manager-3` | 240676 | 242463 |
+| 22nd oBlock | Diego | `demo-manager-2` | 240707 | 242494 |
+| Miku007 | Lovro | `demo-manager-4` | 240723 | 242510 |
+| Rod Wave Disciples | Deni | `demo-manager-6` | 261369 | 263632 |
+| Tintilinic | Tin | `demo-manager-5` | 261515 | 263779 |
 
-## League authority
-- Jakin Goff is the backend `LEAGUE_OWNER` account.
-- Product-facing title: **Commissioner**.
-- Authorization continues to rely on backend role/RLS, not the display label.
-- Future Gameweek lineup permission/lock rules remain as defined in `07_League_Rules_Product_Behavior.md` and later G3 work.
+Official display-name differences are evidence only; they are not product identity authority.
 
-## Approved target architecture
+## Source-of-truth split
 ```text
-React/Vite UI on Vercel
-        |
-        +--> Supabase Auth/Postgres/Storage/RLS
-        |       - league accounts / team profiles / avatars
-        |       - persistent sessions handled by Supabase Auth
-        |       - future lineups + audit metadata
-        |       - future scores/corrections
-        |       - future trading block / trades
-        |
-        +--> Vercel Functions /api/fpl/*
-                - verified official/public FPL data
+CUSTOM DRAFT HISTORY
+repo immutable 90-pick snapshot
+        ↓
+Draft / Archive history
 
-Existing pure domain layer remains authoritative for project rules.
+OFFICIAL FPL DRAFT LIVE STATE
+league + entry + event + live + ownership + transaction reads
+        ↓
+project-owned adapters / normalized contracts
+        ↓
+live standings, official lineups, ownership, events, finalized results
+
+PROJECT-CREATED STATE
+Supabase Auth/Postgres/Storage/RLS
+        ↓
+accounts, profiles, avatars, lineup planner, Trading Block,
+trade proposals, preferences, historical snapshots where needed
 ```
 
-## Immutable rule
-Never rewrite the official 2026/27 draft to reflect later league activity.
+## Gameweek product direction
+When a Gameweek is not active, **My Team is a lineup tester / decision workspace**. It may persist app-specific planner state, but it does not submit or replace the official FPL Draft lineup.
 
-```text
-immutable official draft
-        +
-processed post-draft transactions
-        =
-current league rosters
-```
+When a Gameweek is active, the app automatically reads the official FPL Draft lineup and shows live team/player points. Teams uses the same official/live state for all six managers.
 
-## Codex read map
-Read only what the task needs.
-- Deployment: `00_HOME`, `09_Testing_Deployment`, `15_Current_Phase`.
-- Mobile/UI: `00_HOME`, `03_Current_Architecture`, `09_Testing_Deployment`, `15_Current_Phase`.
-- Data/API: `00_HOME`, `04_Data_Architecture_Sources`, `15_Current_Phase`.
-- Supabase/Auth/RLS: `00_HOME`, `05_Authentication_Security`, `12_Roadmap`, `15_Current_Phase`.
-- League/Gameweek identity: `00_HOME`, `04_Data_Architecture_Sources`, `07_League_Rules_Product_Behavior`, `12_Roadmap`, `15_Current_Phase`.
-- Roadmap/planning: `00_HOME`, `12_Roadmap`, `14_Project_Status`, `15_Current_Phase`.
-- Workflow/session: `00_HOME`, `11_Decision_Log`, `16_Codex_Session_Workflow`.
+The League page should calculate a continuously updating **LIVE / provisional table** from verified official lineup and live-player data rather than waiting for the lagging finalized FPL standings table. Once the Gameweek is finalized, official finalized totals/standings become authoritative.
 
-Do not inspect unrelated folders unless a relevant Second Brain note or failing test requires it.
+No manual lineup submission, manual Gameweek score entry, or Commissioner score/lineup correction system is part of the current target.
 
-## Development workflow
-1. ChatGPT inspects current `main` and relevant Second Brain notes, then defines product goal, non-negotiable architecture/data/security rules, scope boundaries, roadmap ordering, and acceptance criteria.
-2. Codex inspects the repository and owns implementation strategy, exact files/components/SQL/CSS/refactors, debugging, and test execution.
-3. Prompts are outcome-oriented and avoid micromanaging implementation details Codex can determine better from repository context.
-4. Reuse known working Codex session/tool access; do not repeat setup/authentication unless access is actually missing or expired.
-5. Codex performs every verification it can reliably perform itself.
-6. Checks that genuinely require Vuk go in a concise **Manual verification for Vuk** section with only exact action, expected result, and failure signal; one manual-only check must not block unrelated work.
-7. Use a fresh short-lived implementation branch for each roadmap step; open a Draft PR; never merge.
-8. Prefer one coherent implementation commit per narrow step and avoid unnecessary checkpoint/progress commits. Review-fix commits are acceptable when useful; Vuk may squash when merging to keep `main` history compact.
-9. ChatGPT independently reviews the actual PR/diff/CI.
-10. Vuk alone merges implementation and documentation PRs.
-11. **Second Brain reconciliation happens at the end of a roadmap letter family, not after every individual numbered step.** A is reconciled after A1/A1.5/A2/A3; G will be reconciled after the approved G steps are complete. An earlier docs correction is allowed only when the control manual becomes materially unsafe or misleading.
+## Current ownership / transactions direction
+After the relevant contracts are verified, official FPL Draft ownership is the current live ownership authority. Trades, waivers and free-agent changes should flow into the app automatically.
 
-Never use permanent Codex/ChatGPT branches. Never use worktrees without a real Git reason. Never document planned functionality as implemented reality.
+Our Transactions experience remains an upgrade layer: research, Trading Block, proposals, responses, comparisons, waiver analysis and later recommendation support. An in-app accepted proposal does not change official ownership; official FPL Draft execution/reconciliation does.
+
+## Archive direction
+The current Draft Archive will evolve into **Archive** with:
+- the canonical custom draft history;
+- completed Gameweek lineups and player points;
+- each manager's Gameweek score;
+- season total and league position after each Gameweek;
+- final standings snapshots and later season/rank analytics.
+
+## Non-negotiable architecture rules
+- external FPL/FPL Draft response shapes stop at project-owned adapters;
+- official data and project-created data have explicit provenance;
+- current live ownership must not overwrite custom draft history;
+- mobile and desktop share one underlying domain/data state;
+- profile data is not account/roster identity authority;
+- account -> immutable roster identity remains fail-closed;
+- no official FPL mutation automation without separate explicit approval;
+- no passwords, cookies, tokens or privileged secrets in source/browser code;
+- live views expose freshness/provisional/finalized state truthfully.
+
+## Workflow
+Use narrow short-lived branches and Draft PRs. Codex owns implementation details after repository inspection. ChatGPT defines product outcome, invariants, scope and acceptance criteria, then independently reviews the PR. Vuk alone merges.
+
+Prefer one coherent commit per narrow roadmap step. Second Brain normally reconciles at the end of a letter family, but this mid-G correction is intentionally allowed because the discovery of reliable official live-state APIs materially changes the previously documented G architecture.
 
 ## Next phase
-See `15_Current_Phase.md`: **G1 — Real FPL Draft league/entry identity**.
-
-G1 establishes the verified identity contract for the real Kile N Others FPL Draft league and its six official entries before G2 consumes that identity for real Gameweek/standings data.
+See `15_Current_Phase.md`: **G2 — Official League State Contracts**.

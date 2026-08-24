@@ -1,12 +1,14 @@
 # Project Purpose and Requirements
 
 ## Product direction
-The project has evolved from a private drafting tool for Vuk into a private league-wide companion for the six-team FPL Draft league **Kile N Others**.
+Kile N Others is a private six-team FPL Draft companion for the 2026/27 season. It must preserve the custom draft history while becoming a better league experience than the Premier League Draft app rather than duplicating it.
 
-It must preserve the original Draft Assistant's useful functionality while adding persistent league features, account-aware pages, Matchday tracking, richer player information, and trade workflows.
+Official/public FPL Draft data should supply factual league state that already exists there. This app should add faster live standings, richer lineup presentation, research/planning tools, league events, transaction research, trading workflows, profiles, archive/history and later analytics/recommendations.
+
+Do not require manual re-entry of reliable official data.
 
 ## League accounts
-Exactly six normal team accounts initially:
+Exactly six product accounts:
 - Vuk -> Jakin Goff
 - Kristian -> Dindi
 - Diego -> 22nd oBlock
@@ -14,103 +16,123 @@ Exactly six normal team accounts initially:
 - Deni -> Rod Wave Disciples
 - Tin -> Tintilinic
 
-Jakin Goff is the league owner/admin account. Its product-facing league label is **Commissioner**. The backend authorization role remains `LEAGUE_OWNER`; `Commissioner` is the user-facing title for that privileged league role.
+Jakin Goff remains `LEAGUE_OWNER`; user-facing title: **Commissioner**. Commissioner status is a league/account role, not a license to rewrite official lineups or scores.
 
-Login UX should remain deliberately simple: **team name + password**.
+Login UX remains **team name + password**.
+
+## Custom draft authority
+The repository's immutable 90-pick 2026/27 custom draft is the real Kile N Others draft history.
+
+The Premier League Draft platform draft choices were entered after the custom draft because the league did not use the platform's timed/random-order draft process as its real draft procedure.
+
+Therefore:
+- repository custom draft = historical draft authority;
+- FPL Draft choices endpoint = integration/identity evidence only;
+- live FPL ownership may change after the draft without rewriting history.
 
 ## Product priorities
-1. Preserve the useful existing Draft Assistant and immutable official draft.
-2. Deploy the current app to Vercel.
-3. Preserve a strong desktop experience and add an intentionally designed mobile experience for the same application.
-4. Add persistent league data.
-5. Add the six accounts and enforce authorization/RLS.
-6. Make My Team and other pages account-aware.
-7. Add Gameweek tracking and league points.
-8. Improve player information/photos/sorting.
-9. Add Trading Block and direct trade proposals.
-10. Add later recommendation/analytics features only after reliable data foundations exist.
+1. Preserve immutable custom draft history and useful existing Draft Assistant evidence.
+2. Keep strong desktop and intentional mobile experiences.
+3. Use official FPL Draft reads for live league state instead of manual duplication.
+4. Build continuously updating live standings and live team/player points.
+5. Turn My Team into a pre-GW decision workspace and active-GW live lineup experience.
+6. Make Teams share the same official/live state for all managers.
+7. Automatically synchronize current ownership/waiver/trade changes when verified official contracts allow it.
+8. Keep Transactions as an upgraded research/negotiation layer: Trading Block, offers, responses, comparisons and waiver research.
+9. Replace Draft Archive with a broader Archive for draft + Gameweek/season history.
+10. Add player enrichment, photos, analytics and recommendations only on verified data foundations.
 
-## Required league pages
-Target navigation remains conceptually:
+## Target pages
 - League
 - My Team
 - Teams
 - Matchday
 - Players
 - Transactions
-- Draft Archive
+- Archive
 
-The useful legacy Draft Room code remains preserved even if it is not part of the default season navigation.
+The legacy Draft Room remains preserved even if not in primary season navigation.
 
-## Teams
-Each team should eventually expose:
-- Team name.
-- Team profile photo.
-- Current total points.
-- Current Gameweek points where available.
-- Current 15-player squad.
-- Submitted Gameweek starting XI/bench when actually submitted.
-- Trading Block players.
+## League page
+During an active Gameweek, prioritize:
+- current Gameweek;
+- authenticated manager's LIVE points;
+- continuously updating provisional standings;
+- rank movement and points gaps;
+- important league-relevant live football events;
+- official ownership/waiver/trade changes;
+- freshness indicator.
 
-Never display an invented historical lineup when a manager failed to submit one.
+Outside an active Gameweek, show finalized standings and upcoming context.
 
 ## My Team
-Account-specific page for the logged-in manager:
-- Current squad.
-- Player photos.
-- Starting XI / bench experimentation.
-- Submit Gameweek lineup before the Gameweek deadline.
-- Status, fixtures, useful stats and rankings.
-- Later start/bench decision support.
+When the Gameweek is not active, My Team is a **lineup tester / decision workspace**:
+- current official roster;
+- experimental XI/bench and derived formation;
+- player stats, form, fixtures, availability and later starting-likelihood evidence;
+- player detail modal and comparisons;
+- later recommendation support.
 
-Before a Gameweek starts, each manager may create, edit and submit only their own lineup. After the Gameweek starts, normal members can no longer insert, edit or replace lineups. The Jakin Goff Commissioner account may insert or correct a lineup for itself or any manager after kickoff, with the action treated as privileged commissioner activity and audited when persistence is implemented.
+Planner state may be persisted for cross-device convenience but is app-specific and non-authoritative.
 
-## Players
-The current Players page supports shared desktop/mobile filtering and sorting using verified current data.
+When the Gameweek is active:
+- automatically load the official FPL Draft lineup;
+- show LIVE team points above the lineup;
+- show LIVE player points on pitch/list players;
+- show official XI/ordered bench through the shared lineup model;
+- no duplicate manual submission flow.
 
-Primary in-season sort options:
-- Official FPL Draft Rank.
-- Form.
-- Total Points.
-- MVP Consensus.
-
-Draft Model Rank is preserved as project/model evidence but is not a primary Players-page sort option. Free Agent / Owned state derives from current roster ownership, not a hardcoded list.
+## Teams
+Each team should show:
+- profile/avatar;
+- current official roster;
+- active official Gameweek lineup when available;
+- LIVE team/player points while active;
+- finalized Gameweek/season totals when finalized;
+- Trading Block context.
 
 ## Transactions
-Target capability:
-- Trading Block.
-- Direct trade proposals between managers.
-- Multi-player proposals where positional rules permit.
-- Player comparison before sending/accepting.
-- Clear proposal states.
-- Trade/waiver/free-agent history.
-- No automatic official-FPL mutation until reconciliation/authorization design is explicitly approved.
+The app is the primary research/negotiation layer, not the official ownership execution engine.
 
-## Gameweek history
-The site must survive missing manager submissions.
-- Missing lineup -> lineup remains unavailable.
-- Do not reuse/invent a previous lineup.
-- Official team total may still be displayed if verified from FPL Draft.
-- Project-calculated totals require a submitted lineup.
-- Commissioner may insert/correct a lineup after the Gameweek starts when required for league administration.
-- Admin may correct another team's points after the Gameweek.
-- Privileged corrections/inserts must remain distinguishable and auditable.
+Keep:
+- Trading Block;
+- direct trade offers and responses/counters;
+- multi-player proposals where legal;
+- player comparison and roster impact;
+- waiver/free-agent research;
+- proposal history/status.
 
-## Desktop and mobile
-Desktop and mobile are both first-class product targets.
+An accepted in-app proposal does not itself change official ownership. Once a move is executed in FPL Draft, verified official ownership/transaction reads should reconcile it automatically.
 
-The product remains one application with one shared data/domain layer, but presentation can adapt by viewport.
+## Archive
+Replace Draft Archive with **Archive** containing:
+- canonical custom draft history;
+- completed Gameweek lineups and bench order;
+- player Gameweek points;
+- each team's Gameweek total;
+- season total after each Gameweek;
+- league position/rank movement after each Gameweek;
+- standings snapshots;
+- later rank-over-time and season analytics.
 
-Desktop should retain the richer wide-screen experience: sidebar/navigation, spacious pitch views, tables, comparisons and dense league information.
+Persist/snapshot history where required so later upstream changes do not erase the historical view.
 
-Mobile should be intentionally designed for phone use: compact navigation, stacked cards, touch-friendly controls, readable pitch/squad views and safe handling of wide tables.
+## Removed manual requirements
+The target no longer includes:
+- manual Gameweek XI submission into this app;
+- manual Gameweek score entry;
+- manual standings entry;
+- manual current Gameweek selection;
+- manual roster ownership maintenance when official ownership can be verified;
+- Commissioner score correction or post-kickoff lineup replacement as a normal feature.
 
-Mobile work must not replace, downgrade or remove the desktop version. New user-facing features should normally be considered complete only when usable on both desktop and mobile unless a temporary exception is explicitly documented.
+## Desktop/mobile
+Desktop and mobile are both first-class presentations over one shared domain/data state. Live calculations, ownership, lineups and archive truth must not diverge by device.
 
-## Non-goals for the near-term foundation
-- Enterprise authentication.
-- Public user registration.
-- Automated official FPL transactions.
-- Scraping when a reliable official/public source already exists.
-- Large model-research work before the season dashboard foundations are complete.
-- Rewriting the immutable draft history.
+## Non-goals
+- public registration;
+- enterprise auth;
+- automated official FPL writes without separate explicit approval;
+- scraping when official/public sources are sufficient;
+- rewriting canonical custom draft history;
+- copying Premier League Draft UX when we can provide a better companion experience.

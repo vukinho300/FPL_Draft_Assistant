@@ -1,13 +1,13 @@
 # Authentication and Security
 
 ## Goal
-Keep authentication simple for a six-person private league while enforcing real backend authorization for privileged operations.
+Keep authentication simple for a six-person private league while enforcing real backend authorization for project-created privileged operations.
 
 ## Approved backend
-Supabase Auth + Postgres + RLS + Storage is the approved persistent backend.
+Supabase Auth + Postgres + RLS + Storage remains the approved persistent backend for product-created state.
 
 ## Account model
-Exactly six team accounts:
+Exactly six product accounts:
 - Jakin Goff — Vuk — `LEAGUE_OWNER` — Commissioner
 - Dindi — Kristian — `MEMBER`
 - 22nd oBlock — Diego — `MEMBER`
@@ -15,16 +15,16 @@ Exactly six team accounts:
 - Rod Wave Disciples — Deni — `MEMBER`
 - Tintilinic — Tin — `MEMBER`
 
-No public self-sign-up is required. `Commissioner` is user-facing copy; backend authorization uses `LEAGUE_OWNER` and RLS.
+No public self-sign-up is required. `Commissioner` is user-facing copy; backend project authorization uses `LEAGUE_OWNER` and RLS.
 
 ## Current implementation state
 - F3 Supabase foundation: COMPLETE.
 - A1 accounts/RLS: COMPLETE.
 - A1.5 persistent sessions: COMPLETE.
 - A2 account-aware shell: COMPLETE and production-verified.
-- A3 team profiles + avatars: COMPLETE and production-verified.
-- **A family: COMPLETE.**
-- **G1 real FPL Draft league/entry identity: CURRENT / NEXT.**
+- A3 profiles/avatars: COMPLETE and production-verified.
+- G1 official FPL Draft league/entry identity: COMPLETE once PR #38 is merged.
+- G2 Official League State Contracts: CURRENT / NEXT after G1 merge.
 
 ## Hosted production state
 Hosted KNO project ref: `asrrkwyqerfkynhjypov`.
@@ -34,7 +34,7 @@ Applied migrations:
 - `20260822180000_league_accounts.sql`
 - `20260823163233_team_profiles_avatars.sql`
 
-Verified state includes six league accounts, one owner/five members, six team profiles, private owner-managed avatars, RLS, disabled public signup, six real Auth users, and browser-safe Vercel Supabase variables only.
+Verified state includes six league accounts, one owner/five members, six team profiles, private owner-managed avatars, RLS, disabled public signup, six real Auth users and browser-safe Vercel Supabase variables only.
 
 ## Login/session behavior
 - visible login: team name + password;
@@ -45,35 +45,44 @@ Verified state includes six league accounts, one owner/five members, six team pr
 - Jakin Goff alone receives Commissioner presentation.
 
 ## Roster identity separation
+Application account identity, immutable custom-draft roster identity, mutable profile presentation and official FPL Draft entry identity are separate concerns.
+
 After PR #33:
 - approved account identity resolves to one immutable roster manager ID;
 - Miku007 / Lovro resolves to Miku's roster;
 - Jakin Goff / Vuk resolves to Vuk's roster;
 - unknown/inconsistent identity fails closed;
-- account switches clear stale prior-account dashboard state;
+- account switches clear stale prior-account state;
 - Commissioner role does not determine roster identity.
 
-Do not reintroduce display-name, first-roster or role-based roster fallback.
+G1 adds a separate explicit mapping to league `45938` and six official entry IDs. Official names/IDs are integration references, not authentication or authorization authority.
 
 ## Team profile / avatar authorization
-A3 is complete:
-- `team_profiles` is one-to-one with authoritative `league_accounts`;
+- `team_profiles` remains one-to-one with authoritative `league_accounts`;
 - editable profile data is presentation data, not identity authority;
-- normal members may update only their own permitted avatar metadata;
-- authenticated league members may read league-visible profiles/avatars;
-- avatars live in a private Storage bucket with owner-scoped writes;
-- Commissioner has no implicit blanket cross-team avatar editing;
-- account switching must not leak stale profile state.
+- normal members update only their own permitted profile/avatar fields;
+- avatars stay private with owner-scoped writes and authenticated league reads;
+- Commissioner has no implicit blanket cross-team avatar editing.
 
-## G1 security boundary
-G1 is read-only official FPL Draft identity work.
-- do not request/store/commit FPL passwords, cookies, tokens or private credentials;
-- league/entry IDs are identity references, not authorization authority;
-- do not add official FPL mutation/write behavior;
-- if a browser-only identifier is needed, Vuk performs the minimum manual action while Codex continues everything else;
-- official entry mapping must be explicit and fail closed on conflicts.
+## Official FPL Draft security boundary
+The redesigned G family is read-only toward official FPL Draft unless a later separate decision explicitly authorizes writes.
+
+Do not request/store/commit:
+- FPL passwords;
+- browser cookies;
+- access/session tokens;
+- private FPL credentials.
+
+League IDs, entry IDs, league-entry IDs and public official read responses are identity/data references, not secrets or project authorization authority.
+
+Do not add automated official lineup/trade/waiver/free-agent mutation calls in G2-G6.
+
+## Commissioner clarification
+Commissioner remains a privileged product/account role where project-created state genuinely needs administration.
+
+The target no longer includes Commissioner editing/replacing official Gameweek lineups or manually correcting official scores in this companion app.
 
 ## Secrets
-Never commit or expose Supabase secret/service-role keys, passwords, auth cookies/tokens, or private FPL credentials.
+Never commit or expose Supabase secret/service-role keys, passwords, auth cookies/tokens or private FPL credentials.
 
-Important permissions must remain enforced by backend/RLS rather than React conditionals or browser state.
+Important permissions for project-created writes remain backend/RLS enforced rather than inferred from React conditionals or browser state.
