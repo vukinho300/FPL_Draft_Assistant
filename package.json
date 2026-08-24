@@ -25,6 +25,7 @@
     "verify:fpl-live": "node scripts/verify-fpl-live.ts",
     "verify:fpl-league-live": "node scripts/verify-fpl-league-live.ts",
     "verify:fpl-league-state-live": "node scripts/verify-fpl-league-state-live.ts",
+    "verify:fpl-live-standings": "node scripts/verify-fpl-live-standings.ts",
     "export:official-draft-picks": "node scripts/export-official-draft-picks.ts",
     "preview": "vite preview"
   },

@@ -2,6 +2,9 @@
   "functions": {
     "api/fpl.ts": {
       "includeFiles": "src/services/fpl/**"
+    },
+    "api/fpl-league-live.ts": {
+      "includeFiles": "src/**"
     }
   }
 }

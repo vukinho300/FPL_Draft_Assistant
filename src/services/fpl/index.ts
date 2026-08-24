@@ -100,3 +100,15 @@ export type {
   FplDraftLeagueActivityAvailability,
   FplDraftLeagueActivityKind,
 } from './leagueActivity.ts'
+export {
+  getLiveLeagueRefreshIntervalMs,
+  loadKileNOthersLiveLeagueState,
+  LiveLeagueStateController,
+  retrieveKileNOthersLiveLeagueState,
+} from './liveLeagueState.ts'
+export type {
+  LiveLeagueRefreshState,
+  LiveLeagueRefreshStatus,
+  RetrievedLiveLeagueState,
+  RetrieveLiveLeagueStateOptions,
+} from './liveLeagueState.ts'
