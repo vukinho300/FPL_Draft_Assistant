@@ -1,167 +1,94 @@
 # Current Architecture
 
-## Implemented baseline
-Current verified `main` is `db33831caf6f88c17e4c6420560b8b81dbb045b9` after merged PR #33.
+## Verified baseline
+Current verified `main` is `a62d027d310efa08dbdd22dc53bf17818a863fec` after A3 PR #35 and corrective PR #36.
 
-The deployed Kile N Others application now includes the completed responsive desktop/mobile shell, live Players data through the project-owned FPL boundary, Supabase foundation, six league accounts with RLS, persistent Supabase Auth sessions, and the completed account-aware application shell.
+The deployed application now includes:
+- responsive desktop/mobile shell;
+- live Players data through the project-owned FPL boundary;
+- Supabase Auth/Postgres/RLS/Storage foundation;
+- six persistent league accounts and Supabase-managed sessions;
+- account-aware My Team;
+- persistent team profiles and private team avatars.
 
-Frontend stack:
-- React 19
-- Vite
-- TypeScript
-- Node 24
-- Vitest
-- Oxlint
-
-Current dashboard views:
-- League
-- My Team
-- Teams
-- Matchday
-- Players
-- Transactions
-- Draft Archive
-
-## Core dependency flow
+## Core flows
 ```text
-External FPL data
-      ↓
-project-owned adapter
-      ↓
-normalized internal models
-      ↓
-pure domain logic
-      ↓
-shared dashboard/controller model
-      ↓
-Desktop presentation / Mobile presentation
+External FPL data -> project adapter -> normalized models -> domain logic -> shared dashboard model -> desktop/mobile UI
 ```
 
-Authenticated application flow:
 ```text
-Browser
-  ↓
-project-owned Supabase Auth session service
-  ↓
 Supabase Auth session
-  ↓
-RLS-protected league_accounts row
-  ↓
-stable approved account -> immutable roster manager ID
-  ↓
-shared dashboard/controller model
+  -> RLS-protected league_accounts
+  -> stable approved account -> immutable roster manager ID
+  -> shared dashboard model
+  -> RLS-protected team_profiles/private avatars
+  -> shared My Team / Teams / navigation profile state
 ```
 
-Raw external response shapes must stop at the adapter boundary. Backend/RLS remains authoritative for permissions.
-
-## Existing domain responsibilities
-- `league.ts`: roster contract and position requirements.
-- `manager.ts`: manager identity/configuration.
-- `draftSchedule.ts`: snake schedule and Turn Horizon.
-- `draftRanking.ts`: official/model consensus ranking.
-- `draftState.ts`: sequential pick history, availability, rosters.
-- `bestFit.ts`: deterministic individual recommendation logic.
-- `bestPair.ts`: consecutive-turn pair evaluation.
-- `officialDraft.ts`: immutable official-draft validation/freeze/restore utility.
-- `transactions.ts`: project-owned trades/waivers/free agents, ownership, roster evolution, activity.
-
-Keep React thin: it should render domain/service results rather than reimplement rules.
+Raw external response shapes stop at project-owned boundaries. Backend/RLS remains authoritative for permissions.
 
 ## Historical truth
-Canonical official draft:
-`src/data/leagues/kile-n-others/officialDraft2026-27.json`
+`src/data/leagues/kile-n-others/officialDraft2026-27.json` is immutable draft history.
 
-The official draft is immutable historical truth.
+Current rosters derive from immutable final draft rosters plus PROCESSED post-draft transactions. Profile/account/live-data work must never rewrite the historical draft.
 
-```text
-official draft final rosters
-      +
-PROCESSED project transactions
-      ↓
-current league rosters
-```
-
-Post-draft state must never edit the historical snapshot.
-
-## Current persistence and backend
-Supabase is now the approved and active persistent backend foundation.
-
-Hosted project:
-- name: KNO
-- project ref: `asrrkwyqerfkynhjypov`
+## Current persistent backend
+Hosted Supabase project: KNO (`asrrkwyqerfkynhjypov`).
 
 Applied hosted migrations:
 - `20260822170000_foundation.sql`
 - `20260822180000_league_accounts.sql`
+- `20260823163233_team_profiles_avatars.sql`
 
-Current persistent backend state includes:
+Persistent state now includes:
 - six `league_accounts` identities;
-- one `LEAGUE_OWNER` and five `MEMBER` roles;
-- RLS-protected account reads;
-- Supabase Auth user bindings provisioned outside committed migrations;
-- Supabase-managed persistent browser sessions.
+- one `LEAGUE_OWNER`, five `MEMBER`;
+- Auth bindings and persistent sessions;
+- six one-to-one `team_profiles`;
+- private `team-avatars` Storage with owner-scoped writes and authenticated league reads.
 
-Persistent mutable league features added in later phases must use Supabase/Postgres/Storage/RLS rather than device-local storage as authoritative truth.
+Season-long shared mutable state uses Supabase rather than authoritative localStorage. Legacy Draft Room localStorage remains isolated draft-night behavior.
 
-The legacy Draft Room may continue to use its existing versioned localStorage for draft-night session behavior; that is not the source of truth for season-long shared mutable league state.
-
-## Account-aware shell
-A2 is COMPLETE and production-verified.
-
-The application now:
-- initializes/restores Supabase Auth before deciding login vs authenticated UI;
-- presents team-name + password login while keeping internal Auth email identities hidden;
-- resolves the authenticated Auth user to one RLS-protected league account;
-- resolves that approved account identity to one immutable official-draft roster manager ID;
-- makes My Team account-specific on mobile and desktop;
-- displays Commissioner only for Jakin Goff from real account role;
-- exposes logout;
-- keeps password storage outside project code.
-
-PR #33 hardened roster/account identity:
-- approved account identity maps to immutable manager ID rather than display-name guessing;
-- unknown/inconsistent identities fail closed;
-- Miku007 / Lovro maps to Miku's roster;
-- switching accounts clears stale dashboard state while the new identity resolves;
+## Account/roster identity
+A2 is complete and production-verified. PR #33 remains a critical invariant:
+- stable account -> immutable roster manager ID;
+- unknown/inconsistent identity fails closed;
+- no Jakin/Vuk fallback;
+- Miku007/Lovro -> Miku roster;
+- stale account state cleared on account switch;
 - Commissioner authorization does not determine roster identity.
 
-## Desktop/mobile presentation architecture
-F2 is COMPLETE.
-
-The application has one shared dashboard/controller model and dedicated desktop/mobile presentation trees. Mobile and desktop are two presentations of the same authenticated account, roster, data, and future persistent league entities.
-
-## Players directory architecture
-The Players page consumes normalized player data from the project FPL boundary and ownership derived from the immutable official draft plus PROCESSED project transactions.
-
-Current sort priorities:
-- Official FPL Draft Rank;
-- Form;
-- Total Points;
-- MVP Consensus.
-
-PR #33 corrected the live-player adapter to accept valid signed official Form and Total Points values. Signed values are valid official data and must not cause the whole player payload to fail validation merely for being negative.
+## Team profiles + avatars
+A3 is complete and production-verified.
+- `team_profiles` is one-to-one with authoritative accounts;
+- editable profile data is presentation data, not account/role/roster identity authority;
+- avatars are private Storage objects;
+- normal members write only their own avatar/profile path;
+- authenticated league members read league-visible profiles/avatars;
+- Commissioner has no implicit blanket cross-team avatar editing;
+- missing avatar uses deterministic team-name initial fallback;
+- one shared profile model sits above desktop/mobile presentations;
+- My Team, Teams and My Team navigation consume the same profile state;
+- account switches isolate previous profile state;
+- mobile profile/current-roster presentation is compact and remains explicitly not a submitted Gameweek XI.
 
 ## Current phase boundary
-- F0 Second Brain foundation: COMPLETE.
-- F1 Vercel deployment: COMPLETE.
-- F2 desktop + mobile responsive shell: COMPLETE.
-- P5A Players filtering/sorting + live Form/Total Points: COMPLETE.
-- F3 Supabase foundation: COMPLETE.
-- A1 Six Accounts + RLS: COMPLETE.
-- A1.5 persistent session foundation: COMPLETE.
-- A2 account-aware shell: COMPLETE.
-- A3 Team Profiles + Avatars: CURRENT / NEXT.
+- F0/F1/F2/P5A/F3: COMPLETE.
+- A1/A1.5/A2/A3: COMPLETE.
+- **A family: COMPLETE.**
+- **G1 Real FPL Draft league/entry identity: CURRENT / NEXT.**
 
-A3 may add only the profile/avatar persistence needed by its approved scope. It must not pull G1 real FPL Draft league/entry identity forward.
+G1 establishes verified official league/entry identity and read-contract evidence. It must not pull G2 standings/Gameweek UI, G3 lineup persistence, or official FPL mutations forward.
 
 ## Architecture constraints
-- No external API shape directly in React.
-- No business-critical permission enforced only by hiding UI.
-- No duplicate roster truth.
-- No duplicate desktop/mobile business logic.
-- No mutable official-draft history.
-- Persistent mutable league state uses shared backend contracts, not authoritative localStorage.
-- Account roster identity must fail closed rather than fall back to another manager.
-- Commissioner authorization and roster identity remain separate concerns.
-- No automatic official FPL transaction submission until explicitly designed.
-- Create new source areas only when the current narrow phase needs them.
+- no external API shape directly in React;
+- no business-critical permission enforced only by UI hiding;
+- no duplicate roster truth;
+- no duplicate desktop/mobile business logic;
+- no mutable official-draft history;
+- persistent mutable league state uses shared backend contracts;
+- roster identity fails closed;
+- Commissioner authorization and roster identity remain separate;
+- profile presentation data is not identity authority;
+- real league/entry identity must be verified before league-specific FPL Draft data is trusted;
+- no official FPL mutations until explicitly approved.

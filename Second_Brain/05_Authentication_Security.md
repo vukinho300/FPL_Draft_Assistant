@@ -8,129 +8,72 @@ Supabase Auth + Postgres + RLS + Storage is the approved persistent backend.
 
 ## Account model
 Exactly six team accounts:
-- Jakin Goff — Vuk — `LEAGUE_OWNER` — product-facing title: Commissioner
+- Jakin Goff — Vuk — `LEAGUE_OWNER` — Commissioner
 - Dindi — Kristian — `MEMBER`
 - 22nd oBlock — Diego — `MEMBER`
 - Miku007 — Lovro — `MEMBER`
 - Rod Wave Disciples — Deni — `MEMBER`
 - Tintilinic — Tin — `MEMBER`
 
-No public self-sign-up is required.
-
-`Commissioner` is a product-facing title. Backend authorization uses the stable `LEAGUE_OWNER` role and RLS rather than UI copy.
+No public self-sign-up is required. `Commissioner` is user-facing copy; backend authorization uses `LEAGUE_OWNER` and RLS.
 
 ## Current implementation state
-- F3 Supabase client/config/migration foundation: COMPLETE.
-- A1 six-account schema/RLS foundation: COMPLETE.
-- A1.5 persistent session/auth lifecycle foundation: COMPLETE.
+- F3 Supabase foundation: COMPLETE.
+- A1 accounts/RLS: COMPLETE.
+- A1.5 persistent sessions: COMPLETE.
 - A2 account-aware shell: COMPLETE and production-verified.
-- A3 team profiles + avatars: CURRENT / NEXT.
+- A3 team profiles + avatars: COMPLETE and production-verified.
+- **A family: COMPLETE.**
+- **G1 real FPL Draft league/entry identity: CURRENT / NEXT.**
 
 ## Hosted production state
-Hosted Supabase project:
-- name: KNO
-- project ref: `asrrkwyqerfkynhjypov`
+Hosted KNO project ref: `asrrkwyqerfkynhjypov`.
 
-Applied hosted migrations:
+Applied migrations:
 - `20260822170000_foundation.sql`
 - `20260822180000_league_accounts.sql`
+- `20260823163233_team_profiles_avatars.sql`
 
-Verified production state:
-- six `league_accounts` rows;
-- exactly one `LEAGUE_OWNER` and five `MEMBER` rows;
-- Jakin Goff is the only league owner;
-- RLS enabled;
-- anonymous account access blocked;
-- intended authenticated account reads allowed;
-- public signup disabled;
-- email/password authentication remains enabled;
-- six real Supabase Auth users provisioned with private passwords held by Vuk;
-- Vercel production has `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`;
-- no service-role/secret credential is exposed to the frontend;
-- production authentication works.
+Verified state includes six league accounts, one owner/five members, six team profiles, private owner-managed avatars, RLS, disabled public signup, six real Auth users, and browser-safe Vercel Supabase variables only.
 
 ## Login/session behavior
-Visible login uses:
-- Team name
-- Password
-
-Internal Supabase Auth email identifiers are implementation details and must remain hidden from the user-facing login.
-
-A2 production behavior is verified:
-- unauthenticated users see team-name + password login;
-- authenticated users enter the league app;
-- a valid Supabase-managed session restores across normal refresh/reopen while valid;
-- explicit logout signs out and clears authenticated state;
+- visible login: team name + password;
+- Supabase-managed session restore across refresh/reopen while valid;
+- explicit logout;
 - project code does not store passwords;
-- current Auth user resolves to one application league account;
-- Jakin Goff alone gets Commissioner presentation from real account role;
-- other accounts retain normal MEMBER presentation.
-
-Supabase-managed browser sessions are authentication convenience only. MEMBER/LEAGUE_OWNER authorization remains database/RLS controlled.
+- current Auth user resolves to one application account;
+- Jakin Goff alone receives Commissioner presentation.
 
 ## Roster identity separation
-Account authorization and roster identity are separate concerns.
-
 After PR #33:
-- approved account/team + manager identity resolves to one immutable official-draft roster manager ID;
+- approved account identity resolves to one immutable roster manager ID;
 - Miku007 / Lovro resolves to Miku's roster;
 - Jakin Goff / Vuk resolves to Vuk's roster;
-- unknown or inconsistent account identity fails closed instead of falling back to Jakin/Vuk;
-- switching authenticated accounts clears stale prior-account dashboard state while the new account resolves;
-- Commissioner role does not influence which roster is selected.
+- unknown/inconsistent identity fails closed;
+- account switches clear stale prior-account dashboard state;
+- Commissioner role does not determine roster identity.
 
-Do not reintroduce display-name fallback, first-roster fallback, or role-based roster selection.
+Do not reintroduce display-name, first-roster or role-based roster fallback.
 
-## Password decision
-Jakin Goff uses a unique private admin password. Prefer unique passwords for all six accounts.
+## Team profile / avatar authorization
+A3 is complete:
+- `team_profiles` is one-to-one with authoritative `league_accounts`;
+- editable profile data is presentation data, not identity authority;
+- normal members may update only their own permitted avatar metadata;
+- authenticated league members may read league-visible profiles/avatars;
+- avatars live in a private Storage bucket with owner-scoped writes;
+- Commissioner has no implicit blanket cross-team avatar editing;
+- account switching must not leak stale profile state.
 
-Never commit passwords to the repository, migrations, Second Brain, frontend, or logs.
-
-## Authorization
-Important permissions must be enforced in Supabase/Postgres RLS or equivalent backend checks. Frontend visibility is UX only, not security.
-
-Roles:
-- `MEMBER`
-- `LEAGUE_OWNER`
-
-A1 established the league-account identity/RLS foundation so authenticated users map to one league account and normal members cannot self-promote or mutate another league identity.
-
-Future authorization rules for Gameweek lineups, score correction, trading, and maintenance remain as defined in the roadmap and league-rules notes and must be backend-enforced when implemented.
-
-## A3 team profile / avatar security intent
-A3 is the next narrow phase.
-
-Approved product scope:
-- persistent team profile table/data;
-- avatar upload/update;
-- Teams page consumes persistent profiles.
-
-Security/data rules:
-- persistent profile data belongs in Supabase, not authoritative localStorage;
-- normal users may update only profile fields explicitly permitted for their own account/team;
-- league-visible profile/avatar reads may be shared with authenticated league members;
-- privileged repair behavior, if needed, must derive from `LEAGUE_OWNER` backend authorization;
-- avatar files use Supabase Storage under an account-owned path/contract chosen from repository evidence;
-- no service-role/secret credential in browser code;
-- no public signup or broad anonymous profile mutation;
-- do not mix G1 league/entry identity into A3.
+## G1 security boundary
+G1 is read-only official FPL Draft identity work.
+- do not request/store/commit FPL passwords, cookies, tokens or private credentials;
+- league/entry IDs are identity references, not authorization authority;
+- do not add official FPL mutation/write behavior;
+- if a browser-only identifier is needed, Vuk performs the minimum manual action while Codex continues everything else;
+- official entry mapping must be explicit and fail closed on conflicts.
 
 ## Secrets
-Never commit or expose:
-- Supabase secret/service-role key
-- passwords
-- auth cookies
-- access/refresh tokens
-- private FPL credentials
+Never commit or expose Supabase secret/service-role keys, passwords, auth cookies/tokens, or private FPL credentials.
 
-Public client configuration may use browser-safe Vite environment variables; privileged keys remain server/local-admin only.
-
-## RLS workflow
-For every table/storage policy added:
-1. Define who owns the row/object.
-2. Define who may read it.
-3. Define who may insert/update/delete it.
-4. Add focused policy verification.
-5. Verify owner/Commissioner privileges at the backend level where relevant.
-
-Do not rely on React conditionals, localStorage role strings, or persisted browser state as the permission boundary.
+Important permissions must remain enforced by backend/RLS rather than React conditionals or browser state.

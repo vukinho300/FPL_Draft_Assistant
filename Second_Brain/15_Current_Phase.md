@@ -1,142 +1,158 @@
 # Current Phase
 
-## A3 — Team Profiles + Avatars
+## G1 — Real FPL Draft league/entry identity
 Status: CURRENT / NEXT
 
-Do not start G1 while A3 is current unless Vuk explicitly changes the roadmap.
+The A family is complete and production-verified. G1 is the first G-family step.
 
-## Dependency state
-- F0 — Second Brain Foundation: COMPLETE
-- F1 — Vercel Deployment: COMPLETE
-- F2 — Desktop + Mobile Responsive Shell: COMPLETE
-- P5A — Players filtering/sorting + live Form/Total Points: COMPLETE
-- F3 — Supabase Foundation: COMPLETE
-- A1 — Six Accounts + RLS: COMPLETE
-- A1.5 — Persistent Session / Automatic Login: COMPLETE
-- A2 — Account-aware Shell: COMPLETE and production-verified
-- A3 — Team Profiles + Avatars: CURRENT / NEXT
-
-## Verified baseline entering A3
+## Verified baseline entering G1
 Current verified `main`:
-`db33831caf6f88c17e4c6420560b8b81dbb045b9`
+`a62d027d310efa08dbdd22dc53bf17818a863fec`
 
-A2 is complete and working in production.
+Hosted KNO Supabase has all current repository migrations applied:
+- `20260822170000_foundation.sql`
+- `20260822180000_league_accounts.sql`
+- `20260823163233_team_profiles_avatars.sql`
 
-Verified account/session behavior:
-- team-name + password login;
-- Supabase-managed session restoration across normal refresh/reopen while valid;
-- explicit logout;
-- no project password storage;
-- current Auth user resolves to one valid league account;
-- My Team resolves to the authenticated team;
-- Jakin Goff alone displays Commissioner from real account role;
-- other accounts behave as normal MEMBER accounts;
-- desktop and mobile share the same authenticated account/session model.
-
-Hosted Supabase production is established in KNO (`asrrkwyqerfkynhjypov`):
-- repository migrations `20260822170000_foundation.sql` and `20260822180000_league_accounts.sql` are applied;
-- six league account rows exist;
-- one `LEAGUE_OWNER`, five `MEMBER`;
-- RLS enabled;
-- anonymous account reads blocked;
-- intended authenticated account reads allowed;
-- public signup disabled;
-- six private production Auth users provisioned;
-- Vercel browser-safe Supabase variables configured;
-- no service-role/secret credential exposed to the frontend;
-- production authentication works.
-
-PR #33 is part of the baseline and must not be regressed:
-- stable approved account -> immutable roster manager ID mapping;
-- fail closed on unknown/inconsistent roster identity;
+A-family production behavior is working:
+- team-name + password authentication;
+- persistent Supabase-managed sessions;
+- logout;
+- six authoritative league accounts;
+- stable account -> immutable roster manager identity;
 - no fallback to Jakin/Vuk;
-- Miku007 / Lovro -> Miku roster correction;
-- stale previous-account dashboard prevention on account switch;
-- Commissioner authorization separated from roster identity;
-- valid signed official Form / Total Points accepted;
-- live Players data restored.
+- Jakin Goff alone as Commissioner;
+- persistent team profiles;
+- private owner-managed avatars;
+- shared My Team/Teams profile state;
+- compact mobile profile/current-roster presentation;
+- live Players data.
 
-## Why A3 is now
-The roadmap intentionally places A3 after the account-aware shell and before real FPL Draft league/entry identity work.
+## Why G1 is now
+The application knows who its six product users/teams are, but it does **not yet know the verified official FPL Draft identity of the real Kile N Others league**.
 
-The product now has:
-- persistent authenticated league identities;
-- stable account-to-roster identity;
-- backend role/RLS foundation;
-- shared desktop/mobile account-aware UI;
-- hosted Supabase production infrastructure.
+Before the League page can safely consume real standings, Gameweek data, official entry squads, ownership or transaction history, the project needs a trustworthy bridge between:
 
-The next dependency is to give those six authenticated teams persistent league-visible profile data and avatars before moving into G1 league/entry integration.
+```text
+our six product identities
+        ↕
+real FPL Draft league + six official entries
+```
 
-## A3 product outcome
-Each of the six league teams should have a persistent profile backed by Supabase, including an avatar that can be uploaded/replaced according to approved authorization rules, and the Teams page should consume that persistent profile data.
+G1 builds and verifies that bridge.
 
-The experience should work as one shared league feature across desktop and mobile.
+## Plain-English goal
+Find the real official FPL Draft identifier for **Kile N Others**, identify the six official entries/managers inside that league, and prove exactly which official entry belongs to each of our six existing teams.
 
-## Approved A3 scope
-In scope:
-- persistent Team profile table/data model;
-- avatar upload/update using Supabase Storage or the repository-consistent equivalent approved backend path;
-- Teams page reads and displays persistent profile/avatar data;
-- owner-scoped profile/avatar updates for the authenticated team;
-- narrowly justified Commissioner repair/admin capability if repository evidence shows it is needed;
-- backend/RLS/storage policies protecting reads/writes;
-- deterministic tests and verification appropriate to the chosen implementation.
+Then verify the relevant read-only FPL Draft response structure well enough that G2 can safely build real Gameweek/standings data on top of it.
 
-## Non-negotiable architecture / security rules
-- Supabase Auth/Postgres/RLS/Storage remains the persistent backend.
-- Persistent profile/avatar state must not use localStorage as authoritative truth.
-- Normal members may modify only fields explicitly permitted for their own account/team.
-- Any Commissioner-only repair capability must derive from backend `LEAGUE_OWNER` authorization, not a React-only flag.
-- No Supabase secret/service-role credential may be exposed to browser code or Vite public variables.
-- Do not request, store, commit, or log Vuk's production passwords.
-- Preserve the existing six league-account identities and stable account -> immutable roster manager ID mapping.
-- Do not let profile display names become roster identity authority.
-- Desktop/mobile must consume one shared profile data contract rather than maintaining separate persistent state.
-- Preserve immutable official draft history and current roster derivation rules.
-- Avoid broad public/anonymous profile mutation.
+G1 establishes identity and evidence. It does not yet redesign the League page or display real standings.
 
-## Out of scope for A3
+## Product identities that must map exactly
+- Jakin Goff -> Vuk -> immutable Vuk roster -> `LEAGUE_OWNER` / Commissioner
+- Dindi -> Kristian -> immutable Kristian roster -> `MEMBER`
+- 22nd oBlock -> Diego -> immutable Diego roster -> `MEMBER`
+- Miku007 -> Lovro -> immutable Miku roster -> `MEMBER`
+- Rod Wave Disciples -> Deni -> immutable Deni roster -> `MEMBER`
+- Tintilinic -> Tin -> immutable Tin roster -> `MEMBER`
+
+Do not infer mapping from array position, draft order, role, first result, or fuzzy name similarity when stronger evidence is available.
+
+## Required outcome
+1. Verified real FPL Draft league ID for Kile N Others.
+2. Exactly six verified official entry IDs belonging to that league.
+3. Explicit one-to-one mapping from each official entry to one existing project account/team and immutable roster manager ID.
+4. Verified read-only league-specific endpoint/schema evidence sufficient for G2.
+5. Fail-closed handling for missing, duplicate or conflicting identities.
+6. Concise provenance/evidence for how the mapping was established.
+
+## Candidate read routes
+Existing research has identified candidates including:
+- `/api/league/{league}/details`
+- `/api/entry/{entry}/event/{event}`
+- `/api/league/{league}/element-status`
+- `/api/draft/league/{league}/transactions`
+- `/api/draft/league/{league}/trades`
+
+Global/public candidates remain:
+- `/api/game`
+- `/api/event/{event}/fixtures`
+- `/api/event/{event}/live`
+
+Codex must verify what is actually useful now rather than assuming every candidate route is valid.
+
+## Security / privacy boundary
+G1 is read-only.
+- do not request/store Vuk's FPL Draft password;
+- do not commit browser cookies, auth tokens or private FPL credentials;
+- do not add an automated official FPL login flow;
+- do not add mutation/write calls;
+- league IDs and entry IDs are identity references, not authorization authority.
+
+If the league URL/ID can only be obtained from Vuk's authenticated FPL Draft browser, Codex should complete all other available work first and then give one minimal **Manual verification for Vuk** action.
+
+## Architecture rules
+- external FPL/FPL Draft shapes stop at project-owned boundaries;
+- official identity mappings should be explicit and independently testable;
+- existing `league_accounts` remain application identity authority;
+- existing immutable roster-manager mapping remains roster identity authority;
+- official entry identity is an integration mapping and must not rewrite either authority;
+- identity conflicts fail closed;
+- do not mutate immutable official draft history;
+- do not introduce G2/G3 persistence or presentation early.
+
+## In scope
+- repository investigation relevant to league/entry identity;
+- safe acquisition/verification of the real league ID;
+- safe acquisition/verification of six entry IDs;
+- exact mapping to the six project identities;
+- focused project-owned identity/config/domain/adapter contracts if justified;
+- read-only endpoint/schema verification;
+- deterministic mapping/validation tests;
+- concise evidence/provenance sufficient for G2.
+
+## Out of scope
 Do not implement:
-- G1 real FPL Draft league ID / six entry IDs;
-- G2 standings/Gameweek adapter;
-- Gameweek lineup persistence or locking;
-- Commissioner post-kickoff lineup administration;
-- scoring/corrections;
-- Trading Block/trade proposals;
-- Premier League player-photo identity work;
-- unrelated Players enrichment;
-- automatic official FPL writes.
+- G2 real standings/Gameweek UI;
+- current Gameweek points presentation;
+- G3 lineup persistence/locking;
+- G4 football-pitch lineup presentation;
+- G5/G5A scoring/live event UI;
+- G6 Commissioner score corrections;
+- player-photo work;
+- Trading Block/trades;
+- automatic official FPL mutations.
 
-## Acceptance direction
-A3 is complete when repository evidence and testing demonstrate that:
-- all six teams can be represented by persistent profiles linked to the existing league-account identity model;
-- authenticated league members can read the league-visible profiles needed by Teams;
-- a normal MEMBER cannot update another team's protected profile/avatar data;
-- a team can update its permitted own profile/avatar data;
-- avatar storage/read/update authorization is enforced through backend policies, not only UI hiding;
-- Teams page consumes persistent profile data on the shared desktop/mobile model;
-- missing avatar/profile data has a truthful fallback state rather than fabricated data;
-- account-to-roster identity behavior from PR #33 is unchanged;
-- existing login/session/logout/member/Commissioner behavior is not regressed;
-- no secret/password is added to source control or browser configuration;
-- relevant typecheck/tests/build/lint/database/RLS/storage checks pass;
-- any genuinely manual-only production/browser check is isolated under **Manual verification for Vuk** with exact action, expected result, and failure signal.
+## Acceptance criteria
+G1 is complete only when:
+- the real Kile N Others league ID is verified;
+- exactly six official entry IDs are verified as members of that league;
+- each official entry maps uniquely to one existing project identity and immutable roster manager ID;
+- no mapping relies on positional/first-row fallback;
+- contradictory identity evidence fails closed;
+- relevant league-specific read schemas were actually observed rather than invented;
+- project-owned contracts introduced are tested;
+- no passwords/tokens/cookies/private FPL credentials are committed or exposed;
+- no official FPL write path is introduced;
+- A-family login/session/profile/roster behavior is not regressed;
+- relevant checks pass;
+- any manual-only external-browser step is isolated under **Manual verification for Vuk** with exact action, expected result and failure signal.
 
-Codex should inspect the repository and choose the exact schema, policy, storage path, component structure, state flow, migration shape, and test strategy. ChatGPT should not prescribe unnecessary file-level implementation.
-
-## Workflow for the eventual A3 implementation
-- continue the same Codex session while its existing repository/tool context remains useful;
-- use a fresh short-lived implementation branch from current `main`;
-- Codex performs every check it can itself;
-- do not stop unrelated work because one private-password/browser-only check remains;
+## Workflow for G1
+- continue the current Codex session while useful;
+- start from current `main` on one fresh short-lived G1 branch;
+- Codex owns repository/external-contract investigation, implementation strategy and tests;
+- prefer one coherent commit and avoid unnecessary progress commits;
 - open one Draft PR;
-- ChatGPT independently reviews the actual PR/diff/CI;
-- Vuk alone merges.
+- ChatGPT independently reviews the actual diff/evidence;
+- Vuk alone merges;
+- do **not** edit `Second_Brain/**` during G1 implementation.
 
-## Next phase after A3
-After A3 is merged, verified, and reconciled in the Second Brain, proceed to:
+Second Brain will not be reconciled after G1 alone. Continue through the approved G-family roadmap, with one consolidated G-family reconciliation after the G work is complete unless an earlier correction becomes necessary.
 
-**G1 — Real FPL Draft league/entry identity**
+## Next phase after G1
+After G1 is merged and verified, proceed to:
 
-unless Vuk explicitly changes the roadmap ordering.
+**G2 — League Gameweek + standings adapter**
+
+G2 will use the verified identity/read contracts from G1 to bring real current Gameweek and league standings data into the application.

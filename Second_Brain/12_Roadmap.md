@@ -2,138 +2,88 @@
 
 Build in small dependency-ordered phases. Do not collapse these into one large Codex task.
 
-## Must-have foundation
-### F0 — Second Brain scaffold
-Status: COMPLETE
+Second Brain reconciliation happens at the end of a roadmap letter family rather than after every numbered step, unless an earlier correction is needed because the documentation becomes materially false or unsafe.
 
-### F1 — Vercel deployment
-Status: COMPLETE
+## Foundation
+- F0 Second Brain scaffold — COMPLETE
+- F1 Vercel deployment — COMPLETE
+- F2 desktop + mobile responsive shell — COMPLETE
+- P5A Players filtering/sorting — COMPLETE
+- F3 Supabase foundation — COMPLETE
 
-### F2 — Desktop + mobile responsive shell
-Status: COMPLETE
-
-### P5A — Players filtering/sorting
-Status: COMPLETE
-
-Implemented:
-- full verified player names;
-- search by player/owner;
-- position and ownership filtering;
-- Free Agent state derived from current ownership;
-- sort by Official FPL Draft Rank, Form, Total Points, MVP Consensus;
-- Draft Model Rank preserved as project evidence but removed as a primary Players-page sort;
-- compact Form Leaders and Total Points Leaders;
-- shared desktop/mobile selector and ordering;
-- live official Form and Total Points normalized at the FPL adapter boundary;
-- valid signed official Form / Total Points values accepted after PR #33.
-
-### F3 — Supabase foundation
-Status: COMPLETE
-
-Implemented:
-- project-owned Supabase browser client boundary;
-- safe public environment contract;
-- repository-pinned Supabase CLI/local workflow;
-- migration-first Supabase project structure;
-- Auth/Postgres/RLS/Storage foundation.
-
-## League accounts
+## A family — League accounts/profile foundation
 ### A1 — Six accounts + RLS
 Status: COMPLETE
-
-Implemented:
-- six league account/team identities;
-- auth-user to league-account mapping foundation;
-- constrained `MEMBER` / `LEAGUE_OWNER` roles;
-- Jakin Goff as the single `LEAGUE_OWNER`;
-- product-facing title **Commissioner**;
-- RLS/private authorization helpers preventing member privilege escalation;
-- secure provisioning workflow without committed passwords.
-
-Hosted production state is established in KNO (`asrrkwyqerfkynhjypov`) with six rows, one owner, five members, RLS enabled, public signup disabled, and six private Auth users provisioned.
 
 ### A1.5 — Persistent Session / Automatic Login
 Status: COMPLETE
 
-Implemented:
-- one project-owned Supabase Auth session service over the shared browser client;
-- startup states `INITIALIZING`, `AUTHENTICATED`, `UNAUTHENTICATED`;
-- Supabase-managed persistent browser sessions and automatic token refresh;
-- successful login can restore across refresh/reopen while valid;
-- no project password storage or parallel custom auth storage;
-- explicit sign-out clears authenticated state;
-- shared team-name to internal Auth identity resolver.
-
 ### A2 — Account-aware shell
 Status: COMPLETE
 
-Implemented and production-verified:
-- initialize/restore Supabase session before auth-dependent UI;
-- unauthenticated users see team-name + password login;
-- authenticated users enter the league application automatically;
-- current Auth user resolves to one real league account;
-- My Team resolves to the logged-in team;
-- Jakin Goff alone displays **Commissioner** from real account role;
-- normal MEMBER accounts receive member presentation;
-- explicit logout;
-- valid persisted sessions survive refresh/reopen while valid;
-- desktop/mobile share the same authenticated account/session model;
-- project code stores no passwords.
-
-PR #33 hardened A2 behavior:
-- approved account identity maps to a stable immutable roster manager ID;
-- unknown/inconsistent identity fails closed instead of falling back to Jakin/Vuk;
-- Miku007 / Lovro maps to Miku's roster;
-- account switches clear stale previous-account dashboard state;
-- Commissioner authorization is separate from roster identity;
-- live Players data restored by accepting valid signed Form / Total Points values.
+PR #33 hardening remains part of the baseline: stable account -> immutable roster mapping, no Jakin/Vuk fallback, Miku007/Lovro correction, stale-account protection, Commissioner/roster separation, signed Form/Total Points support, live Players restored.
 
 ### A3 — Team profiles + avatars
+Status: COMPLETE
+
+Implemented and production-verified through PR #35 plus corrective PR #36:
+- one persistent `team_profiles` row per authoritative league account;
+- private `team-avatars` Supabase Storage bucket;
+- authenticated league-wide profile/avatar reads;
+- owner-scoped profile/avatar writes;
+- no implicit Commissioner cross-team avatar editing;
+- 2 MB JPEG/PNG/WebP contract;
+- deterministic team-name initial fallback;
+- shared profile state across desktop/mobile and My Team/Teams;
+- authenticated-team avatar/fallback in My Team navigation;
+- account-switch profile isolation;
+- compact mobile profile/current-roster layout that remains truthful about not being a submitted Gameweek XI.
+
+Hosted migration: `20260823163233_team_profiles_avatars.sql`.
+
+**A family status: COMPLETE.**
+
+## G family — Team / Gameweek tracking
+### G1 — Real FPL Draft league/entry identity
 Status: CURRENT / NEXT
 
-Goal:
-Add persistent league-visible team profiles and avatars using the established Supabase backend and account identity model.
+Goal: establish the verified real-world identity contract connecting this project to the actual **Kile N Others** FPL Draft league.
 
-Approved scope:
-- Team profile table/data.
-- Avatar upload/update.
-- Teams page consumes persistent profiles.
+Required outcome:
+- verified real FPL Draft league ID;
+- verified six official FPL Draft entry IDs;
+- explicit one-to-one mapping from those entries to the six existing project identities and immutable roster manager IDs;
+- verified read-only league-specific endpoint/schema evidence sufficient for G2;
+- fail-closed handling for missing, duplicate or inconsistent mappings;
+- evidence/provenance for the identity match.
 
-Non-negotiable boundaries:
-- persistent profile/avatar state must use Supabase/Postgres/Storage, not authoritative localStorage;
-- profile/avatar writes must be owner-scoped or explicitly Commissioner-authorized through backend/RLS/storage policies;
-- no browser exposure of service-role/secret credentials;
-- preserve the six existing account identities and immutable roster-manager mapping;
-- desktop/mobile consume the same profile data;
-- do not pull G1 real FPL Draft league/entry identity into A3;
-- do not mix Trading Block, scoring, lineup persistence, or unrelated player-photo work into A3.
-
-Implementation details are intentionally left to Codex after repository inspection.
-
-## Team / Gameweek tracking
-### G1 — Real FPL Draft league/entry identity
-Status: AFTER A3
-- Obtain real league ID and six entry IDs safely.
-- Verify league-specific read schemas.
+Boundaries:
+- read-only official FPL Draft work only;
+- no FPL passwords/cookies/session-token storage;
+- no official FPL mutation;
+- no fuzzy identity guessing;
+- no G2 standings/Gameweek UI yet;
+- no lineup persistence/scoring/trades;
+- external response shapes remain behind project-owned boundaries when code is introduced.
 
 ### G2 — League Gameweek + standings adapter
-- Real current Gameweek on League page.
-- Real league standings.
-- Manager overall/season points through the standings model.
-- Logged-in manager's current Gameweek points where verified.
+Status: AFTER G1
+- real current Gameweek;
+- real league standings;
+- manager season points;
+- logged-in manager current Gameweek points where verified.
 
 ### G3 — Gameweek lineup domain + persistence
-Build the authoritative shared lineup entity used by both mobile and desktop, with backend-enforced member ownership, Gameweek lock, and audited Commissioner post-start administration as already defined.
+Authoritative shared lineup entity with backend-enforced ownership, Gameweek lock and audited Commissioner post-start administration.
 
 ### G4 — Account-specific My Team + Teams Gameweek presentation
-- football-pitch XI positioned by derived formation;
-- shared lineup renderer/model for My Team and Teams;
-- separate ordered bench;
-- verified player photos when P1/P2 are available, otherwise neutral fallback.
+Football-pitch XI, derived formation, ordered bench, shared renderer/model.
 
 ### G5 — Gameweek scoring
 ### G5A — Important Gameweek event feed
 ### G6 — Commissioner score corrections
+
+After the approved G-family work is complete and production-verified, perform one consolidated end-of-G Second Brain reconciliation.
 
 ## Player improvements
 ### P1 — Premier League photo identity research
@@ -156,17 +106,12 @@ Build the authoritative shared lineup entity used by both mobile and desktop, wi
 ### L5 — Manager/season analytics
 
 ## Dependency rules
-- Mobile and desktop are presentation layers over one shared domain/data/backend model.
+- Mobile and desktop share one domain/data/backend model.
 - Persistent mutable data must not have device-specific authoritative copies.
-- Authentication sessions may persist per browser/device, but passwords must never be stored by project code.
-- Authorization-sensitive writes must be enforced in backend/RLS/storage policies.
-- Account roster identity must resolve through the approved immutable mapping and fail closed on inconsistency.
+- Authorization-sensitive writes are backend/RLS/storage enforced.
+- Account roster identity uses the approved immutable mapping and fails closed.
 - Commissioner authorization must not determine roster identity.
-- Player display names use the full verified available name.
-- Free Agent/Owned state derives from current roster ownership.
-- Formation/lineup legality belongs in shared domain logic.
-- Do not build project scoring before lineup and player-Gameweek contracts exist.
+- Team profile/avatar data must not become account/roster identity authority.
+- Official league/entry identity must be verified before league-specific FPL Draft data is trusted.
 - Do not automate official FPL writes before read/reconciliation behavior is proven.
-- Do not guess Premier League image URLs or identity mappings.
-- Do not let a live feed overwrite immutable draft-day evidence.
-- Do not skip A3 and start G1 unless Vuk explicitly changes the roadmap.
+- Do not guess external IDs, image URLs or identity mappings.

@@ -6,38 +6,48 @@ Prefer the simplest reliable source. Use scraping only when a required field can
 ## Source hierarchy
 
 ### Immutable project history
-Source:
-`src/data/leagues/kile-n-others/officialDraft2026-27.json`
-
-Owns:
-- exact 90-pick draft history;
-- draft order;
-- final draft rosters;
-- draft-time official/model/MVP ranking context;
-- historical source hashes/metadata.
-
-Never replace these values with future live values.
+`src/data/leagues/kile-n-others/officialDraft2026-27.json` owns the exact 90-pick draft history, draft order, final draft rosters and draft-time ranking evidence. Never replace those historical values with future live values.
 
 ### FPL Draft public bootstrap
-Existing project boundary:
-`/api/fpl`
+Existing project boundary: `/api/fpl`.
 
-Use for current normalized player pool and official Draft rank. Keep raw upstream JSON inside the adapter layer.
+Use it for the current normalized player pool and official Draft rank. Raw upstream JSON remains inside project-owned adapter boundaries.
 
-### FPL Draft Matchday candidates
-Already researched as public/global candidates:
+### FPL Draft Matchday / league candidates
+Global/public candidates already identified:
 - `/api/game`
 - `/api/event/{event}/fixtures`
 - `/api/event/{event}/live`
 
-League/entry-specific routes remain unverified until the real league and entry IDs are supplied/validated:
+League/entry-specific candidates that G1 must actually verify rather than assume:
 - `/api/league/{league}/details`
 - `/api/entry/{entry}/event/{event}`
 - `/api/league/{league}/element-status`
 - `/api/draft/league/{league}/transactions`
 - `/api/draft/league/{league}/trades`
 
-Authenticated/mutation routes remain outside read-only integration until explicitly designed.
+Authenticated/mutation routes remain outside approved read-only integration until explicitly designed.
+
+## G1 — Real league/entry identity contract
+G1 is CURRENT / NEXT.
+
+G1 must establish:
+- the exact real FPL Draft league ID for **Kile N Others**;
+- the exact six official FPL Draft entry IDs belonging to that league;
+- an explicit one-to-one mapping from those official entries to the six existing product account/team identities and immutable roster manager IDs;
+- evidence that the verified league-specific read endpoint returns the expected league and participants;
+- the minimum stable read-schema facts needed for later G2 work.
+
+Identity verification rules:
+- never map official entries by array position, first result or fuzzy similarity when exact evidence is available;
+- manager/team-name differences must be resolved explicitly;
+- missing, duplicate or conflicting mappings fail closed;
+- league/entry IDs are identifiers, not authorization credentials;
+- do not request/store FPL passwords, session cookies, tokens or other private credentials;
+- G1 is read-only and must not mutate official FPL Draft state;
+- raw undocumented external response shapes must not become React contracts.
+
+G1 should retain enough provenance that later phases can tell which league/entry identity was verified, how the match was established, and which official read contract was observed.
 
 ## Target data ownership
 | Data | Preferred source |
@@ -45,63 +55,36 @@ Authenticated/mutation routes remain outside read-only integration until explici
 | Draft history/ranks | Immutable repo snapshot |
 | Current Draft player pool | FPL Draft bootstrap |
 | Official Draft rank | FPL Draft bootstrap |
-| Current Gameweek | FPL Draft `/api/game` |
-| Fixtures/results | verified FPL Draft event fixtures |
-| Live player GW points | verified FPL Draft event live |
+| Real Kile N Others league ID + entry IDs | G1 verified official identity contract |
+| Current Gameweek | verified FPL Draft `/api/game` |
+| Fixtures/results | verified event fixtures |
+| Live player GW points | verified event live |
 | League standings | verified real league-details contract |
 | Manager GW squad | verified entry/event contract |
 | Draft ownership/free agents | verified league element-status; reconcile with project state |
-| Official Draft transaction history | verified league transaction/trade reads |
-| Season points/minutes/starts | official FPL data after contract verification |
-| Injury/status/news | official FPL fields after semantics are verified |
-| Expected return | only a reliable explicit source; otherwise unavailable |
-| Starter/substitute classification | project-derived from recent usage, with Unknown when insufficient evidence |
-| MVP/model ranking | existing project model pipeline |
-| Team avatars | Supabase Storage |
-| Trading Block/trade proposals | Supabase project data |
+| Official transaction history | verified league transaction/trade reads |
+| Team profiles | Supabase Postgres |
+| Team avatars | private Supabase Storage |
 | Submitted lineups | Supabase project data |
+| Trading Block/trade proposals | Supabase project data |
 | Manual score corrections | Supabase audited project data |
 
 ## Player identity
-Do not assume regular FPL element ID equals FPL Draft ID.
-
-Use explicit project mapping and exact identity evidence. Existing historical/current model generation uses stable FPL `code` where verified. Identity conflicts must fail closed rather than fuzzy-match silently.
+Do not assume regular FPL element ID equals FPL Draft ID. Use explicit project mapping and exact identity evidence. Conflicts fail closed rather than fuzzy-match silently.
 
 ## Premier League photos
-Approved research direction:
-1. Investigate whether stable FPL `code` maps directly/reliably to Premier League profile identity.
-2. Verify against current player name + club.
-3. Determine how the official Premier League site serves player images.
-4. Use only a proven stable official image/profile contract.
-5. Never guess CDN URL patterns.
-
-Target mapping concept:
-- `draft_player_id`
-- `fpl_code`
-- `pl_player_id`
-- `pl_profile_slug`
-- `photo_url`
-- `mapping_status`
-- `verified_at`
-
-Suggested mapping statuses:
-- EXACT_ID
-- VERIFIED_NAME_CLUB
-- UNMATCHED
-- CONFLICT
+Photo work remains separate from G1. Use only a verified identity/image mapping contract; never guess CDN URL patterns.
 
 ## Refresh strategy
-For six users, start simple:
-- server-side API reads through Vercel Functions;
-- user-triggered Refresh for Matchday;
-- conservative short caching when live data is added;
+For six users, keep integrations simple:
+- server-side reads through project-owned Vercel Functions where appropriate;
+- conservative caching;
+- user-triggered refresh for live Matchday where appropriate;
 - persist only historical facts needed later;
-- no aggressive polling;
-- no scraper fleet;
-- scheduled jobs only where they add clear value.
+- no aggressive polling or scraper fleet without a concrete need.
 
-## Data provenance rule
-Every derived/archived value should make its source clear where ambiguity matters:
+## Data provenance
+Distinguish:
 - Draft-day historical value
 - Current official value
 - Project-calculated value

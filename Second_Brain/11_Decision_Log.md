@@ -15,10 +15,14 @@ Status: APPROVED
 
 Second Brain is a concise control manual, not a replacement for implementation truth.
 
-## D-004 — Low-token Codex workflow
-Status: APPROVED
+## D-004 — Narrow Codex tasks; family-level Second Brain reconciliation
+Status: APPROVED — UPDATED
 
-Future Codex tasks are narrow. Read only relevant Second Brain notes, implement one change, run targeted tests, independently verify, then manually update Second Brain.
+Codex implementation tasks remain narrow and dependency-ordered. Read only relevant Second Brain notes, implement one roadmap step, run the appropriate verification, and open a reviewable implementation PR.
+
+Do not create a Second Brain reconciliation after every numbered step by default. Reconcile the Second Brain once a roadmap letter family is complete, for example after all A steps or after all approved G steps.
+
+An earlier documentation correction is appropriate only when the control manual becomes materially false, unsafe, or likely to send the next task down the wrong dependency path.
 
 ## D-005 — Vercel is the deployment target
 Status: APPROVED
@@ -196,6 +200,20 @@ Status: APPROVED WORKFLOW
 
 Codex should perform every verification it can reliably perform itself, including relevant automated tests, type checking, linting, builds, local integration checks, database/RLS checks and repository inspection.
 
-Checks should be left to Vuk only when they genuinely require a real device/browser, unavailable credentials or external authenticated UI, or subjective visual/product judgment. In those cases Codex's final report must include a concise **Manual verification for Vuk** section containing the exact test, expected result and minimum steps.
+Checks should be left to Vuk only when they genuinely require a real device/browser, unavailable credentials or external authenticated UI, or subjective visual/product judgment. In those cases Codex's final report must include a concise **Manual verification for Vuk** section containing the exact action, expected result and failure signal.
 
 Codex must never claim that an unperformed test passed. If no manual verification is required, it should state that explicitly.
+
+## D-033 — Keep Git history compact
+Status: APPROVED WORKFLOW
+
+For a normal narrow roadmap step, prefer one coherent implementation commit rather than many checkpoint/progress commits. Additional review/fix commits are acceptable when useful. Vuk may use squash merge to keep `main` history compact.
+
+Fewer commits must not be achieved by collapsing multiple roadmap steps into one oversized task.
+
+## D-034 — Team profiles are presentation data, not identity authority
+Status: APPROVED ARCHITECTURE / SECURITY RULE
+
+A3 team profiles and avatars are mutable league presentation data linked one-to-one to authoritative `league_accounts`.
+
+Profile/avatar fields must never decide authenticated account identity, Commissioner authorization, or immutable roster manager identity. Normal writes remain owner-scoped unless a later explicitly approved backend-authorized administrative capability is added.
