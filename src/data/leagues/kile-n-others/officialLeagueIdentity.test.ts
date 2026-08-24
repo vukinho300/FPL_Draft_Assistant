@@ -70,6 +70,8 @@ function details(source = evidence()): FplDraftLeagueDetails {
     standings: [...source.participants].reverse().map((identity, index) => ({
       officialLeagueEntryId: identity.officialLeagueEntryId,
       rank: index + 1,
+      lastRank: null,
+      rankSort: index + 1,
       eventTotal: 0,
       total: 0,
     })),

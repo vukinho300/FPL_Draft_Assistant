@@ -34,7 +34,7 @@ console.log(JSON.stringify({
       'entry_name',
       'player_first_name',
     ],
-    standingsFields: ['league_entry', 'rank', 'event_total', 'total'],
+    standingsFields: ['league_entry', 'rank', 'last_rank', 'rank_sort', 'event_total', 'total'],
     draftChoices: verified.draftChoicesSourceEndpoint,
     draftChoiceFields: ['league', 'entry', 'element', 'index', 'round', 'pick'],
   },
