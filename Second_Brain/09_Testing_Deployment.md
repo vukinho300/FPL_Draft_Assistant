@@ -3,7 +3,7 @@
 ## Testing philosophy
 Use the smallest meaningful test surface during implementation, then run the full relevant merge-confidence checks before a meaningful PR is considered ready.
 
-Codex should perform every verification it can reliably perform itself. A check belongs to Vuk only when it genuinely requires private credentials, a real device/browser, unavailable external authenticated access, or subjective product judgment.
+Codex performs every verification it can reliably perform itself. A check belongs to Vuk only when it genuinely requires private credentials, a real device/browser, unavailable authenticated external access, or subjective product judgment.
 
 A manual-only check must not automatically block unrelated technical work.
 
@@ -15,119 +15,104 @@ Before merge of a meaningful implementation PR, normally run:
 - `npm run lint`
 - `git diff --check`
 
-Run `npm run verify:fpl-live` when the live FPL boundary or current-player/ranking join is relevant.
+Run `npm run verify:fpl-live` when the live FPL boundary or current-player/ranking join is relevant. Run Supabase/RLS/Storage verification when backend authorization/storage changes.
 
-Run Supabase/RLS verification when database/auth/storage policy behavior changes.
-
-Never report a test/browser/deployment check as passed unless it was actually performed.
+Never report a check as passed unless it was actually performed.
 
 ## Regression priorities
 Protect these invariants:
-- immutable 90-pick official draft remains valid;
+- immutable official draft remains valid;
 - current roster evolution never mutates archived draft history;
-- unique player ownership and legal roster composition remain intact;
-- external schema failures fail clearly rather than silently guessing;
-- valid signed official Form/Total Points values are accepted;
+- external schema failures fail clearly rather than guessing;
+- valid signed official Form/Total Points values remain accepted;
 - authenticated account identity resolves to the correct immutable roster manager ID;
-- unknown/inconsistent account identity fails closed rather than falling back to Jakin/Vuk;
+- unknown/inconsistent identity fails closed rather than falling back to Jakin/Vuk;
 - Commissioner authorization remains separate from roster identity;
-- desktop and mobile render the same underlying league/account/data state;
+- team profile data never becomes account/roster identity authority;
+- account switching does not leak stale profile state;
+- desktop/mobile consume the same underlying account/profile/data state;
 - authorization-sensitive writes are backend/RLS enforced.
 
 ## Current deployment
-F1 — Vercel Deployment is COMPLETE.
-
 Production:
 `https://fpl-draft-assistant-eight.vercel.app/`
 
 Production FPL endpoint:
 `https://fpl-draft-assistant-eight.vercel.app/api/fpl`
 
-The deployed FPL boundary remains:
+The existing project-owned FPL boundary and Vercel packaging must remain intact unless an equivalent solution is proven.
 
-```text
-Browser -> GET /api/fpl -> project FPL handler -> project FPL service -> public FPL Draft bootstrap
-```
+## Hosted Supabase production
+KNO project ref: `asrrkwyqerfkynhjypov`.
 
-Vercel packaging for `api/fpl.ts` must continue to include `src/services/fpl/**` or an equivalent proven solution.
-
-## Hosted Supabase production deployment
-Hosted Supabase project:
-- name: KNO
-- project ref: `asrrkwyqerfkynhjypov`
-
-Applied hosted repository migrations:
+Applied hosted migrations:
 - `20260822170000_foundation.sql`
 - `20260822180000_league_accounts.sql`
+- `20260823163233_team_profiles_avatars.sql`
 
 Verified hosted state:
-- six league account rows;
+- six league accounts;
+- six team profiles;
 - one `LEAGUE_OWNER`, five `MEMBER`;
+- private 2 MB JPEG/PNG/WebP avatar bucket;
 - RLS active;
-- anonymous account reads blocked;
-- intended authenticated account reads allowed;
+- anonymous protected access blocked;
+- authenticated league profile/avatar reads allowed;
+- owner-scoped avatar/profile writes;
 - public signup disabled;
-- six production Auth accounts provisioned outside source control;
-- production authentication works.
+- six production Auth users provisioned outside source control;
+- production authentication and A3 profile/avatar behavior work.
 
-Production Vercel browser configuration:
+Browser-safe Vercel configuration:
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_PUBLISHABLE_KEY`
 
-No Supabase secret/service-role key belongs in browser/Vite environment variables.
+No Supabase service-role/secret credential belongs in browser/Vite variables.
 
-## A2 production verification
-A2 — Account-aware Shell is COMPLETE and verified in production.
+## A-family verification
+A1/A1.5/A2/A3 are COMPLETE and production-verified.
 
-Verified behavior includes:
-- team-name + password login;
-- persistent Supabase-managed session restoration;
-- explicit logout;
-- account-specific My Team;
-- Jakin Goff Commissioner presentation;
-- normal MEMBER presentation for other accounts;
-- correct Miku007 / Lovro roster mapping;
-- correct Jakin Goff / Vuk roster mapping;
-- live Players directory after PR #33.
+A2 verification includes login, persistent sessions, logout, account-specific My Team, correct MEMBER/Commissioner behavior, correct Miku007/Lovro and Jakin Goff/Vuk roster mappings, and live Players data.
 
-PR #33 verification reported:
-- `npm run typecheck`
-- `npm test`
-- `npm run build`
-- `npm run lint`
-- `npm run verify:fpl-live`
+A3 PR #35 verification reported:
+- typecheck;
+- 187 tests;
+- build;
+- lint;
+- Supabase reset/lint;
+- local database advisors;
+- RLS/Storage verification;
+- `git diff --check`.
 
-Manual post-merge production checks confirmed the account/roster and live-player behavior above.
+A3 corrective PR #36 verification reported:
+- typecheck;
+- 188 tests;
+- build;
+- lint;
+- Supabase reset/lint;
+- A1/A2/A3 RLS and Storage verification;
+- account-switch profile isolation and mobile-density regression coverage.
 
-## Current deployment sequence
-- F0 Second Brain foundation: COMPLETE.
-- F1 Vercel deployment: COMPLETE.
-- F2 desktop/mobile responsive shell: COMPLETE.
-- P5A Players filtering/sorting + live Form/Total Points: COMPLETE.
-- F3 Supabase foundation: COMPLETE.
-- A1 Six Accounts + RLS: COMPLETE.
-- A1.5 persistent session foundation: COMPLETE.
-- A2 account-aware shell: COMPLETE.
-- A3 Team Profiles + Avatars: CURRENT / NEXT.
+Post-merge production/manual verification is complete: profile/avatar loading and upload work, shared avatar display works, and the corrected mobile My Team/profile/current-roster layout works on the real phone.
 
-Do not skip to G1 while A3 is current unless Vuk explicitly changes the roadmap.
+## Current phase
+- Foundation phases: COMPLETE.
+- A family: COMPLETE.
+- **G1 Real FPL Draft league/entry identity: CURRENT / NEXT.**
 
-## Desktop and mobile verification
-Desktop and mobile are both required targets of the same deployed application.
+## G1 verification direction
+G1 should prove identity and read contracts rather than build G2 presentation.
 
-User-facing changes should verify representative desktop and narrow mobile layouts when the affected UI is shared across both. Mobile must remain normal-phone usable without required zoom and without unintended page-level horizontal overflow.
+Verification should establish:
+- one real Kile N Others FPL Draft league ID;
+- exactly six real official entry IDs;
+- explicit unique mapping to the six existing project identities/rosters;
+- observed read-only league endpoint behavior and relevant schema evidence;
+- failure on duplicate/missing/conflicting identity;
+- no official FPL write/mutation behavior;
+- no credentials/private browser tokens added to source control.
 
-## A3 verification direction
-A3 should prove, at minimum, the profile/avatar persistence and authorization contract it introduces, plus Teams page consumption on both desktop and mobile where affected.
-
-Codex should choose the exact technical test strategy after inspecting the repository.
-
-If a production avatar upload/login flow genuinely requires Vuk's private credentials or browser interaction, the final report should isolate only that check under:
-
-**Manual verification for Vuk**
-- exact action;
-- expected result;
-- failure signal.
+Codex should perform all public/read-contract verification it can. If the league URL/ID can only be obtained from Vuk's authenticated FPL Draft browser, isolate only that minimal manual action.
 
 ## CI philosophy
-CI is a merge-confidence boundary, not a substitute for targeted local tests. Avoid adding expensive broad workflows without a concrete failure mode.
+CI is a merge-confidence boundary, not a substitute for targeted local tests. Avoid broad workflows without a concrete failure mode.
