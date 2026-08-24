@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "season": "2026/27",
+  "leagueId": 45938,
+  "leagueName": "Kile n Others",
+  "verifiedAt": "2026-08-24T12:09:11.653Z",
+  "detailsSourceEndpoint": "https://draft.premierleague.com/api/league/45938/details",
+  "draftChoicesSourceEndpoint": "https://draft.premierleague.com/api/draft/45938/choices",
+  "mappingBasis": "EXACT_IMMUTABLE_DRAFT_ROSTER_PLAYER_IDS",
+  "participants": [
+    {
+      "teamName": "Jakin Goff",
+      "accountManagerName": "Vuk",
+      "rosterManagerId": "demo-manager-1",
+      "officialEntryId": 240560,
+      "officialLeagueEntryId": 242345,
+      "officialEntryName": "Jakin Goff",
+      "officialPlayerFirstName": "Vuk"
+    },
+    {
+      "teamName": "Dindi",
+      "accountManagerName": "Kristian",
+      "rosterManagerId": "demo-manager-3",
+      "officialEntryId": 240676,
+      "officialLeagueEntryId": 242463,
+      "officialEntryName": "Dindi",
+      "officialPlayerFirstName": "Kristian"
+    },
+    {
+      "teamName": "22nd oBlock",
+      "accountManagerName": "Diego",
+      "rosterManagerId": "demo-manager-2",
+      "officialEntryId": 240707,
+      "officialLeagueEntryId": 242494,
+      "officialEntryName": "22nd oblock",
+      "officialPlayerFirstName": "diego"
+    },
+    {
+      "teamName": "Miku007",
+      "accountManagerName": "Lovro",
+      "rosterManagerId": "demo-manager-4",
+      "officialEntryId": 240723,
+      "officialLeagueEntryId": 242510,
+      "officialEntryName": "Miku007",
+      "officialPlayerFirstName": "Lovro"
+    },
+    {
+      "teamName": "Rod Wave Disciples",
+      "accountManagerName": "Deni",
+      "rosterManagerId": "demo-manager-6",
+      "officialEntryId": 261369,
+      "officialLeagueEntryId": 263632,
+      "officialEntryName": "Rod Wave Elite",
+      "officialPlayerFirstName": "Deni"
+    },
+    {
+      "teamName": "Tintilinic",
+      "accountManagerName": "Tin",
+      "rosterManagerId": "demo-manager-5",
+      "officialEntryId": 261515,
+      "officialLeagueEntryId": 263779,
+      "officialEntryName": "Tintilinič",
+      "officialPlayerFirstName": "tin"
+    }
+  ]
+}

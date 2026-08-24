@@ -77,6 +77,14 @@ npm run verify:fpl-live
 
 It is deliberately excluded from deterministic CI.
 
+The G1 league-identity check performs only public official FPL Draft reads. It verifies the committed league/entry mapping, all six standings references, and each entry's exact 15-player original draft roster against the immutable archive:
+
+```bash
+npm run verify:fpl-league-live
+```
+
+No FPL login, cookie or mutation route is used.
+
 The development-only archive export validates the canonical snapshot and prints its project-owned `DraftPick[]`. It never reads or writes browser storage:
 
 ```bash
