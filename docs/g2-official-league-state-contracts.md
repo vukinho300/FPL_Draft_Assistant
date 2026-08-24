@@ -18,10 +18,15 @@ Observed against the public 2026/27 FPL Draft API for Kile N Others league `4593
   final match day.
 - The normalized phase uses official flags only: no started fixtures is `UPCOMING`; any
   started but not football-complete fixture set is `ACTIVE`; all fixtures football-complete
-  while `current_event_finished` is false is `AWAITING_FINALIZATION`; and
-  `current_event_finished` is `FINALIZED`.
+  while `current_event_finished` is false is `FOOTBALL_COMPLETE`; and
+  `current_event_finished: true` is only `OFFICIAL_EVENT_MARKED_FINISHED`.
+- `OFFICIAL_EVENT_MARKED_FINISHED` deliberately does **not** mean league standings or totals
+  are finalized/reconciled. The raw game `current_event_finished`, bootstrap event
+  `finished`, fixture `finished`/`finished_provisional`, event-status points state,
+  `bonus_added`, `leagues_updated`, and league-table status remain separate facts.
 - Only the active state was observed. The finished-to-finalized transition must be checked
-  after the first completed 2026/27 Gameweek before choosing G3 reconciliation timing.
+  after the first completed 2026/27 Gameweek before adding any G3 reconciliation-ready
+  finalization contract.
 
 ## Official entry lineups
 
@@ -86,8 +91,8 @@ live lineup players. Jakin Goff's live XI summed to 44 while league details stil
 42. This proves league-details totals/ranks can lag live player facts during active play.
 
 No finalized 2026/27 Gameweek existed during G2 observation. G3 must use live lineup/player
-inputs provisionally and only reconcile when the official current-event finished/status
-signals have been observed through a completed transition.
+inputs provisionally and must add a separate reconciliation-ready condition only after the
+finished/status/standings transition has actually been observed end to end.
 
 ## Transactions, trades, and Archive feasibility
 

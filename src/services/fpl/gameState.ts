@@ -67,8 +67,8 @@ export interface FplDraftEventStatus {
 export type FplDraftGameweekPhase =
   | 'UPCOMING'
   | 'ACTIVE'
-  | 'AWAITING_FINALIZATION'
-  | 'FINALIZED'
+  | 'FOOTBALL_COMPLETE'
+  | 'OFFICIAL_EVENT_MARKED_FINISHED'
 
 export interface FplDraftGameweekState {
   readonly eventId: number
@@ -78,6 +78,7 @@ export interface FplDraftGameweekState {
   readonly allFixturesStarted: boolean
   readonly allFixturesFootballComplete: boolean
   readonly officialEventFinished: boolean
+  readonly bootstrapEventFinished: boolean
 }
 
 const pointsStatusByCode: Readonly<Record<string, FplDraftPointsStatus>> = {
@@ -189,8 +190,8 @@ export function deriveFplDraftGameweekState(
     ({ started, finished, finishedProvisional }) => started && !finished && !finishedProvisional,
   )
   let phase: FplDraftGameweekPhase
-  if (game.currentEventFinished) phase = 'FINALIZED'
-  else if (allFixturesFootballComplete) phase = 'AWAITING_FINALIZATION'
+  if (game.currentEventFinished) phase = 'OFFICIAL_EVENT_MARKED_FINISHED'
+  else if (allFixturesFootballComplete) phase = 'FOOTBALL_COMPLETE'
   else if (fixtures.some(({ started }) => started)) phase = 'ACTIVE'
   else phase = 'UPCOMING'
 
@@ -202,6 +203,7 @@ export function deriveFplDraftGameweekState(
     allFixturesStarted,
     allFixturesFootballComplete,
     officialEventFinished: game.currentEventFinished,
+    bootstrapEventFinished: event.finished,
   })
 }
 

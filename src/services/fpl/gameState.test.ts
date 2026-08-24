@@ -96,12 +96,34 @@ describe('FPL Draft Gameweek state contracts', () => {
       game,
       event,
       normalizeFplDraftFixtures([rawFixture({ started: true, finished_provisional: true })], 1),
-    ).phase).toBe('AWAITING_FINALIZATION')
-    expect(deriveFplDraftGameweekState(
+    ).phase).toBe('FOOTBALL_COMPLETE')
+    const eventMarkedFinished = deriveFplDraftGameweekState(
       normalizeFplDraftGame({ ...rawGame, current_event_finished: true }),
       event,
       normalizeFplDraftFixtures([rawFixture({ started: true, finished: true })], 1),
-    ).phase).toBe('FINALIZED')
+    )
+    expect(eventMarkedFinished).toMatchObject({
+      phase: 'OFFICIAL_EVENT_MARKED_FINISHED',
+      officialEventFinished: true,
+      bootstrapEventFinished: false,
+    })
+    expect(eventMarkedFinished.phase).not.toContain('FINALIZED')
+
+    const bootstrapMarkedFinished = normalizeFplDraftEventSchedule({
+      events: {
+        ...rawSchedule.events,
+        data: [{ ...rawSchedule.events.data[0], finished: true }],
+      },
+    }).events[0]
+    expect(deriveFplDraftGameweekState(
+      game,
+      bootstrapMarkedFinished,
+      normalizeFplDraftFixtures([rawFixture({ started: true, finished: true })], 1),
+    )).toMatchObject({
+      phase: 'FOOTBALL_COMPLETE',
+      officialEventFinished: false,
+      bootstrapEventFinished: true,
+    })
   })
 
   it('fails closed for unknown status codes and contradictory event identity', () => {
