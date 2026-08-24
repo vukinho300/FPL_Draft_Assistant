@@ -27,7 +27,7 @@ function rawLeagueDetails() {
       },
     ],
     standings: [
-      { league_entry: 201, rank: 1, event_total: 55, total: 55 },
+      { league_entry: 201, rank: 1, last_rank: null, rank_sort: 1, event_total: 55, total: 55 },
     ],
   }
 }
@@ -47,7 +47,14 @@ describe('FPL Draft league-details adapter', () => {
         entryName: 'Jakin Goff',
         playerFirstName: 'Vuk',
       }],
-      standings: [{ officialLeagueEntryId: 201, rank: 1, eventTotal: 55, total: 55 }],
+      standings: [{
+        officialLeagueEntryId: 201,
+        rank: 1,
+        lastRank: null,
+        rankSort: 1,
+        eventTotal: 55,
+        total: 55,
+      }],
     })
   })
 

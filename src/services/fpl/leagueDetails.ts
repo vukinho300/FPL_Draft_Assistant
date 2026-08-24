@@ -13,6 +13,8 @@ export interface FplDraftLeagueParticipant {
 export interface FplDraftLeagueStanding {
   readonly officialLeagueEntryId: number
   readonly rank: number
+  readonly lastRank: number | null
+  readonly rankSort: number
   readonly eventTotal: number
   readonly total: number
 }
@@ -76,6 +78,10 @@ function readInteger(record: UnknownRecord, field: string, context: string): num
   return value as number
 }
 
+function readNullableInteger(record: UnknownRecord, field: string, context: string): number | null {
+  return record[field] === null ? null : readInteger(record, field, context)
+}
+
 function readString(record: UnknownRecord, field: string, context: string): string {
   const value = record[field]
   if (typeof value !== 'string' || value.trim() === '') {
@@ -135,6 +141,8 @@ function normalizeStandings(rawStandings: unknown[]): FplDraftLeagueStanding[] {
     return Object.freeze({
       officialLeagueEntryId,
       rank: readPositiveInteger(rawStanding, 'rank', context),
+      lastRank: readNullableInteger(rawStanding, 'last_rank', context),
+      rankSort: readPositiveInteger(rawStanding, 'rank_sort', context),
       eventTotal: readInteger(rawStanding, 'event_total', context),
       total: readInteger(rawStanding, 'total', context),
     })
