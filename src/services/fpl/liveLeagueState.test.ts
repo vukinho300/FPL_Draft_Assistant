@@ -131,6 +131,27 @@ describe('shared live league refresh foundation', () => {
     expect(getLiveLeagueRefreshIntervalMs(snapshot(1, 'UPCOMING', false))).toBe(900_000)
   })
 
+  it('stops scheduled polling without discarding the last successful state', async () => {
+    const timerHandle = 1 as unknown as ReturnType<typeof setTimeout>
+    const startTimer = vi.fn(() => timerHandle)
+    const stopTimer = vi.fn()
+    const controller = new LiveLeagueStateController({
+      load: async () => retrieved(1),
+      now: () => new Date('2026-08-24T12:00:00Z'),
+      startTimer,
+      stopTimer,
+    })
+
+    controller.start()
+    await vi.waitFor(() => expect(controller.getState().status).toBe('READY'))
+    expect(startTimer).toHaveBeenCalledTimes(1)
+    const retainedData = controller.getState().data
+
+    controller.stop()
+    expect(stopTimer).toHaveBeenCalledWith(timerHandle)
+    expect(controller.getState().data).toBe(retainedData)
+  })
+
   it('does not let an older out-of-order response overwrite newer league state', async () => {
     const resolvers: Array<(value: RetrievedLiveLeagueState) => void> = []
     const controller = new LiveLeagueStateController({

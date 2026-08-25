@@ -93,7 +93,7 @@ function fixture(phase: RetrievedLiveLeagueState['snapshot']['gameweekState']['p
       reconciliationStatus: 'NOT_PROVEN',
       freshness: { retrievedAt: '2026-08-25T10:00:00Z', staleAfterMs: 90_000 },
     },
-    nextEvent: phase === 'OFFICIAL_EVENT_MARKED_FINISHED'
+    nextEvent: phase === 'FOOTBALL_COMPLETE' || phase === 'OFFICIAL_EVENT_MARKED_FINISHED'
       ? {
           eventId: 2,
           name: 'Gameweek 2',
@@ -172,6 +172,10 @@ describe('G4 enriched Gameweek experience', () => {
     const active = fixture('ACTIVE').data
     expect(resolveGameweekExperienceMode(active, new Date('2026-08-21T18:00:00Z'))).toMatchObject({
       mode: 'OFFICIAL', eventId: 1,
+    })
+    const footballComplete = fixture('FOOTBALL_COMPLETE').data
+    expect(resolveGameweekExperienceMode(footballComplete, new Date('2026-08-25T12:00:00Z'))).toMatchObject({
+      mode: 'OFFICIAL', eventId: 1, reason: 'CURRENT_EVENT_OFFICIAL_LINEUP',
     })
     const betweenRounds = fixture('OFFICIAL_EVENT_MARKED_FINISHED').data
     expect(resolveGameweekExperienceMode(betweenRounds, new Date('2026-08-25T12:00:00Z'))).toMatchObject({

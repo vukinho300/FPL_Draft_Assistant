@@ -76,7 +76,7 @@ function renderDashboard(
 
   act(() => root.render(<LeagueDashboard playerLoader={playerLoader} currentManagerId={currentManagerId} account={account} profileService={profileService} liveLeagueController={liveLeagueController} />))
   mountedRoots.push({ root, container })
-  return { container, media, playerLoader }
+  return { container, media, playerLoader, liveLeagueController }
 }
 
 function clickButton(container: HTMLElement, label: string) {
@@ -211,6 +211,31 @@ describe('LeagueDashboard presentation boundary', () => {
     act(() => media.setMatches(false))
     expect(container.querySelector('.league-topbar h1')?.textContent).toBe('Teams')
     expect(container.querySelector('[data-gameweek-mode="roster"]')).not.toBeNull()
+  })
+
+  it('runs one shared live controller only while My Team or Teams is active', async () => {
+    const { container, liveLeagueController } = renderDashboard(true)
+    const start = vi.spyOn(liveLeagueController, 'start')
+    const stop = vi.spyOn(liveLeagueController, 'stop')
+
+    clickButton(container, 'My Team')
+    await settle()
+    expect(start).toHaveBeenCalledTimes(1)
+    expect(liveLeagueController.getState().data).not.toBeNull()
+
+    clickButton(container, 'Teams')
+    await settle()
+    expect(start).toHaveBeenCalledTimes(1)
+    expect(stop).not.toHaveBeenCalled()
+
+    clickButton(container, 'League')
+    await settle()
+    expect(stop).toHaveBeenCalledTimes(1)
+    expect(liveLeagueController.getState().data).not.toBeNull()
+
+    clickButton(container, 'My Team')
+    await settle()
+    expect(start).toHaveBeenCalledTimes(2)
   })
 
   it('uses the selected authenticated manager ID for every approved account roster', () => {

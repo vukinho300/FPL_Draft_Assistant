@@ -8,9 +8,11 @@ current-roster authority. The immutable custom draft remains historical evidence
 
 - When the normalized current event is `UPCOMING` and its deadline is in the future, My Team
   exposes the private decision workspace for that event.
-- When the official API retains a football-complete/marked-finished event and exposes a next
-  event whose deadline is in the future, My Team plans for that explicit next event. It does
-  not present the completed event's XI as the upcoming lineup.
+- While the current event is `FOOTBALL_COMPLETE`, My Team keeps the current official lineup
+  and provisional/live-derived points even if the official API already exposes a next event.
+- Once the current event is `OFFICIAL_EVENT_MARKED_FINISHED`, an explicit next event whose
+  deadline is in the future becomes the private planner event. This planning transition does
+  not claim that league standings are finalized or reconciled.
 - At or after the current event deadline, the verified current entry/event lineup is the
   read-only official lineup.
 - If a next-event deadline has passed while the official API still exposes only the previous

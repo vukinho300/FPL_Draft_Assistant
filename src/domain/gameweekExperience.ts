@@ -147,10 +147,7 @@ export function resolveGameweekExperienceMode(
   const currentDeadline = Date.parse(state.deadlineTime)
   if (Number.isNaN(currentDeadline)) fail('Current Gameweek deadline is invalid')
 
-  if (
-    (state.phase === 'FOOTBALL_COMPLETE' || state.phase === 'OFFICIAL_EVENT_MARKED_FINISHED')
-    && live.nextEvent !== null
-  ) {
+  if (state.phase === 'OFFICIAL_EVENT_MARKED_FINISHED' && live.nextEvent !== null) {
     const nextDeadline = Date.parse(live.nextEvent.deadlineTime)
     if (Number.isNaN(nextDeadline)) fail('Next Gameweek deadline is invalid')
     return Object.freeze({

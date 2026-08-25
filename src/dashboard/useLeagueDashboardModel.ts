@@ -67,6 +67,7 @@ export function useLeagueDashboardModel(
   const [plannerError, setPlannerError] = useState<string | null>(null)
   const playerRequestStarted = useRef(false)
   const controllerMounted = useRef(false)
+  const gameweekViewsActive = view === 'my-team' || view === 'teams'
 
   const rosters = useMemo(
     () => deriveCurrentLeagueRosters(officialDraft202627, kileNOthersTransactions),
@@ -106,14 +107,17 @@ export function useLeagueDashboardModel(
   }, [liveController])
 
   useEffect(() => {
-    if (view !== 'my-team' && view !== 'teams') return
+    if (!gameweekViewsActive) {
+      liveController.stop()
+      return
+    }
     liveController.start()
     const timer = window.setInterval(() => {
       setCurrentTimeMs(Date.now())
       setLiveRefresh(liveController.getState())
     }, 10_000)
     return () => window.clearInterval(timer)
-  }, [liveController, view])
+  }, [gameweekViewsActive, liveController])
 
   useEffect(() => {
     if (!['players', 'my-team', 'teams'].includes(view) || playerRequestStarted.current) return
