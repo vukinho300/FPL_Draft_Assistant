@@ -213,6 +213,37 @@ describe('G4 enriched Gameweek experience', () => {
     expect(() => swapPlannerPlayers(planner, planner.starters[0].id, benchDefender.id)).toThrow(/valid FPL formation/)
   })
 
+  it('keeps the next-Gameweek planner usable when season standings are not available', () => {
+    const { players, refresh } = fixture('OFFICIAL_EVENT_MARKED_FINISHED')
+    const withoutSeasonStandings: LiveLeagueRefreshState = {
+      ...refresh,
+      data: {
+        ...refresh.data!,
+        snapshot: {
+          ...refresh.data!.snapshot,
+          seasonBaseline: {
+            status: 'UNAVAILABLE',
+            eventId: 1,
+            reason: 'PREVIOUS_FINALIZED_SEASON_BASELINE_NOT_YET_VERIFIED',
+            candidatePreviousEventHistoryComplete: false,
+          },
+          standings: {
+            status: 'UNAVAILABLE',
+            reason: 'PREVIOUS_FINALIZED_SEASON_BASELINE_NOT_YET_VERIFIED',
+          },
+        },
+      },
+    }
+
+    const experience = buildLeagueGameweekExperience(
+      players,
+      withoutSeasonStandings,
+      new Date('2026-08-25T12:00:00Z'),
+    )
+    expect(experience).toMatchObject({ mode: 'PLANNER', eventId: 2 })
+    expect(createDefaultPlannerLineup(2, experience.teams[0].currentRoster).starters).toHaveLength(11)
+  })
+
   it('retains truthful stale/error freshness without changing official data provenance', () => {
     const { players, refresh } = fixture()
     const failedRefresh: LiveLeagueRefreshState = {

@@ -1,4 +1,9 @@
 import type { FplPlayerDataResponse } from './contract.ts'
+import {
+  BROWSER_FPL_REQUEST_TIMEOUT_MS,
+  fetchWithTimeout,
+  FplRequestTimeoutError,
+} from './requestTimeout.ts'
 
 export type BrowserFetchImplementation = (
   input: string | URL | Request,
@@ -7,10 +12,23 @@ export type BrowserFetchImplementation = (
 
 export async function loadFplPlayerData(
   fetchImplementation: BrowserFetchImplementation = fetch,
+  timeoutMs: number = BROWSER_FPL_REQUEST_TIMEOUT_MS,
 ): Promise<FplPlayerDataResponse> {
-  const response = await fetchImplementation('/api/fpl', {
-    headers: { accept: 'application/json' },
-  })
+  let response: Response
+  try {
+    response = await fetchWithTimeout(
+      fetchImplementation,
+      '/api/fpl',
+      { headers: { accept: 'application/json' } },
+      timeoutMs,
+      'Player directory request timed out',
+    )
+  } catch (error) {
+    if (error instanceof FplRequestTimeoutError) {
+      throw new Error('Player directory took too long to load. Try again.', { cause: error })
+    }
+    throw new Error('Player directory is unavailable. Try again.', { cause: error })
+  }
   if (!response.ok) {
     let message = 'Current FPL Draft player data is unavailable'
     try {

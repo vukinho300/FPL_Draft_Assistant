@@ -83,7 +83,10 @@ describe('FPL Draft league-details adapter', () => {
 
     expect(fetchImplementation).toHaveBeenCalledWith(
       'https://draft.premierleague.com/api/league/12345/details',
-      { headers: { accept: 'application/json' } },
+      expect.objectContaining({
+        headers: { accept: 'application/json' },
+        signal: expect.any(AbortSignal),
+      }),
     )
     expect(result.leagueId).toBe(12345)
     expect(getFplDraftLeagueDetailsEndpoint(12345)).toContain('/league/12345/details')

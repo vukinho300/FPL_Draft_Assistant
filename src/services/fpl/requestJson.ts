@@ -1,14 +1,22 @@
 import type { FetchImplementation } from './client.ts'
 import { FplDataError } from './errors.ts'
+import { fetchWithTimeout, OFFICIAL_FPL_REQUEST_TIMEOUT_MS } from './requestTimeout.ts'
 
 export async function retrieveOfficialJson(
   endpoint: string,
   label: string,
   fetchImplementation: FetchImplementation = fetch,
+  timeoutMs: number = OFFICIAL_FPL_REQUEST_TIMEOUT_MS,
 ): Promise<unknown> {
   let response: Response
   try {
-    response = await fetchImplementation(endpoint, { headers: { accept: 'application/json' } })
+    response = await fetchWithTimeout(
+      fetchImplementation,
+      endpoint,
+      { headers: { accept: 'application/json' } },
+      timeoutMs,
+      `${label} endpoint timed out`,
+    )
   } catch (error) {
     throw new FplDataError('NETWORK_ERROR', `Unable to reach the ${label} endpoint`, { cause: error })
   }

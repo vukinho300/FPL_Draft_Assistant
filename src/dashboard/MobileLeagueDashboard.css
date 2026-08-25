@@ -722,6 +722,7 @@
 
 .mobile-empty-state strong { color: #365746; font-size: 1rem; }
 .mobile-empty-state p { max-width: 24rem; margin: 0; font-size: 0.9rem; line-height: 1.45; }
+.mobile-empty-state button { padding: 0.65rem 0.85rem; border: 0; border-radius: 0.55rem; color: #fff; background: #197849; font-weight: 800; }
 
 .mobile-transaction-tabs {
   display: grid;

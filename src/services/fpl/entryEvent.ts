@@ -198,7 +198,11 @@ export async function retrieveFplDraftEntryEventLineup(
   fetchImplementation: FetchImplementation = fetch,
 ): Promise<FplDraftEntryEventLineup> {
   const endpoint = getFplDraftEntryEventEndpoint(officialEntryId, eventId)
-  const raw = await retrieveOfficialJson(endpoint, 'FPL Draft entry-event', fetchImplementation)
+  const raw = await retrieveOfficialJson(
+    endpoint,
+    `FPL Draft entry ${officialEntryId} event ${eventId}`,
+    fetchImplementation,
+  )
   return normalizeFplDraftEntryEventLineup(raw, officialEntryId, eventId)
 }
 

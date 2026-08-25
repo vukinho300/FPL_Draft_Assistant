@@ -113,11 +113,17 @@ describe('FPL Draft entry-event contract', () => {
     }))
 
     await expect(retrieveFplDraftEntryEventLineup(240560, 2, fetchImplementation)).rejects.toEqual(
-      new FplDataError('UPSTREAM_HTTP_ERROR', 'FPL Draft entry-event endpoint returned HTTP 404'),
+      new FplDataError(
+        'UPSTREAM_HTTP_ERROR',
+        'FPL Draft entry 240560 event 2 endpoint returned HTTP 404',
+      ),
     )
     expect(fetchImplementation).toHaveBeenCalledWith(
       'https://draft.premierleague.com/api/entry/240560/event/2',
-      { headers: { accept: 'application/json' } },
+      expect.objectContaining({
+        headers: { accept: 'application/json' },
+        signal: expect.any(AbortSignal),
+      }),
     )
   })
 })

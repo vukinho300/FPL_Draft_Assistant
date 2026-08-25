@@ -22,9 +22,10 @@ describe('retrieveFplPlayerData', () => {
       now: () => new Date('2026-08-17T12:00:00.000Z'),
     })
 
-    expect(fetchImplementation).toHaveBeenCalledWith(FPL_DRAFT_BOOTSTRAP_ENDPOINT, {
+    expect(fetchImplementation).toHaveBeenCalledWith(FPL_DRAFT_BOOTSTRAP_ENDPOINT, expect.objectContaining({
       headers: { accept: 'application/json' },
-    })
+      signal: expect.any(AbortSignal),
+    }))
     expect(result.retrievedAt).toBe('2026-08-17T12:00:00.000Z')
     expect(result.playerCount).toBe(4)
     expect(result.players).toHaveLength(4)
@@ -37,6 +38,15 @@ describe('retrieveFplPlayerData', () => {
 
     await expect(retrieveFplPlayerData({ fetchImplementation })).rejects.toMatchObject({
       code: 'NETWORK_ERROR',
+    })
+  })
+
+  it('bounds a hung official bootstrap request', async () => {
+    const fetchImplementation = vi.fn<FetchImplementation>(() => new Promise(() => undefined))
+
+    await expect(retrieveFplPlayerData({ fetchImplementation, requestTimeoutMs: 5 })).rejects.toMatchObject({
+      code: 'NETWORK_ERROR',
+      message: 'Unable to reach the FPL Draft endpoint',
     })
   })
 

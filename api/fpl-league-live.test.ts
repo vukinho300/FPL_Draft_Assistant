@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import type { RetrievedLiveLeagueState } from '../src/services/fpl/liveLeagueState.ts'
 import { FplDataError } from '../src/services/fpl/errors.ts'
@@ -78,12 +78,18 @@ describe('GET /api/fpl-league-live', () => {
     expect(methodResponse.statusCode).toBe(405)
 
     const errorResponse = createResponse()
+    const logFailure = vi.fn()
     await createFplLeagueLiveHandler(async () => {
-      throw new FplDataError('UNEXPECTED_SCHEMA', 'private upstream detail')
-    })({ method: 'GET' } as IncomingMessage, errorResponse)
+      throw new FplDataError('UNEXPECTED_SCHEMA', 'Entry 240560 lineup response changed shape')
+    }, logFailure)({ method: 'GET' } as IncomingMessage, errorResponse)
     expect(errorResponse.statusCode).toBe(502)
     expect(JSON.parse(errorResponse.body)).toEqual({
       error: { code: 'UNEXPECTED_SCHEMA', message: 'Current live league data is unavailable' },
+    })
+    expect(logFailure).toHaveBeenCalledWith({
+      route: '/api/fpl-league-live',
+      code: 'UNEXPECTED_SCHEMA',
+      detail: 'Entry 240560 lineup response changed shape',
     })
   })
 })

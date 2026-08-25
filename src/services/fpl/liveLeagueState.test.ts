@@ -69,9 +69,10 @@ describe('shared live league refresh foundation', () => {
     await expect(loadKileNOthersLiveLeagueState(fetchImplementation)).resolves.toMatchObject({
       snapshot: { leagueId: 45938, eventId: 1 },
     })
-    expect(fetchImplementation).toHaveBeenCalledWith('/api/fpl-league-live', {
+    expect(fetchImplementation).toHaveBeenCalledWith('/api/fpl-league-live', expect.objectContaining({
       headers: { accept: 'application/json' },
-    })
+      signal: expect.any(AbortSignal),
+    }))
   })
 
   it('rejects malformed ownership before it can reach the Gameweek view model', async () => {
@@ -150,6 +151,24 @@ describe('shared live league refresh foundation', () => {
     controller.stop()
     expect(stopTimer).toHaveBeenCalledWith(timerHandle)
     expect(controller.getState().data).toBe(retainedData)
+  })
+
+  it('turns a hung initial load into a retryable error', async () => {
+    const load = vi.fn()
+      .mockImplementationOnce(() => new Promise(() => undefined))
+      .mockResolvedValueOnce(retrieved(1))
+    const controller = new LiveLeagueStateController({ load, requestTimeoutMs: 5 })
+
+    await controller.refresh()
+    expect(controller.getState()).toMatchObject({
+      status: 'ERROR',
+      data: null,
+      errorMessage: 'Official Gameweek data took too long to load. Try again.',
+    })
+
+    await controller.refresh()
+    expect(controller.getState()).toMatchObject({ status: 'READY', data: { snapshot: { eventId: 1 } } })
+    expect(load).toHaveBeenCalledTimes(2)
   })
 
   it('does not let an older out-of-order response overwrite newer league state', async () => {

@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { FplDataError } from '../src/services/fpl/errors.ts'
 import type { FplPlayerDataResponse } from '../src/services/fpl/contract.ts'
@@ -30,7 +30,7 @@ function createResponse(): CapturedResponse & ServerResponse {
 }
 
 describe('GET /api/fpl', () => {
-  it('returns only the project-owned contract without caching', async () => {
+  it('returns only the project-owned contract with a shared bootstrap cache', async () => {
     const contract: FplPlayerDataResponse = {
       retrievedAt: '2026-08-17T12:00:00.000Z',
       playerCount: 0,
@@ -44,7 +44,7 @@ describe('GET /api/fpl', () => {
     )
 
     expect(response.statusCode).toBe(200)
-    expect(response.headers.get('Cache-Control')).toBe('no-store')
+    expect(response.headers.get('Cache-Control')).toBe('public, s-maxage=300, stale-while-revalidate=60')
     expect(JSON.parse(response.body)).toEqual(contract)
   })
 
@@ -59,10 +59,14 @@ describe('GET /api/fpl', () => {
 
   it('returns a controlled upstream error without exposing internal details', async () => {
     const response = createResponse()
+    const logFailure = vi.fn()
 
     await createFplHandler(async () => {
-      throw new FplDataError('INVALID_JSON', 'sensitive upstream details')
-    })({ method: 'GET' } as IncomingMessage, response)
+      throw new FplDataError('INVALID_JSON', 'FPL Draft bootstrap endpoint returned invalid JSON')
+    }, logFailure)(
+      { method: 'GET' } as IncomingMessage,
+      response,
+    )
 
     expect(response.statusCode).toBe(502)
     expect(JSON.parse(response.body)).toEqual({
@@ -70,6 +74,11 @@ describe('GET /api/fpl', () => {
         code: 'INVALID_JSON',
         message: 'Current FPL Draft player data is unavailable',
       },
+    })
+    expect(logFailure).toHaveBeenCalledWith({
+      route: '/api/fpl',
+      code: 'INVALID_JSON',
+      detail: 'FPL Draft bootstrap endpoint returned invalid JSON',
     })
   })
 })
