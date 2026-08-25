@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 
 import type { Position } from '../domain/player.ts'
-import type { CurrentLeagueRoster } from '../domain/transactions.ts'
 import type { LeagueDashboardModel } from './useLeagueDashboardModel.ts'
 import type { LeagueTeamProfilesModel } from './useLeagueTeamProfiles.ts'
 import type { LeagueView } from './navigation.ts'
@@ -17,6 +16,7 @@ import {
   type PlayerOwnershipFilter,
 } from './playerDirectory.ts'
 import './DesktopLeagueDashboard.css'
+import { GameweekTeamExperience } from './GameweekTeamExperience.tsx'
 
 function DashboardNavigation({
   model,
@@ -48,59 +48,6 @@ function DashboardNavigation({
 
 function Placeholder({ children }: { readonly children: ReactNode }) {
   return <span className="not-connected">{children}</span>
-}
-
-function SquadPitch({
-  model,
-  roster,
-  title,
-}: {
-  readonly model: LeagueDashboardModel
-  readonly roster: CurrentLeagueRoster
-  readonly title: string
-}) {
-  return (
-    <section className="squad-view" aria-label={`${roster.managerName} squad`}>
-      <div className="squad-heading">
-        <div><p className="dashboard-kicker">Squad · not a Gameweek XI</p><h2>{title}</h2></div>
-        <strong>{roster.players.length}/15</strong>
-      </div>
-      <div className="squad-counts">
-        {model.positions.map((position) => (
-          <span key={position}>
-            {position} {roster.positionCounts[position]}/{model.rosterRequirements[position]}
-          </span>
-        ))}
-      </div>
-      <div className="football-pitch">
-        <div className="pitch-markings" aria-hidden="true"><i /><b /><em /></div>
-        {model.positions.map((position) => (
-          <section
-            className={`pitch-line pitch-${position.toLowerCase()}`}
-            key={position}
-            aria-label={`${position} players`}
-          >
-            <h3>{position}</h3>
-            <div>
-              {roster.players.filter((player) => player.position === position).map((player) => (
-                <article className="pitch-player" key={player.playerId}>
-                  <span className={`player-position position-${player.position.toLowerCase()}`}>{player.position}</span>
-                  <strong>{player.displayName}</strong>
-                  <small>{player.club.shortName} · Pick #{player.originalDraftPick ?? '—'}</small>
-                  <small>Draft MVP #{player.draftDayMvpRank ?? '—'}</small>
-                  <div><Placeholder>Availability not connected</Placeholder><Placeholder>Fixture not connected</Placeholder></div>
-                </article>
-              ))}
-            </div>
-          </section>
-        ))}
-      </div>
-      <section className="lineup-placeholder">
-        <div><p className="dashboard-kicker">Gameweek lineup &amp; bench</p><h3>Not connected</h3></div>
-        <p>The role-grouped squad above does not imply starters or bench order. Official Gameweek lineup data must be verified first.</p>
-      </section>
-    </section>
-  )
 }
 
 function LeagueHome({ model }: { readonly model: LeagueDashboardModel }) {
@@ -151,11 +98,7 @@ function MyTeamPage({ model, profiles }: { readonly model: LeagueDashboardModel;
         error={profiles.error}
         onAvatarSelected={(file) => void profiles.uploadCurrentAvatar(file)}
       />
-      <SquadPitch
-        model={model}
-        roster={model.currentManagerRoster}
-        title={`${profiles.current.teamName} current squad`}
-      />
+      <GameweekTeamExperience model={model} team={model.gameweek.currentTeam} privatePlanner />
     </div>
   )
 }
@@ -180,11 +123,7 @@ function TeamsPage({ model, profiles }: { readonly model: LeagueDashboardModel; 
         })}
       </div>
       <TeamProfileHeader profile={profiles.selected} error={profiles.error} />
-      <SquadPitch
-        model={model}
-        roster={model.selectedManagerRoster}
-        title={`${profiles.selected.teamName} current squad`}
-      />
+      <GameweekTeamExperience model={model} team={model.gameweek.selectedTeam} privatePlanner={false} />
     </div>
   )
 }

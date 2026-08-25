@@ -64,6 +64,7 @@ export type {
   FplDraftEntryEventHistoryRecord,
   FplDraftEntryEventLineup,
   FplDraftEntryHistory,
+  FplDraftLineupSubstitution,
   FplDraftLineupSelection,
 } from './entryEvent.ts'
 export {

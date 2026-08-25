@@ -228,8 +228,8 @@ function validateIdentityAndSources(input: BuildLiveLeagueStandingsInput): {
     if (lineup.starters.length !== 11 || lineup.bench.length !== 4) {
       fail(`Lineup entry ${officialEntryId} must contain 11 starters and 4 bench players`)
     }
-    if (lineup.substitutionCount !== 0) {
-      fail(`Lineup entry ${officialEntryId} contains unverified substitution semantics`)
+    if (lineup.substitutionCount !== lineup.substitutions.length) {
+      fail(`Lineup entry ${officialEntryId} has contradictory substitution data`)
     }
     const selections = [...lineup.starters, ...lineup.bench]
     const selectionIds = new Set(selections.map(({ elementId }) => elementId))

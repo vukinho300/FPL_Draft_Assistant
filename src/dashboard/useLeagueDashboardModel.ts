@@ -6,6 +6,14 @@ import { currentDraftRankingArtifact } from '../data/currentDraftRanking.ts'
 import { POSITION_ORDER, ROSTER_REQUIREMENTS } from '../domain/league.ts'
 import type { Player, Position } from '../domain/player.ts'
 import {
+  buildLeagueGameweekExperience,
+  createDefaultPlannerLineup,
+  getGameweekTeam,
+  swapPlannerPlayers,
+  type LeagueGameweekExperience,
+  type PlannerLineup,
+} from '../domain/gameweekExperience.ts'
+import {
   buildLeagueActivity,
   buildPlayerOwnershipDirectory,
   deriveCurrentLeagueRosters,
@@ -14,6 +22,10 @@ import {
   loadFplPlayerData,
 } from '../services/fpl/browserClient.ts'
 import type { FplPlayerDataResponse } from '../services/fpl/contract.ts'
+import {
+  LiveLeagueStateController,
+  type LiveLeagueRefreshState,
+} from '../services/fpl/liveLeagueState.ts'
 import { getLeagueViewLabel, LEAGUE_NAVIGATION, type LeagueView } from './navigation.ts'
 import {
   buildRankedPlayerDirectory,
@@ -28,7 +40,11 @@ export const TRANSACTION_TABS = ['TRADES', 'WAIVERS', 'FREE AGENTS', 'ACTIVITY']
 
 export type PlayerLoader = () => Promise<FplPlayerDataResponse>
 
-export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlayerData, currentManagerId?: string) {
+export function useLeagueDashboardModel(
+  playerLoader: PlayerLoader = loadFplPlayerData,
+  currentManagerId?: string,
+  providedLiveController?: LiveLeagueStateController,
+) {
   const [view, setView] = useState<LeagueView>('league')
   const [selectedManagerId, setSelectedManagerId] = useState(
     officialDraft202627.managers[0].id,
@@ -40,8 +56,18 @@ export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlay
   const [playerPosition, setPlayerPosition] = useState<Position | 'ALL'>('ALL')
   const [playerOwnership, setPlayerOwnership] = useState<PlayerOwnershipFilter>('ALL')
   const [playerSort, setPlayerSort] = useState<PlayerDirectorySort>('OFFICIAL')
+  const liveController = useMemo(
+    () => providedLiveController ?? new LiveLeagueStateController(),
+    [providedLiveController],
+  )
+  const [liveRefresh, setLiveRefresh] = useState<LiveLeagueRefreshState>(liveController.getState())
+  const [currentTimeMs, setCurrentTimeMs] = useState(() => Date.now())
+  const [planner, setPlanner] = useState<PlannerLineup | null>(null)
+  const [plannerSelectedPlayerId, setPlannerSelectedPlayerId] = useState<string | null>(null)
+  const [plannerError, setPlannerError] = useState<string | null>(null)
   const playerRequestStarted = useRef(false)
   const controllerMounted = useRef(false)
+  const gameweekViewsActive = view === 'my-team' || view === 'teams'
 
   const rosters = useMemo(
     () => deriveCurrentLeagueRosters(officialDraft202627, kileNOthersTransactions),
@@ -73,7 +99,28 @@ export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlay
   }, [])
 
   useEffect(() => {
-    if (view !== 'players' || playerRequestStarted.current) return
+    const unsubscribe = liveController.subscribe(setLiveRefresh)
+    return () => {
+      unsubscribe()
+      liveController.stop()
+    }
+  }, [liveController])
+
+  useEffect(() => {
+    if (!gameweekViewsActive) {
+      liveController.stop()
+      return
+    }
+    liveController.start()
+    const timer = window.setInterval(() => {
+      setCurrentTimeMs(Date.now())
+      setLiveRefresh(liveController.getState())
+    }, 10_000)
+    return () => window.clearInterval(timer)
+  }, [gameweekViewsActive, liveController])
+
+  useEffect(() => {
+    if (!['players', 'my-team', 'teams'].includes(view) || playerRequestStarted.current) return
 
     playerRequestStarted.current = true
     playerLoader().then((response) => {
@@ -86,6 +133,73 @@ export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlay
       }
     })
   }, [playerLoader, view])
+
+  const gameweekBuild = useMemo<{
+    readonly experience: LeagueGameweekExperience | null
+    readonly error: string | null
+  }>(() => {
+    if (players.length === 0 || liveRefresh.data === null || liveRefresh.freshness === null) {
+      return { experience: null, error: null }
+    }
+    try {
+      return {
+        experience: buildLeagueGameweekExperience(players, liveRefresh, new Date(currentTimeMs)),
+        error: null,
+      }
+    } catch (reason) {
+      return {
+        experience: null,
+        error: reason instanceof Error ? reason.message : 'Gameweek data could not be verified',
+      }
+    }
+  }, [currentTimeMs, liveRefresh, players])
+  const gameweekExperience = gameweekBuild.experience
+  const currentGameweekTeam = gameweekExperience === null
+    ? null
+    : getGameweekTeam(gameweekExperience, currentManagerRoster.managerId)
+  const selectedGameweekTeam = gameweekExperience === null
+    ? null
+    : getGameweekTeam(gameweekExperience, selectedManagerRoster.managerId)
+
+  useEffect(() => {
+    if (gameweekExperience?.mode !== 'PLANNER' || currentGameweekTeam === null) {
+      setPlanner(null)
+      setPlannerSelectedPlayerId(null)
+      setPlannerError(null)
+      return
+    }
+    const fingerprint = currentGameweekTeam.currentRoster.map(({ id }) => id).sort().join(',')
+    if (
+      planner !== null
+      && planner.eventId === gameweekExperience.eventId
+      && planner.rosterFingerprint === fingerprint
+    ) return
+    try {
+      setPlanner(createDefaultPlannerLineup(gameweekExperience.eventId, currentGameweekTeam.currentRoster))
+      setPlannerError(null)
+    } catch (reason) {
+      setPlanner(null)
+      setPlannerError(reason instanceof Error ? reason.message : 'Planner is unavailable')
+    }
+    setPlannerSelectedPlayerId(null)
+  }, [currentGameweekTeam, gameweekExperience, planner])
+
+  const selectPlannerPlayer = (playerId: string) => {
+    if (planner === null) return
+    if (plannerSelectedPlayerId === null) {
+      setPlannerSelectedPlayerId(playerId)
+      setPlannerError(null)
+      return
+    }
+    try {
+      setPlanner(swapPlannerPlayers(planner, plannerSelectedPlayerId, playerId))
+      setPlannerError(null)
+      setPlannerSelectedPlayerId(null)
+    } catch (reason) {
+      setPlannerError(reason instanceof Error ? reason.message : 'Those players cannot be swapped')
+      setPlannerSelectedPlayerId(null)
+    }
+  }
 
   const playerOwnershipDirectory = useMemo(
     () => buildPlayerOwnershipDirectory(players, rosters, officialDraft202627),
@@ -142,6 +256,19 @@ export function useLeagueDashboardModel(playerLoader: PlayerLoader = loadFplPlay
       setSort: setPlayerSort,
       filtered: filteredPlayers,
       leaders: playerLeaders,
+    },
+    gameweek: {
+      refresh: liveRefresh,
+      experience: gameweekExperience,
+      error: gameweekBuild.error
+        ?? (liveRefresh.data === null && liveRefresh.status === 'ERROR' ? liveRefresh.errorMessage : null),
+      currentTeam: currentGameweekTeam,
+      selectedTeam: selectedGameweekTeam,
+      planner,
+      plannerSelectedPlayerId,
+      plannerError,
+      selectPlannerPlayer,
+      refreshNow: () => void liveController.refresh(),
     },
     archive: {
       completedAt: officialDraft202627.completedAt,

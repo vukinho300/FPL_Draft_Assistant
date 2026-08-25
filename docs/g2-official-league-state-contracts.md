@@ -1,7 +1,8 @@
 # G2 official league-state contract evidence
 
 Observed against the public 2026/27 FPL Draft API for Kile N Others league `45938` on
-2026-08-24. This is contract evidence, not a persisted copy of live league state. Re-run
+2026-08-24, with the completed-GW1 transition rechecked on 2026-08-25. This is contract
+evidence, not a persisted copy of live league state. Re-run
 `npm run verify:fpl-league-state-live` to validate the current response.
 
 ## Current Gameweek and finalization
@@ -24,9 +25,9 @@ Observed against the public 2026/27 FPL Draft API for Kile N Others league `4593
   are finalized/reconciled. The raw game `current_event_finished`, bootstrap event
   `finished`, fixture `finished`/`finished_provisional`, event-status points state,
   `bonus_added`, `leagues_updated`, and league-table status remain separate facts.
-- Only the active state was observed. The finished-to-finalized transition must be checked
-  after the first completed 2026/27 Gameweek before adding any G3 reconciliation-ready
-  finalization contract.
+- `OFFICIAL_EVENT_MARKED_FINISHED` was subsequently observed for GW1 while every event-status
+  day still reported `PROVISIONAL`. This reinforces that the literal finished signal is not
+  a reconciliation-ready finalization contract.
 
 ## Official entry lineups
 
@@ -40,9 +41,15 @@ Every response had positions exactly `1..15`:
 - multiplier: `1` for all 90 selections at observation time;
 - `subs`: empty and `entry_history`: empty during the active Gameweek.
 
+After GW1 completed, four entries returned non-empty `subs`. Every observed record contained
+`element_in`, `element_out`, and `event`; `element_in` was present in returned effective XI
+positions 1-11 and `element_out` was present on the returned ordered bench. The effective
+XI sum matched official `event_total` for all six entries. The adapter now retains and
+validates those records while continuing to score the effective XI returned by `picks`.
+
 Event 2 returned HTTP 404 with `"No pick history"`, so unavailable lineups must remain an
-explicit unavailable state. Non-empty `subs` and finalized `entry_history` shapes were not
-observed and are not projected into the normalized lineup contract.
+explicit unavailable state. A finalized `entry_history` shape inside entry/event remains
+unobserved and is not projected into that lineup contract.
 
 ## Live player scoring and fixtures
 

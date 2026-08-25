@@ -55,7 +55,12 @@ function snapshot(
 }
 
 function retrieved(eventId: number): RetrievedLiveLeagueState {
-  return { snapshot: snapshot(eventId), eventStatus: { days: [], leagueTableStatus: null } }
+  return {
+    snapshot: snapshot(eventId),
+    nextEvent: null,
+    ownership: { leagueId: 45938, elements: [] },
+    eventStatus: { days: [], leagueTableStatus: null },
+  }
 }
 
 describe('shared live league refresh foundation', () => {
@@ -67,6 +72,26 @@ describe('shared live league refresh foundation', () => {
     expect(fetchImplementation).toHaveBeenCalledWith('/api/fpl-league-live', {
       headers: { accept: 'application/json' },
     })
+  })
+
+  it('rejects malformed ownership before it can reach the Gameweek view model', async () => {
+    const valid = retrieved(1)
+    const malformed = {
+      ...valid,
+      ownership: {
+        ...valid.ownership,
+        elements: [{
+          elementId: '1',
+          availability: 'OWNED',
+          upstreamStatusCode: 'o',
+          officialOwnerEntryId: null,
+          inAcceptedTrade: false,
+        }],
+      },
+    }
+    await expect(loadKileNOthersLiveLeagueState(async () => Response.json(malformed))).rejects.toThrow(
+      /project contract/,
+    )
   })
 
   it('re-derives cached-response freshness from source time without replacing it with receipt time', async () => {
@@ -104,6 +129,27 @@ describe('shared live league refresh foundation', () => {
     expect(getLiveLeagueRefreshIntervalMs(snapshot(1, 'FOOTBALL_COMPLETE', false))).toBe(300_000)
     expect(getLiveLeagueRefreshIntervalMs(snapshot(1, 'OFFICIAL_EVENT_MARKED_FINISHED', false))).toBe(300_000)
     expect(getLiveLeagueRefreshIntervalMs(snapshot(1, 'UPCOMING', false))).toBe(900_000)
+  })
+
+  it('stops scheduled polling without discarding the last successful state', async () => {
+    const timerHandle = 1 as unknown as ReturnType<typeof setTimeout>
+    const startTimer = vi.fn(() => timerHandle)
+    const stopTimer = vi.fn()
+    const controller = new LiveLeagueStateController({
+      load: async () => retrieved(1),
+      now: () => new Date('2026-08-24T12:00:00Z'),
+      startTimer,
+      stopTimer,
+    })
+
+    controller.start()
+    await vi.waitFor(() => expect(controller.getState().status).toBe('READY'))
+    expect(startTimer).toHaveBeenCalledTimes(1)
+    const retainedData = controller.getState().data
+
+    controller.stop()
+    expect(stopTimer).toHaveBeenCalledWith(timerHandle)
+    expect(controller.getState().data).toBe(retainedData)
   })
 
   it('does not let an older out-of-order response overwrite newer league state', async () => {

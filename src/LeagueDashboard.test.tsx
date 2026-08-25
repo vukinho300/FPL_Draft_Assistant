@@ -14,6 +14,8 @@ import {
   type TeamProfileService,
 } from './services/supabase/teamProfiles.ts'
 import type { AuthenticatedDashboardAccount } from './dashboard/useLeagueTeamProfiles.ts'
+import { LiveLeagueStateController } from './services/fpl/liveLeagueState.ts'
+import { createG4TestData } from './testing/g4TestData.ts'
 
 class MatchMediaController {
   private matches: boolean
@@ -49,11 +51,14 @@ const mountedRoots: { root: Root; container: HTMLDivElement }[] = []
 
 function renderDashboard(
   matchesMobile: boolean,
-  players: readonly Player[] = [],
+  players?: readonly Player[],
   currentManagerId?: string,
   account?: AuthenticatedDashboardAccount,
   profileService?: TeamProfileService,
+  gameweekPhase: Parameters<typeof createG4TestData>[0] = 'OFFICIAL_EVENT_MARKED_FINISHED',
 ) {
+  const g4 = createG4TestData(gameweekPhase)
+  const loadedPlayers = players ?? g4.players
   const media = new MatchMediaController(matchesMobile)
   vi.stubGlobal('matchMedia', vi.fn(media.matchMedia))
   const container = document.createElement('div')
@@ -61,13 +66,17 @@ function renderDashboard(
   const root = createRoot(container)
   const playerLoader = vi.fn(async () => ({
     retrievedAt: '2026-08-20T00:00:00.000Z',
-    playerCount: players.length,
-    players: [...players],
+    playerCount: loadedPlayers.length,
+    players: [...loadedPlayers],
   }))
+  const liveLeagueController = new LiveLeagueStateController({
+    load: vi.fn().mockResolvedValue(g4.live),
+    now: () => new Date('2026-08-25T10:00:30Z'),
+  })
 
-  act(() => root.render(<LeagueDashboard playerLoader={playerLoader} currentManagerId={currentManagerId} account={account} profileService={profileService} />))
+  act(() => root.render(<LeagueDashboard playerLoader={playerLoader} currentManagerId={currentManagerId} account={account} profileService={profileService} liveLeagueController={liveLeagueController} />))
   mountedRoots.push({ root, container })
-  return { container, media, playerLoader }
+  return { container, media, playerLoader, liveLeagueController }
 }
 
 function clickButton(container: HTMLElement, label: string) {
@@ -89,6 +98,14 @@ function changeSelect(container: HTMLElement, label: string, value: string) {
 
 function mobileTitle(container: HTMLElement) {
   return container.querySelector('.mobile-app-header h1')?.textContent
+}
+
+async function settle() {
+  await act(async () => {
+    await Promise.resolve()
+    await Promise.resolve()
+    await Promise.resolve()
+  })
 }
 
 function openMore(container: HTMLElement) {
@@ -116,6 +133,7 @@ afterEach(() => {
   })
   mountedRoots.length = 0
   vi.unstubAllGlobals()
+  vi.restoreAllMocks()
 })
 
 describe('LeagueDashboard presentation boundary', () => {
@@ -169,47 +187,66 @@ describe('LeagueDashboard presentation boundary', () => {
     expect(container.textContent).toContain('not connected')
   })
 
-  it('uses a non-authoritative roster presentation for My Team and Teams', () => {
+  it('uses the private decision workspace for My Team and league-visible official ownership for Teams before lock', async () => {
+    const storageWrite = vi.spyOn(Storage.prototype, 'setItem')
     const { container, media } = renderDashboard(true)
     clickButton(container, 'My Team')
-    expect(container.querySelector('[data-mobile-squad]')).not.toBeNull()
-    expect(container.querySelector('.football-pitch')).toBeNull()
-    expect(container.querySelector('[data-lineup-preview="unavailable"]')).not.toBeNull()
-    expect(container.querySelectorAll('.mobile-position-section')).toHaveLength(4)
-    expect(container.querySelector('.mobile-squad-counts')).toBeNull()
-    expect(container.querySelector('.mobile-squad-heading > strong')).toBeNull()
-    expect(container.querySelectorAll('.mobile-player-identity')).toHaveLength(15)
-    expect(container.querySelector('.mobile-player-status')).toBeNull()
-    expect(container.querySelector('.mobile-squad-heading small')?.textContent).toContain('Availability and fixtures are not connected')
-    expect(container.querySelector('.mobile-squad-heading h2')?.textContent).toBe('Current squad')
+    await settle()
+    expect(container.querySelector('[data-gameweek-mode="planner"]')).not.toBeNull()
+    expect(container.textContent).toContain('Private decision workspace')
+    expect(container.textContent).toContain('Nothing is submitted to FPL')
+    expect(container.querySelectorAll('.gameweek-pitch .gameweek-player-tile')).toHaveLength(11)
+    expect(container.querySelectorAll('.gameweek-bench .gameweek-player-tile')).toHaveLength(4)
+    expect(storageWrite).not.toHaveBeenCalled()
 
     clickButton(container, 'Teams')
-    expect(container.textContent).not.toContain('Choose a manager')
-    expect(container.querySelector('.mobile-squad-counts')).toBeNull()
-    expect(container.querySelector('.mobile-squad-heading > strong')).toBeNull()
+    await settle()
+    expect(container.querySelector('[data-gameweek-mode="roster"]')).not.toBeNull()
+    expect(container.textContent).toContain('League-visible current roster')
+    expect(container.textContent).not.toContain('Private decision workspace')
     clickButton(container, 'Rod Wave Disciples')
     expect(container.querySelector('.team-profile-header')?.textContent).toContain('Rod Wave Disciples')
-    expect(container.querySelector('.mobile-squad-heading h2')?.textContent).toBe('Current squad')
+    expect(container.querySelectorAll('.gameweek-current-roster .gameweek-list-row')).toHaveLength(15)
 
     act(() => media.setMatches(false))
     expect(container.querySelector('.league-topbar h1')?.textContent).toBe('Teams')
-    expect(container.querySelector('.squad-heading h2')?.textContent).toBe('Rod Wave Disciples current squad')
+    expect(container.querySelector('[data-gameweek-mode="roster"]')).not.toBeNull()
+  })
+
+  it('runs one shared live controller only while My Team or Teams is active', async () => {
+    const { container, liveLeagueController } = renderDashboard(true)
+    const start = vi.spyOn(liveLeagueController, 'start')
+    const stop = vi.spyOn(liveLeagueController, 'stop')
+
+    clickButton(container, 'My Team')
+    await settle()
+    expect(start).toHaveBeenCalledTimes(1)
+    expect(liveLeagueController.getState().data).not.toBeNull()
+
+    clickButton(container, 'Teams')
+    await settle()
+    expect(start).toHaveBeenCalledTimes(1)
+    expect(stop).not.toHaveBeenCalled()
+
+    clickButton(container, 'League')
+    await settle()
+    expect(stop).toHaveBeenCalledTimes(1)
+    expect(liveLeagueController.getState().data).not.toBeNull()
+
+    clickButton(container, 'My Team')
+    await settle()
+    expect(start).toHaveBeenCalledTimes(2)
   })
 
   it('uses the selected authenticated manager ID for every approved account roster', () => {
     KILE_N_OTHERS_ACCOUNT_ROSTER_IDENTITIES.forEach((identity) => {
-      const { container } = renderDashboard(true, [], identity.rosterManagerId)
+      const { container } = renderDashboard(true, undefined, identity.rosterManagerId)
       clickButton(container, 'My Team')
       const expectedManager = officialDraft202627.managers.find(
         (manager) => manager.id === identity.rosterManagerId,
       )
-      expect(container.querySelector('.mobile-squad-heading h2')?.textContent).toBe(
-        'Current squad',
-      )
-      expect(container.querySelector('[data-mobile-squad]')?.getAttribute('aria-label')).toBe(
-        `${expectedManager?.displayName} squad`,
-      )
       expect(container.querySelector('.team-profile-header')?.textContent).toContain(identity.teamName)
+      expect(expectedManager?.id).toBe(identity.rosterManagerId)
     })
   })
 
@@ -240,7 +277,7 @@ describe('LeagueDashboard presentation boundary', () => {
     }
     const { container, media } = renderDashboard(
       true,
-      [],
+      undefined,
       'demo-manager-1',
       account,
       profileService,
@@ -270,6 +307,36 @@ describe('LeagueDashboard presentation boundary', () => {
     expect(container.querySelector('.league-sidebar button[aria-label="My Team"] img')?.getAttribute('src')).toBe('https://signed.example/jakin-avatar')
     expect(container.querySelector('.team-profile-header')?.textContent).toContain('Miku007')
     expect(profileService.loadProfiles).toHaveBeenCalledTimes(1)
+  })
+
+  it('shows the official effective XI, ordered bench, shared G3 score, and one Pitch/List model after lock', async () => {
+    const { container } = renderDashboard(
+      true,
+      undefined,
+      'demo-manager-1',
+      undefined,
+      undefined,
+      'ACTIVE',
+    )
+    clickButton(container, 'My Team')
+    await settle()
+
+    expect(container.querySelector('[data-gameweek-mode="official"]')).not.toBeNull()
+    expect(container.textContent).toContain('LIVE GW points')
+    expect(container.querySelector('.gameweek-score-block strong')?.textContent).toBe('40')
+    expect(container.querySelectorAll('.gameweek-pitch .gameweek-player-tile')).toHaveLength(11)
+    expect(container.querySelectorAll('.gameweek-bench .gameweek-player-tile')).toHaveLength(4)
+    expect([...container.querySelectorAll('.gameweek-bench-slot > span')].map(({ textContent }) => textContent)).toEqual(['GK', '1', '2', '3'])
+
+    clickButton(container, 'List')
+    expect(container.querySelector('[data-gameweek-presentation="pitch"]')).toBeNull()
+    expect(container.querySelectorAll('[data-gameweek-presentation="list"] .gameweek-list-row')).toHaveLength(15)
+    expect(container.textContent).toContain('Jakin Goff Player 1')
+
+    clickButton(container, 'Teams')
+    clickButton(container, 'Miku007')
+    expect(container.querySelector('.gameweek-score-block strong')?.textContent).toBe('43')
+    expect(container.textContent).not.toContain('Private decision workspace')
   })
 
   it('renders only truthful unavailable Matchday states', () => {

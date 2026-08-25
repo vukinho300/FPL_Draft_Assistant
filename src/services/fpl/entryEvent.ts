@@ -25,10 +25,19 @@ export interface FplDraftEntryEventLineup {
   readonly eventId: number
   readonly starters: readonly FplDraftLineupSelection[]
   readonly bench: readonly FplDraftLineupSelection[]
-  /** The current event returned no applied substitution records when this contract was verified. */
+  /** Applied records observed after GW1; returned picks already reflect the effective XI/bench. */
+  readonly substitutions: readonly FplDraftLineupSubstitution[]
   readonly substitutionCount: number
   /** True only once the upstream entry_history object contains event-result fields. */
   readonly entryHistoryAvailable: boolean
+}
+
+export interface FplDraftLineupSubstitution {
+  /** Observed in the effective starting XI returned by `picks`. */
+  readonly elementInId: string
+  /** Observed on the effective bench returned by `picks`. */
+  readonly elementOutId: string
+  readonly eventId: number
 }
 
 export interface FplDraftEntryEventHistoryRecord {
@@ -108,13 +117,37 @@ export function normalizeFplDraftEntryEventLineup(
     throw new FplDataError('MISSING_REQUIRED_MAPPING', 'Lineup positions must be exactly 1 through 15')
   }
 
-  const substitutions = readArray(rawLineup, 'subs', 'entryEvent')
+  const substitutions = readArray(rawLineup, 'subs', 'entryEvent').map((rawSub, index) => {
+    const context = `entryEvent.subs[${index}]`
+    if (!isRecord(rawSub)) {
+      throw new FplDataError('UNEXPECTED_SCHEMA', `${context} must be an object`)
+    }
+    const substitution = Object.freeze({
+      elementInId: String(readPositiveInteger(rawSub, 'element_in', context)),
+      elementOutId: String(readPositiveInteger(rawSub, 'element_out', context)),
+      eventId: readPositiveInteger(rawSub, 'event', context),
+    })
+    if (substitution.eventId !== eventId) {
+      throw new FplDataError('MISSING_REQUIRED_MAPPING', `${context} references another Gameweek`)
+    }
+    if (substitution.elementInId === substitution.elementOutId) {
+      throw new FplDataError('MISSING_REQUIRED_MAPPING', `${context} uses one player twice`)
+    }
+    if (!picks.slice(0, 11).some(({ elementId }) => elementId === substitution.elementInId)) {
+      throw new FplDataError('MISSING_REQUIRED_MAPPING', `${context}.element_in is not in the effective XI`)
+    }
+    if (!picks.slice(11).some(({ elementId }) => elementId === substitution.elementOutId)) {
+      throw new FplDataError('MISSING_REQUIRED_MAPPING', `${context}.element_out is not on the effective bench`)
+    }
+    return substitution
+  })
   const entryHistory = readRecord(rawLineup, 'entry_history', 'entryEvent')
   return Object.freeze({
     officialEntryId,
     eventId,
     starters: Object.freeze(picks.slice(0, 11)),
     bench: Object.freeze(picks.slice(11)),
+    substitutions: Object.freeze(substitutions),
     substitutionCount: substitutions.length,
     entryHistoryAvailable: Object.keys(entryHistory).length > 0,
   })
