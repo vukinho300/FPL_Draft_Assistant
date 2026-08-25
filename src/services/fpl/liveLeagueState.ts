@@ -26,6 +26,12 @@ import { verifyFplDraftLeagueState } from './leagueState.ts'
 import { retrieveFplDraftLiveEvent } from './liveEvent.ts'
 import { normalizeFplBootstrap } from './normalize.ts'
 import { retrieveOfficialJson } from './requestJson.ts'
+import {
+  BROWSER_FPL_REQUEST_TIMEOUT_MS,
+  fetchWithTimeout,
+  FplRequestTimeoutError,
+  resolveWithTimeout,
+} from './requestTimeout.ts'
 
 export interface RetrievedLiveLeagueState {
   readonly snapshot: LiveLeagueStandingsSnapshot
@@ -104,10 +110,23 @@ function isRetrievedLiveLeagueState(value: unknown): value is RetrievedLiveLeagu
 /** Browser-safe project boundary. Raw official endpoint shapes never reach React. */
 export async function loadKileNOthersLiveLeagueState(
   fetchImplementation: FetchImplementation = fetch,
+  timeoutMs: number = BROWSER_FPL_REQUEST_TIMEOUT_MS,
 ): Promise<RetrievedLiveLeagueState> {
-  const response = await fetchImplementation('/api/fpl-league-live', {
-    headers: { accept: 'application/json' },
-  })
+  let response: Response
+  try {
+    response = await fetchWithTimeout(
+      fetchImplementation,
+      '/api/fpl-league-live',
+      { headers: { accept: 'application/json' } },
+      timeoutMs,
+      'Official Gameweek request timed out',
+    )
+  } catch (error) {
+    if (error instanceof FplRequestTimeoutError) {
+      throw new Error('Official Gameweek data took too long to load. Try again.', { cause: error })
+    }
+    throw new Error('Official Gameweek data is unavailable. Try again.', { cause: error })
+  }
   if (!response.ok) {
     let message = 'Current live league data is unavailable'
     try {
@@ -249,6 +268,7 @@ export interface LiveLeagueStateControllerOptions {
   readonly now?: () => Date
   readonly startTimer?: TimerStarter
   readonly stopTimer?: TimerStopper
+  readonly requestTimeoutMs?: number
 }
 
 export class LiveLeagueStateController {
@@ -256,6 +276,7 @@ export class LiveLeagueStateController {
   readonly #now: () => Date
   readonly #startTimer: TimerStarter
   readonly #stopTimer: TimerStopper
+  readonly #requestTimeoutMs: number
   readonly #listeners = new Set<(state: LiveLeagueRefreshState) => void>()
   #state: StoredLiveLeagueRefreshState = Object.freeze({
     status: 'IDLE', data: null, lastSuccessfulAt: null, errorMessage: null,
@@ -269,6 +290,7 @@ export class LiveLeagueStateController {
     this.#now = options.now ?? (() => new Date())
     this.#startTimer = options.startTimer ?? setTimeout
     this.#stopTimer = options.stopTimer ?? clearTimeout
+    this.#requestTimeoutMs = options.requestTimeoutMs ?? BROWSER_FPL_REQUEST_TIMEOUT_MS
   }
 
   getState(): LiveLeagueRefreshState {
@@ -311,7 +333,11 @@ export class LiveLeagueStateController {
       errorMessage: null,
     })
     try {
-      const data = await this.#load()
+      const data = await resolveWithTimeout(
+        this.#load(),
+        this.#requestTimeoutMs,
+        'Official Gameweek data took too long to load. Try again.',
+      )
       if (requestId !== this.#latestRequestId) return
       this.#setState({
         status: 'READY',

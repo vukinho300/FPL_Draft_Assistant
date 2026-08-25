@@ -1,12 +1,17 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 
+import { FplDataError } from '../src/services/fpl/errors.ts'
 import {
-  FplDataError,
   retrieveKileNOthersLiveLeagueState,
   type RetrievedLiveLeagueState,
-} from '../src/services/fpl/index.ts'
+} from '../src/services/fpl/liveLeagueState.ts'
 
 type LoadLiveLeagueState = () => Promise<RetrievedLiveLeagueState>
+type LogLiveLeagueFailure = (failure: Readonly<{
+  route: '/api/fpl-league-live'
+  code: string
+  detail: string
+}>) => void
 
 function sendJson(response: ServerResponse, status: number, body: unknown, cacheControl: string): void {
   response.statusCode = status
@@ -27,6 +32,9 @@ function cacheControlFor(state: RetrievedLiveLeagueState): string {
 
 export function createFplLeagueLiveHandler(
   load: LoadLiveLeagueState = retrieveKileNOthersLiveLeagueState,
+  logFailure: LogLiveLeagueFailure = (failure) => {
+    console.error('[api/fpl-league-live] official retrieval failed', failure)
+  },
 ) {
   return async function handler(
     request: IncomingMessage,
@@ -44,6 +52,11 @@ export function createFplLeagueLiveHandler(
       const state = await load()
       sendJson(response, 200, state, cacheControlFor(state))
     } catch (error) {
+      logFailure(Object.freeze({
+        route: '/api/fpl-league-live',
+        code: error instanceof FplDataError ? error.code : 'INTERNAL_ERROR',
+        detail: error instanceof Error ? error.message : 'Unknown retrieval failure',
+      }))
       if (error instanceof FplDataError) {
         sendJson(response, 502, {
           error: { code: error.code, message: 'Current live league data is unavailable' },

@@ -23,6 +23,10 @@ import {
 } from '../services/fpl/browserClient.ts'
 import type { FplPlayerDataResponse } from '../services/fpl/contract.ts'
 import {
+  BROWSER_FPL_REQUEST_TIMEOUT_MS,
+  resolveWithTimeout,
+} from '../services/fpl/requestTimeout.ts'
+import {
   LiveLeagueStateController,
   type LiveLeagueRefreshState,
 } from '../services/fpl/liveLeagueState.ts'
@@ -52,6 +56,8 @@ export function useLeagueDashboardModel(
   const [transactionTab, setTransactionTab] = useState<TransactionTab>('TRADES')
   const [players, setPlayers] = useState<readonly Player[]>([])
   const [playerError, setPlayerError] = useState<string | null>(null)
+  const [playerLoading, setPlayerLoading] = useState(false)
+  const [playerRequestVersion, setPlayerRequestVersion] = useState(0)
   const [playerSearch, setPlayerSearch] = useState('')
   const [playerPosition, setPlayerPosition] = useState<Position | 'ALL'>('ALL')
   const [playerOwnership, setPlayerOwnership] = useState<PlayerOwnershipFilter>('ALL')
@@ -120,26 +126,54 @@ export function useLeagueDashboardModel(
   }, [gameweekViewsActive, liveController])
 
   useEffect(() => {
-    if (!['players', 'my-team', 'teams'].includes(view) || playerRequestStarted.current) return
+    if (
+      !['players', 'my-team', 'teams'].includes(view)
+      || playerRequestStarted.current
+      || players.length > 0
+    ) return
 
     playerRequestStarted.current = true
-    playerLoader().then((response) => {
-      if (controllerMounted.current) setPlayers(response.players)
+    setPlayerLoading(true)
+    setPlayerError(null)
+    resolveWithTimeout(
+      playerLoader(),
+      BROWSER_FPL_REQUEST_TIMEOUT_MS,
+      'Player directory took too long to load. Try again.',
+    ).then((response) => {
+      if (controllerMounted.current) {
+        setPlayers(response.players)
+        setPlayerError(null)
+      }
     }).catch((reason: unknown) => {
       if (controllerMounted.current) {
         setPlayerError(
           reason instanceof Error ? reason.message : 'Player directory is unavailable',
         )
       }
+    }).finally(() => {
+      playerRequestStarted.current = false
+      if (controllerMounted.current) setPlayerLoading(false)
     })
-  }, [playerLoader, view])
+  }, [playerLoader, playerRequestVersion, players.length, view])
+
+  const retryPlayers = () => {
+    if (playerRequestStarted.current) return
+    setPlayerError(null)
+    setPlayerRequestVersion((version) => version + 1)
+  }
 
   const gameweekBuild = useMemo<{
     readonly experience: LeagueGameweekExperience | null
     readonly error: string | null
   }>(() => {
-    if (players.length === 0 || liveRefresh.data === null || liveRefresh.freshness === null) {
-      return { experience: null, error: null }
+    if (players.length === 0) {
+      return { experience: null, error: playerError }
+    }
+    if (liveRefresh.data === null || liveRefresh.freshness === null) {
+      return {
+        experience: null,
+        error: liveRefresh.status === 'ERROR' ? liveRefresh.errorMessage : null,
+      }
     }
     try {
       return {
@@ -152,7 +186,7 @@ export function useLeagueDashboardModel(
         error: reason instanceof Error ? reason.message : 'Gameweek data could not be verified',
       }
     }
-  }, [currentTimeMs, liveRefresh, players])
+  }, [currentTimeMs, liveRefresh, playerError, players])
   const gameweekExperience = gameweekBuild.experience
   const currentGameweekTeam = gameweekExperience === null
     ? null
@@ -246,6 +280,8 @@ export function useLeagueDashboardModel(
     playerDirectory: {
       players,
       error: playerError,
+      loading: playerLoading,
+      retry: retryPlayers,
       search: playerSearch,
       setSearch: setPlayerSearch,
       position: playerPosition,
@@ -268,7 +304,10 @@ export function useLeagueDashboardModel(
       plannerSelectedPlayerId,
       plannerError,
       selectPlannerPlayer,
-      refreshNow: () => void liveController.refresh(),
+      refreshNow: () => {
+        if (players.length === 0) retryPlayers()
+        void liveController.refresh()
+      },
     },
     archive: {
       completedAt: officialDraft202627.completedAt,

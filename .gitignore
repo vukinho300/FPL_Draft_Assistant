@@ -42,3 +42,6 @@ research/artifacts/
 research/**/__pycache__/
 research/.pytest_cache/
 *.pyc
+
+# Vercel CLI local project link state
+.vercel/

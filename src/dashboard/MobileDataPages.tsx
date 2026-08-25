@@ -90,7 +90,7 @@ export function MobilePlayersPage({ model }: { readonly model: LeagueDashboardMo
         </div>
         {directory.players.length > 0 && <div className="mobile-player-leaders" aria-label="Player leaders"><MobilePlayerLeaders title="Form leaders" entries={directory.leaders.form} valueFor={(entry) => formatPlayerForm(entry.player.form)} /><MobilePlayerLeaders title="Total Points leaders" entries={directory.leaders.totalPoints} valueFor={(entry) => entry.player.totalPoints ?? '—'} /></div>}
         {directory.error !== null
-          ? <div className="mobile-empty-state"><strong>Live player directory unavailable</strong><p>{directory.error}</p></div>
+          ? <div className="mobile-empty-state"><strong>Live player directory unavailable</strong><p>{directory.error}</p><button type="button" onClick={directory.retry}>Try again</button></div>
           : directory.players.length === 0
             ? <div className="mobile-empty-state"><strong>Loading verified FPL players…</strong><p>Player data is requested from the project FPL boundary.</p></div>
             : <div className="mobile-directory-list">{directory.filtered.map((entry: PlayerDirectoryEntry) => <MobilePlayerCard entry={entry} key={entry.player.id} />)}</div>}

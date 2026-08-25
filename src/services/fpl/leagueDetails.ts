@@ -1,5 +1,6 @@
 import { FplDataError } from './errors.ts'
 import type { FetchImplementation } from './client.ts'
+import { fetchWithTimeout, OFFICIAL_FPL_REQUEST_TIMEOUT_MS } from './requestTimeout.ts'
 
 type UnknownRecord = Record<string, unknown>
 
@@ -32,6 +33,7 @@ export interface FplDraftLeagueDetails {
 
 export interface RetrieveFplDraftLeagueDetailsOptions {
   readonly fetchImplementation?: FetchImplementation
+  readonly requestTimeoutMs?: number
 }
 
 export function getFplDraftLeagueDetailsEndpoint(leagueId: number): string {
@@ -174,10 +176,17 @@ export async function retrieveFplDraftLeagueDetails(
 ): Promise<FplDraftLeagueDetails> {
   const endpoint = getFplDraftLeagueDetailsEndpoint(leagueId)
   const fetchImplementation = options.fetchImplementation ?? fetch
+  const requestTimeoutMs = options.requestTimeoutMs ?? OFFICIAL_FPL_REQUEST_TIMEOUT_MS
   let response: Response
 
   try {
-    response = await fetchImplementation(endpoint, { headers: { accept: 'application/json' } })
+    response = await fetchWithTimeout(
+      fetchImplementation,
+      endpoint,
+      { headers: { accept: 'application/json' } },
+      requestTimeoutMs,
+      'FPL Draft league endpoint timed out',
+    )
   } catch (error) {
     throw new FplDataError('NETWORK_ERROR', 'Unable to reach the FPL Draft league endpoint', {
       cause: error,

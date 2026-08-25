@@ -1,6 +1,7 @@
 import type { FplPlayerDataResponse } from './contract.ts'
 import { FplDataError } from './errors.ts'
 import { normalizeFplBootstrap } from './normalize.ts'
+import { fetchWithTimeout, OFFICIAL_FPL_REQUEST_TIMEOUT_MS } from './requestTimeout.ts'
 
 export const FPL_DRAFT_BOOTSTRAP_ENDPOINT =
   'https://draft.premierleague.com/api/bootstrap-static'
@@ -13,6 +14,7 @@ export type FetchImplementation = (
 export interface RetrieveFplPlayerDataOptions {
   fetchImplementation?: FetchImplementation
   now?: () => Date
+  requestTimeoutMs?: number
 }
 
 export async function retrieveFplPlayerData(
@@ -20,12 +22,17 @@ export async function retrieveFplPlayerData(
 ): Promise<FplPlayerDataResponse> {
   const fetchImplementation = options.fetchImplementation ?? fetch
   const now = options.now ?? (() => new Date())
+  const requestTimeoutMs = options.requestTimeoutMs ?? OFFICIAL_FPL_REQUEST_TIMEOUT_MS
   let response: Response
 
   try {
-    response = await fetchImplementation(FPL_DRAFT_BOOTSTRAP_ENDPOINT, {
-      headers: { accept: 'application/json' },
-    })
+    response = await fetchWithTimeout(
+      fetchImplementation,
+      FPL_DRAFT_BOOTSTRAP_ENDPOINT,
+      { headers: { accept: 'application/json' } },
+      requestTimeoutMs,
+      'FPL Draft bootstrap endpoint timed out',
+    )
   } catch (error) {
     throw new FplDataError('NETWORK_ERROR', 'Unable to reach the FPL Draft endpoint', {
       cause: error,

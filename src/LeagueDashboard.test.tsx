@@ -16,6 +16,7 @@ import {
 import type { AuthenticatedDashboardAccount } from './dashboard/useLeagueTeamProfiles.ts'
 import { LiveLeagueStateController } from './services/fpl/liveLeagueState.ts'
 import { createG4TestData } from './testing/g4TestData.ts'
+import type { PlayerLoader } from './dashboard/useLeagueDashboardModel.ts'
 
 class MatchMediaController {
   private matches: boolean
@@ -56,6 +57,10 @@ function renderDashboard(
   account?: AuthenticatedDashboardAccount,
   profileService?: TeamProfileService,
   gameweekPhase: Parameters<typeof createG4TestData>[0] = 'OFFICIAL_EVENT_MARKED_FINISHED',
+  overrides: Readonly<{
+    playerLoader?: PlayerLoader
+    liveLeagueController?: LiveLeagueStateController
+  }> = {},
 ) {
   const g4 = createG4TestData(gameweekPhase)
   const loadedPlayers = players ?? g4.players
@@ -64,12 +69,12 @@ function renderDashboard(
   const container = document.createElement('div')
   document.body.append(container)
   const root = createRoot(container)
-  const playerLoader = vi.fn(async () => ({
+  const playerLoader = overrides.playerLoader ?? vi.fn(async () => ({
     retrievedAt: '2026-08-20T00:00:00.000Z',
     playerCount: loadedPlayers.length,
     players: [...loadedPlayers],
   }))
-  const liveLeagueController = new LiveLeagueStateController({
+  const liveLeagueController = overrides.liveLeagueController ?? new LiveLeagueStateController({
     load: vi.fn().mockResolvedValue(g4.live),
     now: () => new Date('2026-08-25T10:00:30Z'),
   })
@@ -236,6 +241,125 @@ describe('LeagueDashboard presentation boundary', () => {
     clickButton(container, 'My Team')
     await settle()
     expect(start).toHaveBeenCalledTimes(2)
+  })
+
+  it('recovers the Players directory after a transient first request failure', async () => {
+    const g4 = createG4TestData()
+    const playerLoader = vi.fn()
+      .mockRejectedValueOnce(new Error('Temporary player service failure'))
+      .mockResolvedValueOnce({
+        retrievedAt: '2026-08-25T12:00:00Z',
+        playerCount: g4.players.length,
+        players: g4.players,
+      })
+    const { container } = renderDashboard(
+      true,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      'OFFICIAL_EVENT_MARKED_FINISHED',
+      { playerLoader },
+    )
+
+    navigateFromMore(container, 'Players')
+    await settle()
+    expect(container.textContent).toContain('Live player directory unavailable')
+    expect(container.textContent).toContain('Temporary player service failure')
+
+    clickButton(container, 'Try again')
+    await settle()
+    expect(container.textContent).not.toContain('Live player directory unavailable')
+    expect(container.querySelectorAll('.mobile-directory-player').length).toBeGreaterThan(0)
+    expect(playerLoader).toHaveBeenCalledTimes(2)
+  })
+
+  it('does not leave My Team loading when the shared player catalogue fails', async () => {
+    const g4 = createG4TestData()
+    const playerLoader = vi.fn()
+      .mockRejectedValueOnce(new Error('Temporary player catalogue failure'))
+      .mockResolvedValueOnce({
+        retrievedAt: '2026-08-25T12:00:00Z',
+        playerCount: g4.players.length,
+        players: g4.players,
+      })
+    const { container } = renderDashboard(
+      true,
+      undefined,
+      'demo-manager-1',
+      undefined,
+      undefined,
+      'OFFICIAL_EVENT_MARKED_FINISHED',
+      { playerLoader },
+    )
+
+    clickButton(container, 'My Team')
+    await settle()
+    expect(container.querySelector('[data-gameweek-state="unavailable"]')).not.toBeNull()
+    expect(container.textContent).toContain('Temporary player catalogue failure')
+    expect(container.textContent).not.toContain('Loading official Gameweek data')
+
+    clickButton(container, 'Try again')
+    await settle()
+    expect(container.querySelector('[data-gameweek-mode="planner"]')).not.toBeNull()
+    expect(container.querySelector('.team-profile-header')?.textContent).toContain('Jakin Goff')
+    expect(playerLoader).toHaveBeenCalledTimes(2)
+  })
+
+  it('exits Gameweek loading after a failure and retries the same account safely', async () => {
+    const g4 = createG4TestData()
+    const load = vi.fn()
+      .mockRejectedValueOnce(new Error('Temporary live league failure'))
+      .mockResolvedValueOnce(g4.live)
+    const liveLeagueController = new LiveLeagueStateController({ load })
+    const { container } = renderDashboard(
+      true,
+      undefined,
+      'demo-manager-4',
+      undefined,
+      undefined,
+      'OFFICIAL_EVENT_MARKED_FINISHED',
+      { liveLeagueController },
+    )
+
+    clickButton(container, 'My Team')
+    await settle()
+    expect(container.querySelector('[data-gameweek-state="unavailable"]')).not.toBeNull()
+    expect(container.textContent).toContain('Temporary live league failure')
+    expect(container.textContent).not.toContain('Loading official Gameweek data')
+
+    clickButton(container, 'Try again')
+    await settle()
+    expect(container.querySelector('[data-gameweek-mode="planner"]')).not.toBeNull()
+    expect(container.querySelector('.team-profile-header')?.textContent).toContain('Miku007')
+    expect(load).toHaveBeenCalledTimes(2)
+  })
+
+  it('times out a hung initial Gameweek request and allows a successful retry', async () => {
+    const g4 = createG4TestData()
+    const load = vi.fn()
+      .mockImplementationOnce(() => new Promise(() => undefined))
+      .mockResolvedValueOnce(g4.live)
+    const liveLeagueController = new LiveLeagueStateController({ load, requestTimeoutMs: 5 })
+    const { container } = renderDashboard(
+      true,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      'OFFICIAL_EVENT_MARKED_FINISHED',
+      { liveLeagueController },
+    )
+
+    clickButton(container, 'My Team')
+    await act(async () => new Promise((resolve) => setTimeout(resolve, 10)))
+    expect(container.querySelector('[data-gameweek-state="unavailable"]')).not.toBeNull()
+    expect(container.textContent).toContain('Official Gameweek data took too long to load')
+
+    clickButton(container, 'Try again')
+    await settle()
+    expect(container.querySelector('[data-gameweek-mode="planner"]')).not.toBeNull()
+    expect(load).toHaveBeenCalledTimes(2)
   })
 
   it('uses the selected authenticated manager ID for every approved account roster', () => {

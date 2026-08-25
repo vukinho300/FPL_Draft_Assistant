@@ -225,13 +225,16 @@ function CurrentRoster({ players }: { readonly players: readonly EnrichedGamewee
 }
 
 function ExperienceUnavailable({ model }: { readonly model: LeagueDashboardModel }) {
-  const loading = model.playerDirectory.players.length === 0
+  const error = model.gameweek.error ?? model.playerDirectory.error
+  const loading = error === null && (
+    (model.playerDirectory.players.length === 0 && model.playerDirectory.loading)
     || model.gameweek.refresh.status === 'IDLE'
     || model.gameweek.refresh.status === 'LOADING'
+  )
   return (
     <section className="gameweek-experience-state" data-gameweek-state={loading ? 'loading' : 'unavailable'}>
       <p>{loading ? 'Loading official Gameweek data…' : 'Official Gameweek experience unavailable'}</p>
-      {!loading && <span>{model.gameweek.error ?? model.playerDirectory.error ?? 'The official sources could not be verified.'}</span>}
+      {!loading && <span>{error ?? 'The official sources could not be verified.'}</span>}
       {!loading && <button type="button" onClick={model.gameweek.refreshNow}>Try again</button>}
     </section>
   )
