@@ -6,7 +6,7 @@ import {
   MobilePlayersPage,
   MobileTransactionsPage,
 } from './MobileDataPages.tsx'
-import { MobileSquad } from './MobileSquad.tsx'
+import { GameweekTeamExperience } from './GameweekTeamExperience.tsx'
 import { TeamAvatar, TeamProfileHeader } from './TeamProfile.tsx'
 import type { LeagueView } from './navigation.ts'
 import type { LeagueDashboardModel } from './useLeagueDashboardModel.ts'
@@ -73,11 +73,7 @@ function MobileMyTeamPage({ model, profiles }: { readonly model: LeagueDashboard
         error={profiles.error}
         onAvatarSelected={(file) => void profiles.uploadCurrentAvatar(file)}
       />
-      <MobileSquad
-        model={model}
-        roster={model.currentManagerRoster}
-        title="Current squad"
-      />
+      <GameweekTeamExperience model={model} team={model.gameweek.currentTeam} privatePlanner />
     </div>
   )
 }
@@ -103,12 +99,7 @@ function MobileTeamsPage({ model, profiles }: { readonly model: LeagueDashboardM
         })}
       </div>
       <TeamProfileHeader profile={profiles.selected} error={profiles.error} />
-      <MobileSquad
-        model={model}
-        roster={model.selectedManagerRoster}
-        title="Current squad"
-        showRosterCapacity={false}
-      />
+      <GameweekTeamExperience model={model} team={model.gameweek.selectedTeam} privatePlanner={false} />
     </div>
   )
 }

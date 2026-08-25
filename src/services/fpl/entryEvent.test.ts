@@ -32,9 +32,28 @@ describe('FPL Draft entry-event contract', () => {
     expect(lineup).toMatchObject({
       officialEntryId: 240560,
       eventId: 1,
+      substitutions: [],
       substitutionCount: 0,
       entryHistoryAvailable: false,
     })
+  })
+
+  it('normalizes applied substitutions only when returned picks prove the effective XI and bench', () => {
+    const raw = rawLineup() as Omit<ReturnType<typeof rawLineup>, 'subs'> & {
+      subs: Array<{ element_in: number; element_out: number; event: number }>
+    }
+    raw.subs = [{ element_in: 100, element_out: 111, event: 1 }]
+    const lineup = normalizeFplDraftEntryEventLineup(raw, 240560, 1)
+
+    expect(lineup.substitutions).toEqual([{
+      elementInId: '100',
+      elementOutId: '111',
+      eventId: 1,
+    }])
+    expect(lineup.substitutionCount).toBe(1)
+
+    raw.subs = [{ element_in: 111, element_out: 100, event: 1 }]
+    expect(() => normalizeFplDraftEntryEventLineup(raw, 240560, 1)).toThrow(/effective XI/)
   })
 
   it('normalizes historical official Gameweek and season totals by entry identity', () => {

@@ -1,0 +1,221 @@
+.gameweek-experience,
+.gameweek-experience-state {
+  min-width: 0;
+  border: 1px solid #d4e2da;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 0.8rem 2rem rgb(4 48 24 / 7%);
+}
+
+.gameweek-experience { padding: 1rem; }
+
+.gameweek-experience-header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gameweek-experience-header p,
+.gameweek-section-heading p {
+  margin: 0;
+  color: #168153;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.gameweek-experience-header h2 {
+  margin: 0.15rem 0;
+  color: #143a28;
+  font-size: 1.45rem;
+  letter-spacing: -0.04em;
+}
+
+.gameweek-freshness {
+  color: #61796c;
+  font-size: 0.7rem;
+  font-weight: 750;
+}
+
+.gameweek-freshness.freshness-stale { color: #9a5a18; }
+
+.gameweek-score-block {
+  display: grid;
+  min-width: 7.5rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 0.75rem;
+  color: #ebfff4;
+  background: linear-gradient(135deg, #11633b, #0b3c27);
+  text-align: right;
+}
+
+.gameweek-score-block span,
+.gameweek-score-block small { color: #bde5ce; font-size: 0.62rem; font-weight: 800; }
+.gameweek-score-block strong { font-size: 2rem; letter-spacing: -0.06em; line-height: 1; }
+
+.gameweek-view-toolbar,
+.gameweek-section-heading {
+  display: flex;
+  min-width: 0;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.85rem;
+}
+
+.gameweek-view-toolbar > div:first-child { display: grid; min-width: 0; gap: 0.12rem; }
+.gameweek-view-toolbar strong { color: #234f37; font-size: 0.82rem; }
+.gameweek-view-toolbar small { color: #6d8176; font-size: 0.68rem; line-height: 1.35; }
+
+.gameweek-view-switch {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  flex: 0 0 auto;
+  padding: 0.2rem;
+  border-radius: 0.55rem;
+  background: #edf4f0;
+}
+
+.gameweek-view-switch button {
+  padding: 0.45rem 0.65rem;
+  border: 0;
+  border-radius: 0.4rem;
+  color: #557064;
+  background: transparent;
+  font-size: 0.7rem;
+  font-weight: 850;
+}
+
+.gameweek-view-switch button.active { color: #fff; background: #197849; }
+
+.gameweek-pitch {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  gap: 0.8rem;
+  margin-top: 0.75rem;
+  padding: 1rem;
+  overflow: hidden;
+  border: 0.25rem solid #d6eddf;
+  border-radius: 0.9rem;
+  background: repeating-linear-gradient(90deg, #258558 0 10%, #217c51 10% 20%);
+}
+
+.gameweek-pitch-markings {
+  position: absolute;
+  inset: 0.8rem;
+  border: 1px solid rgb(255 255 255 / 32%);
+  pointer-events: none;
+}
+
+.gameweek-pitch-markings::before {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  border-top: 1px solid rgb(255 255 255 / 32%);
+  content: '';
+}
+
+.gameweek-pitch-line { position: relative; z-index: 1; min-width: 0; }
+.gameweek-line-label { display: block; margin-bottom: 0.25rem; color: rgb(255 255 255 / 78%); font-size: 0.6rem; font-weight: 900; text-align: center; }
+.gameweek-pitch-line > div { display: grid; grid-template-columns: repeat(var(--line-count), minmax(0, 8.5rem)); gap: 0.45rem; justify-content: center; min-width: 0; }
+
+.gameweek-player-tile {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  gap: 0.16rem;
+  place-items: center;
+  padding: 0.45rem 0.3rem;
+  border: 1px solid rgb(255 255 255 / 45%);
+  border-radius: 0.55rem;
+  color: #173b29;
+  background: rgb(255 255 255 / 94%);
+  box-shadow: 0 0.35rem 0.8rem rgb(4 44 24 / 15%);
+  text-align: center;
+}
+
+button.gameweek-player-tile { width: 100%; cursor: pointer; }
+.gameweek-player-tile.selected,
+.gameweek-list-row.selected { outline: 3px solid #ffd75a; outline-offset: 1px; }
+.gameweek-player-avatar { display: grid; width: 1.75rem; height: 1.75rem; place-items: center; border-radius: 50%; color: #fff; background: #164d33; font-size: 0.7rem; font-weight: 900; }
+.gameweek-player-name { max-width: 100%; color: #173b29; font-size: 0.68rem; font-weight: 850; line-height: 1.1; overflow-wrap: anywhere; }
+.gameweek-player-tile small { color: #687e72; font-size: 0.55rem; }
+.gameweek-player-points { color: #0d6a3d; font-size: 0.68rem; }
+
+.gameweek-bench { margin-top: 0.8rem; }
+.gameweek-section-heading { margin-top: 0; }
+.gameweek-section-heading h3 { margin: 0.1rem 0 0; color: #234f37; font-size: 0.88rem; }
+.gameweek-section-heading > span { color: #6d8176; font-size: 0.68rem; font-weight: 800; }
+.gameweek-bench-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.55rem; margin-top: 0.45rem; }
+.gameweek-bench-slot { position: relative; min-width: 0; }
+.gameweek-bench-slot > span { position: absolute; z-index: 1; top: 0.25rem; left: 0.25rem; display: grid; width: 1.2rem; height: 1.2rem; place-items: center; border-radius: 50%; color: #fff; background: #1c7147; font-size: 0.52rem; font-weight: 900; }
+.gameweek-bench-slot .gameweek-player-tile { min-height: 5.1rem; border-color: #d6e4dc; background: #f8fbf9; }
+
+.gameweek-lineup-list,
+.gameweek-current-roster .gameweek-lineup-list { display: grid; min-width: 0; gap: 0.35rem; margin-top: 0.75rem; }
+.gameweek-list-row { display: grid; grid-template-columns: auto minmax(0, 1fr) 4.2rem 4.2rem 3.5rem; min-width: 0; gap: 0.55rem; align-items: center; padding: 0.55rem; border: 1px solid #dce8e0; border-radius: 0.55rem; color: #315a46; background: #fbfdfb; text-align: left; }
+button.gameweek-list-row { width: 100%; cursor: pointer; }
+.gameweek-list-identity { display: grid; min-width: 0; }
+.gameweek-list-identity strong { overflow: hidden; color: #173e2a; font-size: 0.76rem; text-overflow: ellipsis; white-space: nowrap; }
+.gameweek-list-identity small,
+.gameweek-list-season small,
+.gameweek-list-points small { color: #74877d; font-size: 0.57rem; }
+.gameweek-list-season,
+.gameweek-list-points { display: grid; text-align: right; }
+.gameweek-list-season b { color: #3c6450; font-size: 0.7rem; }
+.gameweek-list-points strong { color: #0f7342; font-size: 0.82rem; }
+.gameweek-current-roster { margin-top: 0.8rem; }
+
+.gameweek-refresh-warning,
+.gameweek-planner-error {
+  margin-top: 0.7rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #e3c99b;
+  border-radius: 0.55rem;
+  color: #7c541a;
+  background: #fff8e9;
+  font-size: 0.7rem;
+  font-weight: 750;
+}
+
+.gameweek-experience-state { display: grid; min-height: 10rem; gap: 0.4rem; place-content: center; padding: 1rem; color: #60776a; text-align: center; }
+.gameweek-experience-state p { margin: 0; color: #315944; font-weight: 850; }
+.gameweek-experience-state span { max-width: 38rem; font-size: 0.75rem; line-height: 1.4; }
+.gameweek-experience-state button { justify-self: center; padding: 0.5rem 0.7rem; border: 0; border-radius: 0.45rem; color: #fff; background: #197849; font-weight: 800; }
+
+@media (max-width: 700px) {
+  .gameweek-experience { padding: 0.75rem; border-radius: 0.8rem; }
+  .gameweek-experience-header { align-items: stretch; }
+  .gameweek-experience-header h2 { font-size: 1.2rem; }
+  .gameweek-score-block { min-width: 6rem; padding: 0.55rem 0.65rem; }
+  .gameweek-score-block strong { font-size: 1.65rem; }
+  .gameweek-view-toolbar { align-items: flex-end; }
+  .gameweek-view-toolbar small { font-size: 0.63rem; }
+  .gameweek-view-switch button { min-height: 2.65rem; padding: 0.4rem 0.55rem; }
+  .gameweek-pitch { gap: 0.55rem; padding: 0.65rem 0.35rem; }
+  .gameweek-pitch-line > div { grid-template-columns: repeat(var(--line-count), minmax(0, 1fr)); gap: 0.22rem; }
+  .gameweek-player-tile { min-height: 4.55rem; padding: 0.3rem 0.12rem; }
+  .gameweek-player-avatar { width: 1.4rem; height: 1.4rem; font-size: 0.6rem; }
+  .gameweek-player-name { display: -webkit-box; font-size: 0.58rem; line-height: 1.05; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .gameweek-player-tile small { font-size: 0.49rem; }
+  .gameweek-player-points { font-size: 0.6rem; }
+  .gameweek-bench-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.4rem; }
+  .gameweek-bench-slot .gameweek-player-tile { min-height: 4.5rem; }
+  .gameweek-list-row { grid-template-columns: auto minmax(0, 1fr) 2.7rem 2.9rem; gap: 0.4rem; padding: 0.5rem; }
+  .gameweek-list-form { display: none; }
+  .gameweek-list-identity strong { font-size: 0.72rem; }
+  .gameweek-list-season b { font-size: 0.65rem; }
+  .gameweek-list-points strong { font-size: 0.76rem; }
+}
+
+@media (max-width: 370px) {
+  .gameweek-experience-header { gap: 0.5rem; }
+  .gameweek-freshness { font-size: 0.62rem; }
+  .gameweek-score-block { min-width: 5.25rem; }
+  .gameweek-view-toolbar { display: grid; }
+  .gameweek-view-switch { width: 100%; }
+}

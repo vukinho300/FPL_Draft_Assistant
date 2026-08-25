@@ -12,8 +12,10 @@ live Gameweek score = sum(starter live total_points * official selection multipl
 ```
 
 Only official lineup positions 1–11 count. Bench positions 12–15 remain available in the
-team-score contract but do not contribute. Non-empty substitution data is rejected until
-its semantics are observed. Missing/duplicate entries, players, lineups, or contradictory
+team-score contract but do not contribute. After GW1, applied substitution records were
+observed and validated against the effective XI/bench returned by `picks`; scoring continues
+to use those effective positions. Contradictory substitution records fail closed.
+Missing/duplicate entries, players, lineups, or contradictory
 Gameweek IDs fail the entire comparative snapshot rather than silently assigning zero or
 another manager's data.
 

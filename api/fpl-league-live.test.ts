@@ -54,6 +54,8 @@ function contract(hasLiveFixture: boolean): RetrievedLiveLeagueState {
         retrievedAt: '2026-08-24T12:00:00Z', staleAfterMs: 90_000,
       },
     },
+    nextEvent: null,
+    ownership: { leagueId: 45938, elements: [] },
     eventStatus: { days: [], leagueTableStatus: null },
   }
 }

@@ -55,7 +55,12 @@ function snapshot(
 }
 
 function retrieved(eventId: number): RetrievedLiveLeagueState {
-  return { snapshot: snapshot(eventId), eventStatus: { days: [], leagueTableStatus: null } }
+  return {
+    snapshot: snapshot(eventId),
+    nextEvent: null,
+    ownership: { leagueId: 45938, elements: [] },
+    eventStatus: { days: [], leagueTableStatus: null },
+  }
 }
 
 describe('shared live league refresh foundation', () => {
@@ -67,6 +72,26 @@ describe('shared live league refresh foundation', () => {
     expect(fetchImplementation).toHaveBeenCalledWith('/api/fpl-league-live', {
       headers: { accept: 'application/json' },
     })
+  })
+
+  it('rejects malformed ownership before it can reach the Gameweek view model', async () => {
+    const valid = retrieved(1)
+    const malformed = {
+      ...valid,
+      ownership: {
+        ...valid.ownership,
+        elements: [{
+          elementId: '1',
+          availability: 'OWNED',
+          upstreamStatusCode: 'o',
+          officialOwnerEntryId: null,
+          inAcceptedTrade: false,
+        }],
+      },
+    }
+    await expect(loadKileNOthersLiveLeagueState(async () => Response.json(malformed))).rejects.toThrow(
+      /project contract/,
+    )
   })
 
   it('re-derives cached-response freshness from source time without replacing it with receipt time', async () => {
