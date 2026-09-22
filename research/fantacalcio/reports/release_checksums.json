@@ -1,0 +1,20 @@
+{
+  "advanced_audit.json": "c0ea9c5f11b1c7ef2b756ac2838f17a4846706562ceeb719a64649e86d3d257a",
+  "advanced_stint_audit.csv": "f4b34f60188a28ffd2613163867a82ee7c0177cb2d60c83dee8f2874135bdfd3",
+  "candidate_split_audit.csv": "c4d1baa954de1b1ffddc991de44e1fae8d5bef53fae36522e11d6a023aa3dc32",
+  "current_players.csv": "23c87c62455df0110862a1d8dd32545d5dd213d66c6be543370b8bf84861eedc",
+  "current_source_audit.json": "97daf551c258b795bf697c5c2123d9ae56941e4d59df1001f3213d9a545c0f58",
+  "data_quality_report.json": "f09966812eab7f765e7ebfeed1d7260880b2af282317b42971fbb6a532f3cd25",
+  "data_quality_report.md": "d52cd10632239daa1ed49ae126b664ed3892400be3d820f2a0f518f21a287520",
+  "duplicate_audit.json": "a7c4d73456698b9a136d81d68658a7265a10b868c7bc90aaf0fa7c896c283b5d",
+  "excluded_players.csv": "1721e4b6d631bbe7998f8bb49efc4e9ceabfe7934a38a3cbcee0dec160dae023",
+  "field_safety_manifest.json": "1cc0774c6fb8b62e67bac0b3e71af386415fa39e9a3ab849d103782f393dc4cc",
+  "history_mapping_status.csv": "b8b4f388d98344f05f6697fb10fa4b024a06ec761fa3ad545cea4962afc07d77",
+  "identity_mapping.csv": "3416b6850baccb3957e0c58ee589ae77f1f406fd1538c54c881a2c438eda8f60",
+  "player_season.csv": "1bd84d8623f634746a100d1249b3876c1617fdb4cc5c2e649504dd3a303477c6",
+  "pool_changes.csv": "0f705f666665bd826aa91157af0652080d3e4c7960046ade2828ced8d71fabe5",
+  "source_manifest.json": "b0109e23a97259e4a6d7600cf4df1c2d5255e42b1801daca50705ce4d50009bc",
+  "source_reconciliation.csv": "9f208c083deda3608a2becba830b477f6b589b0856df9f9c48f2457a35530a62",
+  "sqlite_audit.json": "6f2f9c4c840e538c94385aea917e3de0f6a3f7564c1760e62a47104201ba46d9",
+  "suspicious_identity_duplicates.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+}

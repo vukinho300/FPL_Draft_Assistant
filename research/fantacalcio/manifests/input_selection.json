@@ -1,0 +1,16 @@
+{
+  "release_contract": "FD2-QA-1",
+  "primary_repository": "https://github.com/0novanta/tool-asta-fantacalcio",
+  "primary_commit": "5ec6e1afbee2ed7dd52c4fdb87595c242d13b8b2",
+  "reference_repository": "https://github.com/piopy/fantacalcio-py",
+  "reference_commit": "4dda14a8dd2ab24c2f30404c65d317e1d4cc84a4",
+  "snapshot_index_sha256": "f44f4be7c3a235ef4fc0442b0cc4aa3d1b985680585e1283899b4d9cd478b3af",
+  "season": "2026/27",
+  "competition": "IT_SERIE_A",
+  "model_ready_score_minimum": 90,
+  "raw_and_derived_storage": "LOCAL_ONLY",
+  "historical_policy": "Reject a candidate feature when its available-by timestamp exceeds the prediction cutoff. Do not backdate retrieval/commit timestamps to season end.",
+  "current_pool_choice": "Live Fantacalcio Classic quotation snapshot supersedes bootstrap. Exclude only explicit out-of-game markers. Statistics page cannot establish eligibility.",
+  "advanced_choice": "Audit all five file families at player-season-club grain. Exclude predictive use without a verified Fantacalcio identity crosswalk.",
+  "dq_formula": "For each prescribed component, multiply its weight by the arithmetic mean of the named measured fractions in data_quality_report.json. Unknown checks receive zero. Hard failures override score."
+}

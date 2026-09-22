@@ -1,0 +1,392 @@
+{
+  "admitted_historical_samples": 0,
+  "candidate_split": {
+    "boundary": "Analytical season July 1 to June 30; cutoff June 30 23:59:59 UTC before target season",
+    "features": "Previous completed season only",
+    "holdout": [
+      "2025/26"
+    ],
+    "train": [
+      "2022/23",
+      "2023/24"
+    ],
+    "validation": [
+      "2024/25"
+    ]
+  },
+  "classes": [
+    "BACKTEST_SAFE",
+    "CURRENT_ONLY",
+    "TARGET_ONLY",
+    "UNSAFE"
+  ],
+  "current_only_safe_for_forecast_after": "2026-09-22T15:27:24.030803+00:00",
+  "denylist": [
+    "future_assists",
+    "future_fantavoto",
+    "future_final_ranking",
+    "future_fm",
+    "future_fvm",
+    "future_goals",
+    "future_injury",
+    "future_league_position",
+    "future_transfer",
+    "post_target_aggregate",
+    "target_assists",
+    "target_fm",
+    "target_goals",
+    "target_pv"
+  ],
+  "feature_candidates": [
+    "historical_PV",
+    "historical_MV",
+    "historical_FM",
+    "historical_goals",
+    "historical_goals_conceded",
+    "historical_assists",
+    "historical_yellow_cards",
+    "historical_red_cards",
+    "historical_penalties_saved",
+    "historical_penalties_taken",
+    "historical_penalties_scored",
+    "historical_penalties_missed",
+    "historical_own_goals",
+    "current_PV",
+    "current_MV",
+    "current_FM",
+    "current_goals",
+    "current_goals_conceded",
+    "current_assists",
+    "current_yellow_cards",
+    "current_red_cards",
+    "current_penalties_saved",
+    "current_penalties_taken",
+    "current_penalties_scored",
+    "current_penalties_missed",
+    "current_own_goals"
+  ],
+  "fields": [
+    {
+      "available_by": "2026-09-01T14:59:20+00:00",
+      "backtest_condition": "Earlier published snapshot at/before cutoff AND source season precedes target season",
+      "class": "CURRENT_ONLY",
+      "field": "historical.PV",
+      "reason": "Prior completed-season aggregates are usable today. This pinned version was only proven available in Sep 2026; earlier vintages unproven."
+    },
+    {
+      "available_by": "2026-09-01T14:59:20+00:00",
+      "backtest_condition": "Earlier published snapshot at/before cutoff AND source season precedes target season",
+      "class": "CURRENT_ONLY",
+      "field": "historical.MV",
+      "reason": "Prior completed-season aggregates are usable today. This pinned version was only proven available in Sep 2026; earlier vintages unproven."
+    },
+    {
+      "available_by": "2026-09-01T14:59:20+00:00",
+      "backtest_condition": "Earlier published snapshot at/before cutoff AND source season precedes target season",
+      "class": "CURRENT_ONLY",
+      "field": "historical.FM",
+      "reason": "Prior completed-season aggregates are usable today. This pinned version was only proven available in Sep 2026; earlier vintages unproven."
+    },
+    {
+      "available_by": "2026-09-01T14:59:20+00:00",
+      "backtest_condition": "Earlier published snapshot at/before cutoff AND source season precedes target season",
+      "class": "CURRENT_ONLY",
+      "field": "historical.goals",
+      "reason": "Prior completed-season aggregates are usable today. This pinned version was only proven available in Sep 2026; earlier vintages unproven."
+    },
+    {
+      "available_by": "2026-09-01T14:59:20+00:00",
+      "backtest_condition": "Earlier published snapshot at/before cutoff AND source season precedes target season",
+      "class": "CURRENT_ONLY",
+      "field": "historical.goals_conceded",
+      "reason": "Prior completed-season aggregates are usable today. This pinned version was only proven available in Sep 2026; earlier vintages unproven."
+    },
+    {
+      "available_by": "2026-09-01T14:59:20+00:00",
+      "backtest_condition": "Earlier published snapshot at/before cutoff AND source season precedes target season",
+      "class": "CURRENT_ONLY",
+      "field": "historical.assists",
+      "reason": "Prior completed-season aggregates are usable today. This pinned version was only proven available in Sep 2026; earlier vintages unproven."
+    },
+    {
+      "available_by": "2026-09-01T14:59:20+00:00",
+      "backtest_condition": "Earlier published snapshot at/before cutoff AND source season precedes target season",
+      "class": "CURRENT_ONLY",
+      "field": "historical.yellow_cards",
+      "reason": "Prior completed-season aggregates are usable today. This pinned version was only proven available in Sep 2026; earlier vintages unproven."
+    },
+    {
+      "available_by": "2026-09-01T14:59:20+00:00",
+      "backtest_condition": "Earlier published snapshot at/before cutoff AND source season precedes target season",
+      "class": "CURRENT_ONLY",
+      "field": "historical.red_cards",
+      "reason": "Prior completed-season aggregates are usable today. This pinned version was only proven available in Sep 2026; earlier vintages unproven."
+    },
+    {
+      "available_by": "2026-09-01T14:59:20+00:00",
+      "backtest_condition": "Earlier published snapshot at/before cutoff AND source season precedes target season",
+      "class": "CURRENT_ONLY",
+      "field": "historical.penalties_saved",
+      "reason": "Prior completed-season aggregates are usable today. This pinned version was only proven available in Sep 2026; earlier vintages unproven."
+    },
+    {
+      "available_by": "2026-09-01T14:59:20+00:00",
+      "backtest_condition": "Earlier published snapshot at/before cutoff AND source season precedes target season",
+      "class": "CURRENT_ONLY",
+      "field": "historical.penalties_taken",
+      "reason": "Prior completed-season aggregates are usable today. This pinned version was only proven available in Sep 2026; earlier vintages unproven."
+    },
+    {
+      "available_by": "2026-09-01T14:59:20+00:00",
+      "backtest_condition": "Earlier published snapshot at/before cutoff AND source season precedes target season",
+      "class": "CURRENT_ONLY",
+      "field": "historical.penalties_scored",
+      "reason": "Prior completed-season aggregates are usable today. This pinned version was only proven available in Sep 2026; earlier vintages unproven."
+    },
+    {
+      "available_by": "2026-09-01T14:59:20+00:00",
+      "backtest_condition": "Earlier published snapshot at/before cutoff AND source season precedes target season",
+      "class": "CURRENT_ONLY",
+      "field": "historical.penalties_missed",
+      "reason": "Prior completed-season aggregates are usable today. This pinned version was only proven available in Sep 2026; earlier vintages unproven."
+    },
+    {
+      "available_by": "2026-09-01T14:59:20+00:00",
+      "backtest_condition": "Earlier published snapshot at/before cutoff AND source season precedes target season",
+      "class": "CURRENT_ONLY",
+      "field": "historical.own_goals",
+      "reason": "Prior completed-season aggregates are usable today. This pinned version was only proven available in Sep 2026; earlier vintages unproven."
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.quotation",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.initialQuotation",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.FVM",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.club",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.role",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.eligibility",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.PV",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.MV",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.FM",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.goals",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.goals_conceded",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.assists",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.yellow_cards",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.red_cards",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.penalties_saved",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.penalties_taken",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.penalties_scored",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.penalties_missed",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "CURRENT_ONLY",
+      "field": "current.own_goals",
+      "reason": "Snapshot observed on 2026-09-22, never backfilled into previous seasons"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "minutes",
+      "reason": "Not admitted: absent or no verified canonical crosswalk/coverage"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "starts",
+      "reason": "Not admitted: absent or no verified canonical crosswalk/coverage"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "shots",
+      "reason": "Not admitted: absent or no verified canonical crosswalk/coverage"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "xG",
+      "reason": "Not admitted: absent or no verified canonical crosswalk/coverage"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "xA",
+      "reason": "Not admitted: absent or no verified canonical crosswalk/coverage"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "availability",
+      "reason": "Not admitted: absent or no verified canonical crosswalk/coverage"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "starter_evidence",
+      "reason": "Not admitted: absent or no verified canonical crosswalk/coverage"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "set_piece_role",
+      "reason": "Not admitted: absent or no verified canonical crosswalk/coverage"
+    },
+    {
+      "class": "TARGET_ONLY",
+      "field": "target_PV",
+      "reason": "Separate future outcome; never selected as a feature"
+    },
+    {
+      "class": "TARGET_ONLY",
+      "field": "target_FM",
+      "reason": "Separate future outcome; never selected as a feature"
+    },
+    {
+      "class": "TARGET_ONLY",
+      "field": "target_goals",
+      "reason": "Separate future outcome; never selected as a feature"
+    },
+    {
+      "class": "TARGET_ONLY",
+      "field": "target_assists",
+      "reason": "Separate future outcome; never selected as a feature"
+    },
+    {
+      "class": "BACKTEST_SAFE",
+      "field": "playerRef",
+      "reason": "Identifier only, not a predictive feature; never filter historical cohort to current survivors"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "future_assists",
+      "reason": "Target/future-information denylist"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "future_fantavoto",
+      "reason": "Target/future-information denylist"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "future_final_ranking",
+      "reason": "Target/future-information denylist"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "future_fm",
+      "reason": "Target/future-information denylist"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "future_fvm",
+      "reason": "Target/future-information denylist"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "future_goals",
+      "reason": "Target/future-information denylist"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "future_injury",
+      "reason": "Target/future-information denylist"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "future_league_position",
+      "reason": "Target/future-information denylist"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "future_transfer",
+      "reason": "Target/future-information denylist"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "post_target_aggregate",
+      "reason": "Target/future-information denylist"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "target_assists",
+      "reason": "Target/future-information denylist"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "target_fm",
+      "reason": "Target/future-information denylist"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "target_goals",
+      "reason": "Target/future-information denylist"
+    },
+    {
+      "class": "UNSAFE",
+      "field": "target_pv",
+      "reason": "Target/future-information denylist"
+    }
+  ],
+  "historical_asof_policy": "Strict known-at-time. A final-season label is not a publication timestamp."
+}
