@@ -24,6 +24,144 @@ export type Database = {
         }
         Relationships: []
       }
+      fantacalcio_auction_events: {
+        Row: {
+          actor_auth_user_id: string
+          client_request_id: string
+          id: string
+          kind: string
+          manager_id: string | null
+          note: string | null
+          player_ref: string | null
+          price: number | null
+          recorded_at: string
+          reverts_sale_id: string | null
+          role: string | null
+          sequence_no: number
+          session_id: string
+        }
+        Insert: {
+          actor_auth_user_id?: string
+          client_request_id: string
+          id?: string
+          kind: string
+          manager_id?: string | null
+          note?: string | null
+          player_ref?: string | null
+          price?: number | null
+          recorded_at?: string
+          reverts_sale_id?: string | null
+          role?: string | null
+          sequence_no?: number
+          session_id: string
+        }
+        Update: {
+          actor_auth_user_id?: string
+          client_request_id?: string
+          id?: string
+          kind?: string
+          manager_id?: string | null
+          note?: string | null
+          player_ref?: string | null
+          price?: number | null
+          recorded_at?: string
+          reverts_sale_id?: string | null
+          role?: string | null
+          sequence_no?: number
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fantacalcio_auction_events_manager_id_fkey"
+            columns: ["manager_id"]
+            isOneToOne: false
+            referencedRelation: "fantacalcio_auction_managers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fantacalcio_auction_events_reverts_sale_id_fkey"
+            columns: ["reverts_sale_id"]
+            isOneToOne: true
+            referencedRelation: "fantacalcio_auction_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fantacalcio_auction_events_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "fantacalcio_auction_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fantacalcio_auction_managers: {
+        Row: {
+          display_name: string
+          id: string
+          session_id: string
+        }
+        Insert: {
+          display_name: string
+          id?: string
+          session_id: string
+        }
+        Update: {
+          display_name?: string
+          id?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fantacalcio_auction_managers_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "fantacalcio_auction_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fantacalcio_auction_sessions: {
+        Row: {
+          att_slots: number
+          cen_slots: number
+          created_at: string
+          dif_slots: number
+          id: string
+          initial_credits: number
+          minimum_price: number
+          next_event_sequence: number
+          por_slots: number
+          position_sequence: string[] | null
+          season: string
+        }
+        Insert: {
+          att_slots: number
+          cen_slots: number
+          created_at?: string
+          dif_slots: number
+          id?: string
+          initial_credits: number
+          minimum_price: number
+          next_event_sequence?: number
+          por_slots: number
+          position_sequence?: string[] | null
+          season: string
+        }
+        Update: {
+          att_slots?: number
+          cen_slots?: number
+          created_at?: string
+          dif_slots?: number
+          id?: string
+          initial_credits?: number
+          minimum_price?: number
+          next_event_sequence?: number
+          por_slots?: number
+          position_sequence?: string[] | null
+          season?: string
+        }
+        Relationships: []
+      }
       league_accounts: {
         Row: {
           auth_user_id: string | null

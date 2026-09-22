@@ -22,6 +22,7 @@
     "supabase:gen:types": "supabase gen types typescript --local --schema public > src/services/supabase/database.types.ts",
     "supabase:verify:rls": "node scripts/verify-a1-rls.ts",
     "supabase:verify:fantacalcio-rls": "node scripts/verify-fa1-rls.ts",
+    "supabase:verify:auction-ledger": "node scripts/verify-fa2-ledger.ts",
     "provision:league-accounts": "node scripts/provision-league-accounts.ts",
     "provision:fantacalcio-access": "node scripts/provision-fantacalcio-access.ts",
     "verify:fpl-live": "node scripts/verify-fpl-live.ts",
