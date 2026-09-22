@@ -82,23 +82,31 @@ If a material real-world change occurs before the auction (major injury, transfe
 
 ## Current phase
 
-**FA1 — Fantacalcio shell + Vuk-only authorization: COMPLETE.**
+**FA0–FA3-S: COMPLETE.**
 
-Production verification passed:
-- Vuk can enter Fantacalcio;
-- Vuk can switch Fantacalcio → FPL and FPL → Fantacalcio;
-- logout/login still works;
-- production capability/RLS grant is live for Vuk only.
+Production/repository state now includes:
+- Vuk-only Fantacalcio authorization;
+- persistent append-only auction ledger;
+- 8 managers, 500 credits and 3/8/8/6 roster constraints;
+- deterministic max-legal-bid enforcement;
+- duplicate-sale protection and auditable undo;
+- laptop recorder with manual fallback entry, manager board, history and JSON backup/export.
 
-**Current delivery mode: 9-hour official-auction sprint.**
+**FD1-S source research: COMPLETE.**
 
-The long-term roadmap remains valid, but until the official auction is ready, `07_Auction_Sprint.md` governs prioritization and phase compression.
+**Current delivery mode: 5-hour official-auction sprint.**
 
-Current sprint task: **FA2-S — reliable auction ledger engine**.
+The product core exists. The critical path is now **data integrity first**:
+
+`FD2-QA → MODEL_READY gate → FM-S → FE-S → app integration/rehearsal`.
+
+No statistical model may be trusted or integrated until the canonical research release passes the mandatory data-integrity gate defined in `03_Modeling_Leakage.md` and `07_Auction_Sprint.md`.
+
+Current sprint task: **FD2-QA — canonical data release + integrity audit**.
 
 Remaining rule uncertainty is intentionally narrow:
 - season-ending injury refund is **not confirmed**;
 - the defense-modifier upper bands/cap are not yet explicitly confirmed beyond the known 0.25-band progression;
 - exact auction position sequence will be chosen when the asta begins.
 
-These do not block the initial auction recorder.
+These do not block the current player pool or data-integrity work.
