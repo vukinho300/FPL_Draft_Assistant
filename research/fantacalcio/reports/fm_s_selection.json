@@ -1,0 +1,180 @@
+{
+  "code_hashes": {
+    "__init__.py": "4cd5582d926384fd9c652ef61fd68661949a93a1c74277808a3c95d83501d753",
+    "core.py": "70df48dc6d248c2dd38165ca6e06d0a04f2c98e3d6d958d5cde706d56649cafe",
+    "experiment.py": "b25281a26f2b61e6d4e215d2d6cc5255a1e0a1d09f357401c5c8cc90d5b36aff"
+  },
+  "current_update_strengths": {
+    "availability_equivalent_matches": 2.0,
+    "availability_formula": "clip(mean(p*(1-p))/(var(PV/38-p)-mean(p*(1-p))/38)-1,2,38), train residual moments",
+    "production_basis": "Best validation shrinkage baseline k, reused as a stated current-update approximation",
+    "production_equivalent_rated_appearances": 30
+  },
+  "negative_controls": {
+    "fixed_persistence_note": "Shuffling training labels cannot erase a fixed prior-PV rule; outcome-pairing and noise controls test that rule.",
+    "passed": true,
+    "required_controls": [
+      "random_feature_columns",
+      "shuffled_validation_outcomes",
+      "shuffled_training_targets"
+    ],
+    "summaries": {
+      "random_feature_columns": {
+        "median_spearman": -0.010613633607000458,
+        "median_total_proxy_mae": 70.50423982798984,
+        "p95_spearman": 0.04488387194635408,
+        "repeats": 20
+      },
+      "shuffled_training_targets": {
+        "median_spearman": 0.07328031661469153,
+        "median_total_proxy_mae": 70.1724453851098,
+        "p95_spearman": 0.3897818062648397,
+        "repeats": 20
+      },
+      "shuffled_validation_outcomes": {
+        "median_spearman": 0.0141757813390988,
+        "median_total_proxy_mae": 76.0969351386275,
+        "p95_spearman": 0.08276541752108053,
+        "repeats": 20
+      }
+    }
+  },
+  "protocol": {
+    "benchmark_policy": "Current FVM/quotation are output-only benchmarks and never model inputs or targets.",
+    "candidates": [
+      {
+        "k": 0,
+        "kind": "naive",
+        "name": "naive_prior"
+      },
+      {
+        "k": 5,
+        "kind": "shrink",
+        "name": "shrink_k5"
+      },
+      {
+        "k": 15,
+        "kind": "shrink",
+        "name": "shrink_k15"
+      },
+      {
+        "k": 30,
+        "kind": "shrink",
+        "name": "shrink_k30"
+      },
+      {
+        "alpha": 10,
+        "kind": "ridge",
+        "name": "ridge_a10"
+      }
+    ],
+    "control_gate": "Real validation MAE must beat median noise-feature and shuffled-validation-outcome MAE by 5%, and Spearman exceed their 95th percentile. Shuffled training targets must also degrade learned models; fixed persistence uses validation-outcome shuffle because its PV rule is not learned from labels.",
+    "current_elapsed_opportunities_proxy": 5,
+    "current_update": "Beta-style PV update with training-residual moment prior strength; FM update uses the validation-selected shrinkage pseudo-appearance strength. No historical within-season validation is claimed.",
+    "elapsed_proxy_basis": "Maximum current PV in frozen source, NOT verified completed fixtures or team-specific exposure",
+    "forecast_season": "2026/27",
+    "historical_predictors": "Certified prior-season event totals only; event rates divide by max(PV,1). No MV/FM, role, club, market or snapshot inputs.",
+    "holdout_policy": "Freeze selection artifact first; refit fixed winner on train+validation, evaluate holdout once. Afterwards fit fixed winner on all completed samples for the current forecast.",
+    "holdout_targets": [
+      "2025/26"
+    ],
+    "input_checksums_sha256": "61156f0da3869e6812dcda1622f0de03649eec2635087b9c6f1a2f2edd676dc2",
+    "input_release": "fd2qa-2026-09-22-c8ce1b1e8b5f",
+    "negative_control_repeats": 20,
+    "prices": false,
+    "protocol": "FM-S-1",
+    "ridge_justification": "One fixed regularized linear alternative can learn different contributions of the certified event rates without importing forbidden prior vote averages.",
+    "rights": "LOCAL_ONLY",
+    "season_opportunities": 38,
+    "seed": 22092026,
+    "selection": "Lowest validation total-proxy MAE among baselines; Ridge only if >=2% better MAE and Spearman no more than 0.01 worse. No holdout-based changes.",
+    "target": "PV times source FM: approximate rated-appearance fantasy contribution, not exact custom-league points",
+    "train_targets": [
+      "2022/23",
+      "2023/24"
+    ],
+    "uncertainty": "Validation 80th percentile absolute total-proxy error, scaled by remaining opportunities; cold-start x1.5 or low-prior-PV x1.25 heuristic inflation. Report holdout coverage; current intervals are not calibrated probabilities.",
+    "validation_targets": [
+      "2024/25"
+    ]
+  },
+  "runtime": {
+    "numpy": "2.3.5",
+    "python": "3.12.14"
+  },
+  "sample_counts": {
+    "train": 876,
+    "validation": 424
+  },
+  "selected": {
+    "k": 30,
+    "kind": "shrink",
+    "name": "shrink_k30"
+  },
+  "selection_basis": "VALIDATION_ONLY; holdout outcomes not parsed in this phase",
+  "selection_rule": "Lowest validation total-proxy MAE among baselines; Ridge only if >=2% better MAE and Spearman no more than 0.01 worse. No holdout-based changes.",
+  "train_in_sample": {
+    "FM_weighted_mae": 0.36058793660368027,
+    "PV_mae": 8.720515480998921,
+    "n": 876,
+    "rated_n": 726,
+    "spearman": 0.5503589245559329,
+    "top50_recall": 0.34,
+    "total_proxy_mae": 54.991869490989544,
+    "total_proxy_rmse": 67.22320575893684
+  },
+  "validation_absolute_error_q80": 86.44568478592755,
+  "validation_comparisons": {
+    "naive_prior": {
+      "FM_weighted_mae": 0.3094759371678615,
+      "PV_mae": 8.950471698113208,
+      "n": 424,
+      "rated_n": 362,
+      "spearman": 0.5114297857290088,
+      "top50_recall": 0.4,
+      "total_proxy_mae": 56.66495720418537,
+      "total_proxy_rmse": 77.24297602201703
+    },
+    "ridge_a10": {
+      "FM_weighted_mae": 0.30718042286924685,
+      "PV_mae": 8.918794949058563,
+      "n": 424,
+      "rated_n": 362,
+      "spearman": 0.5067304870752919,
+      "top50_recall": 0.38,
+      "total_proxy_mae": 56.070317724988634,
+      "total_proxy_rmse": 69.11936889799736
+    },
+    "shrink_k15": {
+      "FM_weighted_mae": 0.31582637357870447,
+      "PV_mae": 8.869924187920073,
+      "n": 424,
+      "rated_n": 362,
+      "spearman": 0.5121108835101061,
+      "top50_recall": 0.4,
+      "total_proxy_mae": 55.979133055162166,
+      "total_proxy_rmse": 68.9584380269409
+    },
+    "shrink_k30": {
+      "FM_weighted_mae": 0.3413696828175354,
+      "PV_mae": 8.869924187920073,
+      "n": 424,
+      "rated_n": 362,
+      "spearman": 0.5124794302830414,
+      "top50_recall": 0.38,
+      "total_proxy_mae": 55.95359879427691,
+      "total_proxy_rmse": 68.98697754051494
+    },
+    "shrink_k5": {
+      "FM_weighted_mae": 0.30360399506856767,
+      "PV_mae": 8.869924187920073,
+      "n": 424,
+      "rated_n": 362,
+      "spearman": 0.5103103436371959,
+      "top50_recall": 0.4,
+      "total_proxy_mae": 55.98740507536894,
+      "total_proxy_rmse": 68.95160416702814
+    }
+  },
+  "validation_interval_coverage": 0.7995283018867925
+}
