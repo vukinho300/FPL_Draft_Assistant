@@ -48,7 +48,22 @@ describe('Fantacalcio auction economics', () => {
     expect(oneSlot.recommendedMax).toBeLessThan(baseline.recommendedMax)
   })
 
+  it('uses the entire unsold role pool for comparable scarcity rather than the five displayed alternatives', () => {
+    const selected = player(100, 'DIF', 100, 80)
+    const comparableDefenders = Array.from({ length: 20 }, (_, index) => player(101 + index, 'DIF', 95, 70 - index / 10))
+    const replacement = player(121, 'DIF', 40, 10)
+    const defenders = [selected, ...comparableDefenders, replacement]
+    const fullPool = recommendedMax({ player: selected, players: defenders, soldRefs: new Set(), vuk: manager(), allManagers: Array.from({ length: 8 }, () => manager()), minimumPrice: 1 })
+    const depletedPool = recommendedMax({ player: selected, players: defenders, soldRefs: new Set(comparableDefenders.map((candidate) => candidate.playerRef)), vuk: manager(), allManagers: Array.from({ length: 8 }, () => manager()), minimumPrice: 1 })
+
+    expect(bestAlternatives(defenders, selected, new Set())).toHaveLength(5)
+    expect(fullPool.comparableCount).toBe(20)
+    expect(depletedPool.comparableCount).toBe(0)
+    expect(depletedPool.recommendedMax).toBeGreaterThan(fullPool.recommendedMax)
+  })
+
   it('uses explicit decision thresholds', () => {
+    expect(decisionState(0, 100)).toBe('ENTER BID')
     expect(decisionState(20, 100)).toBe('GOOD VALUE')
     expect(decisionState(80, 100)).toBe('REASONABLE')
     expect(decisionState(95, 100)).toBe('NEAR LIMIT')

@@ -19,7 +19,7 @@ export type AuctionValuePlayer = CanonicalPlayer & Readonly<{
 }>
 
 export type MarketSignal = 'MODEL > MARKET' | 'MARKET > MODEL' | 'ALIGNED'
-export type DecisionState = 'GOOD VALUE' | 'REASONABLE' | 'NEAR LIMIT' | 'STOP / SAVE'
+export type DecisionState = 'ENTER BID' | 'GOOD VALUE' | 'REASONABLE' | 'NEAR LIMIT' | 'STOP / SAVE'
 
 function finiteNumber(raw: string, field: string): number {
   const value = Number(raw)
@@ -93,7 +93,7 @@ export function recommendedMax(input: Readonly<{
   vuk: ManagerSummary
   allManagers: readonly ManagerSummary[]
   minimumPrice: number
-}>): Readonly<{ recommendedMax: number; replacementProjection: number; scarcity: number; alternative: AuctionValuePlayer | null; referenceRosterCost: number }> {
+}>): Readonly<{ recommendedMax: number; replacementProjection: number; scarcity: number; comparableCount: number; alternative: AuctionValuePlayer | null; referenceRosterCost: number }> {
   const { player, players, soldRefs, vuk, allManagers, minimumPrice } = input
   const alternatives = bestAlternatives(players, player, soldRefs)
   const alternative = alternatives[0] ?? null
@@ -107,7 +107,8 @@ export function recommendedMax(input: Readonly<{
   const breakEven = alternativeAnchor + Math.max(0, player.projection - alternativeProjection) * creditPerProjection
   const scarcity = Math.max(0, player.projection - replacementProjection)
   const scarcityMultiplier = 1 + Math.min(0.25, scarcity / Math.max(1, player.projection) * 0.25)
-  const comparableCount = alternatives.filter((candidate) => candidate.projection >= player.projection * 0.9).length
+  const comparableCount = rankAvailable(players, player.role, soldRefs)
+    .filter((candidate) => candidate.playerRef !== player.playerRef && candidate.projection >= player.projection * 0.9).length
   const alternativePressure = 1 + (1 - Math.min(1, comparableCount / Math.max(1, vuk.remainingSlots[player.role] * 2))) * 0.35
   const rawCeiling = (player.fvm500 + breakEven) / 2 * scarcityMultiplier * alternativePressure
   const availableByRole = (['POR', 'DIF', 'CEN', 'ATT'] as const).map((role) => rankAvailable(players, role, soldRefs))
@@ -115,10 +116,11 @@ export function recommendedMax(input: Readonly<{
     sum + availableByRole[index]!.slice(0, vuk.remainingSlots[role]).reduce((roleSum, candidate) => roleSum + Math.max(minimumPrice, candidate.fvm500), 0), 0)
   const affordability = Math.min(1, vuk.remainingCredits / Math.max(vuk.remainingCredits, referenceRosterCost))
   const recommended = Math.max(minimumPrice, Math.floor(rawCeiling * affordability))
-  return { recommendedMax: Math.min(vuk.maxLegalBid, recommended), replacementProjection, scarcity, alternative, referenceRosterCost }
+  return { recommendedMax: Math.min(vuk.maxLegalBid, recommended), replacementProjection, scarcity, comparableCount, alternative, referenceRosterCost }
 }
 
 export function decisionState(currentBid: number, ceiling: number): DecisionState {
+  if (currentBid <= 0) return 'ENTER BID'
   if (currentBid > ceiling) return 'STOP / SAVE'
   if (currentBid >= ceiling * 0.9) return 'NEAR LIMIT'
   if (currentBid >= ceiling * 0.75) return 'REASONABLE'

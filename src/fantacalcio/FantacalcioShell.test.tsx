@@ -106,6 +106,7 @@ describe('Fantacalcio live auction recorder', () => {
     act(() => result.dispatchEvent(new MouseEvent('click', { bubbles: true })))
     expect(container.querySelector<HTMLSelectElement>('form label select')?.value).toBe('DIF')
     expect(container.textContent).toContain('Selected: Canonical Player 1 · Roma · DIF')
+    expect(container.querySelector('.decision-state')?.textContent).toBe('ENTER BID')
     setValue(container.querySelector<HTMLInputElement>('input[placeholder="Credits"]')!, '20')
     await act(async () => container.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })))
     expect(repository.sales[0]).toEqual(expect.objectContaining({ playerRef: 'fantacalcio:fc:1', role: 'DIF', price: 20 }))
