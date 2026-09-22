@@ -50,6 +50,20 @@ The full upper table/cap remains unconfirmed and must not be invented.
 ### F-D013 — Injury refund remains unresolved
 Do not treat a season-ending injury as a guaranteed 100% refund until commissioner confirmation. Vuk believes that is likely, but the current auction/model contract must preserve this as uncertainty.
 
+### F-D014 — Fantacalcio authorization authority
+Fantacalcio access is an explicit, admin-managed capability bound to the verified Supabase Auth user ID.
+
+Frontend product visibility may reflect that capability, but it is not the security boundary. Fantacalcio-protected database state must be enforced through RLS, and any private Fantacalcio API boundary must verify authenticated identity plus the current capability before returning protected data or performing protected actions.
+
+Do not derive Fantacalcio authorization from:
+- manager or team display name;
+- Commissioner presentation;
+- FPL `LEAGUE_OWNER` role;
+- immutable FPL roster identity;
+- client-side navigation state.
+
+Missing capability means denied. This decision intentionally avoids turning the initial implementation into a broad generic RBAC system unless a future requirement justifies one.
+
 ## Key risks
 
 ### Data/source

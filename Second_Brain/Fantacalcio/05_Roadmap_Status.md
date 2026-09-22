@@ -6,14 +6,18 @@ Project review/architecture research: COMPLETE.
 
 FA0A architecture audit + league-rule questionnaire: **COMPLETE**.
 
-Current phase: **FA0B — rules/architecture contract freeze**.
+FA0B rules/architecture contract freeze: **COMPLETE**.
 
-The main 2026/27 league constraints are now confirmed. Remaining uncertainty is narrow and explicitly tracked:
+**FA0 — Rules & architecture freeze: COMPLETE.**
+
+Current / next implementation phase: **FA1 — Fantacalcio shell + authorization**.
+
+The main 2026/27 league constraints and the implementation-safe platform/domain boundary are now frozen for FA1. Remaining uncertainty is narrow and explicitly tracked:
 - season-ending injury refund is unconfirmed;
 - full upper defense-modifier table/cap is unconfirmed;
 - auction position sequence will be selected when the asta starts.
 
-These uncertainties do not block FA1 shell/authorization work.
+These uncertainties do not block FA1 shell/authorization work. They remain explicit dependencies only for later subsystems whose correctness actually depends on them.
 
 ## Confirmed 2026/27 league contract
 
@@ -42,23 +46,18 @@ The usable auction recorder must not be blocked by sophisticated ML work.
 
 For the first official asta, the target is one clean, validated projection release. A large recurring refresh/retraining system is intentionally **not** a standalone early milestone.
 
-## FA0B — Rules & architecture contract freeze
+## FA0 — Rules & architecture freeze — COMPLETE
 
-**Objective:** convert the audited repository + confirmed league rules into the final implementation contract for FA1.
+FA0 is complete through FA0A + FA0B.
 
-Work:
-- confirm shared-platform/separate-domain boundary;
-- freeze the confirmed league constraints above;
-- preserve narrow unresolved rules as explicit configurable/unknown states;
-- define Vuk-only capability contract;
-- define what FA1 may implement and what stays deferred.
-
-Completion:
-- FA1 can be implemented without inventing rules;
-- no unresolved item affects shell/auth architecture;
+Frozen outcomes:
+- shared platform infrastructure may be reused without coupling Fantacalcio to FPL football-domain models;
+- Fantacalcio remains a separate domain for identities, roles, scoring, auction state, projections and economics;
+- Vuk-only access uses an explicit capability tied to verified Supabase Auth identity;
+- FA1 can proceed without inventing unresolved league rules;
 - valuation-sensitive unknowns remain explicit rather than guessed.
 
-## FA1 — Fantacalcio shell + authorization
+## FA1 — Fantacalcio shell + authorization — CURRENT / NEXT
 
 **Objective:** create private blue Fantacalcio mode.
 
