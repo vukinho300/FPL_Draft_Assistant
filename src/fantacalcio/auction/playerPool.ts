@@ -15,7 +15,7 @@ export type CanonicalPlayer = Readonly<{
   eligibility: 'SELECTABLE'
 }>
 
-function parseCsv(input: string): string[][] {
+export function parseCsvRows(input: string): string[][] {
   const rows: string[][] = []
   let row: string[] = []
   let field = ''
@@ -39,7 +39,7 @@ function parseCsv(input: string): string[][] {
 }
 
 export function parseCanonicalPool(csv: string): readonly CanonicalPlayer[] {
-  const rows = parseCsv(csv)
+  const rows = parseCsvRows(csv)
   const header = rows.shift()
   if (header === undefined) throw new Error('Canonical player CSV is empty')
   const required = ['playerRef', 'displayName', 'club', 'role', 'eligibility'] as const
@@ -72,13 +72,13 @@ function normalize(value: string): string {
   return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase().trim()
 }
 
-export function searchCanonicalPool(
-  players: readonly CanonicalPlayer[],
+export function searchCanonicalPool<T extends CanonicalPlayer>(
+  players: readonly T[],
   query: string,
   role: AuctionRole | 'ALL',
   soldRefs: ReadonlySet<string>,
   limit = 12,
-): readonly CanonicalPlayer[] {
+): readonly T[] {
   const needle = normalize(query)
   return players.filter((player) => (role === 'ALL' || player.role === role)
     && (needle === '' || normalize(player.displayName).includes(needle) || normalize(player.club).includes(needle)))

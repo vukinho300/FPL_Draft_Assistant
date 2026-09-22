@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { FantacalcioShell } from './FantacalcioShell.tsx'
 import { replayAuction, type AuctionEvent } from './auction/ledger.ts'
 import { exportAuctionSnapshot } from './auction/recorder.ts'
-import type { CanonicalPlayer } from './auction/playerPool.ts'
+import type { AuctionValuePlayer } from './auction/economics.ts'
 import type { AuctionRepository, AuctionSnapshot, SaleDraft, UndoDraft } from './auction/repository.ts'
 
 const snapshot: AuctionSnapshot = {
@@ -44,7 +44,7 @@ class MemoryAuctionRepository implements AuctionRepository {
 
 const roots: { root: Root; container: HTMLDivElement }[] = []
 
-async function render(repository: AuctionRepository, canonicalPool?: readonly CanonicalPlayer[]) {
+async function render(repository: AuctionRepository, canonicalPool?: readonly AuctionValuePlayer[]) {
   const container = document.createElement('div')
   document.body.append(container)
   const root = createRoot(container)
@@ -83,12 +83,18 @@ afterEach(() => {
 })
 
 describe('Fantacalcio live auction recorder', () => {
-  const pool = Array.from({ length: 534 }, (_, index): CanonicalPlayer => ({
+  const pool = Array.from({ length: 534 }, (_, index): AuctionValuePlayer => ({
     playerRef: `fantacalcio:fc:${index + 1}`,
     displayName: `Canonical Player ${index + 1}`,
     club: index === 0 ? 'Roma' : 'Test Club',
     role: index === 0 ? 'DIF' : 'POR',
     eligibility: 'SELECTABLE',
+    projection: 534 - index,
+    positionRank: index + 1,
+    overallRank: index + 1,
+    confidence: index % 2 === 0 ? 'MEDIUM' : 'LOW',
+    fvm: 200 - index / 10,
+    fvm500: 100 - index / 20,
   }))
 
   it('searches the canonical pool, shows club, fills role, and records the stable player reference', async () => {
