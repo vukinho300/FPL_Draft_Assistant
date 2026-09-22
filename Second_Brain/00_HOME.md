@@ -3,6 +3,10 @@
 ## Purpose
 This folder is the project control manual. The GitHub repository, committed code, migrations, database state, tests, and verified deployed state remain the technical source of truth. The Second Brain records approved architecture, product rules, current status, and roadmap intent so Codex does not repeatedly rediscover the project.
 
+The existing top-level notes primarily describe the **Kile N Others FPL Draft product**. The private Fantacalcio side project has its own retrieval-oriented area at:
+
+`Second_Brain/Fantacalcio/00_HOME.md`
+
 ## Product principle
 Kile N Others is a private six-team FPL Draft companion that should be **better than the Premier League Draft app, not a copy of it**.
 
@@ -27,6 +31,8 @@ Never rewrite the custom draft archive to mirror later platform state.
 - G2 Official League State Contracts: CURRENT / NEXT after G1 merge.
 - Production: `https://fpl-draft-assistant-eight.vercel.app/`.
 - Hosted Supabase: KNO (`asrrkwyqerfkynhjypov`).
+
+These historical status labels may lag newer merged repository work. For current technical status, inspect `main`, merged PRs and deployed evidence before relying on this summary.
 
 ## Verified official league identity
 G1 establishes one explicit fail-closed bridge from the six product identities to the official FPL Draft league and entries.
@@ -99,7 +105,13 @@ The current Draft Archive will evolve into **Archive** with:
 ## Workflow
 Use narrow short-lived branches and Draft PRs. Codex owns implementation details after repository inspection. ChatGPT defines product outcome, invariants, scope and acceptance criteria, then independently reviews the PR. Vuk alone merges.
 
-Prefer one coherent commit per narrow roadmap step. Second Brain normally reconciles at the end of a letter family, but this mid-G correction is intentionally allowed because the discovery of reliable official live-state APIs materially changes the previously documented G architecture.
+Prefer one coherent commit per narrow roadmap step.
+
+Second Brain updates are **approval-gated**. Codex may propose a consolidated end-of-family reconciliation or an earlier material correction, but it must show the proposed files/actions/content and wait for Vuk's explicit approval before editing `Second_Brain/**`.
+
+For model/effort guidance and execution strategy, see `docs/workflow/AI_MODEL_POLICY.md` and `16_Codex_Session_Workflow.md`.
 
 ## Next phase
-See `15_Current_Phase.md`: **G2 — Official League State Contracts**.
+For FPL, inspect current `main` and the latest merged PRs before following historical phase labels in these notes.
+
+For Fantacalcio, start at `Fantacalcio/00_HOME.md`.
