@@ -148,3 +148,69 @@ For every candidate source evaluate:
 Do not select advanced stats merely because they exist. They must have football justification and prove useful in leakage-safe evaluation.
 
 Prefer a smaller set of coherent reliable providers over a fragile collection of scrapers when the engineering/licensing tradeoff supports it.
+
+
+## First-auction source bootstrap — 5-hour sprint
+
+The first auction release may bootstrap from existing community datasets/projects rather than rebuilding every source connector from zero, provided every artifact is pinned, checksummed, inspected and independently quality-gated.
+
+Current evidence-supported source order:
+
+1. **`0novanta/tool-asta-fantacalcio` — primary bootstrap candidate**
+   - current 2026/27 Classic-oriented auction project;
+   - Fantacalcio statistics/quotations files covering many seasons through 2026/27;
+   - season-organized advanced football statistics;
+   - a prebuilt public SQLite artifact;
+   - useful as a fast bootstrap, **not automatically trusted as canonical truth**.
+
+2. **`piopy/fantacalcio-py` — current-season enrichment/reference**
+   - actively updated in September 2026;
+   - contains current-season acquisition/merge logic using sources such as Understat/Fantacalciopedia and optional external providers;
+   - reuse only source paths that pass a live smoke test and access/terms review;
+   - do not depend on private credentials, brittle DNS workarounds or opaque external services merely because the project contains them.
+
+3. **API-Football — fallback current feed**
+   - use only if required current minutes/starts/injuries/identity cannot be established reliably from the bootstrap/current-source stack;
+   - avoid adding paid/provider complexity unless it materially improves the release.
+
+4. **`uPeppe/fantabeto` — modelling/historical methodology reference**
+   - useful for vote/fantavote, goalkeeper separation, uncertainty and defense-modifier ideas;
+   - its old scraping layer is not a 2026 production dependency.
+
+Every external-repository artifact used must record:
+- repository;
+- exact commit SHA;
+- file path;
+- checksum;
+- season;
+- observed/retrieval time;
+- original-source attribution where known;
+- licensing/terms caveat;
+- freshness warning.
+
+Do not vendor entire external repositories or assume that a public GitHub file grants unrestricted redistribution rights. Prefer compact derived private-release artifacts and manifests.
+
+## Data release readiness tiers
+
+Data has two distinct readiness levels:
+
+### AUCTION_POOL_READY
+Enough to power canonical search/selection:
+- current 2026/27 selectable identity is complete;
+- Classic role is complete;
+- club and eligibility are explicit;
+- current identities are unique;
+- provenance is pinned;
+- no unresolved current-player collision exists.
+
+### MODEL_READY
+Required before any statistical projection is trusted:
+- all AUCTION_POOL_READY gates pass;
+- historical/current feature data passes the full integrity audit;
+- critical duplicate/coverage/consistency checks pass;
+- temporal leakage violations = 0;
+- target leakage violations = 0;
+- chronological split integrity passes;
+- overall Data Quality Score meets the approved threshold.
+
+A dataset may be AUCTION_POOL_READY but not MODEL_READY. In that case the recorder may use the real player pool, but statistical recommendations remain disabled.

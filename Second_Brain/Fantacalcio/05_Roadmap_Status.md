@@ -4,33 +4,38 @@
 
 Project review/architecture research: COMPLETE.
 
-FA0A architecture audit + league-rule questionnaire: **COMPLETE**.
+FA0 — Rules & architecture freeze: **COMPLETE**.
 
-FA0B rules/architecture contract freeze: **COMPLETE**.
+FA1 — shell + Vuk-only authorization: **COMPLETE**.
 
-**FA0 — Rules & architecture freeze: COMPLETE.**
+FA2-S — reliable auction ledger: **COMPLETE + production migration deployed**.
 
-**FA1 — Fantacalcio shell + authorization: COMPLETE.**
+FA3-S — laptop auction recorder: **COMPLETE + PR #50 merged**.
 
-Production verification passed after PR #47:
-- Vuk-only capability/RLS grant is live;
-- Fantacalcio product entry works;
-- Fantacalcio ↔ FPL switching works;
-- logout/login works;
-- existing FPL behavior remains available.
+FD1-S — emergency source research: **COMPLETE**.
 
-**Current delivery mode: 9-hour official-auction sprint.**
+**Current delivery mode: 5-hour official-auction sprint.**
 
-Current sprint task: **FA2-S — reliable auction ledger engine**.
+The product core is now working. The highest-risk remaining dependency is data quality.
 
-The long-term roadmap below remains the post-auction architecture. During the sprint, phases may be compressed according to `07_Auction_Sprint.md` when doing so preserves correctness and directly improves auction readiness.
+Current task:
 
-Remaining uncertainty is narrow and explicitly tracked:
-- season-ending injury refund is unconfirmed;
-- full upper defense-modifier table/cap is unconfirmed;
-- auction position sequence will be selected when the asta starts.
+**FD2-QA — canonical current/historical dataset + mandatory integrity audit.**
 
-These uncertainties do not block the initial auction recorder.
+No statistical model may start from unapproved data. FD2-QA must explicitly produce:
+- a pinned canonical release;
+- an `AUCTION_POOL_READY` verdict;
+- a `MODEL_READY` verdict;
+- a 0–100 Data Quality Score;
+- hard-gate results for duplicates, identity, coverage, missing games, cross-source consistency and leakage.
+
+If `MODEL_READY` fails, repair/drop the bad source or fall back to a simpler clean dataset. Do not lower the gate to save time.
+
+After FD2-QA passes, the remaining work is intentionally compressed:
+
+`FM-S → FE-S → data/model integration → final rehearsal/freeze`.
+
+The long-term roadmap below remains the post-auction architecture.
 
 ## Confirmed 2026/27 league contract
 
@@ -49,17 +54,21 @@ These uncertainties do not block the initial auction recorder.
 - trades allowed after initial auction;
 - one repair auction after winter transfer market closes in 2027.
 
-## 9-hour sprint override
+## 5-hour sprint override
 
-The hard delivery constraint is a usable official-auction system within the current 9-hour project timebox.
+Approximately five hours remain in the official-auction sprint.
+
+The recorder/ledger core is complete, so the remaining sprint optimizes for:
+
+**data integrity > defensible baseline model > auction economics > integration polish.**
 
 During this sprint:
-- reliable auction recording is non-negotiable;
-- simple validated data/model methods are preferred over rushed complex methods;
-- full roadmap phases may be compressed into sprint variants;
-- no fake player/model data may be introduced;
-- security, ownership/budget correctness and recoverability are not optional;
-- documentation/onboarding/re-audit work is minimized unless it prevents a real error;
+- no model is trained on a release that is not `MODEL_READY`;
+- source quantity is not a goal; use the smallest source stack that passes the integrity gate;
+- simple validated modelling is preferred over rushed complexity;
+- if a source is dirty, stale or ambiguous, drop it rather than forcing it into the dataset;
+- the real current player pool may ship independently as `AUCTION_POOL_READY`;
+- full model tournaments, Monte Carlo and broad UI polish remain deferred;
 - the full roadmap resumes after the auction.
 
 See `07_Auction_Sprint.md` for the active sequence and cut line.
@@ -100,7 +109,7 @@ Completion:
 - other FPL accounts fail authorization;
 - existing FPL behavior unaffected.
 
-## FA2 — Auction ledger engine
+## FA2 — Auction ledger engine — COMPLETE
 
 **Objective:** build reliable real-time auction state.
 
@@ -121,7 +130,7 @@ Completion:
 - max legal bid respects remaining mandatory slots;
 - corrections safe.
 
-## FA3 — Laptop auction MVP
+## FA3 — Laptop auction MVP — COMPLETE
 
 **Objective:** make the system usable at the table.
 
@@ -138,7 +147,7 @@ Completion:
 - state persists correctly;
 - desktop rehearsal passes.
 
-## FD1 — Serie A/Fantacalcio source and API research
+## FD1 — Serie A/Fantacalcio source and API research — COMPLETE
 
 **Objective:** choose trustworthy sources before building the data pipeline.
 
@@ -166,9 +175,10 @@ Evaluate:
 - unique predictive value.
 
 Completion:
-- approved/rejected source matrix;
-- small source set selected;
-- no important field relies on an unverified scraper by accident.
+- external source options researched;
+- current 2026/27 community projects/datasets identified;
+- source bootstrap strategy is now recorded in `02_Architecture_Data.md`;
+- every artifact still must pass FD2-QA before canonical/model use.
 
 ## FD2 — Canonical identity/data layer
 

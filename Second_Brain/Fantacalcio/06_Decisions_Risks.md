@@ -64,8 +64,8 @@ Do not derive Fantacalcio authorization from:
 
 Missing capability means denied. This decision intentionally avoids turning the initial implementation into a broad generic RBAC system unless a future requirement justifies one.
 
-### F-D015 — 9-hour official-auction sprint override
-A hard 9-hour delivery constraint now governs the immediate pre-auction work.
+### F-D015 — Initial 9-hour official-auction sprint override
+The immediate pre-auction work was initially constrained to a 9-hour sprint.
 
 The full roadmap remains the long-term architecture, but the current auction cycle prioritizes the smallest reliable path to:
 - secure access;
@@ -81,6 +81,50 @@ During this sprint:
 - full model tournaments, Monte Carlo, opponent psychology, mobile polish and continuous refresh are deferred unless core auction readiness is already complete;
 - new sessions should use targeted delta retrieval rather than repeated full onboarding/audits;
 - Second Brain edits should be limited to durable decisions or a final sprint checkpoint, not routine step-by-step status churn.
+
+### F-D016 — 5-hour reset: data integrity is now the critical path
+After FA2-S and FA3-S completion, approximately five sprint hours remain.
+
+The remaining order of priority is:
+1. prove the canonical dataset is trustworthy;
+2. build a simple leakage-safe baseline only if the data is `MODEL_READY`;
+3. derive auction economics;
+4. integrate and rehearse.
+
+The deadline must reduce scope, not data-integrity standards.
+
+### F-D017 — Community-data bootstrap before new paid/provider infrastructure
+For the first auction release, bootstrap from already-existing current Fantacalcio/Serie A projects and datasets when they save time, but treat them as **untrusted inputs until verified**.
+
+Current source order:
+- `0novanta/tool-asta-fantacalcio`: primary bootstrap candidate for current listone/roles, multi-season Fantacalcio files, advanced stats and SQLite;
+- `piopy/fantacalcio-py`: current-season enrichment/reference where live source paths still work;
+- API-Football: fallback only when required current evidence cannot otherwise be verified;
+- `uPeppe/fantabeto`: modelling/historical methodology reference, not a live ingestion dependency.
+
+Every used artifact must be pinned by commit/version/path/checksum and carry freshness/source caveats.
+
+### F-D018 — Model-readiness gate and Data Quality Score
+No statistical model or auction recommendation may be trusted from a release that fails the mandatory data-integrity gate.
+
+Every frozen release receives a 0–100 Data Quality Score:
+- provenance/reproducibility: 10;
+- schema/value validity: 10;
+- identity/duplicates: 20;
+- coverage/missingness: 20;
+- cross-source consistency: 15;
+- temporal/leakage safety: 25.
+
+`MODEL_READY` requires:
+- score >= 90;
+- zero critical hard failures;
+- zero temporal leakage violations;
+- zero target leakage violations;
+- zero split-overlap violations.
+
+A hard failure cannot be averaged away by a high score.
+
+`AUCTION_POOL_READY` is a separate lower-level status for the real current player pool and requires complete unique current identity, Classic role, club/eligibility and provenance even when historical model data is not yet ready.
 
 ## Key risks
 

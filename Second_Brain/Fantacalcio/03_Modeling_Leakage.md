@@ -152,3 +152,173 @@ Player explanations must be grounded in actual features/evidence rather than gen
 Avoid unsupported precision, especially for injury risk and uncertain new signings.
 
 The season-ending injury-refund rule is not yet confirmed, so do not use assumed refund protection to reduce injury-risk penalties in the production valuation.
+
+
+## Mandatory pre-model data-integrity gate
+
+**No model training, ranking or auction-value recommendation may be trusted until the input release is `MODEL_READY`.**
+
+The integrity gate is a hard prerequisite, not a cosmetic report.
+
+### Hard-fail conditions
+
+Any of the following blocks `MODEL_READY` until repaired or the affected source/season is excluded:
+
+- wrong season/competition;
+- missing current Classic role for a selectable player;
+- unresolved current-player identity collision;
+- duplicate canonical/sample key that can change training weight or ownership identity;
+- silent many-to-many join explosion;
+- materially incomplete match/gameweek coverage used as if complete;
+- orphan player-match rows;
+- silent numeric parse failure coerced to zero;
+- undocumented source freshness/cutoff;
+- feature timestamp after prediction cutoff;
+- target-period information in features;
+- target-derived fields in the feature matrix;
+- train/validation/test overlap across the declared prediction boundary;
+- shuffled-target control performing implausibly like the real model without explanation.
+
+A high aggregate score can **never compensate for a hard failure**.
+
+## Data Quality Score — 0 to 100
+
+Every frozen research release must calculate a reproducible score with evidence for each component:
+
+| Component | Weight |
+| --- | ---: |
+| Provenance & reproducibility | 10 |
+| Schema & value validity | 10 |
+| Identity & duplicate integrity | 20 |
+| Coverage & missingness | 20 |
+| Cross-source consistency | 15 |
+| Temporal / leakage safety | 25 |
+| **Total** | **100** |
+
+### Interpretation
+
+- **90–100 + zero hard failures:** `MODEL_READY`
+- **80–89:** usable for investigation / possibly `AUCTION_POOL_READY`, but **not approved for statistical modelling**
+- **<80:** blocked
+- any hard failure: blocked regardless of score
+
+The score is diagnostic and comparable across releases; it must not hide which sub-gate failed.
+
+## Required integrity audits
+
+### Raw provenance
+For every used artifact record source, exact Git/provider version, path, checksum, schema, season, retrieval/observed time and freshness.
+
+Raw input must not be silently overwritten.
+
+### Schema/value validity
+Validate field types and football constraints. Examples:
+- starts <= appearances;
+- minutes >= 0;
+- appearances >= 0;
+- valid P/D/C/A or POR/DIF/CEN/ATT role;
+- no blank current identity;
+- impossible values quarantined, not silently converted.
+
+`NULL` and zero are different states.
+
+### Duplicate integrity
+Audit all grains actually used, including where available:
+- source + source_player_id;
+- canonical_player_id + season;
+- season + fixture_id;
+- season + team + fixture_id;
+- season + canonical_player_id + fixture_id.
+
+Also detect suspicious near-duplicates created by joins/concatenation.
+
+### Fixture/match coverage
+For each completed match-level Serie A season used in training:
+- derive expected competition structure;
+- for a standard 20-team double round-robin season, expected matches = 380;
+- compare expected vs observed fixtures, teams, matchdays and per-team matches;
+- explicitly list missing/duplicate fixtures.
+
+For current 2026/27 data, compare only with fixtures completed up to the declared data cutoff.
+
+A materially incomplete match-level season must be repaired or excluded rather than silently trained.
+
+### Player-match coverage
+Where player-match data exists:
+- fixture exists;
+- player's team participated;
+- one player-fixture row at the intended grain;
+- minutes/starts/sub appearances plausible;
+- no orphan mappings.
+
+### Missingness semantics
+For every important field report missing percentage and classify missingness when possible as:
+- EXPECTED;
+- NEW_PLAYER;
+- NO_APPEARANCE;
+- SOURCE_UNAVAILABLE;
+- JOIN_FAILURE;
+- UNKNOWN.
+
+Critical current identity/club/role/eligibility fields may not be silently missing.
+
+### Cross-source consistency
+For overlapping sources compare identity, club, season, appearances, starts, minutes, goals and assists where definitions permit.
+
+Document provider-definition differences. Do not average contradictory values blindly.
+
+### Temporal/leakage classification
+Every modelling field must be tagged:
+- `BACKTEST_SAFE`;
+- `CURRENT_ONLY`;
+- `TARGET_ONLY`;
+- `UNSAFE`.
+
+Historical rows must satisfy:
+
+```text
+feature_max_timestamp <= prediction_cutoff
+prediction_cutoff < target_start_timestamp
+```
+
+Current-only snapshots may improve tonight's live ranking but cannot enter historical backtests unless equivalent historical as-of snapshots exist.
+
+### Chronological evaluation
+Random train/test split is not acceptable.
+
+Use future-like chronological validation with:
+- stable sample keys;
+- zero train/test overlap;
+- train-only preprocessing;
+- later-season holdout;
+- explicit cutoff dates.
+
+### Negative controls
+Any trained statistical model must include:
+- shuffled-target control;
+- random/noise-feature control;
+- simple baseline comparison.
+
+If nonsense controls perform similarly to the real model, stop and investigate leakage/evaluation failure.
+
+## Required release report
+
+Before FM-S begins, create a machine-readable and human-readable quality report containing at least:
+
+- source integrity status;
+- current-player identity status;
+- duplicate counts/resolution;
+- fixture coverage by season;
+- player-match coverage where used;
+- missingness table;
+- cross-source reconciliation warnings;
+- temporal leakage violations;
+- target leakage violations;
+- split-overlap violations;
+- component DQ scores;
+- overall DQ score;
+- `AUCTION_POOL_READY` YES/NO;
+- `MODEL_READY` YES/NO;
+- exact blockers/warnings.
+
+FM-S may begin only when `MODEL_READY = YES`.
