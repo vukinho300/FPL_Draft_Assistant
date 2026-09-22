@@ -1871,13 +1871,13 @@
     }
   ],
   "cutoff": "2026-09-22T15:27:24.030803+00:00",
-  "input_selection_sha256": "1706a6b8789be7d9bc4201ef712c26c4331068d123667935ecf225fb5067188f",
+  "input_selection_sha256": "0bd41587b721c95f3b833cfd95d7d185cbdae8ff6544cda826f82a3cdd2f0b1c",
   "pipeline_sha256": {
     "__init__.py": "149587c2f8bca099eb634568bc0745474d74983c9fb1dad41167a5a46242f4b3",
     "acquire_snapshots.py": "a55e2d0f1c66b1a55df6c78ffbba79b156064233d19c3421f64995df8bf1c380",
     "adapters.py": "eabd6428fa3ea4faf53b9d11240e46d6906ae355b5e688af4ba9fc159f04452e",
-    "integrity.py": "db03a386d0440d04f96fc87ad8d01b461821a458318aef72bdefa6d1d5da8252",
-    "release.py": "9b13655196bd9ed1529bb11bec97629b100d1d99c86259a35b4cbb45097b703d"
+    "integrity.py": "7e906ad9da4b1a8b6a86d7f619550ac9daf309e19c2a30b18659bae265a4ca17",
+    "release.py": "d57e04d5492cc719239a532bf59a677a0ad5b9919d43ce8dff71a38c92dd8d34"
   },
   "primary_commit": "5ec6e1afbee2ed7dd52c4fdb87595c242d13b8b2",
   "reference_commit": "4dda14a8dd2ab24c2f30404c65d317e1d4cc84a4",

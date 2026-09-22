@@ -71,11 +71,17 @@ the existing release. The source audit records the failed robots request as well
 
 ## Strict temporal gate
 
-The current pinned historical files are proven available by the September 2026 source commit.
-Their season labels do not prove publication before a 2022–2025 historical prediction cutoff.
-Candidate samples are explicitly enumerated and rejected by the known-at-time guard. Historical
-aggregates remain useful current-only evidence, but this release does not certify historical
-backtesting. No old timestamps are invented.
+FD2-QA2 adds `BACKTEST_SAFE_EVENT_WINDOW` for verified final **prior-season event totals**: PV,
+goals, assists, cards, penalties, own goals and goals conceded. The source workbook title and
+schema establish season scope; its player-season totals do not include a target season or current
+market snapshot. The analytical event window closes at the target season's July 1 start, after the
+June 30 prediction cutoff's final second. This is a bound, not a claimed match timestamp.
+
+The pinned historical files are only proven available in September 2026. That publication time
+remains unchanged in every record and receives zero publication-cutoff credit in DQ scoring.
+`RETROSPECTIVE_SOURCE_REVISION_RISK` warns that later corrections of prior-season events cannot be
+ruled out. Such data are suitable for a qualified retrospective event-window evaluation, not an
+assertion that the old file bytes existed at the prediction cutoff. No old timestamps are invented.
 
 Candidate chronological evaluation: target seasons 2022/23–2023/24 training, 2024/25 validation,
 2025/26 untouched holdout; previous-season features only. Analytical target periods run July 1
@@ -83,8 +89,10 @@ through June 30, with a cutoff immediately before the target period. These are c
 not inferred fixture dates. Repeated players across seasons are allowed; duplicate sample keys or
 overlapping observations are forbidden. No training occurs in this package.
 
-Every field is classified BACKTEST_SAFE, CURRENT_ONLY, TARGET_ONLY or UNSAFE. Current FVM, clubs,
-injuries and season aggregates are never backfilled into past folds. Target/future fields are denied.
+Every field is classified BACKTEST_SAFE, BACKTEST_SAFE_EVENT_WINDOW, CURRENT_ONLY, TARGET_ONLY or
+UNSAFE. Historical MV/FM are excluded as predictors pending separate semantic review. Current FVM,
+quotations, clubs, roles, injuries, starter and set-piece evidence never enter past folds. Target
+values are observed after target seasons but never enter features.
 
 ## DQ scoring and readiness
 
@@ -93,12 +101,14 @@ The fixed component weights are 10 provenance, 10 schema, 20 identity/duplicates
 mean of named measured pass fractions in `data_quality_report.json`. Unknown checks receive zero.
 Coverage includes actual historical mapping rate; expected missing history is not called a join
 failure. Cross-source scoring explicitly withholds credit for complete independent-provider current
-reconciliation, which was not performed. Historical publication-time proof receives zero credit.
+reconciliation, which was not performed. Historical publication-time proof remains zero. Added
+measured temporal fractions cover prior-season event-window bounds and feature whitelist compliance;
+the original difficult metric is retained.
 
 `AUCTION_POOL_READY` evaluates only current identity/role/club/eligibility/provenance correctness.
 `MODEL_READY` additionally requires score >=90, no hard failures, no temporal/target leakage and no
-split overlap. Rejected candidate temporal violations are counted and block readiness even though
-none enters an admitted feature matrix. A high score cannot waive them. Rights clearance is a
+split overlap. Any rejected candidate or admitted temporal violation blocks readiness. A high score
+cannot waive hard failures. Rights clearance is a
 separate unresolved deployment concern and cannot be inferred from either technical flag.
 
 ## Tests
@@ -115,5 +125,5 @@ join multiplication, conflicting transfer totals, actual workbook schemas and st
 missing critical fields, wrong seasons, leakage/denylist rejection, split overlap, score hard-failure
 override and byte-identical offline reruns. Synthetic tests are labelled and never enter a release.
 
-The next task is an independent gate review. Do not train a model from this release until the
-reported temporal blockers are repaired or an explicitly reviewed evaluation design resolves them.
+The next task is independent review of the narrower event-window certificate and revision risk.
+This task does not train a model.
