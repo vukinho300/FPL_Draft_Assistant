@@ -1,0 +1,186 @@
+{
+  "PROJECTION_READY": true,
+  "code_hashes": {
+    "__init__.py": "4cd5582d926384fd9c652ef61fd68661949a93a1c74277808a3c95d83501d753",
+    "core.py": "70df48dc6d248c2dd38165ca6e06d0a04f2c98e3d6d958d5cde706d56649cafe",
+    "experiment.py": "b25281a26f2b61e6d4e215d2d6cc5255a1e0a1d09f357401c5c8cc90d5b36aff"
+  },
+  "cold_start_previous_season_rows_missing": 171,
+  "confidence_counts": {
+    "LOW": 306,
+    "MEDIUM": 228
+  },
+  "content_sha256": "b87cf673a8375edf1ca6100b2af117395bcbf79de2eb04fb4fc0de9312c520ca",
+  "current_player_count": 534,
+  "current_pool_fingerprint": "23c87c62455df0110862a1d8dd32545d5dd213d66c6be543370b8bf84861eedc",
+  "current_projection_deterministic_rerun": "PASS",
+  "current_update_strengths": {
+    "availability_equivalent_matches": 2.0,
+    "availability_formula": "clip(mean(p*(1-p))/(var(PV/38-p)-mean(p*(1-p))/38)-1,2,38), train residual moments",
+    "production_basis": "Best validation shrinkage baseline k, reused as a stated current-update approximation",
+    "production_equivalent_rated_appearances": 30
+  },
+  "data_as_of": "2026-09-22T15:27:24.030803+00:00",
+  "feature_fields": [
+    "PV",
+    "goals",
+    "assists",
+    "yellow_cards",
+    "red_cards",
+    "goals_conceded",
+    "penalties_taken",
+    "penalties_scored",
+    "penalties_missed",
+    "penalties_saved",
+    "own_goals"
+  ],
+  "feature_transform": "PV count plus event counts / max(PV,1)",
+  "holdout_interval_coverage": 0.7793103448275862,
+  "holdout_naive_reference": {
+    "FM_weighted_mae": 0.3359495036165021,
+    "PV_mae": 8.875862068965517,
+    "n": 435,
+    "rated_n": 364,
+    "spearman": 0.5163010897741155,
+    "top50_recall": 0.32,
+    "total_proxy_mae": 55.74320424250165,
+    "total_proxy_rmse": 77.01280237948797
+  },
+  "holdout_protocol": "Selection frozen first; fixed winner refit on train+validation; one predeclared final evaluation configuration.",
+  "holdout_reselected": false,
+  "holdout_selected": {
+    "FM_weighted_mae": 0.33092708565981277,
+    "PV_mae": 8.985058417292622,
+    "n": 435,
+    "rated_n": 364,
+    "spearman": 0.5159124836880598,
+    "top50_recall": 0.26,
+    "total_proxy_mae": 56.11410397261667,
+    "total_proxy_rmse": 68.55157016951635
+  },
+  "input_DQ": 90.305,
+  "input_release": "fd2qa-2026-09-22-c8ce1b1e8b5f",
+  "leakage_assertions": {
+    "certified_features_only": true,
+    "current_snapshots_in_backtest": false,
+    "historical_MV_FM_in_features": false,
+    "holdout_used_for_selection": false,
+    "market_values_in_model": false,
+    "split_overlap": 0
+  },
+  "negative_controls": {
+    "fixed_persistence_note": "Shuffling training labels cannot erase a fixed prior-PV rule; outcome-pairing and noise controls test that rule.",
+    "passed": true,
+    "required_controls": [
+      "random_feature_columns",
+      "shuffled_validation_outcomes",
+      "shuffled_training_targets"
+    ],
+    "summaries": {
+      "random_feature_columns": {
+        "median_spearman": -0.010613633607000458,
+        "median_total_proxy_mae": 70.50423982798984,
+        "p95_spearman": 0.04488387194635408,
+        "repeats": 20
+      },
+      "shuffled_training_targets": {
+        "median_spearman": 0.07328031661469153,
+        "median_total_proxy_mae": 70.1724453851098,
+        "p95_spearman": 0.3897818062648397,
+        "repeats": 20
+      },
+      "shuffled_validation_outcomes": {
+        "median_spearman": 0.0141757813390988,
+        "median_total_proxy_mae": 76.0969351386275,
+        "p95_spearman": 0.08276541752108053,
+        "repeats": 20
+      }
+    }
+  },
+  "prices_calculated": false,
+  "production_training_samples": 1735,
+  "protocol_sha256": "12c9ba3d50125a0ef38b18a44892453c0c1486f36c04d789a6bf1facca025a07",
+  "release_id": "fms-2026-09-22-b87cf673a837",
+  "rights_status": "LOCAL_ONLY",
+  "runtime": {
+    "numpy": "2.3.5",
+    "python": "3.12.14"
+  },
+  "selected_model": {
+    "k": 30,
+    "kind": "shrink",
+    "name": "shrink_k30"
+  },
+  "selection_sha256": "30a59dafd7937be276a95fc7410e84756607e994c8beada094876e68142bc16a",
+  "split_counts": {
+    "holdout": 435,
+    "train": 876,
+    "validation": 424
+  },
+  "validation_comparisons": {
+    "naive_prior": {
+      "FM_weighted_mae": 0.3094759371678615,
+      "PV_mae": 8.950471698113208,
+      "n": 424,
+      "rated_n": 362,
+      "spearman": 0.5114297857290088,
+      "top50_recall": 0.4,
+      "total_proxy_mae": 56.66495720418537,
+      "total_proxy_rmse": 77.24297602201703
+    },
+    "ridge_a10": {
+      "FM_weighted_mae": 0.30718042286924685,
+      "PV_mae": 8.918794949058563,
+      "n": 424,
+      "rated_n": 362,
+      "spearman": 0.5067304870752919,
+      "top50_recall": 0.38,
+      "total_proxy_mae": 56.070317724988634,
+      "total_proxy_rmse": 69.11936889799736
+    },
+    "shrink_k15": {
+      "FM_weighted_mae": 0.31582637357870447,
+      "PV_mae": 8.869924187920073,
+      "n": 424,
+      "rated_n": 362,
+      "spearman": 0.5121108835101061,
+      "top50_recall": 0.4,
+      "total_proxy_mae": 55.979133055162166,
+      "total_proxy_rmse": 68.9584380269409
+    },
+    "shrink_k30": {
+      "FM_weighted_mae": 0.3413696828175354,
+      "PV_mae": 8.869924187920073,
+      "n": 424,
+      "rated_n": 362,
+      "spearman": 0.5124794302830414,
+      "top50_recall": 0.38,
+      "total_proxy_mae": 55.95359879427691,
+      "total_proxy_rmse": 68.98697754051494
+    },
+    "shrink_k5": {
+      "FM_weighted_mae": 0.30360399506856767,
+      "PV_mae": 8.869924187920073,
+      "n": 424,
+      "rated_n": 362,
+      "spearman": 0.5103103436371959,
+      "top50_recall": 0.4,
+      "total_proxy_mae": 55.98740507536894,
+      "total_proxy_rmse": 68.95160416702814
+    }
+  },
+  "warnings": [
+    "RETROSPECTIVE_SOURCE_REVISION_RISK",
+    "PV measures rated appearances, not minutes/starts or medical availability.",
+    "PV times rounded FM is an approximate source fantasy total, not exact league points.",
+    "Clean-sheet bonus and defense modifier are unmodeled; current MV is descriptive evidence only.",
+    "The baseline event signal omits own-goal penalties because their league coefficient was not established in the scoped rules; source FM is the observed target.",
+    "Historical evaluation is conditional on a player existing in both adjacent source seasons; exits and cold starts are not validated.",
+    "Five elapsed/33 remaining opportunities are a source-PV proxy, not verified per-team fixtures or transfer exposure.",
+    "Current shrinkage is explicit but cannot be historically validated within-season from season aggregates.",
+    "Intervals use validation residuals and heuristic current scaling; they are not calibrated live probabilities.",
+    "No verified injuries, starts, minutes or tactical/set-piece evidence; role/club only label and rank outputs.",
+    "Overall rank is contribution order, not positional scarcity, lineup utility or auction credit value.",
+    "Source data and derived predictions remain local; product reuse rights unresolved."
+  ]
+}

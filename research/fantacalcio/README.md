@@ -1,7 +1,8 @@
 # Fantacalcio FD2-QA canonical release
 
-Research-only source adapters and mandatory data-integrity gate. This package does not train a model,
-rank players, calculate auction prices, modify the application, or connect to production.
+Research-only source adapters and mandatory data-integrity gate. The data pipeline does not train
+models. The separate [FM-S modelling package](modelling/README.md) now provides qualified baseline
+projections and ranks. Neither package calculates auction prices, modifies the app or connects to production.
 
 ## Selected inputs
 
@@ -87,7 +88,7 @@ Candidate chronological evaluation: target seasons 2022/23–2023/24 training, 2
 2025/26 untouched holdout; previous-season features only. Analytical target periods run July 1
 through June 30, with a cutoff immediately before the target period. These are candidate boundaries,
 not inferred fixture dates. Repeated players across seasons are allowed; duplicate sample keys or
-overlapping observations are forbidden. No training occurs in this package.
+overlapping observations are forbidden. No training occurs in the data pipeline.
 
 Every field is classified BACKTEST_SAFE, BACKTEST_SAFE_EVENT_WINDOW, CURRENT_ONLY, TARGET_ONLY or
 UNSAFE. Historical MV/FM are excluded as predictors pending separate semantic review. Current FVM,
@@ -125,5 +126,5 @@ join multiplication, conflicting transfer totals, actual workbook schemas and st
 missing critical fields, wrong seasons, leakage/denylist rejection, split overlap, score hard-failure
 override and byte-identical offline reruns. Synthetic tests are labelled and never enter a release.
 
-The next task is independent review of the narrower event-window certificate and revision risk.
-This task does not train a model.
+FD2-QA2 is the accepted input to FM-S. See the [projection report](reports/fm_s_report.md) and
+[verification record](reports/fm_s_verification.md) for the fixed model selection and final holdout.
