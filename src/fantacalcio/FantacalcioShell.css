@@ -1,78 +1,8 @@
-.fantacalcio-shell {
-  min-height: calc(100vh - 3.5rem);
-  color: #eaf2ff;
-  background: #071a35;
-}
-
-.fantacalcio-shell-layout {
-  display: grid;
-  grid-template-columns: minmax(13rem, 17rem) minmax(0, 1fr);
-  min-height: calc(100vh - 3.5rem);
-}
-
-.fantacalcio-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: .8rem;
-  padding: 2rem 1.5rem;
-  background: #0b2347;
-  border-right: 1px solid #244a78;
-}
-
-.fantacalcio-brand-mark {
-  display: grid;
-  place-items: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: .85rem;
-  background: #3979db;
-  color: #fff;
-  font-size: 1.5rem;
-  font-weight: 900;
-}
-
-.fantacalcio-sidebar div { display: grid; gap: .15rem; }
-.fantacalcio-sidebar strong { font-size: 1.15rem; }
-.fantacalcio-sidebar span:not(.fantacalcio-brand-mark),
-.fantacalcio-sidebar p { color: #adc8ef; }
-.fantacalcio-sidebar p { margin-top: auto; }
-
-.fantacalcio-welcome {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  max-width: 50rem;
-  padding: clamp(2rem, 5vw, 5rem);
-}
-
-.fantacalcio-eyebrow {
-  color: #8fbcff;
-  font-size: .8rem;
-  font-weight: 800;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
-
-.fantacalcio-welcome h1 { margin: 1.25rem 0; font-size: clamp(2.2rem, 4vw, 4rem); line-height: 1.08; }
-.fantacalcio-welcome p { max-width: 37rem; color: #c1d4f0; font-size: 1.1rem; line-height: 1.65; }
-.fantacalcio-welcome button {
-  min-height: 44px;
-  margin-top: 1.5rem;
-  padding: .7rem 1.1rem;
-  border: 0;
-  border-radius: .65rem;
-  color: #071a35;
-  background: #83b9ff;
-  font: inherit;
-  font-weight: 800;
-  cursor: pointer;
-}
-.fantacalcio-welcome button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
-
-@media (max-width: 700px) {
-  .fantacalcio-shell-layout { grid-template-columns: minmax(0, 1fr); }
-  .fantacalcio-sidebar { border-right: 0; border-bottom: 1px solid #244a78; }
-  .fantacalcio-sidebar p { margin: 0; }
-  .fantacalcio-welcome { justify-content: flex-start; }
-}
+.fantacalcio-shell { min-height: calc(100vh - 3.5rem); color: #eaf2ff; background: #071a35; }
+.fantacalcio-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem clamp(1rem, 3vw, 2.5rem); border-bottom: 1px solid #244a78; background: #0b2347; }.fantacalcio-header > div:first-child { display: flex; align-items: center; gap: .65rem; }.fantacalcio-header strong { font-size: 1.1rem; }.fantacalcio-header span:not(.fantacalcio-brand-mark) { color: #adc8ef; font-size: .9rem; }.fantacalcio-brand-mark { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: .6rem; background: #3979db; color: #fff; font-weight: 900; }.fantacalcio-header-actions { display: flex; gap: .6rem; }
+button, input, select { font: inherit; }button { min-height: 40px; padding: .45rem .75rem; border: 1px solid #5c93d6; border-radius: .5rem; color: #eaf2ff; background: #143a6b; cursor: pointer; font-weight: 700; }button:disabled { cursor: not-allowed; opacity: .55; }button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.fantacalcio-status { max-width: 45rem; padding: 5rem clamp(1rem, 5vw, 5rem); }.fantacalcio-status p { color: #c1d4f0; }.fantacalcio-eyebrow { color: #8fbcff; font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.auction-recorder-layout { display: grid; grid-template-columns: minmax(18rem, .8fr) minmax(33rem, 1.8fr); gap: 1rem; max-width: 110rem; margin: 0 auto; padding: 1rem clamp(1rem, 3vw, 2.5rem) 2.5rem; }.auction-entry, .manager-board, .auction-history { padding: 1.25rem; border: 1px solid #244a78; border-radius: .75rem; background: #0b2347; }.auction-entry { grid-row: span 2; }.auction-entry h1, .manager-board h2, .auction-history h2 { margin: .4rem 0 1rem; }.manual-notice { color: #b7cce9; line-height: 1.45; }.auction-entry form { display: grid; gap: .9rem; }.auction-entry label { display: grid; gap: .35rem; color: #cde0fb; font-size: .85rem; font-weight: 800; }.auction-entry input, .auction-entry select { min-height: 44px; padding: .55rem .65rem; border: 1px solid #4e78ab; border-radius: .45rem; color: #eef6ff; background: #071a35; }.sale-check { display: grid; gap: .5rem; padding: .75rem; border-radius: .5rem; color: #b7cce9; background: #09203f; }.sale-check span { display: flex; justify-content: space-between; gap: .75rem; }.sale-check strong { color: #fff; }.record-sale { color: #071a35; background: #83b9ff; border-color: #83b9ff; }.auction-message { padding: .75rem; border-radius: .5rem; color: #dcecff; background: #12345d; line-height: 1.4; }
+.manager-grid { display: grid; grid-template-columns: repeat(4, minmax(10rem, 1fr)); gap: .75rem; }.manager-card { padding: .9rem; border: 1px solid #315882; border-radius: .6rem; background: #09203f; }.manager-card-vuk { border-color: #83b9ff; box-shadow: inset 0 0 0 1px #83b9ff; }.manager-card h3 { margin: 0; }.manager-credits { display: block; margin-top: .65rem; color: #91c2ff; font-size: 2rem; line-height: 1; }.manager-card > span { display: block; margin-top: .3rem; color: #b7cce9; font-size: .78rem; }.manager-card dl { display: grid; grid-template-columns: repeat(4, 1fr); margin: .8rem 0; }.manager-card dl div { display: grid; gap: .15rem; }.manager-card dt { color: #9ebfe4; font-size: .7rem; }.manager-card dd { margin: 0; font-weight: 800; }.manager-card p { margin: 0; color: #b7cce9; font-size: .8rem; }.manager-card p strong { color: #fff; }
+.auction-history { min-height: 15rem; }.auction-history ol { display: grid; gap: .55rem; padding: 0; margin: 0; list-style: none; }.auction-history li { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .65rem; border-radius: .45rem; background: #09203f; }.auction-history li div { display: grid; gap: .2rem; }.auction-history li div span, .auction-history li > span, .empty-history { color: #b7cce9; font-size: .8rem; }.undo-button { width: 100%; margin-top: .6rem; border-color: #a26b6b; background: #4b222b; }.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+@media (max-width: 900px) { .auction-recorder-layout { grid-template-columns: 1fr; }.auction-entry { grid-row: auto; }.manager-grid { grid-template-columns: repeat(2, minmax(10rem, 1fr)); } }@media (max-width: 580px) { .fantacalcio-header { align-items: flex-start; flex-direction: column; }.auction-history li { align-items: flex-start; flex-direction: column; gap: .3rem; }.manager-grid { grid-template-columns: 1fr; } }
