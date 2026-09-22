@@ -7,6 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { FantacalcioShell } from './FantacalcioShell.tsx'
 import { replayAuction, type AuctionEvent } from './auction/ledger.ts'
 import { exportAuctionSnapshot } from './auction/recorder.ts'
+import type { CanonicalPlayer } from './auction/playerPool.ts'
 import type { AuctionRepository, AuctionSnapshot, SaleDraft, UndoDraft } from './auction/repository.ts'
 
 const snapshot: AuctionSnapshot = {
@@ -43,11 +44,11 @@ class MemoryAuctionRepository implements AuctionRepository {
 
 const roots: { root: Root; container: HTMLDivElement }[] = []
 
-async function render(repository: AuctionRepository) {
+async function render(repository: AuctionRepository, canonicalPool?: readonly CanonicalPlayer[]) {
   const container = document.createElement('div')
   document.body.append(container)
   const root = createRoot(container)
-  await act(async () => root.render(<FantacalcioShell repository={repository} onReturnToFpl={vi.fn()} />))
+  await act(async () => root.render(<FantacalcioShell repository={repository} canonicalPool={canonicalPool} onReturnToFpl={vi.fn()} />))
   await settle()
   roots.push({ root, container })
   return container
@@ -82,6 +83,67 @@ afterEach(() => {
 })
 
 describe('Fantacalcio live auction recorder', () => {
+  const pool = Array.from({ length: 534 }, (_, index): CanonicalPlayer => ({
+    playerRef: `fantacalcio:fc:${index + 1}`,
+    displayName: `Canonical Player ${index + 1}`,
+    club: index === 0 ? 'Roma' : 'Test Club',
+    role: index === 0 ? 'DIF' : 'POR',
+    eligibility: 'SELECTABLE',
+  }))
+
+  it('searches the canonical pool, shows club, fills role, and records the stable player reference', async () => {
+    const repository = new MemoryAuctionRepository()
+    const container = await render(repository, pool)
+    setValue(container.querySelector<HTMLInputElement>('input[placeholder="Search 534 players"]')!, 'Canonical Player 1')
+    const result = [...container.querySelectorAll('.player-results button')].find((button) => button.textContent?.includes('Canonical Player 1Roma'))!
+    expect(result).toBeDefined()
+    act(() => result.dispatchEvent(new MouseEvent('click', { bubbles: true })))
+    expect(container.querySelector<HTMLSelectElement>('form label select')?.value).toBe('DIF')
+    expect(container.textContent).toContain('Selected: Canonical Player 1 · Roma · DIF')
+    setValue(container.querySelector<HTMLInputElement>('input[placeholder="Credits"]')!, '20')
+    await act(async () => container.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })))
+    expect(repository.sales[0]).toEqual(expect.objectContaining({ playerRef: 'fantacalcio:fc:1', role: 'DIF', price: 20 }))
+  })
+
+  it('marks sold players unavailable and keeps the two-click correction prominent', async () => {
+    const initial: AuctionSnapshot = { ...snapshot, events: [{ id: 'prior-sale', sequenceNo: 1, clientRequestId: 'prior-request', kind: 'SALE', managerId: 'manager-1', playerRef: 'fantacalcio:fc:1', role: 'DIF', price: 20, recordedAt: '2026-09-22T12:00:00.000Z', note: null }] }
+    const repository = new MemoryAuctionRepository(initial)
+    const container = await render(repository, pool)
+    setValue(container.querySelector<HTMLInputElement>('input[placeholder="Search 534 players"]')!, 'Canonical Player 1')
+    const sold = [...container.querySelectorAll<HTMLButtonElement>('.player-results button')].find((button) => button.textContent?.includes('Canonical Player 1Roma'))!
+    expect(sold.disabled).toBe(true)
+    expect(sold.textContent).toContain('SOLD')
+    const undo = container.querySelector<HTMLButtonElement>('.correction-panel .undo-button')!
+    expect(undo.textContent).toContain('Undo Canonical Player 1')
+    act(() => undo.click())
+    expect(container.querySelector('.correction-panel')?.textContent).toContain('Confirm undo')
+    expect(repository.undos).toHaveLength(0)
+  })
+
+  it('selects an unsold canonical result by keyboard and filters by role', async () => {
+    const container = await render(new MemoryAuctionRepository(), pool)
+    const filter = container.querySelector<HTMLSelectElement>('.player-search select')!
+    setValue(filter, 'DIF')
+    expect(container.querySelectorAll('.player-results button')).toHaveLength(1)
+    const search = container.querySelector<HTMLInputElement>('input[placeholder="Search 534 players"]')!
+    setValue(search, 'Canonical Player 1')
+    act(() => search.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true })))
+    expect(container.textContent).toContain('Selected: Canonical Player 1 · Roma · DIF')
+  })
+
+  it('undo restores canonical player availability after two clicks', async () => {
+    const initial: AuctionSnapshot = { ...snapshot, events: [{ id: 'prior-sale', sequenceNo: 1, clientRequestId: 'prior-request', kind: 'SALE', managerId: 'manager-1', playerRef: 'fantacalcio:fc:1', role: 'DIF', price: 20, recordedAt: '2026-09-22T12:00:00.000Z', note: null }] }
+    const repository = new MemoryAuctionRepository(initial)
+    const container = await render(repository, pool)
+    const undo = container.querySelector<HTMLButtonElement>('.correction-panel .undo-button')!
+    act(() => undo.click())
+    const confirm = container.querySelector<HTMLButtonElement>('.correction-panel .undo-button')!
+    await act(async () => confirm.click())
+    setValue(container.querySelector<HTMLInputElement>('input[placeholder="Search 534 players"]')!, 'Canonical Player 1')
+    const available = [...container.querySelectorAll<HTMLButtonElement>('.player-results button')].find((button) => button.textContent?.includes('Canonical Player 1Roma'))!
+    expect(available.disabled).toBe(false)
+    expect(repository.undos).toHaveLength(1)
+  })
   it('loads the empty authoritative auction and renders all eight managers at 500 credits', async () => {
     const container = await render(new MemoryAuctionRepository())
     expect(container.textContent).toContain('No sales recorded yet')
@@ -151,9 +213,9 @@ describe('Fantacalcio live auction recorder', () => {
     const repository = new MemoryAuctionRepository()
     const container = await render(repository)
     await sale(container)
-    const undo = [...container.querySelectorAll('button')].find((button) => button.textContent === 'Undo Manual Player')!
+    const undo = [...container.querySelectorAll('button')].find((button) => button.textContent?.startsWith('Undo Manual Player'))!
     act(() => undo.dispatchEvent(new MouseEvent('click', { bubbles: true })))
-    const confirmUndo = [...container.querySelectorAll('button')].find((button) => button.textContent === 'Confirm undo')!
+    const confirmUndo = [...container.querySelectorAll('button')].find((button) => button.textContent?.startsWith('Confirm undo'))!
     expect(confirmUndo).toBeDefined()
     await act(async () => confirmUndo.dispatchEvent(new MouseEvent('click', { bubbles: true })))
     await settle()
