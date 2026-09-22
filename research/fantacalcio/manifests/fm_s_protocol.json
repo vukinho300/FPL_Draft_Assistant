@@ -1,0 +1,32 @@
+{
+  "protocol": "FM-S-1",
+  "input_release": "fd2qa-2026-09-22-c8ce1b1e8b5f",
+  "input_checksums_sha256": "61156f0da3869e6812dcda1622f0de03649eec2635087b9c6f1a2f2edd676dc2",
+  "train_targets": ["2022/23", "2023/24"],
+  "validation_targets": ["2024/25"],
+  "holdout_targets": ["2025/26"],
+  "forecast_season": "2026/27",
+  "season_opportunities": 38,
+  "current_elapsed_opportunities_proxy": 5,
+  "elapsed_proxy_basis": "Maximum current PV in frozen source, NOT verified completed fixtures or team-specific exposure",
+  "target": "PV times source FM: approximate rated-appearance fantasy contribution, not exact custom-league points",
+  "historical_predictors": "Certified prior-season event totals only; event rates divide by max(PV,1). No MV/FM, role, club, market or snapshot inputs.",
+  "candidates": [
+    {"name": "naive_prior", "kind": "naive", "k": 0},
+    {"name": "shrink_k5", "kind": "shrink", "k": 5},
+    {"name": "shrink_k15", "kind": "shrink", "k": 15},
+    {"name": "shrink_k30", "kind": "shrink", "k": 30},
+    {"name": "ridge_a10", "kind": "ridge", "alpha": 10}
+  ],
+  "selection": "Lowest validation total-proxy MAE among baselines; Ridge only if >=2% better MAE and Spearman no more than 0.01 worse. No holdout-based changes.",
+  "ridge_justification": "One fixed regularized linear alternative can learn different contributions of the certified event rates without importing forbidden prior vote averages.",
+  "negative_control_repeats": 20,
+  "seed": 22092026,
+  "control_gate": "Real validation MAE must beat median noise-feature and shuffled-validation-outcome MAE by 5%, and Spearman exceed their 95th percentile. Shuffled training targets must also degrade learned models; fixed persistence uses validation-outcome shuffle because its PV rule is not learned from labels.",
+  "holdout_policy": "Freeze selection artifact first; refit fixed winner on train+validation, evaluate holdout once. Afterwards fit fixed winner on all completed samples for the current forecast.",
+  "current_update": "Beta-style PV update with training-residual moment prior strength; FM update uses the validation-selected shrinkage pseudo-appearance strength. No historical within-season validation is claimed.",
+  "uncertainty": "Validation 80th percentile absolute total-proxy error, scaled by remaining opportunities; cold-start x1.5 or low-prior-PV x1.25 heuristic inflation. Report holdout coverage; current intervals are not calibrated probabilities.",
+  "benchmark_policy": "Current FVM/quotation are output-only benchmarks and never model inputs or targets.",
+  "rights": "LOCAL_ONLY",
+  "prices": false
+}
