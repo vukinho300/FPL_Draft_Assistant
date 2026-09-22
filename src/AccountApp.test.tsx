@@ -37,6 +37,12 @@ vi.mock('./LeagueDashboard.tsx', () => ({
   ),
 }))
 
+vi.mock('./fantacalcio/FantacalcioShell.tsx', () => ({
+  FantacalcioShell: ({ onReturnToFpl }: { readonly onReturnToFpl: () => void }) => (
+    <section><h1 id="fantacalcio-title">Your auction space is ready.</h1><button type="button" onClick={onReturnToFpl}>Return to FPL Draft</button></section>
+  ),
+}))
+
 vi.mock('./services/supabase/fantacalcioAccess.ts', () => ({
   hasFantacalcioAccess: mocks.hasFantacalcioAccess,
 }))
