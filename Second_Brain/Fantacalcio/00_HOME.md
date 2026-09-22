@@ -78,16 +78,27 @@ If a material real-world change occurs before the auction (major injury, transfe
 - Auction economics and desktop UI: `04_Auction_Economics_UI.md`
 - Roadmap/current status: `05_Roadmap_Status.md`
 - Durable decisions and risks: `06_Decisions_Risks.md`
+- **Current official-auction delivery override:** `07_Auction_Sprint.md`
 
 ## Current phase
 
-**FA0B — rules/architecture contract freeze** is current.
+**FA1 — Fantacalcio shell + Vuk-only authorization: COMPLETE.**
 
-FA0A architecture audit and the major league-rule questionnaire are complete.
+Production verification passed:
+- Vuk can enter Fantacalcio;
+- Vuk can switch Fantacalcio → FPL and FPL → Fantacalcio;
+- logout/login still works;
+- production capability/RLS grant is live for Vuk only.
+
+**Current delivery mode: 9-hour official-auction sprint.**
+
+The long-term roadmap remains valid, but until the official auction is ready, `07_Auction_Sprint.md` governs prioritization and phase compression.
+
+Current sprint task: **FA2-S — reliable auction ledger engine**.
 
 Remaining rule uncertainty is intentionally narrow:
 - season-ending injury refund is **not confirmed**;
 - the defense-modifier upper bands/cap are not yet explicitly confirmed beyond the known 0.25-band progression;
 - exact auction position sequence will be chosen when the asta begins.
 
-At **FD1**, perform dedicated deep research on Serie A/Fantacalcio APIs and data providers before selecting sources. Advanced statistics should be included only where their quality, licensing, coverage, timestamp semantics and predictive usefulness justify them.
+These do not block the initial auction recorder.

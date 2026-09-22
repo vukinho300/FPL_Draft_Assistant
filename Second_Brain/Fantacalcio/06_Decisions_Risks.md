@@ -64,6 +64,24 @@ Do not derive Fantacalcio authorization from:
 
 Missing capability means denied. This decision intentionally avoids turning the initial implementation into a broad generic RBAC system unless a future requirement justifies one.
 
+### F-D015 — 9-hour official-auction sprint override
+A hard 9-hour delivery constraint now governs the immediate pre-auction work.
+
+The full roadmap remains the long-term architecture, but the current auction cycle prioritizes the smallest reliable path to:
+- secure access;
+- deterministic auction recording;
+- budgets/slots/ownership/corrections;
+- a real current player pool;
+- a defensible baseline ranking/value signal if time permits.
+
+During this sprint:
+- correctness and auction usability outrank polish and architecture expansion;
+- a simple validated baseline is preferred to a rushed complex model;
+- no fake data, guessed identities or silent rule assumptions are allowed;
+- full model tournaments, Monte Carlo, opponent psychology, mobile polish and continuous refresh are deferred unless core auction readiness is already complete;
+- new sessions should use targeted delta retrieval rather than repeated full onboarding/audits;
+- Second Brain edits should be limited to durable decisions or a final sprint checkpoint, not routine step-by-step status churn.
+
 ## Key risks
 
 ### Data/source
