@@ -45,18 +45,22 @@ Do not force Fantacalcio into FPL-specific player/ranking/league types.
 - Initial UX is laptop/desktop-first.
 - Mobile architecture should remain possible later, but mobile optimization is intentionally deferred.
 
-## Initial league assumptions
+## Confirmed 2026/27 league baseline
 
-Current working configuration:
-- managers: Achi, Massi, Gian, Francesco, Vuk, Dan, No Name, No Name 2;
-- likely 8 managers, architecture should support 10;
-- initial budget: 500 credits per manager, configurable;
-- nomination rotates manager-by-manager;
-- nomination includes a starting price;
-- positions use POR / DIF / CEN / ATT;
-- standard, inverted and arbitrary custom position sequences must be supported.
+- season: **2026/27**;
+- auction: before **10 October 2026**, expected to be imminent; exact date remains to be set;
+- game mode: **Classic roles** with a head-to-head league competition;
+- managers: **Achi, Massi, Peps, Vuk, Dan, Paolo, Gian/Edu, Francesco**;
+- budget: **500 credits each**;
+- squad: **25 players = 3 POR, 8 DIF, 8 CEN, 6 ATT**;
+- player pool/roles: Fantacalcio Classic listone at auction time unless a commissioner override is explicitly confirmed;
+- captain: off;
+- defense modifier: on;
+- initial minimum purchase price: **1 credit**;
+- one repair auction is planned after the winter transfer market closes in 2027;
+- trades are allowed after the initial auction.
 
-Exact squad composition and scoring rules remain Phase FA0 inputs and must not be silently invented.
+The architecture should still support 10 managers without redesign.
 
 ## Initial data-cycle decision
 
@@ -77,8 +81,13 @@ If a material real-world change occurs before the auction (major injury, transfe
 
 ## Current phase
 
-**FA0 — Rules & architecture freeze** is the first implementation/research phase.
+**FA0B — rules/architecture contract freeze** is current.
 
-Before FD1 begins, exact league scoring/squad rules should be captured.
+FA0A architecture audit and the major league-rule questionnaire are complete.
+
+Remaining rule uncertainty is intentionally narrow:
+- season-ending injury refund is **not confirmed**;
+- the defense-modifier upper bands/cap are not yet explicitly confirmed beyond the known 0.25-band progression;
+- exact auction position sequence will be chosen when the asta begins.
 
 At **FD1**, perform dedicated deep research on Serie A/Fantacalcio APIs and data providers before selecting sources. Advanced statistics should be included only where their quality, licensing, coverage, timestamp semantics and predictive usefulness justify them.

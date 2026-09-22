@@ -34,6 +34,22 @@ The live auction should use a known projection release ID. External data/model c
 ### F-D010 — Second Brain edits are approval-gated
 Codex may propose changes, but no `Second_Brain/**` edit occurs without Vuk's explicit approval. Approved changes must be reported exactly afterward.
 
+### F-D011 — 2026/27 initial auction roster/economy contract
+The first auction uses 8 managers, 500 credits each and a mandatory 25-player Classic roster of 3 POR / 8 DIF / 8 CEN / 6 ATT. Minimum purchase price is 1 credit. Maximum legal bid must preserve at least 1 credit for each mandatory slot still unfilled after the current purchase.
+
+### F-D012 — Defense modifier uses base votes only
+The goalkeeper is included in the defense modifier. For the goalkeeper and defenders, only the base vote contributes to the modifier; ordinary bonus/malus such as clean-sheet or penalty-save bonuses do not enter the modifier average.
+
+Known commissioner bands begin:
+- 6.00–6.24 → +1;
+- 6.25–6.49 → +2;
+- bands continue in 0.25 increments.
+
+The full upper table/cap remains unconfirmed and must not be invented.
+
+### F-D013 — Injury refund remains unresolved
+Do not treat a season-ending injury as a guaranteed 100% refund until commissioner confirmation. Vuk believes that is likely, but the current auction/model contract must preserve this as uncertainty.
+
 ## Key risks
 
 ### Data/source
@@ -57,13 +73,15 @@ Codex may propose changes, but no `Second_Brain/**` edit occurs without Vuk's ex
 - overfitting new signings;
 - injury-risk overconfidence;
 - cross-league translation without validation;
-- complex models outperforming only because of leakage or tuning bias.
+- complex models outperforming only because of leakage or tuning bias;
+- incorrectly treating modifier value as ordinary individual bonus points.
 
 ### Auction economics
 - limited historical league-specific prices;
 - early inflation estimates based on tiny samples;
 - opponent behavior is not perfectly rational;
-- incorrect squad constraints can invalidate max-bid logic.
+- incorrect squad constraints can invalidate max-bid logic;
+- injury refund uncertainty changes downside protection.
 
 ### Operational
 - data loss during auction;

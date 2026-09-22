@@ -4,9 +4,33 @@
 
 Project review/architecture research: COMPLETE.
 
-Current implementation phase: **FA0 — Rules & architecture freeze**.
+FA0A architecture audit + league-rule questionnaire: **COMPLETE**.
 
-No Fantacalcio production code should assume unresolved squad/scoring rules.
+Current phase: **FA0B — rules/architecture contract freeze**.
+
+The main 2026/27 league constraints are now confirmed. Remaining uncertainty is narrow and explicitly tracked:
+- season-ending injury refund is unconfirmed;
+- full upper defense-modifier table/cap is unconfirmed;
+- auction position sequence will be selected when the asta starts.
+
+These uncertainties do not block FA1 shell/authorization work.
+
+## Confirmed 2026/27 league contract
+
+- season: 2026/27;
+- initial auction before 10 October 2026, likely imminent;
+- Classic roles + head-to-head league competition;
+- 8 managers: Achi, Massi, Peps, Vuk, Dan, Paolo, Gian/Edu, Francesco;
+- 500 credits each;
+- 25-player roster: 3 POR / 8 DIF / 8 CEN / 6 ATT;
+- minimum purchase price: 1 credit;
+- maximum legal bid must reserve 1 credit for each still-unfilled mandatory slot;
+- defense modifier enabled;
+- goalkeeper included in defense modifier by base vote only;
+- defender/goalkeeper modifier inputs exclude ordinary bonus/malus;
+- no captain modifier;
+- trades allowed after initial auction;
+- one repair auction after winter transfer market closes in 2027.
 
 ## Roadmap principles
 
@@ -18,20 +42,21 @@ The usable auction recorder must not be blocked by sophisticated ML work.
 
 For the first official asta, the target is one clean, validated projection release. A large recurring refresh/retraining system is intentionally **not** a standalone early milestone.
 
-## FA0 — Rules & architecture freeze
+## FA0B — Rules & architecture contract freeze
 
-**Objective:** define exactly what game is being optimized.
+**Objective:** convert the audited repository + confirmed league rules into the final implementation contract for FA1.
 
 Work:
-- exact scoring system;
-- squad slots/formation rules;
-- nomination/bidding rules;
-- configurable manager count and budget;
-- Vuk-only capability design;
-- confirm shared-platform/separate-domain architecture.
+- confirm shared-platform/separate-domain boundary;
+- freeze the confirmed league constraints above;
+- preserve narrow unresolved rules as explicit configurable/unknown states;
+- define Vuk-only capability contract;
+- define what FA1 may implement and what stays deferred.
 
 Completion:
-- no unresolved rule materially affects valuation or auction legality.
+- FA1 can be implemented without inventing rules;
+- no unresolved item affects shell/auth architecture;
+- valuation-sensitive unknowns remain explicit rather than guessed.
 
 ## FA1 — Fantacalcio shell + authorization
 
@@ -65,6 +90,8 @@ Work:
 Completion:
 - deterministic budgets/slots/history;
 - duplicate ownership blocked;
+- minimum 1-credit purchase enforced;
+- max legal bid respects remaining mandatory slots;
 - corrections safe.
 
 ## FA3 — Laptop auction MVP
@@ -138,10 +165,12 @@ Completion:
 **Objective:** build the historical target matching the real league.
 
 Work:
-- calculate/reconcile Fantacalcio scoring from historical data.
+- calculate/reconcile Fantacalcio scoring from historical data;
+- include defense-modifier-aware team/position value where the league rule affects auction value.
 
 Completion:
-- sampled seasons/players reproduce expected fantasy outcomes under league rules.
+- sampled seasons/players reproduce expected fantasy outcomes under league rules;
+- modifier treatment is evidence-based and configurable for any still-unconfirmed upper band/cap.
 
 ## FM2 — Playing-time baseline
 
@@ -180,8 +209,6 @@ Completion:
 
 **Objective:** produce the clean player evaluation dataset used for the auction.
 
-This replaces the earlier idea of a large standalone recurring refresh milestone for the first cycle.
-
 Work:
 - collect the newest intended snapshot;
 - validate/sanitize;
@@ -214,6 +241,7 @@ Work:
 
 Completion:
 - optimized legal 500-credit roster scenarios;
+- minimum 1-credit future slots are enforced;
 - position budgets emerge from the player pool rather than fixed percentages.
 
 ## FE2 — Live market economics
@@ -249,9 +277,12 @@ Completion:
 Completion:
 - laptop rehearsal proves rapid entry, correct state, useful recommendations and understandable uncertainty.
 
-## Deferred
+## Deferred / explicitly unresolved
 
-- continuous automatic database/model refresh infrastructure beyond what is needed for a deliberate release rebuild;
+- continuous automatic database/model refresh infrastructure beyond deliberate release rebuilds;
 - iPhone/mobile optimization;
 - speculative opponent psychology;
-- any advanced data source that fails quality/licensing/value gates.
+- advanced data sources that fail quality/licensing/value gates;
+- season-ending injury refund until commissioner confirmation;
+- full upper defense-modifier table/cap until confirmed;
+- fixed auction position sequence (chosen at auction start).

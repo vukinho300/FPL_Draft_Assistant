@@ -2,9 +2,26 @@
 
 ## Prediction target
 
-Rank/value players by their realistic expected Fantacalcio contribution **from the prediction date through the remainder of the current season**, under the league's exact scoring rules.
+For the first official asta, rank/value players by their realistic expected Fantacalcio contribution **from the actual 2026/27 auction date through the remainder of the season**, under the league's exact scoring rules.
+
+The auction must occur before 10 October 2026 and is expected to be imminent, so current 2026/27 Serie A evidence already exists and must be incorporated without overpowering the historical prior.
 
 Do not optimize historical reputation or short-term form in isolation.
+
+## League-rule implications for the target
+
+Confirmed roster/scoring context materially affects valuation:
+- Classic roles;
+- 3 POR / 8 DIF / 8 CEN / 6 ATT;
+- 500-credit auction budget;
+- defense modifier enabled;
+- goalkeeper included in defense modifier by **base vote only**;
+- defender modifier calculation also excludes ordinary bonus/malus;
+- goalkeeper clean-sheet and penalty-save bonuses matter for normal player fantapoints but **not** for the defense-modifier base-vote calculation.
+
+Therefore defender/goalkeeper valuation must not be reduced to goals, assists, clean sheets or ordinary fantapoints alone. Base-vote consistency and expected contribution to the defense modifier are economically relevant.
+
+The exact high-end defense-modifier band table/cap remains unconfirmed and should remain configurable/explicitly uncertain until verified.
 
 ## Model decomposition
 
@@ -21,6 +38,7 @@ Research and evaluate separate components:
    - attacking/defensive contribution
    - set-piece/penalty role
    - team context
+   - base-vote quality/consistency where relevant to the defense modifier
 
 3. **Availability**
    - current injury/suspension state
@@ -124,6 +142,7 @@ Expose components where useful:
 - historical prior;
 - team context;
 - health/availability;
+- base-vote/modifier contribution where relevant;
 - scarcity;
 - risk;
 - confidence.
@@ -131,3 +150,5 @@ Expose components where useful:
 Player explanations must be grounded in actual features/evidence rather than generic generated prose.
 
 Avoid unsupported precision, especially for injury risk and uncertain new signings.
+
+The season-ending injury-refund rule is not yet confirmed, so do not use assumed refund protection to reduce injury-risk penalties in the production valuation.
