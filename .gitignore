@@ -12,6 +12,7 @@ dist
 dist-ssr
 coverage
 *.local
+.local/
 
 # Local environment files (example templates may be committed)
 .env
