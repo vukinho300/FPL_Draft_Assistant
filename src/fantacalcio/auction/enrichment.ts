@@ -33,6 +33,9 @@ function object(value: unknown): Record<string, unknown> {
   requireValid(value !== null && typeof value === 'object' && !Array.isArray(value))
   return value as Record<string, unknown>
 }
+function exactKeys(value: Record<string, unknown>, allowed: readonly string[]): void {
+  requireValid(Object.keys(value).length === allowed.length && Object.keys(value).every(key => allowed.includes(key)))
+}
 function text(value: unknown): string { requireValid(typeof value === 'string' && value.length > 0); return value }
 function nullableNumber(value: unknown): number | null {
   if (value === null || value === undefined) return null
@@ -92,18 +95,21 @@ export function normalizeEnrichment(raw: unknown, pool: readonly CanonicalPlayer
 
 export function validateEnrichment(value: unknown, pool: readonly CanonicalPlayer[]): asserts value is Enrichment {
   const data = object(value), strategy = object(data.strategy)
+  exactKeys(data, ['schema', 'scope', 'release', 'checkedAt', 'listoneVersion', 'listoneSeason', 'source', 'strategy', 'players'])
+  exactKeys(strategy, ['id', 'name', 'creator', 'season', 'format', 'list', 'credits', 'tierMapping'])
   requireValid(data.schema === 1 && data.scope === 'LOCAL_ONLY' && data.release === AUCTION_VALUE_RELEASE.id
     && data.source === 'https://api.fantalab.it/v2' && Number.isFinite(Date.parse(text(data.checkedAt))))
   text(data.listoneVersion); text(data.listoneSeason); text(strategy.id); text(strategy.name)
   requireValid(strategy.creator === 'SOS Fanta' && strategy.season === 's_26_27' && strategy.format === 'classic'
     && strategy.list === 'serie-a' && typeof strategy.credits === 'number' && strategy.credits > 0)
   const mapping = object(strategy.tierMapping)
-  requireValid(Object.values(mapping).every(label => typeof label === 'string' && label.length > 0))
+  requireValid(Object.entries(mapping).every(([id, label]) => /^\d+$/.test(id) && typeof label === 'string' && label.length > 0))
   requireValid(Array.isArray(data.players) && data.players.length === 534 && pool.length === 534)
   const expected = new Set(pool.map(player => player.playerRef)), seen = new Set<string>(), ids = new Set<string>()
   requireValid(expected.size === 534)
   for (const value of data.players) {
     const row = object(value), ref = text(row.playerRef), id = text(row.fantalabId)
+    exactKeys(row, ['playerRef', 'fantalabId', 'tiers', 'price', 'percentage', 'tags', 'target', 'injured', 'injuryCode', 'injuryRisk', 'hasStrategy'])
     requireValid(expected.has(ref) && !seen.has(ref) && !ids.has(id)); seen.add(ref); ids.add(id)
     requireValid(Number.isSafeInteger(row.injuryCode) && Number(row.injuryCode) >= 0
       && row.injured === (row.injuryCode === 0 ? false : row.injuryCode === 1 ? true : null)
@@ -127,6 +133,7 @@ export async function encodeEnrichment(data: Enrichment): Promise<string> {
 }
 export async function loadEnrichment(contents: string, pool: readonly CanonicalPlayer[]): Promise<Enrichment> {
   const envelope = object(JSON.parse(contents))
+  exactKeys(envelope, ['payload', 'sha256'])
   const payload = text(envelope.payload)
   requireValid(envelope.sha256 === await sha256(payload))
   const result: unknown = JSON.parse(payload)

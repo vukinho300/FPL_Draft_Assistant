@@ -23,6 +23,10 @@ describe('local enrichment contract', () => {
     const envelope = JSON.parse(await encodeEnrichment(data)); envelope.payload += ' '
     await expect(loadEnrichment(JSON.stringify(envelope), pool)).rejects.toThrow()
     await expect(loadEnrichment(await encodeEnrichment({ ...data, release: 'wrong' }), pool)).rejects.toThrow()
+    const withToken = { ...data, access_token: 'must-never-cache' }
+    const withSession = { ...data, players: [{ ...data.players[0], session: 'must-never-cache' }, ...data.players.slice(1)] }
+    await expect(loadEnrichment(await encodeEnrichment(withToken), pool)).rejects.toThrow()
+    await expect(loadEnrichment(await encodeEnrichment(withSession), pool)).rejects.toThrow()
     await expect(loadEnrichment(await encodeEnrichment({ ...data, players: [...data.players.slice(1), data.players[1]] }), pool)).rejects.toThrow()
     const missing = source(); missing.listone.pop(); expect(() => normalizeEnrichment(missing, pool)).toThrow()
     const duplicate = source(); duplicate.listone[1].fantacalcio_id = 1; expect(() => normalizeEnrichment(duplicate, pool)).toThrow()
