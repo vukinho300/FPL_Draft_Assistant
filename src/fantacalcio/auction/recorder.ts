@@ -1,12 +1,7 @@
-import { type AuctionRole } from './ledger.ts'
+import { type CanonicalPlayer } from './playerPool.ts'
 import { type AuctionSnapshot, type PersistedAuctionEvent } from './repository.ts'
 
-export type FutureCanonicalPlayer = Readonly<{
-  playerRef: string
-  displayName: string
-  club: string
-  role: AuctionRole
-}>
+export type FutureCanonicalPlayer = CanonicalPlayer
 
 export type ManualPlayerEntry = Readonly<{
   source: 'MANUAL'
