@@ -106,7 +106,7 @@ describe('Fantacalcio live auction recorder', () => {
     act(() => result.dispatchEvent(new MouseEvent('click', { bubbles: true })))
     expect(container.querySelector<HTMLSelectElement>('form label select')?.value).toBe('DIF')
     expect(container.textContent).toContain('Selected: Canonical Player 1 · Roma · DIF')
-    expect(container.querySelector('.decision-state')?.textContent).toBe('ENTER BID')
+    expect(container.querySelector('.decision-state')?.textContent).toBe('PLAYER VALUE · ENTER BID')
     setValue(container.querySelector<HTMLInputElement>('input[placeholder="Credits"]')!, '20')
     await act(async () => container.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })))
     expect(repository.sales[0]).toEqual(expect.objectContaining({ playerRef: 'fantacalcio:fc:1', role: 'DIF', price: 20 }))
@@ -158,6 +158,18 @@ describe('Fantacalcio live auction recorder', () => {
     expect(container.querySelectorAll('.manager-credits')).toHaveLength(8)
     expect([...container.querySelectorAll('.manager-credits')].every((node) => node.textContent === '500')).toBe(true)
     expect(container.textContent).toContain('Hard max legal bid')
+  })
+
+  it('renders the calculated squad budget plan when every required role is available', async () => {
+    const balancedPool = (Object.entries(snapshot.config.requiredSlots) as [AuctionValuePlayer['role'], number][]).flatMap(([role, count]) =>
+      Array.from({ length: count }, (_, index): AuctionValuePlayer => ({ playerRef: `balanced:${role}:${index}`, displayName: `${role} ${index}`,
+        club: 'Test', role, eligibility: 'SELECTABLE', projection: 100 - index, positionRank: index + 1,
+        overallRank: index + 1, confidence: 'MEDIUM', fvm: 2, fvm500: 1 })))
+    const container = await render(new MemoryAuctionRepository(), balancedPool)
+    expect(container.querySelector('.squad-budget-plan')).not.toBeNull()
+    expect(container.querySelectorAll('.role-budget-grid article')).toHaveLength(4)
+    expect(container.textContent).toContain('Squad Budget Plan')
+    expect(container.textContent).toContain('Minimum obligations25')
   })
 
   it('writes a manual sale in the ledger shape and immediately derives the new manager state', async () => {
