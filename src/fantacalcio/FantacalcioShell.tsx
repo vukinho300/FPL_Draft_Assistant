@@ -8,6 +8,7 @@ import { searchCanonicalPool } from './auction/playerPool.ts'
 import { AUCTION_VALUE_RELEASE, bestAlternatives, decisionState, loadAuctionValueRelease, marketComparison, rankAvailable, recommendedMax, type AuctionValuePlayer } from './auction/economics.ts'
 import { APP_ROSTER_TIERS, buildSquadBudgetPlan, rosterAdjustedMax } from './auction/squadPlan.ts'
 import { loadEnrichment, type Enrichment } from './auction/enrichment.ts'
+import { createIndexedDbAuctionArtifactStore, restoreCachedEnrichment, restoreCachedProjection, type LocalAuctionArtifactStore } from './auction/localArtifacts.ts'
 import { EnrichmentSignals } from './EnrichmentSignals.tsx'
 
 type LoadState =
@@ -27,14 +28,25 @@ function triggerDownload(contents: string, filename: string): void {
   URL.revokeObjectURL(url)
 }
 
+async function restoreLocalFiles(store: LocalAuctionArtifactStore) {
+  const projections = await restoreCachedProjection(store)
+  if (projections.value === null) return { projections, enrichment: null, enrichmentStorageError: false }
+  try {
+    const enrichment = await restoreCachedEnrichment(store, projections.value)
+    return { projections, enrichment, enrichmentStorageError: false }
+  } catch { return { projections, enrichment: null, enrichmentStorageError: true } }
+}
+
 export function FantacalcioShell({
   onReturnToFpl,
   repository,
   canonicalPool,
+  artifactStore,
 }: {
   readonly onReturnToFpl: () => void
   readonly repository?: AuctionRepository
   readonly canonicalPool?: readonly AuctionValuePlayer[]
+  readonly artifactStore?: LocalAuctionArtifactStore
 }) {
   const [loadState, setLoadState] = useState<LoadState>({ status: 'LOADING' })
   const [page, setPage] = useState<'Auction' | 'Managers'>('Auction')
@@ -43,6 +55,7 @@ export function FantacalcioShell({
   const [playerName, setPlayerName] = useState('')
   const [pool, setPool] = useState<readonly AuctionValuePlayer[] | null>(canonicalPool ?? null)
   const [poolMessage, setPoolMessage] = useState<string | null>(null)
+  const [artifactBusy, setArtifactBusy] = useState(true)
   const [manualMode, setManualMode] = useState(false)
   const [selectedPlayer, setSelectedPlayer] = useState<AuctionValuePlayer | null>(null)
   const [roleFilter, setRoleFilter] = useState<AuctionRole | 'ALL'>('ALL')
@@ -59,8 +72,12 @@ export function FantacalcioShell({
   const winnerInput = useRef<HTMLSelectElement>(null)
   const pendingRequestId = useRef<string | null>(null)
   const browserRepository = useRef<AuctionRepository | null>(null)
+  const browserArtifactStore = useRef<LocalAuctionArtifactStore | null>(null)
+  const restoreTask = useRef<ReturnType<typeof restoreLocalFiles> | null>(null)
   if (repository === undefined) browserRepository.current ??= createSupabaseAuctionRepository()
+  browserArtifactStore.current ??= createIndexedDbAuctionArtifactStore()
   const activeRepository = repository ?? browserRepository.current!
+  const activeArtifactStore = artifactStore ?? browserArtifactStore.current
 
   const load = useCallback(async (): Promise<AuctionSnapshot | null> => {
     setLoadState({ status: 'LOADING' })
@@ -77,6 +94,28 @@ export function FantacalcioShell({
   }, [activeRepository])
 
   useEffect(() => { void load() }, [load])
+
+  useEffect(() => {
+    let cancelled = false
+    restoreTask.current ??= restoreLocalFiles(activeArtifactStore)
+    void restoreTask.current.then(({ projections, enrichment: savedEnrichment, enrichmentStorageError }) => {
+      if (cancelled) return
+      if (projections.status === 'invalid') setPoolMessage('Saved projections failed validation and were deleted. Re-upload projections.csv.')
+      if (projections.value !== null) {
+        setPool(projections.value)
+        setPoolMessage(`${projections.value.length} verified projections restored from this browser.`)
+      }
+      if (savedEnrichment?.status === 'invalid') setEnrichmentMessage('Saved enrichment failed validation and was deleted. Re-upload fantalab-enrichment.json.')
+      if (enrichmentStorageError) setEnrichmentMessage('Saved enrichment could not be read. Re-upload fantalab-enrichment.json.')
+      if (savedEnrichment?.value != null) {
+        setEnrichment(savedEnrichment.value)
+        setEnrichmentMessage(`${savedEnrichment.value.players.length} exact player matches · SOS / health restored from this browser.`)
+      }
+    }).catch(() => {
+      if (!cancelled) setPoolMessage('Browser storage unavailable. Upload projections.csv; this browser may not retain it after refresh.')
+    }).finally(() => { if (!cancelled) setArtifactBusy(false) })
+    return () => { cancelled = true }
+  }, [activeArtifactStore])
 
   const ready = loadState.status === 'READY' ? loadState.snapshot : null
   const auctionState = useMemo(() => ready === null ? null : replayAuction(ready.config, ready.managers.map((manager) => manager.id), ready.events), [ready])
@@ -127,33 +166,71 @@ export function FantacalcioShell({
   }
 
   async function importPool(file: File | undefined) {
-    if (file === undefined) return
+    if (file === undefined || artifactBusy) return
+    setArtifactBusy(true)
     setPoolMessage('Checking frozen player release…')
     try {
-      const accepted = await loadAuctionValueRelease(file)
+      const bytes = await file.arrayBuffer()
+      const accepted = await loadAuctionValueRelease(new Blob([bytes]))
       setEnrichment(null)
       setEnrichmentMessage('Optional SOS / health enrichment not loaded.')
       setPool(accepted)
       setManualMode(false)
       setSelectedPlayer(null)
       setPlayerName('')
-      setPoolMessage(`${accepted.length} verified projections loaded from ${AUCTION_VALUE_RELEASE.id}.`)
+      try {
+        await activeArtifactStore.writeProjection(bytes)
+        setPoolMessage(`${accepted.length} verified projections saved in this browser from ${AUCTION_VALUE_RELEASE.id}.`)
+      } catch {
+        setPoolMessage(`${accepted.length} verified projections loaded, but browser storage failed. Re-upload after refresh.`)
+      }
+      try {
+        const cached = await restoreCachedEnrichment(activeArtifactStore, accepted)
+        if (cached.status === 'invalid') setEnrichmentMessage('Saved enrichment failed validation and was deleted. Re-upload fantalab-enrichment.json.')
+        if (cached.value !== null) {
+          setEnrichment(cached.value)
+          setEnrichmentMessage(`${cached.value.players.length} exact player matches · SOS / health restored from this browser.`)
+        }
+      } catch { /* A valid projection remains usable when browser storage is unavailable. */ }
       searchInput.current?.focus()
     } catch (error) {
       setPoolMessage(error instanceof Error ? error.message : 'Could not read the canonical player release.')
-    }
+    } finally { setArtifactBusy(false) }
   }
 
   async function importEnrichment(file: File | undefined) {
-    if (file === undefined || pool === null) return
+    if (file === undefined || pool === null || artifactBusy) return
+    setArtifactBusy(true)
     try {
-      const data = await loadEnrichment(await file.text(), pool)
+      const raw = await file.text()
+      const data = await loadEnrichment(raw, pool)
       setEnrichment(data)
-      setEnrichmentMessage(`${data.players.length} exact player matches · ${data.players.filter(player => player.hasStrategy).length} SOS rows · ${data.listoneVersion}`)
+      try {
+        await activeArtifactStore.writeEnrichment(raw)
+        setEnrichmentMessage(`${data.players.length} exact player matches · ${data.players.filter(player => player.hasStrategy).length} SOS rows · saved in this browser · ${data.listoneVersion}`)
+      } catch {
+        setEnrichmentMessage(`${data.players.length} exact player matches loaded, but browser storage failed. Re-upload after refresh.`)
+      }
     } catch {
       setEnrichment(null)
       setEnrichmentMessage('Enrichment rejected: checksum, release or identity mismatch. Reload the local generated file.')
-    }
+    } finally { setArtifactBusy(false) }
+  }
+
+  async function clearLocalAuctionData() {
+    if (artifactBusy) return
+    setArtifactBusy(true)
+    try {
+      await activeArtifactStore.clear()
+      setPool(null)
+      setEnrichment(null)
+      setSelectedPlayer(null)
+      setPlayerName('')
+      setManualMode(false)
+      setPoolMessage('Local auction files cleared. Re-upload projections.csv.')
+      setEnrichmentMessage('Local enrichment cleared. Re-upload fantalab-enrichment.json after projections.csv.')
+    } catch { setPoolMessage('Could not clear browser data. Check browser storage settings and try again.') }
+    finally { setArtifactBusy(false) }
   }
 
   function searchKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -253,8 +330,9 @@ export function FantacalcioShell({
       </div>}
       {ready !== null && auctionState !== null && page === 'Auction' && <div className="auction-recorder-layout">
         <section className="auction-entry" aria-labelledby="fantacalcio-title"><span className="fantacalcio-eyebrow">Live recorder</span><h1 id="fantacalcio-title">Record a sale</h1>
-          <div className="pool-import"><label>Frozen auction value release (projections.csv)<input type="file" accept=".csv,text/csv" onChange={(event) => void importPool(event.target.files?.[0])} /></label><small>One local file supplies canonical players, projections and FVM benchmarks. It stays in this browser session.</small>{poolMessage !== null && <p role="status">{poolMessage}</p>}</div>
-          <div className="pool-import"><label>Optional FantaLab / SOS enrichment<input type="file" accept=".json,application/json" disabled={pool === null} onChange={event => void importEnrichment(event.target.files?.[0])} /></label><small>Load the player release first. Enrichment stays in this browser session.</small><p role="status">{enrichmentMessage}</p></div>
+          <div className="pool-import"><label>Frozen auction value release (projections.csv)<input type="file" accept=".csv,text/csv" disabled={artifactBusy} onChange={(event) => { const file = event.currentTarget.files?.[0]; event.currentTarget.value = ''; void importPool(file) }} /></label><small>Verified local file supplies canonical players, projections and FVM benchmarks. Saved only in this browser.</small>{poolMessage !== null && <p role="status">{poolMessage}</p>}</div>
+          <div className="pool-import"><label>Optional FantaLab / SOS enrichment<input type="file" accept=".json,application/json" disabled={pool === null || artifactBusy} onChange={event => { const file = event.currentTarget.files?.[0]; event.currentTarget.value = ''; void importEnrichment(file) }} /></label><small>Load the player release first. Validated enrichment is saved only in this browser.</small><p role="status">{enrichmentMessage}</p></div>
+          <button className="clear-auction-data" type="button" disabled={artifactBusy} onClick={() => void clearLocalAuctionData()}>Clear local auction data</button>
            {pool !== null && <div className="entry-mode"><span>{usingManual ? 'Emergency manual entry' : `${pool.length} projections · ${AUCTION_VALUE_RELEASE.id}`}</span><button type="button" onClick={() => { setManualMode(!manualMode); setSelectedPlayer(null); setPlayerName(''); setRoleFilter('ALL') }}>{usingManual ? 'Use player search' : 'Use emergency manual entry'}</button></div>}
           {usingManual && <p className="manual-notice">Emergency manual auction entry. Check the name and role carefully; this is not a canonical player identity.</p>}
           <form onSubmit={submitSale}>

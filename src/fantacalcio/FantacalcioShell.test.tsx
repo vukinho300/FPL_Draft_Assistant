@@ -12,6 +12,7 @@ import type { AuctionValuePlayer } from './auction/economics.ts'
 import * as squadPlanEngine from './auction/squadPlan.ts'
 import { readFileSync } from 'node:fs'
 import type { AuctionRepository, AuctionSnapshot, SaleDraft, UndoDraft } from './auction/repository.ts'
+import type { LocalAuctionArtifactStore } from './auction/localArtifacts.ts'
 
 const rankingStyles = readFileSync('src/fantacalcio/FantacalcioShell.css', 'utf8')
 
@@ -49,11 +50,11 @@ class MemoryAuctionRepository implements AuctionRepository {
 
 const roots: { root: Root; container: HTMLDivElement }[] = []
 
-async function render(repository: AuctionRepository, canonicalPool?: readonly AuctionValuePlayer[]) {
+async function render(repository: AuctionRepository, canonicalPool?: readonly AuctionValuePlayer[], artifactStore?: LocalAuctionArtifactStore) {
   const container = document.createElement('div')
   document.body.append(container)
   const root = createRoot(container)
-  await act(async () => root.render(<FantacalcioShell repository={repository} canonicalPool={canonicalPool} onReturnToFpl={vi.fn()} />))
+  await act(async () => root.render(<FantacalcioShell repository={repository} canonicalPool={canonicalPool} artifactStore={artifactStore} onReturnToFpl={vi.fn()} />))
   await settle()
   roots.push({ root, container })
   return container
@@ -174,6 +175,37 @@ describe('Fantacalcio live auction recorder', () => {
     expect(container.querySelectorAll('.manager-credits')).toHaveLength(8)
     expect([...container.querySelectorAll('.manager-credits')].every((node) => node.textContent === '500')).toBe(true)
     expect(container.querySelector('.auction-entry')).toBeNull()
+  })
+
+  it('discards a corrupted cached release and asks for a fresh upload', async () => {
+    let raw: unknown = new TextEncoder().encode('bad release').buffer
+    const remove = vi.fn(async () => { raw = undefined })
+    const store: LocalAuctionArtifactStore = {
+      readProjection: async () => raw, readEnrichment: vi.fn(async () => undefined),
+      writeProjection: async () => {}, writeEnrichment: async () => {},
+      deleteProjection: remove, deleteEnrichment: async () => {}, clear: async () => {},
+    }
+    const container = await render(new MemoryAuctionRepository(), undefined, store)
+    expect(remove).toHaveBeenCalledOnce()
+    expect(store.readEnrichment).not.toHaveBeenCalled()
+    expect(container.textContent).toContain('Saved projections failed validation and were deleted. Re-upload projections.csv.')
+    expect(container.querySelector('.available-rankings')).toBeNull()
+  })
+
+  it('clears both browser artifacts and removes loaded rankings from the page', async () => {
+    const clear = vi.fn(async () => {})
+    const store: LocalAuctionArtifactStore = {
+      readProjection: async () => undefined, readEnrichment: async () => undefined,
+      writeProjection: async () => {}, writeEnrichment: async () => {},
+      deleteProjection: async () => {}, deleteEnrichment: async () => {}, clear,
+    }
+    const container = await render(new MemoryAuctionRepository(), pool, store)
+    expect(container.querySelector('.available-rankings')).not.toBeNull()
+    const button = [...container.querySelectorAll<HTMLButtonElement>('button')].find(candidate => candidate.textContent === 'Clear local auction data')!
+    await act(async () => button.click())
+    expect(clear).toHaveBeenCalledOnce()
+    expect(container.querySelector('.available-rankings')).toBeNull()
+    expect(container.textContent).toContain('Local auction files cleared. Re-upload projections.csv.')
   })
 
   it('renders the calculated squad budget plan when every required role is available', async () => {
