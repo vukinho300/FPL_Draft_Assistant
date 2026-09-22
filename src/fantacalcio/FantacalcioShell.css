@@ -1,0 +1,78 @@
+.fantacalcio-shell {
+  min-height: calc(100vh - 3.5rem);
+  color: #eaf2ff;
+  background: #071a35;
+}
+
+.fantacalcio-shell-layout {
+  display: grid;
+  grid-template-columns: minmax(13rem, 17rem) minmax(0, 1fr);
+  min-height: calc(100vh - 3.5rem);
+}
+
+.fantacalcio-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: .8rem;
+  padding: 2rem 1.5rem;
+  background: #0b2347;
+  border-right: 1px solid #244a78;
+}
+
+.fantacalcio-brand-mark {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: .85rem;
+  background: #3979db;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+.fantacalcio-sidebar div { display: grid; gap: .15rem; }
+.fantacalcio-sidebar strong { font-size: 1.15rem; }
+.fantacalcio-sidebar span:not(.fantacalcio-brand-mark),
+.fantacalcio-sidebar p { color: #adc8ef; }
+.fantacalcio-sidebar p { margin-top: auto; }
+
+.fantacalcio-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: 50rem;
+  padding: clamp(2rem, 5vw, 5rem);
+}
+
+.fantacalcio-eyebrow {
+  color: #8fbcff;
+  font-size: .8rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.fantacalcio-welcome h1 { margin: 1.25rem 0; font-size: clamp(2.2rem, 4vw, 4rem); line-height: 1.08; }
+.fantacalcio-welcome p { max-width: 37rem; color: #c1d4f0; font-size: 1.1rem; line-height: 1.65; }
+.fantacalcio-welcome button {
+  min-height: 44px;
+  margin-top: 1.5rem;
+  padding: .7rem 1.1rem;
+  border: 0;
+  border-radius: .65rem;
+  color: #071a35;
+  background: #83b9ff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.fantacalcio-welcome button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+@media (max-width: 700px) {
+  .fantacalcio-shell-layout { grid-template-columns: minmax(0, 1fr); }
+  .fantacalcio-sidebar { border-right: 0; border-bottom: 1px solid #244a78; }
+  .fantacalcio-sidebar p { margin: 0; }
+  .fantacalcio-welcome { justify-content: flex-start; }
+}
