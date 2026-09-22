@@ -1,8 +1,8 @@
-# FD2-QA data quality report
+# FD2-QA2 temporal certification report
 
-Release: `fd2qa-2026-09-22-9a37da7d6ed5`. Cutoff: 2026-09-22T15:27:24.030803+00:00.
+Release: `fd2qa-2026-09-22-c8ce1b1e8b5f`. Cutoff: 2026-09-22T15:27:24.030803+00:00.
 
-**AUCTION_POOL_READY: True; MODEL_READY: False; DQ: 88.8764/100.**
+**AUCTION_POOL_READY: True; MODEL_READY: True; DQ: 90.305/100.**
 
 ## Sources and freshness
 
@@ -141,11 +141,11 @@ The live pages share one provider; the advanced files share another. These are i
 
 ## Temporal and split integrity
 
-BACKTEST_SAFE: identifier only, not a predictive feature. Historical aggregates and current quotations/FVM/club/role are CURRENT_ONLY at this release cutoff. Future outcomes are TARGET_ONLY; future-derived fields and unmapped/unavailable enrichment are UNSAFE. See `field_safety_manifest.json`.
+BACKTEST_SAFE_EVENT_WINDOW: verified final prior-season PV, goals, assists, cards, penalties, own goals and goals conceded. The source file was retrieved later and is never backdated. MV/FM, current quotations/FVM/club/role/injury/starter/set-piece data are CURRENT_ONLY; future outcomes are TARGET_ONLY; future-derived fields and unmapped/unavailable enrichment are UNSAFE. See `field_safety_manifest.json`.
 
 Proposed target split: train 2022/23–2023/24; validation 2024/25; holdout 2025/26. Previous-season features only. Analytical target periods run July 1–June 30; prediction cutoff is June 30 23:59:59 UTC immediately before target start.
-Candidate counts: {'train': 876, 'validation': 424, 'holdout': 435}. Temporal rejections: 1735; admitted temporal violations: 0; target leakage: 0; split overlaps: 0.
-No historical samples are admitted: source publication before historical prediction cutoffs is unproven. These rejections block MODEL_READY.
+Candidate counts: {'train': 876, 'validation': 424, 'holdout': 435}. Admitted: 1735; rejected by temporal gate: 0; no prior-season row (outside candidate universe): 943; admitted temporal violations: 0; target leakage: 0; split overlaps: 0.
+Source publication before the historical cutoffs remains unproven and receives zero DQ credit. Event-window certification uses only final strictly prior-season event totals. RETROSPECTIVE_SOURCE_REVISION_RISK remains explicit.
 
 ## Deterministic DQ scoring
 
@@ -158,16 +158,17 @@ Each component = its prescribed weight × the arithmetic mean of the named measu
 | identity | 20 | 20.0 | unique_canonical_keys=1.000000; unique_season_keys=1.000000; join_cardinality=1.000000; current_identity_complete=1.000000 |
 | coverage | 20 | 18.8764 | current_critical_complete=1.000000; current_stats_id_coverage=1.000000; historical_rated_values_complete=1.000000; current_players_with_history=0.775281 |
 | consistency | 15 | 10.0 | live_identity_agreement=1.000000; advanced_same_grain_agreement=1.000000; independent_provider_complete_current_reconciliation=0.000000 |
-| temporal | 25 | 20.0 | current_release_cutoff_valid=1.000000; unsafe_samples_excluded=1.000000; target_denylist=1.000000; split_disjoint=1.000000; historical_cutoff_proven=0.000000 |
+| temporal | 25 | 21.4286 | current_release_cutoff_valid=1.000000; unsafe_samples_excluded=1.000000; target_denylist=1.000000; split_disjoint=1.000000; historical_cutoff_proven=0.000000; prior_event_windows_end_by_cutoff=1.000000; admitted_features_verified_event_fields=1.000000 |
 
-**Total: 88.8764/100.**
+**Total: 90.305/100.**
 
 ## Hard failures
 
-- HISTORICAL_AS_OF_UNPROVEN: candidate training/validation/holdout rows fail publication-time gate
+- NONE
 
 ## Warnings
 
+- RETROSPECTIVE_SOURCE_REVISION_RISK: final prior-season event totals were retrieved later; corrections made after historical cutoffs cannot be ruled out.
 - Data release is LOCAL_ONLY; data redistribution/product reuse not cleared.
 - Aggregate data cannot prove fixture or player-match completeness.
 - Historical source includes current-version corrections; do not assign old as-of timestamps from season labels.
@@ -175,7 +176,7 @@ Each component = its prescribed weight × the arithmetic mean of the named measu
 - PV counts rated appearances, not all appearances; source assists and generic football assists are not interchangeable.
 - MV/FM source zero with PV=0 is preserved as raw value and normalized to null/NO_APPEARANCE.
 - No exact fantasy total reconstructed from rounded MV/FM.
-- Workbook/page vote edition is preserved as Fantacalcio-source data; league-specific edition/settings are not independently confirmed.
+- Vuk manually confirmed the league Fonte voti as Fantacalcio; historical modifier scoring distributions remain unavailable.
 - Workbook core date metadata is absent; reader-generated default modification timestamps are not source freshness evidence.
 - Advanced data excluded from predictive features until crosswalk verification; no fuzzy joins admitted.
 - No complete current minutes/starts/injuries feed admitted. Missing optional evidence does not block the pool.
@@ -185,5 +186,5 @@ Each component = its prescribed weight × the arithmetic mean of the named measu
 ## Reproducibility and decision
 
 The builder compares two complete builds byte for byte, checks pinned source bytes and refuses to overwrite conflicting immutable releases. `release_checksums.json` covers every release file except itself; the content-derived release ID includes transformation-code hashes.
-The pool is technically usable for local review. Historical modelling remains blocked. Raw and derived player data remain local because redistribution/product reuse is not cleared.
+The pool is technically ready. MODEL_READY=True for the narrowly certified event-window fields only. Raw and derived player data remain local because redistribution/product reuse is not cleared.
 No model, prices, app integration or production mutation was performed.

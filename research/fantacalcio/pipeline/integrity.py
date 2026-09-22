@@ -1,6 +1,6 @@
 """Strict, deterministic checks shared by adapters and the release gate."""
 from collections import Counter, defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal, InvalidOperation
 import hashlib
 import json
@@ -14,6 +14,11 @@ DENYLIST = {'future_fantavoto', 'future_fm', 'future_goals', 'future_assists',
             'future_fvm', 'future_final_ranking', 'post_target_aggregate',
             'target_fm', 'target_pv', 'target_goals', 'target_assists',
             'future_transfer', 'future_injury', 'future_league_position'}
+EVENT_WINDOW_FIELDS = frozenset({'PV', 'goals', 'goals_conceded', 'assists',
+    'yellow_cards', 'red_cards', 'penalties_saved', 'penalties_taken',
+    'penalties_scored', 'penalties_missed', 'own_goals'})
+SNAPSHOT_FIELDS = frozenset({'fvm', 'quotation', 'initialquotation', 'club',
+    'role', 'eligibility', 'injury', 'availability', 'starter_evidence', 'set_piece_role'})
 
 
 class IntegrityError(ValueError):
@@ -182,6 +187,37 @@ def classify_field(name, *, source_season, target_season, available_at, cutoff, 
     if int(source_season[:4]) >= int(target_season[:4]):
         return 'UNSAFE'
     return 'BACKTEST_SAFE'
+
+
+def classify_event_window_field(name, *, source_season, target_season, cutoff,
+                                target_start, event_window_end_exclusive,
+                                source_available_by, source_semantics, target=False):
+    """Certify final prior-season event totals, never backdate the file's publication.
+
+    The July 1 bound is an analytical season bound, not a claimed match timestamp.
+    A later file may revise prior results; that risk remains explicit in the report.
+    """
+    if target:
+        return 'TARGET_ONLY'
+    token = name.casefold()
+    if token in DENYLIST or token.startswith(('future_', 'target_', 'post_target_')):
+        return 'UNSAFE'
+    if token in SNAPSHOT_FIELDS or name in {'MV', 'FM'}:
+        return 'CURRENT_ONLY'
+    if name not in EVENT_WINDOW_FIELDS:
+        return 'UNSAFE'
+    season(source_season); season(target_season)
+    year = int(target_season[:4])
+    if int(source_season[:4]) != year - 1 or source_semantics != 'PLAYER_SEASON_TOTAL':
+        return 'UNSAFE'
+    expected_start = iso(f'{year}-07-01T00:00:00+00:00')
+    if iso(target_start) != expected_start or iso(event_window_end_exclusive) != expected_start:
+        return 'UNSAFE'
+    if iso(event_window_end_exclusive) - timedelta(seconds=1) > iso(cutoff) or iso(cutoff) >= iso(target_start):
+        return 'UNSAFE'
+    if source_available_by is None or iso(source_available_by) < iso(event_window_end_exclusive):
+        return 'UNSAFE'  # A purported final version published before its window closed is not verified.
+    return 'BACKTEST_SAFE_EVENT_WINDOW'
 
 
 def assert_feature_fields(names):

@@ -1,6 +1,20 @@
 {
   "AUCTION_POOL_READY": true,
-  "MODEL_READY": false,
+  "MODEL_READY": true,
+  "admitted_event_window_fields": [
+    "PV",
+    "assists",
+    "goals",
+    "goals_conceded",
+    "own_goals",
+    "penalties_missed",
+    "penalties_saved",
+    "penalties_scored",
+    "penalties_taken",
+    "red_cards",
+    "yellow_cards"
+  ],
+  "admitted_historical_samples": 1735,
   "admitted_temporal_violations": 0,
   "bootstrap": {
     "current_rows": 527,
@@ -32,7 +46,7 @@
     ]
   },
   "competition": "IT_SERIE_A",
-  "content_sha256": "9a37da7d6ed5f5cbdddf67840f9c3c5602d3a3ac578249abdbcb5cfce6a62517",
+  "content_sha256": "c8ce1b1e8b5f899f5e07c0b398be1c4cf69ab116ab07289ae6bb5b9a4c1f7eac",
   "cross_source_consistency": {
     "advanced_stat_checks": 10239,
     "advanced_stat_mismatches": 0,
@@ -51,7 +65,7 @@
     "identity": 20.0,
     "provenance": 10.0,
     "schema": 10.0,
-    "temporal": 20.0
+    "temporal": 21.4286
   },
   "dq_formula": "component weight times unweighted mean of listed measured fractions; no score overrides hard failures",
   "dq_metrics": {
@@ -82,14 +96,16 @@
       "strict_missing_numeric_policy": 1.0
     },
     "temporal": {
+      "admitted_features_verified_event_fields": 1.0,
       "current_release_cutoff_valid": 1.0,
       "historical_cutoff_proven": 0.0,
+      "prior_event_windows_end_by_cutoff": 1.0,
       "split_disjoint": 1.0,
       "target_denylist": 1.0,
       "unsafe_samples_excluded": 1.0
     }
   },
-  "dq_score": 88.8764,
+  "dq_score": 90.305,
   "dq_weights": {
     "consistency": 15,
     "coverage": 20,
@@ -116,9 +132,7 @@
     "live_PV_max": 5,
     "live_stats_retrieved_at": "2026-09-22T15:27:23.377377+00:00"
   },
-  "hard_failures": [
-    "HISTORICAL_AS_OF_UNPROVEN: candidate training/validation/holdout rows fail publication-time gate"
-  ],
+  "hard_failures": [],
   "historical": {
     "cohort": "ALL_SOURCE_PLAYERS_NOT_ONLY_CURRENT_SURVIVORS",
     "current_player_mapping_pct": 77.5281,
@@ -561,6 +575,7 @@
     }
   },
   "model_trained": false,
+  "non_candidates_no_prior_feature": 943,
   "optional_scope_exclusions": [
     "advanced features",
     "Understat enrichment",
@@ -574,7 +589,8 @@
   "primary_commit": "5ec6e1afbee2ed7dd52c4fdb87595c242d13b8b2",
   "production_changes": "NONE",
   "reference_commit": "4dda14a8dd2ab24c2f30404c65d317e1d4cc84a4",
-  "release_id": "fd2qa-2026-09-22-9a37da7d6ed5",
+  "rejected_historical_samples": 0,
+  "release_id": "fd2qa-2026-09-22-c8ce1b1e8b5f",
   "reproducibility": "Verified by caller building twice and comparing every output byte before writing",
   "rights_status": "LOCAL_ONLY",
   "role_counts": {
@@ -2555,13 +2571,13 @@
       }
     ],
     "cutoff": "2026-09-22T15:27:24.030803+00:00",
-    "input_selection_sha256": "1706a6b8789be7d9bc4201ef712c26c4331068d123667935ecf225fb5067188f",
+    "input_selection_sha256": "0bd41587b721c95f3b833cfd95d7d185cbdae8ff6544cda826f82a3cdd2f0b1c",
     "pipeline_sha256": {
       "__init__.py": "149587c2f8bca099eb634568bc0745474d74983c9fb1dad41167a5a46242f4b3",
       "acquire_snapshots.py": "a55e2d0f1c66b1a55df6c78ffbba79b156064233d19c3421f64995df8bf1c380",
       "adapters.py": "eabd6428fa3ea4faf53b9d11240e46d6906ae355b5e688af4ba9fc159f04452e",
-      "integrity.py": "db03a386d0440d04f96fc87ad8d01b461821a458318aef72bdefa6d1d5da8252",
-      "release.py": "9b13655196bd9ed1529bb11bec97629b100d1d99c86259a35b4cbb45097b703d"
+      "integrity.py": "7e906ad9da4b1a8b6a86d7f619550ac9daf309e19c2a30b18659bae265a4ca17",
+      "release.py": "d57e04d5492cc719239a532bf59a677a0ad5b9919d43ce8dff71a38c92dd8d34"
     },
     "primary_commit": "5ec6e1afbee2ed7dd52c4fdb87595c242d13b8b2",
     "reference_commit": "4dda14a8dd2ab24c2f30404c65d317e1d4cc84a4",
@@ -2590,10 +2606,11 @@
     "statistiche_squadre_fbref": 240
   },
   "target_leakage_violations": 0,
-  "temporal_leakage_violations": 1735,
-  "temporal_rejected_candidates": 1735,
+  "temporal_leakage_violations": 0,
+  "temporal_rejected_candidates": 0,
   "unresolved_current_identities": 0,
   "warnings": [
+    "RETROSPECTIVE_SOURCE_REVISION_RISK: final prior-season event totals were retrieved later; corrections made after historical cutoffs cannot be ruled out.",
     "Data release is LOCAL_ONLY; data redistribution/product reuse not cleared.",
     "Aggregate data cannot prove fixture or player-match completeness.",
     "Historical source includes current-version corrections; do not assign old as-of timestamps from season labels.",
@@ -2601,7 +2618,7 @@
     "PV counts rated appearances, not all appearances; source assists and generic football assists are not interchangeable.",
     "MV/FM source zero with PV=0 is preserved as raw value and normalized to null/NO_APPEARANCE.",
     "No exact fantasy total reconstructed from rounded MV/FM.",
-    "Workbook/page vote edition is preserved as Fantacalcio-source data; league-specific edition/settings are not independently confirmed.",
+    "Vuk manually confirmed the league Fonte voti as Fantacalcio; historical modifier scoring distributions remain unavailable.",
     "Workbook core date metadata is absent; reader-generated default modification timestamps are not source freshness evidence.",
     "Advanced data excluded from predictive features until crosswalk verification; no fuzzy joins admitted.",
     "No complete current minutes/starts/injuries feed admitted. Missing optional evidence does not block the pool.",

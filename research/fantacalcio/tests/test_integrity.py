@@ -1,7 +1,9 @@
 """Synthetic malformed inputs plus optional pinned-real-source integration checks."""
+import csv
 import json
 import os
 from pathlib import Path
+from io import StringIO
 import tempfile
 import unittest
 
@@ -9,6 +11,7 @@ from research.fantacalcio.pipeline.integrity import (
     IntegrityError, number, source_id, canonical_id, role, season, duplicates, left_join,
     validate_current, validate_stats, aggregate_stints, fixture_audit, classify_field,
     assert_feature_fields, split_overlap, score, readiness, WEIGHTS, sha256,
+    classify_event_window_field, EVENT_WINDOW_FIELDS,
 )
 from research.fantacalcio.pipeline.adapters import workbook, fc_statistics, advanced_csv, fc_page
 from research.fantacalcio.pipeline.release import build, write_immutable
@@ -98,6 +101,24 @@ class IntegrityTests(unittest.TestCase):
     def test_same_target_season_is_not_lagged_history(self):
         self.assertEqual(classify_field('FM',source_season='2024/25',target_season='2024/25',
             available_at='2024-01-01T00:00:00+00:00',cutoff='2024-08-01T00:00:00+00:00'),'UNSAFE')
+
+    def test_retrospective_prior_season_event_totals_only(self):
+        params=dict(source_season='2024/25',target_season='2025/26',
+            cutoff='2025-06-30T23:59:59+00:00',target_start='2025-07-01T00:00:00+00:00',
+            event_window_end_exclusive='2025-07-01T00:00:00+00:00',
+            source_available_by='2026-09-01T14:59:20+00:00',source_semantics='PLAYER_SEASON_TOTAL')
+        for field in EVENT_WINDOW_FIELDS:
+            self.assertEqual(classify_event_window_field(field,**params),'BACKTEST_SAFE_EVENT_WINDOW')
+        for field in ['MV','FM','FVM','quotation','initialQuotation','injury','club','role',
+                      'availability','starter_evidence','set_piece_role']:
+            self.assertEqual(classify_event_window_field(field,**params),'CURRENT_ONLY')
+        self.assertEqual(classify_event_window_field('target_goals',**params),'UNSAFE')
+        self.assertEqual(classify_event_window_field('goals',target=True,**params),'TARGET_ONLY')
+        self.assertEqual(classify_event_window_field('goals',**{**params,'source_season':'2025/26'}),'UNSAFE')
+        self.assertEqual(classify_event_window_field('goals',**{**params,'source_season':'2026/27'}),'UNSAFE')
+        self.assertEqual(classify_event_window_field('goals',**{**params,'cutoff':'2025-06-30T23:59:58+00:00'}),'UNSAFE')
+        self.assertEqual(classify_event_window_field('goals',**{**params,'source_semantics':'SNAPSHOT'}),'UNSAFE')
+        self.assertEqual(classify_event_window_field('goals',**{**params,'event_window_end_exclusive':'2025-06-01T00:00:00+00:00'}),'UNSAFE')
 
     def test_target_denylist(self):
         for field in ['future_fm','target_fm','future_transfer','post_target_aggregate','Future_FM','target_FM']:
@@ -193,8 +214,28 @@ class RealSourceTests(unittest.TestCase):
         b,second=build(self.source,self.snapshots)
         self.assertEqual(a,b); self.assertEqual(report,second)
         self.assertTrue(report['AUCTION_POOL_READY'])
-        self.assertFalse(report['MODEL_READY'])
-        self.assertGreater(report['temporal_rejected_candidates'],0)
+        self.assertTrue(report['MODEL_READY'])
+        self.assertGreaterEqual(report['dq_score'],90)
+        self.assertEqual(report['hard_failures'],[])
+        self.assertEqual(report['admitted_historical_samples'],1735)
+        self.assertEqual(report['rejected_historical_samples'],0)
+        self.assertEqual(report['non_candidates_no_prior_feature'],943)
+        self.assertEqual(report['dq_metrics']['temporal']['historical_cutoff_proven'],0)
+        self.assertIn('RETROSPECTIVE_SOURCE_REVISION_RISK',' '.join(report['warnings']))
+        self.assertEqual(set(report['admitted_event_window_fields']),EVENT_WINDOW_FIELDS)
+        manifest=json.loads(a['field_safety_manifest.json'])
+        classes={row['field'].casefold():row['class'] for row in manifest['fields']}
+        self.assertEqual(len(classes),len(manifest['fields']))
+        self.assertEqual(classes['target_fm'],'TARGET_ONLY')
+        self.assertEqual(classes['historical.mv'],'CURRENT_ONLY')
+        self.assertEqual(classes['current.fvm'],'CURRENT_ONLY')
+        samples=list(csv.DictReader(StringIO(a['candidate_split_audit.csv'].decode())))
+        self.assertEqual(len(samples),1735)
+        self.assertTrue(all(row['admitted']=='True' for row in samples))
+        self.assertTrue(all(row['source_publication_before_prediction_cutoff_proven']=='False' for row in samples))
+        self.assertTrue(all(row['target_source_available_by'] > row['target_window_end_exclusive'] for row in samples))
+        self.assertTrue(all(set(json.loads(row['admitted_feature_fields']))==
+            {'historical_'+field for field in EVENT_WINDOW_FIELDS} for row in samples))
         self.assertEqual(report['admitted_temporal_violations'],0)
         self.assertEqual(report['target_leakage_violations'],0)
         self.assertEqual(report['split_overlap_violations'],0)

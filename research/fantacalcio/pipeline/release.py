@@ -13,8 +13,8 @@ import subprocess
 from .adapters import workbook, fc_statistics, fc_page, advanced_csv, sqlite_inventory
 from .integrity import (IntegrityError, canonical_id, normalize_name, role, duplicates, unique,
                         left_join, validate_current, validate_stats, aggregate_stints, fixture_audit,
-                        classify_field, assert_feature_fields, split_overlap, score, readiness,
-                        json_bytes, sha256, iso, WEIGHTS, DENYLIST)
+                        classify_event_window_field, assert_feature_fields, split_overlap, score, readiness,
+                        json_bytes, sha256, iso, WEIGHTS, DENYLIST, EVENT_WINDOW_FIELDS)
 
 PRIMARY_SHA = '5ec6e1afbee2ed7dd52c4fdb87595c242d13b8b2'
 REFERENCE_SHA = '4dda14a8dd2ab24c2f30404c65d317e1d4cc84a4'
@@ -66,7 +66,7 @@ def missingness(rows, fields):
 
 
 def markdown_report(report):
-    lines=['# FD2-QA data quality report','',
+    lines=['# FD2-QA2 temporal certification report','',
            f"Release: `{report['release_id']}`. Cutoff: {report['data_cutoff']}.",'',
            f"**AUCTION_POOL_READY: {report['AUCTION_POOL_READY']}; MODEL_READY: {report['MODEL_READY']}; DQ: {report['dq_score']}/100.**",
            '', '## Sources and freshness','',
@@ -101,10 +101,10 @@ def markdown_report(report):
     lines.extend(f'- {key}: {value}' for key,value in report['cross_source_consistency'].items())
     lines.extend(['','The live pages share one provider; the advanced files share another. These are internal consistency checks, not independent-provider confirmation. Different bootstrap/live timestamps explain changed values; they are never averaged. See local `source_reconciliation.csv`.',
                   '', '## Temporal and split integrity','',
-                  'BACKTEST_SAFE: identifier only, not a predictive feature. Historical aggregates and current quotations/FVM/club/role are CURRENT_ONLY at this release cutoff. Future outcomes are TARGET_ONLY; future-derived fields and unmapped/unavailable enrichment are UNSAFE. See `field_safety_manifest.json`.',
+                  'BACKTEST_SAFE_EVENT_WINDOW: verified final prior-season PV, goals, assists, cards, penalties, own goals and goals conceded. The source file was retrieved later and is never backdated. MV/FM, current quotations/FVM/club/role/injury/starter/set-piece data are CURRENT_ONLY; future outcomes are TARGET_ONLY; future-derived fields and unmapped/unavailable enrichment are UNSAFE. See `field_safety_manifest.json`.',
                   '', 'Proposed target split: train 2022/23–2023/24; validation 2024/25; holdout 2025/26. Previous-season features only. Analytical target periods run July 1–June 30; prediction cutoff is June 30 23:59:59 UTC immediately before target start.',
-                  f"Candidate counts: {report['split_counts']}. Temporal rejections: {report['temporal_rejected_candidates']}; admitted temporal violations: {report['admitted_temporal_violations']}; target leakage: {report['target_leakage_violations']}; split overlaps: {report['split_overlap_violations']}.",
-                  'No historical samples are admitted: source publication before historical prediction cutoffs is unproven. These rejections block MODEL_READY.',
+                  f"Candidate counts: {report['split_counts']}. Admitted: {report['admitted_historical_samples']}; rejected by temporal gate: {report['rejected_historical_samples']}; no prior-season row (outside candidate universe): {report['non_candidates_no_prior_feature']}; admitted temporal violations: {report['admitted_temporal_violations']}; target leakage: {report['target_leakage_violations']}; split overlaps: {report['split_overlap_violations']}.",
+                  'Source publication before the historical cutoffs remains unproven and receives zero DQ credit. Event-window certification uses only final strictly prior-season event totals. RETROSPECTIVE_SOURCE_REVISION_RISK remains explicit.',
                   '', '## Deterministic DQ scoring','',
                   'Each component = its prescribed weight × the arithmetic mean of the named measured fractions below. Unknown checks receive zero. A high score never overrides a hard failure. MODEL_READY additionally requires total >=90.',
                   '', '| Component | Weight | Score | Measured fractions |', '|---|---:|---:|---|'])
@@ -112,12 +112,12 @@ def markdown_report(report):
         metrics='; '.join(f'{k}={v:.6f}' for k,v in report['dq_metrics'][component].items())
         lines.append(f"| {component} | {WEIGHTS[component]} | {value} | {metrics} |")
     lines.extend(['',f"**Total: {report['dq_score']}/100.**",'', '## Hard failures',''])
-    lines.extend(f'- {x}' for x in report['hard_failures'])
+    lines.extend([f'- {x}' for x in report['hard_failures']] or ['- NONE'])
     lines.extend(['', '## Warnings',''])
     lines.extend(f'- {x}' for x in report['warnings'])
     lines.extend(['', '## Reproducibility and decision','',
                   'The builder compares two complete builds byte for byte, checks pinned source bytes and refuses to overwrite conflicting immutable releases. `release_checksums.json` covers every release file except itself; the content-derived release ID includes transformation-code hashes.',
-                  'The pool is technically usable for local review. Historical modelling remains blocked. Raw and derived player data remain local because redistribution/product reuse is not cleared.',
+                  f"The pool is technically ready. MODEL_READY={report['MODEL_READY']} for the narrowly certified event-window fields only. Raw and derived player data remain local because redistribution/product reuse is not cleared.",
                   'No model, prices, app integration or production mutation was performed.',''])
     return '\n'.join(lines).encode('utf-8')
 
@@ -346,10 +346,15 @@ def build(source_root, snapshot_root):
     # Explicitly enumerate every candidate observation field. Market values never enter historical evaluation.
     safety=[]
     for field in FC_FIELDS:
-        safety.append({'field':'historical.'+field,'class':'CURRENT_ONLY',
-            'reason':'Prior completed-season aggregates are usable today. This pinned version was only proven available in Sep 2026; earlier vintages unproven.',
-            'backtest_condition':'Earlier published snapshot at/before cutoff AND source season precedes target season',
-            'available_by':SOURCE_AVAILABLE_BY})
+        event_safe=field in EVENT_WINDOW_FIELDS
+        safety.append({'field':'historical.'+field,
+            'class':'BACKTEST_SAFE_EVENT_WINDOW' if event_safe else 'CURRENT_ONLY',
+            'reason':('Verified final prior-season event total, with a strictly prior analytical event window. '
+                      'The later source publication is retained; retrospective revisions remain possible.') if event_safe
+                     else 'Rating averages are not certified as retrospective event-window predictors.',
+            'backtest_condition':'Exactly previous completed season; window ends by cutoff; no snapshot/target data' if event_safe
+                                 else 'Requires separate point-in-time and semantic review',
+            'source_available_by':SOURCE_AVAILABLE_BY,'source_publication_before_old_cutoff_proven':False})
     for field in ['quotation','initialQuotation','FVM','club','role','eligibility']+FC_FIELDS:
         safety.append({'field':'current.'+field,'class':'CURRENT_ONLY',
                         'reason':'Snapshot observed on 2026-09-22, never backfilled into previous seasons'})
@@ -358,12 +363,14 @@ def build(source_root, snapshot_root):
     for field in ['target_PV','target_FM','target_goals','target_assists']:
         safety.append({'field':field,'class':'TARGET_ONLY','reason':'Separate future outcome; never selected as a feature'})
     safety.append({'field':'playerRef','class':'BACKTEST_SAFE','reason':'Identifier only, not a predictive feature; never filter historical cohort to current survivors'})
-    for field in sorted(DENYLIST):
+    target_names={'target_pv','target_fm','target_goals','target_assists'}
+    for field in sorted(DENYLIST - target_names):
         safety.append({'field':field,'class':'UNSAFE','reason':'Target/future-information denylist'})
-    feature_names=['historical_'+f for f in FC_FIELDS]+['current_'+f for f in FC_FIELDS]
+    feature_names=['historical_'+f for f in FC_FIELDS if f in EVENT_WINDOW_FIELDS]
     assert_feature_fields(feature_names)
     split_keys={'train':[],'validation':[],'holdout':[]}
     candidate_samples=[]
+    no_prior_feature=0
     previous={(r['fantacalcioId'],int(r['season'][:4])):r for r in history}
     for target_row in history:
         year=int(target_row['season'][:4])
@@ -371,24 +378,51 @@ def build(source_root, snapshot_root):
             continue
         prior=previous.get((target_row['fantacalcioId'],year-1))
         if prior is None:
+            no_prior_feature+=1
             continue
         split='train' if year<=2023 else 'validation' if year==2024 else 'holdout'
         sample=target_row['playerRef']+':target:'+target_row['season']
         sample_cutoff=f'{year}-06-30T23:59:59+00:00'
         target_start=f'{year}-07-01T00:00:00+00:00'
-        safe=classify_field('MV',source_season=prior['season'],target_season=target_row['season'],
-                            available_at=prior['observed_at'],cutoff=sample_cutoff)=='BACKTEST_SAFE'
+        event_end=f'{year}-07-01T00:00:00+00:00'
+        target_window_end=f'{year+1}-07-01T00:00:00+00:00'
+        if iso(target_row['observed_at']) < iso(target_window_end):
+            raise IntegrityError('Target source was not final after its own season')
+        decisions={field:classify_event_window_field(field,source_season=prior['season'],
+            target_season=target_row['season'],cutoff=sample_cutoff,target_start=target_start,
+            event_window_end_exclusive=event_end,source_available_by=prior['observed_at'],
+            source_semantics=prior['statistics_scope']) for field in FC_FIELDS if field in EVENT_WINDOW_FIELDS}
+        window_valid=iso(event_end)<=iso(target_start) and iso(event_end)>iso(sample_cutoff)
+        whitelist_valid=set(decisions)==EVENT_WINDOW_FIELDS and all(
+            result=='BACKTEST_SAFE_EVENT_WINDOW' for result in decisions.values())
+        safe=window_valid and whitelist_valid
         if not iso(sample_cutoff)<iso(target_start):
             raise IntegrityError('Invalid target boundary')
         candidate_samples.append({'sample_key':sample,'split':split,'feature_season':prior['season'],
             'target_season':target_row['season'],'prediction_cutoff':sample_cutoff,'target_start':target_start,
-            'feature_max_timestamp':prior['observed_at'],'admitted':safe,
-            'reason':'PASS' if safe else 'SOURCE_VERSION_NOT_PROVEN_AVAILABLE_AT_CUTOFF'})
+            'event_window_end_exclusive':event_end,
+            'source_available_by':prior['observed_at'],
+            'target_window_end_exclusive':target_window_end,
+            'target_source_available_by':target_row['observed_at'],
+            'source_publication_before_prediction_cutoff_proven':iso(prior['observed_at'])<=iso(sample_cutoff),
+            'temporal_basis':'COMPLETED_PRIOR_SEASON_EVENT_WINDOW',
+            'admitted_feature_fields':feature_names if safe else [],
+            'prior_event_window_valid':window_valid,'feature_whitelist_valid':whitelist_valid,
+            'admitted':safe,'reason':'PASS_EVENT_WINDOW_WITH_REVISION_RISK' if safe
+                else 'PRIOR_EVENT_WINDOW_OR_FIELD_CERTIFICATION_FAILED'})
         split_keys[split].append(sample)
     overlap=split_overlap(split_keys)
     rejected_temporal=sum(not r['admitted'] for r in candidate_samples)
+    admitted_temporal_violations=sum(r['admitted'] and (
+        not r['prior_event_window_valid'] or not r['feature_whitelist_valid'])
+        for r in candidate_samples)
+    target_leakage_violations=sum(r['admitted'] and any(
+        name.casefold().startswith(('target_', 'future_', 'post_target_'))
+        for name in r['admitted_feature_fields']) for r in candidate_samples)
     if rejected_temporal:
-        hard_failures.append('HISTORICAL_AS_OF_UNPROVEN: candidate training/validation/holdout rows fail publication-time gate')
+        hard_failures.append('HISTORICAL_EVENT_WINDOW_CERTIFICATION_FAILED: candidate samples rejected')
+    if admitted_temporal_violations or target_leakage_violations:
+        hard_failures.append('ADMITTED_TEMPORAL_OR_TARGET_LEAKAGE')
     if not candidate_samples:
         hard_failures.append('NO_CHRONOLOGICAL_SAMPLES')
     if overlap:
@@ -432,7 +466,10 @@ def build(source_root, snapshot_root):
     usable_rates=sum(r['PV']>0 and r['MV'] is not None and r['FM'] is not None for r in history)/sum(r['PV']>0 for r in history)
     adv_recons=[r for r in reconciliation if r['source_a']=='advanced_standard']
     adv_consistency=sum(r['status']=='MATCH' for r in adv_recons)/len(adv_recons) if adv_recons else 0
-    # Unknown historical publication time earns no point; excluding unsafe rows is separately rewarded.
+    # Preserve the original publication-time metric at zero; add measured event-window gates.
+    publication_fraction=sum(r['source_publication_before_prediction_cutoff_proven'] for r in candidate_samples)/len(candidate_samples) if candidate_samples else 0.0
+    window_fraction=sum(r['prior_event_window_valid'] for r in candidate_samples)/len(candidate_samples) if candidate_samples else 0.0
+    whitelist_fraction=sum(r['feature_whitelist_valid'] for r in candidate_samples)/len(candidate_samples) if candidate_samples else 0.0
     metric_config={
       'provenance':{'all_artifacts_hashed':float(all(r.get('sha256') for r in artifacts)),
                     'all_versions_pinned':float(all(r.get('commit') or r.get('version') for r in artifacts)),
@@ -448,19 +485,26 @@ def build(source_root, snapshot_root):
                      'advanced_same_grain_agreement':adv_consistency,
                      'independent_provider_complete_current_reconciliation':0.0},
       'temporal':{'current_release_cutoff_valid':float(not any('AFTER_RELEASE' in f for f in hard_failures)),
-                  'unsafe_samples_excluded':1.0,'target_denylist':1.0,'split_disjoint':float(not overlap),
-                  'historical_cutoff_proven':1-rejected_temporal/len(candidate_samples) if candidate_samples else 0.0}}
+                  'unsafe_samples_excluded':sum((not r['admitted']) or (
+                      r['prior_event_window_valid'] and r['feature_whitelist_valid'])
+                      for r in candidate_samples)/len(candidate_samples) if candidate_samples else 0.0,
+                  'target_denylist':float(target_leakage_violations == 0),
+                  'split_disjoint':float(not overlap),
+                  'historical_cutoff_proven':publication_fraction,
+                  'prior_event_windows_end_by_cutoff':window_fraction,
+                  'admitted_features_verified_event_fields':whitelist_fraction}}
     components,total=score(metric_config)
-    temporal_violations=rejected_temporal
-    states=readiness(pool_ok,total,hard_failures,temporal_violations,0,len(overlap))
-    warnings.extend(['Data release is LOCAL_ONLY; data redistribution/product reuse not cleared.',
+    temporal_violations=rejected_temporal+admitted_temporal_violations
+    states=readiness(pool_ok,total,hard_failures,temporal_violations,target_leakage_violations,len(overlap))
+    warnings.extend(['RETROSPECTIVE_SOURCE_REVISION_RISK: final prior-season event totals were retrieved later; corrections made after historical cutoffs cannot be ruled out.',
+        'Data release is LOCAL_ONLY; data redistribution/product reuse not cleared.',
         'Aggregate data cannot prove fixture or player-match completeness.',
         'Historical source includes current-version corrections; do not assign old as-of timestamps from season labels.',
         'No historical training cohort is filtered to current selectable players (avoid survivorship bias).',
         'PV counts rated appearances, not all appearances; source assists and generic football assists are not interchangeable.',
         'MV/FM source zero with PV=0 is preserved as raw value and normalized to null/NO_APPEARANCE.',
         'No exact fantasy total reconstructed from rounded MV/FM.',
-        'Workbook/page vote edition is preserved as Fantacalcio-source data; league-specific edition/settings are not independently confirmed.',
+        'Vuk manually confirmed the league Fonte voti as Fantacalcio; historical modifier scoring distributions remain unavailable.',
         'Workbook core date metadata is absent; reader-generated default modification timestamps are not source freshness evidence.',
         'Advanced data excluded from predictive features until crosswalk verification; no fuzzy joins admitted.',
         'No complete current minutes/starts/injuries feed admitted. Missing optional evidence does not block the pool.',
@@ -472,12 +516,15 @@ def build(source_root, snapshot_root):
                      'pipeline_sha256':{p.name:sha256(p.read_bytes()) for p in sorted(Path(__file__).parent.glob('*.py'))},
                      'retrieval_time_semantics':'Fixed acquisition record, not regeneration time',
                      'cutoff':cutoff,'rights_status':'LOCAL_ONLY_NOT_CLEARED_FOR_REDISTRIBUTION','artifacts':artifacts}
-    field_manifest={'classes':['BACKTEST_SAFE','CURRENT_ONLY','TARGET_ONLY','UNSAFE'],'fields':safety,
+    field_manifest={'classes':['BACKTEST_SAFE','BACKTEST_SAFE_EVENT_WINDOW','CURRENT_ONLY','TARGET_ONLY','UNSAFE'],'fields':safety,
         'denylist':sorted(DENYLIST),'feature_candidates':feature_names,
-        'historical_asof_policy':'Strict known-at-time. A final-season label is not a publication timestamp.',
+        'historical_asof_policy':'Final prior-season event totals may use a retrospective event-window certificate; source retrieval remains dated 2026. Snapshot/market/rating features still require point-in-time evidence.',
+        'retrospective_revision_risk':'RETROSPECTIVE_SOURCE_REVISION_RISK',
         'candidate_split':{'train':['2022/23','2023/24'],'validation':['2024/25'],'holdout':['2025/26'],
                            'features':'Previous completed season only','boundary':'Analytical season July 1 to June 30; cutoff June 30 23:59:59 UTC before target season'},
         'admitted_historical_samples':sum(r['admitted'] for r in candidate_samples),
+        'rejected_historical_samples':rejected_temporal,
+        'non_candidates_no_prior_feature':no_prior_feature,
         'current_only_safe_for_forecast_after':cutoff}
     files={'current_players.csv':csv_bytes(current),'player_season.csv':csv_bytes(player_season),
            'identity_mapping.csv':csv_bytes(mapping),'history_mapping_status.csv':csv_bytes(history_status),
@@ -519,9 +566,15 @@ def build(source_root, snapshot_root):
         'cross_source_consistency':{'live_identity_checks':len(current_consistency),'live_identity_failures':current_consistency.count(False),
             'advanced_stat_checks':len(adv_recons),'advanced_stat_mismatches':sum(r['status']!='MATCH' for r in adv_recons),
             'bootstrap_to_live_changed_fields':freshness_changes,'independent_complete_current_check':False},
-        'temporal_leakage_violations':temporal_violations,'admitted_temporal_violations':0,
-        'temporal_rejected_candidates':rejected_temporal,'target_leakage_violations':0,'split_overlap_violations':len(overlap),
+        'temporal_leakage_violations':temporal_violations,
+        'admitted_temporal_violations':admitted_temporal_violations,
+        'temporal_rejected_candidates':rejected_temporal,
+        'target_leakage_violations':target_leakage_violations,'split_overlap_violations':len(overlap),
         'split_counts':{k:len(v) for k,v in split_keys.items()},'split_overlap_details':overlap,
+        'admitted_historical_samples':len(candidate_samples)-rejected_temporal,
+        'rejected_historical_samples':rejected_temporal,
+        'non_candidates_no_prior_feature':no_prior_feature,
+        'admitted_event_window_fields':sorted(EVENT_WINDOW_FIELDS),
         'dq_formula':'component weight times unweighted mean of listed measured fractions; no score overrides hard failures',
         'dq_metrics':metric_config,'dq_weights':WEIGHTS,'dq_components':components,'dq_score':total,
         **states,'warnings':warnings,'hard_failures':sorted(set(hard_failures)),
