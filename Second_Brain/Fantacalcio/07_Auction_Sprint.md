@@ -1,257 +1,291 @@
-# Fantacalcio — 9-Hour Official-Auction Sprint
+# Fantacalcio — 5-Hour Official-Auction Sprint
 
 ## Purpose
 
-Deliver the smallest reliable Fantacalcio system that can be trusted during the imminent 2026/27 official auction inside a hard **9-hour total project timebox**.
+Approximately **five hours remain** to deliver the private 2026/27 Fantacalcio auction assistant.
 
-This file is a temporary delivery override, not a replacement for the full roadmap.
+This is a temporary delivery override, not a replacement for the long-term roadmap.
 
-The full roadmap in `05_Roadmap_Status.md` resumes after the auction.
+The product core is already built. The remaining sprint is now about proving the data, generating defensible decision support, integrating it, and rehearsing the auction.
 
-## Delivery rule
-
-The sprint optimizes for:
-
-**auction reliability > useful decision support > architecture completeness > polish.**
-
-Do not sacrifice:
-- authorization/security;
-- deterministic budgets and ownership;
-- roster-slot legality;
-- recoverable corrections;
-- real source provenance;
-- explicit uncertainty.
-
-Do sacrifice/defer:
-- broad refactors;
-- repeated onboarding;
-- extensive documentation churn;
-- complex modelling without proven incremental value;
-- mobile polish;
-- Monte Carlo/simulation unless the core tool is already ready.
-
-A simple validated baseline is preferable to a sophisticated model that cannot be validated before the auction.
-
-## Completed before sprint execution
+## Current completed state
 
 ### FA0 — COMPLETE
-Rules and architecture frozen sufficiently for implementation.
+Rules/architecture frozen sufficiently for implementation.
 
 ### FA1 — COMPLETE
-Production-verified:
-- Vuk-only Fantacalcio access;
-- blue product shell;
-- Fantacalcio ↔ FPL switching;
-- login/logout regression check;
-- capability/RLS enforcement.
+Production-verified Vuk-only Fantacalcio access.
 
-## Must-ship auction core
-
-The auction must not begin without:
-
-1. reliable persistent auction state;
-2. 8 configured managers;
-3. 500 initial credits each;
-4. 25-player roster constraints:
-   - 3 POR
-   - 8 DIF
-   - 8 CEN
-   - 6 ATT
-5. minimum purchase price = 1;
-6. exact remaining budget;
-7. exact remaining slots by role;
-8. duplicate ownership prevention;
-9. deterministic maximum legal bid;
-10. fast sale recording;
-11. safe correction/undo;
-12. auction history;
-13. real player pool/search;
-14. laptop-usable workflow;
-15. backup/export or equivalent recovery path before the live auction.
-
-## Sprint sequence
-
-### FA2-S — Reliable auction ledger
-Build the deterministic domain/persistence core:
-- auction session;
-- managers;
-- nominations/sales;
-- budgets;
-- role slots;
-- ownership;
-- minimum-price legality;
-- max-legal-bid invariant;
-- correction/undo;
-- persistence;
-- invariant tests.
-
-Do not wait for player modelling.
-
-### FA3-S — Laptop auction recorder
-Build only what makes live entry fast:
-- player search;
-- sale confirmation;
-- manager board;
-- visible budgets/slots;
-- history;
-- correction;
-- keyboard-friendly flow;
-- recovery/export.
-
-Avoid cosmetic detours.
-
-### FD1-S — Emergency source selection
-Perform a fast but serious source audit focused on the first release.
-
-Select the minimum trustworthy source set for:
-- official/usable Fantacalcio Classic listone and roles;
-- current Serie A player/team identity;
-- historical/current Fantacalcio performance where accessible;
-- current minutes/starts/availability evidence;
-- any advanced statistic only if reliable, timely and materially useful.
-
-Record source/version/retrieval time and known limitations.
-
-Do not build a large provider framework.
-
-### FD2-S — Minimum canonical player dataset
-Create only the canonical current player layer needed by the auction:
-- stable internal identity;
-- name;
-- club;
-- role;
-- source identity;
-- availability/status fields needed for ranking;
-- provenance.
-
-Critical identity conflicts must be explicit.
-
-### FM-S — Defensible baseline projection
-If source coverage permits, produce a leakage-safe remaining-season baseline using the strongest simple evidence available within the timebox.
-
-Potential inputs:
-- historical Fantacalcio performance;
-- current 2026/27 evidence;
-- minutes/starts;
-- role;
-- goals/assists/underlying statistics when trustworthy;
-- set pieces/penalties;
-- team strength;
-- current availability;
-- historical reliability;
-- base-vote consistency for defense-modifier-relevant players.
-
-Use shrinkage/recency logic appropriate to small current-season samples.
-
-Do not launch the full FM4 tournament unless core auction readiness is already complete and the comparison can finish without delaying release.
-
-### FE-S — Auction value layer
-Convert the baseline into immediately useful guidance:
-- position scarcity;
-- replacement value;
-- fair credits;
+### FA2-S — COMPLETE
+Production ledger supports:
+- 8 managers;
+- 500 credits;
+- 3 POR / 8 DIF / 8 CEN / 6 ATT;
+- minimum price 1;
 - hard max legal bid;
-- recommended bid ceiling only when supported by the remaining-player/budget state.
+- duplicate-sale protection;
+- append-only sale/undo history;
+- RLS/capability enforcement.
 
-Hard legal max remains deterministic and separate from recommended max.
+### FA3-S — COMPLETE
+PR #50 merged:
+- laptop recorder;
+- manager board;
+- authoritative reload/replay;
+- manual player fallback;
+- undo/history;
+- JSON backup/export.
 
-Do not build full FE3 Monte Carlo unless spare time remains after rehearsal.
+### FD1-S — COMPLETE
+Source research is sufficient to stop broad provider hunting.
 
-## Parallelism
+## New delivery rule
 
-After FA1, product and data tracks may proceed independently:
+The remaining sprint optimizes for:
 
-```text
-PRODUCT
-FA2-S → FA3-S
-             \
-              FINAL AUCTION APP
-             /
-DATA
-FD1-S → FD2-S → FM-S → FE-S
-```
+**data integrity > defensible baseline model > auction economics > integration polish.**
 
-Do not create cross-track blockers unless technically required.
+The deadline may reduce model complexity or feature count.
 
-## Cut line
+It may **not** reduce:
+- identity correctness;
+- duplicate detection;
+- match/season coverage checks;
+- missingness accounting;
+- source provenance;
+- temporal leakage safety;
+- target-leakage safety;
+- chronological evaluation.
 
-### Non-negotiable
-- FA2-S;
-- FA3-S core;
-- real player pool;
-- persistence/recovery;
-- full rehearsal.
+If the rich dataset fails the gate, use a smaller clean dataset.
 
-### Strong target
-- FD1-S;
-- FD2-S;
-- baseline ranking;
-- simple scarcity/fair-credit guidance.
+Do not force dirty data into the model.
 
-### Defer before risking core delivery
-- full FM4 model tournament;
-- extensive hyperparameter tuning;
-- full FE2 opponent market modelling;
-- FE3 Monte Carlo;
-- FA4 polish;
-- mobile optimization;
-- continuous refresh/retraining infrastructure;
-- speculative opponent psychology.
+## Source strategy for tonight
 
-## Sprint workflow
+### Primary bootstrap — 0novanta/tool-asta-fantacalcio
+Inspect and pin the real repository artifacts, including as applicable:
+- 2026/27 quotations/listone;
+- historical Fantacalcio statistics/quotations;
+- season-organized advanced statistics;
+- public SQLite dataset.
 
-For each task:
+Use only fields/artifacts that pass independent validation.
 
-1. synchronize clean `main`;
-2. read only the minimum relevant Second Brain/code;
-3. create a short-lived branch;
-4. implement one narrow deliverable;
-5. run all available automated checks;
-6. open Draft PR;
-7. report exact verification and blockers;
-8. ChatGPT performs delta review;
-9. Vuk merges;
-10. immediately start the next critical task.
+### Current-season enrichment — piopy/fantacalcio-py
+Inspect the live acquisition approaches and smoke-test only the sources needed for freshness.
 
-Do not rerun full onboarding between sprint tasks.
+Potentially useful:
+- current minutes/starts;
+- current production;
+- xG/xA where available;
+- injuries/status;
+- likely starter evidence;
+- penalties/set pieces.
 
-Do not create a Second Brain update after every sprint task. Propose documentation only for:
-- a durable decision;
-- a significant blocker/change of strategy;
-- the final auction-ready checkpoint.
+Do not depend on private credentials, opaque providers or brittle workarounds merely because the reference project contains them.
 
-## Model/reasoning use during sprint
+### API-Football — fallback
+Use only if required current evidence cannot be verified from the bootstrap/current-source stack.
 
-Use the least expensive model that remains safe for the task.
+Do not introduce paid/provider complexity by default.
 
-Suggested capability allocation:
-- auth/RLS/security: stronger reasoning;
-- deterministic ledger/business invariants: strong/standard reasoning;
-- mechanical UI integration/polish: standard;
-- source-selection research: frontier/deep reasoning if available;
-- statistical design/model baseline: frontier/deep reasoning;
-- repetitive cleanup: fast/mechanical.
+### uPeppe/fantabeto — modelling reference
+Use for modelling ideas only:
+- vote vs fantavote;
+- goalkeeper separation;
+- uncertainty;
+- defense-modifier implications.
 
-Do not spend higher reasoning effort on CSS or routine wiring when it could be reserved for data/model correctness.
+Do not use its older scraper as the current ingestion layer.
+
+## Phase 1 — FD2-QA: canonical release + integrity audit
+
+This is the **next task** and is upstream of every model.
+
+Build current-player-first canonical data and then prove its quality.
+
+### Required outputs
+- pinned source manifest;
+- canonical 2026/27 selectable player pool;
+- historical/current feature tables actually needed;
+- identity mapping report;
+- fixture/coverage report where match-level data is used;
+- missingness report;
+- cross-source reconciliation report;
+- temporal/leakage field classification;
+- machine-readable data-quality report;
+- Data Quality Score;
+- `AUCTION_POOL_READY` verdict;
+- `MODEL_READY` verdict.
+
+### Data Quality Score
+
+| Component | Weight |
+| --- | ---: |
+| Provenance & reproducibility | 10 |
+| Schema & value validity | 10 |
+| Identity & duplicate integrity | 20 |
+| Coverage & missingness | 20 |
+| Cross-source consistency | 15 |
+| Temporal / leakage safety | 25 |
+| **Total** | **100** |
+
+`MODEL_READY` requires score >= 90 **and** zero critical hard failures.
+
+### Hard failures
+At minimum:
+- wrong season/competition;
+- missing current Classic role;
+- unresolved current identity collision;
+- duplicate canonical/sample keys that affect weighting/identity;
+- silent many-to-many join explosion;
+- materially missing fixtures/gameweeks used as complete training data;
+- orphan match rows;
+- parse failures silently mapped to zero;
+- undocumented freshness;
+- temporal leakage;
+- target leakage;
+- train/test overlap.
+
+No model starts until this passes.
+
+## Phase 2 — after MODEL_READY: parallelize
+
+Only after FD2-QA freezes an approved canonical release should parallel sessions begin.
+
+### Session A — FM-S
+Build a simple, leakage-safe remaining-season baseline.
+
+Prefer:
+- recency/shrinkage;
+- empirical Bayes;
+- Ridge/ElasticNet only if the training target and chronological validation are defensible.
+
+Required:
+- chronological split;
+- explicit prediction cutoffs;
+- shuffled-target negative control;
+- random-feature/noise control;
+- simple baseline comparison;
+- uncertainty flags.
+
+No large model tournament.
+
+### Session B — FA3-DATA integration
+Integrate the frozen **current canonical player pool** into the recorder:
+- searchable real player list;
+- stable `playerRef`;
+- role auto-filled from canonical data;
+- club shown;
+- already-sold state derived from ledger;
+- manual fallback retained only as emergency recovery.
+
+Do not add fake projections.
+
+This session can proceed from `AUCTION_POOL_READY`; it does not need to wait for FM-S.
+
+## Phase 3 — FE-S
+
+After FM-S produces a reviewed projection release:
+- replacement level by role;
+- scarcity;
+- fair credits;
+- recommended max ceiling;
+- keep hard legal max separate.
+
+No Monte Carlo before the auction.
+
+If model readiness fails, FE-S must not fabricate model-derived prices. Current FVM/quotation may be displayed only as clearly labelled external reference data when provenance is valid.
+
+## Phase 4 — integrate + freeze + rehearse
+
+Final production work:
+- load frozen canonical/projection/value release;
+- expose release/data-as-of and warnings;
+- preserve authoritative ledger;
+- simulate auction workflow;
+- verify backup/export;
+- freeze release ID.
+
+## Five-hour target allocation
+
+This is a priority allocation, not a promise:
+
+1. **0:00–1:20 — FD2-QA**
+   - canonical release;
+   - integrity tests;
+   - DQ score;
+   - AUCTION_POOL_READY / MODEL_READY verdict.
+
+2. **1:20–2:20 — parallel**
+   - Session A: FM-S if MODEL_READY;
+   - Session B: canonical player-pool integration if AUCTION_POOL_READY.
+
+3. **2:20–3:15 — FE-S**
+   - only from approved model output.
+
+4. **3:15–4:15 — integration/deployment**
+   - rankings/values into app;
+   - release metadata;
+   - resolve integration defects.
+
+5. **4:15–5:00 — rehearsal/fix/freeze**
+   - production checks;
+   - backup;
+   - final release freeze.
+
+If FD2-QA takes longer, cut modelling sophistication first.
+
+Never cut the integrity gate.
+
+## Parallel-session rules
+
+- Do **not** run two sessions that mutate the same worktree.
+- The FD2-QA data worktree owns research/data files until the canonical release is frozen.
+- After that release exists, create separate branches/worktrees for:
+  - FM-S;
+  - FA3-DATA integration.
+- FE-S waits for reviewed FM-S output.
+- External reference repositories live outside the project Git history.
+- No session edits Second Brain during routine sprint work.
+
+## Release readiness
+
+### AUCTION_POOL_READY
+Required for real search:
+- every selectable current player has unique identity;
+- Classic role present;
+- club/eligibility explicit;
+- no unresolved current collision;
+- source/version/checksum recorded.
+
+### MODEL_READY
+Required for statistical predictions:
+- AUCTION_POOL_READY;
+- DQ score >= 90;
+- zero critical hard failures;
+- zero temporal leakage;
+- zero target leakage;
+- zero split overlap.
+
+If only AUCTION_POOL_READY succeeds, the recorder may still use the real player pool without statistical recommendations.
 
 ## Final auction-ready gate
 
 Before the real auction:
-
 - production app reachable;
-- Vuk authentication works;
-- Fantacalcio opens;
-- real player pool loads;
-- all 8 managers initialized correctly;
-- all budgets start at 500;
-- roster constraints are correct;
-- at least one simulated sale per role succeeds;
-- duplicate purchase is blocked;
-- illegal overbid is blocked;
-- undo/correction restores exact prior state;
-- refresh/relogin preserves authoritative state;
-- export/backup/recovery path works;
-- FPL product still opens;
-- frozen source/projection release IDs are visible if ranking/value data is used.
+- Vuk auth works;
+- real canonical player pool loads;
+- all 8 managers/500 credits/3-8-8-6 correct;
+- search → sale workflow works;
+- duplicate purchase blocked;
+- illegal overbid blocked;
+- undo restores state;
+- refresh/relogin preserves state;
+- export backup works;
+- FPL still opens;
+- data/projection release ID and data-as-of visible if recommendations are used;
+- any recommendation shown comes only from a `MODEL_READY` release.
 
-If decision-support data is incomplete, the recorder must still remain usable without fake recommendations.
+If the model misses the deadline, ship the trustworthy recorder + canonical pool rather than a contaminated ranking.
