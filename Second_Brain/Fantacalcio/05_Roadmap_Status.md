@@ -10,14 +10,27 @@ FA0B rules/architecture contract freeze: **COMPLETE**.
 
 **FA0 — Rules & architecture freeze: COMPLETE.**
 
-Current / next implementation phase: **FA1 — Fantacalcio shell + authorization**.
+**FA1 — Fantacalcio shell + authorization: COMPLETE.**
 
-The main 2026/27 league constraints and the implementation-safe platform/domain boundary are now frozen for FA1. Remaining uncertainty is narrow and explicitly tracked:
+Production verification passed after PR #47:
+- Vuk-only capability/RLS grant is live;
+- Fantacalcio product entry works;
+- Fantacalcio ↔ FPL switching works;
+- logout/login works;
+- existing FPL behavior remains available.
+
+**Current delivery mode: 9-hour official-auction sprint.**
+
+Current sprint task: **FA2-S — reliable auction ledger engine**.
+
+The long-term roadmap below remains the post-auction architecture. During the sprint, phases may be compressed according to `07_Auction_Sprint.md` when doing so preserves correctness and directly improves auction readiness.
+
+Remaining uncertainty is narrow and explicitly tracked:
 - season-ending injury refund is unconfirmed;
 - full upper defense-modifier table/cap is unconfirmed;
 - auction position sequence will be selected when the asta starts.
 
-These uncertainties do not block FA1 shell/authorization work. They remain explicit dependencies only for later subsystems whose correctness actually depends on them.
+These uncertainties do not block the initial auction recorder.
 
 ## Confirmed 2026/27 league contract
 
@@ -35,6 +48,21 @@ These uncertainties do not block FA1 shell/authorization work. They remain expli
 - no captain modifier;
 - trades allowed after initial auction;
 - one repair auction after winter transfer market closes in 2027.
+
+## 9-hour sprint override
+
+The hard delivery constraint is a usable official-auction system within the current 9-hour project timebox.
+
+During this sprint:
+- reliable auction recording is non-negotiable;
+- simple validated data/model methods are preferred over rushed complex methods;
+- full roadmap phases may be compressed into sprint variants;
+- no fake player/model data may be introduced;
+- security, ownership/budget correctness and recoverability are not optional;
+- documentation/onboarding/re-audit work is minimized unless it prevents a real error;
+- the full roadmap resumes after the auction.
+
+See `07_Auction_Sprint.md` for the active sequence and cut line.
 
 ## Roadmap principles
 
@@ -57,7 +85,7 @@ Frozen outcomes:
 - FA1 can proceed without inventing unresolved league rules;
 - valuation-sensitive unknowns remain explicit rather than guessed.
 
-## FA1 — Fantacalcio shell + authorization — CURRENT / NEXT
+## FA1 — Fantacalcio shell + authorization — COMPLETE
 
 **Objective:** create private blue Fantacalcio mode.
 
