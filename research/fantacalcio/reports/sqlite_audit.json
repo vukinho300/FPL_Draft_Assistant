@@ -1,0 +1,98 @@
+{
+  "decision": "AUDIT_ONLY_NO_FANTACALCIO_CROSSWALK",
+  "integrity_check": "ok",
+  "missing_canonical_tables": [
+    "collegamenti_fbref",
+    "giocatori",
+    "quotazioni_fanta",
+    "statistiche_fanta"
+  ],
+  "tables": {
+    "anagrafica_giocatori": {
+      "fields": [
+        "giocatore_id",
+        "nazionalita",
+        "codice_nazione",
+        "eta"
+      ],
+      "row_count": 453,
+      "schema": "CREATE TABLE anagrafica_giocatori (\n            giocatore_id INTEGER PRIMARY KEY REFERENCES giocatori(id),\n            nazionalita TEXT NOT NULL,\n            codice_nazione TEXT NOT NULL\n        , eta INTEGER)"
+    },
+    "dati_reali_api": {
+      "fields": [
+        "giocatore_id",
+        "api_giocatore_id",
+        "aggiornato_il",
+        "dati_json"
+      ],
+      "row_count": 486,
+      "schema": "CREATE TABLE dati_reali_api (\n            giocatore_id INTEGER PRIMARY KEY REFERENCES giocatori(id),\n            api_giocatore_id INTEGER NOT NULL,\n            aggiornato_il TEXT NOT NULL,\n            dati_json TEXT NOT NULL\n        )",
+      "timestamp_range": [
+        "2026-08-25T13:03:40",
+        "2026-08-26T16:10:29"
+      ]
+    },
+    "sincronizzazioni_api": {
+      "fields": [
+        "id",
+        "avviata_il",
+        "conclusa_il",
+        "esito",
+        "richieste",
+        "messaggio"
+      ],
+      "row_count": 3,
+      "schema": "CREATE TABLE sincronizzazioni_api (\n            id INTEGER PRIMARY KEY,\n            avviata_il TEXT NOT NULL,\n            conclusa_il TEXT,\n            esito TEXT NOT NULL,\n            richieste INTEGER NOT NULL DEFAULT 0,\n            messaggio TEXT\n        )"
+    },
+    "statistiche_fbref": {
+      "fields": [
+        "fbref_id",
+        "stagione",
+        "nome_fbref",
+        "squadra_fbref",
+        "posizione_fbref",
+        "dati_json"
+      ],
+      "row_count": 8568,
+      "schema": "CREATE TABLE statistiche_fbref (\n            fbref_id TEXT NOT NULL,\n            stagione TEXT NOT NULL,\n            nome_fbref TEXT NOT NULL,\n            squadra_fbref TEXT,\n            posizione_fbref TEXT,\n            dati_json TEXT NOT NULL,\n            PRIMARY KEY (fbref_id, stagione)\n        )",
+      "seasons": {
+        "2015-16": 702,
+        "2016-17": 745,
+        "2017-18": 688,
+        "2018-19": 686,
+        "2019-20": 701,
+        "2020-21": 766,
+        "2021-22": 774,
+        "2022-23": 733,
+        "2023-24": 752,
+        "2024-25": 765,
+        "2025-26": 772,
+        "2026-27": 484
+      }
+    },
+    "statistiche_squadre_fbref": {
+      "fields": [
+        "stagione",
+        "squadra",
+        "squadra_normalizzata",
+        "dati_json"
+      ],
+      "row_count": 240,
+      "schema": "CREATE TABLE statistiche_squadre_fbref (\n            stagione TEXT NOT NULL,\n            squadra TEXT NOT NULL,\n            squadra_normalizzata TEXT NOT NULL,\n            dati_json TEXT NOT NULL,\n            PRIMARY KEY (stagione, squadra)\n        )",
+      "seasons": {
+        "2015-16": 20,
+        "2016-17": 20,
+        "2017-18": 20,
+        "2018-19": 20,
+        "2019-20": 20,
+        "2020-21": 20,
+        "2021-22": 20,
+        "2022-23": 20,
+        "2023-24": 20,
+        "2024-25": 20,
+        "2025-26": 20,
+        "2026-27": 20
+      }
+    }
+  }
+}

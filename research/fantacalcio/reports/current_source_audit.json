@@ -1,0 +1,41 @@
+{
+  "commit": "4dda14a8dd2ab24c2f30404c65d317e1d4cc84a4",
+  "decision": "NOT_ADMITTED_STALE_OR_UNVERIFIED_SEMANTICS",
+  "injury_page": "Printed update 2026-09-15 18:45; no Kossounou entry in inspected snapshot. Not used as complete current availability.",
+  "observed": "Maignan page: current 2026/27, 4 appearances; live FC has 5. Forecast fields and GK Rigorista badge are not validated facts.",
+  "pages": [
+    {
+      "path": "fpd_maignan-4035c76f2792.html",
+      "retrieved_at": "2026-09-22T15:27:23.629810+00:00",
+      "sha256": "4035c76f2792a401aeffffe7276542465f39acf95ca9e604081007a1f50b5387",
+      "size": 76332,
+      "source_name": "fpd_maignan",
+      "status": 200,
+      "url": "https://www.fantacalciopedia.com/lista-calciatori-serie-a/portieri/3172/maignan-mike.html"
+    },
+    {
+      "path": "fpd_injuries-ca2c1c22912d.html",
+      "retrieved_at": "2026-09-22T15:27:23.816516+00:00",
+      "sha256": "ca2c1c22912dbc87aa3ab3944cde3b7cee1cc27573014d1e1f5f2021204f8902",
+      "size": 353543,
+      "source_name": "fpd_injuries",
+      "status": 200,
+      "url": "https://www.fantacalciopedia.com/articoli-fcp/consigli-fantacalcio/75-lista-infortunati-serie-a-aggiornata.html"
+    },
+    {
+      "error": "HTTP Error 404: Not Found",
+      "retrieved_at": "2026-09-22T15:27:24.030803+00:00",
+      "source_name": "fpd_robots",
+      "url": "https://www.fantacalciopedia.com/robots.txt"
+    }
+  ],
+  "paid_provider": "Not used or purchased",
+  "reference_repository": "https://github.com/piopy/fantacalcio-py",
+  "rejected_implementation_patterns": [
+    "private credential provider",
+    "DNS override",
+    "fuzzy first-match identity",
+    "numeric errors coerced to zero"
+  ],
+  "understat": "Prior normal browser export worked, but lacks player IDs; robots disallows crawling. No undocumented POST or scraper used."
+}
