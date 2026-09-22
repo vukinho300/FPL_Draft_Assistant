@@ -1,3 +1,4 @@
+/// <reference types="node" />
 // @vitest-environment jsdom
 
 import { act } from 'react'
@@ -8,7 +9,11 @@ import { FantacalcioShell } from './FantacalcioShell.tsx'
 import { replayAuction, type AuctionEvent } from './auction/ledger.ts'
 import { exportAuctionSnapshot } from './auction/recorder.ts'
 import type { AuctionValuePlayer } from './auction/economics.ts'
+import * as squadPlanEngine from './auction/squadPlan.ts'
+import { readFileSync } from 'node:fs'
 import type { AuctionRepository, AuctionSnapshot, SaleDraft, UndoDraft } from './auction/repository.ts'
+
+const rankingStyles = readFileSync('src/fantacalcio/FantacalcioShell.css', 'utf8')
 
 const snapshot: AuctionSnapshot = {
   sessionId: 'auction-2026',
@@ -56,6 +61,10 @@ async function render(repository: AuctionRepository, canonicalPool?: readonly Au
 
 async function settle() { await act(async () => { await Promise.resolve(); await Promise.resolve() }) }
 
+function navigate(container: HTMLDivElement, page: 'Auction' | 'Managers') {
+  act(() => [...container.querySelectorAll<HTMLButtonElement>('.fantacalcio-tabs button')].find(button => button.textContent === page)!.click())
+}
+
 function setValue(element: HTMLInputElement | HTMLSelectElement, value: string) {
   const setter = Object.getOwnPropertyDescriptor(element instanceof HTMLInputElement ? HTMLInputElement.prototype : HTMLSelectElement.prototype, 'value')?.set
   setter?.call(element, value)
@@ -80,6 +89,7 @@ beforeEach(() => {
 afterEach(() => {
   roots.splice(0).forEach(({ root, container }) => { act(() => root.unmount()); container.remove() })
   vi.unstubAllGlobals()
+  vi.restoreAllMocks()
 })
 
 describe('Fantacalcio live auction recorder', () => {
@@ -106,6 +116,8 @@ describe('Fantacalcio live auction recorder', () => {
     act(() => result.dispatchEvent(new MouseEvent('click', { bubbles: true })))
     expect(container.querySelector<HTMLSelectElement>('form label select')?.value).toBe('DIF')
     expect(container.textContent).toContain('Selected: Canonical Player 1 · Roma · DIF')
+    expect(container.textContent).toContain('Optional local enrichment not loaded.')
+    expect(container.textContent).toContain('Health enrichment not loaded')
     expect(container.querySelector('.decision-state')?.textContent).toBe('PLAYER VALUE · ENTER BID')
     setValue(container.querySelector<HTMLInputElement>('input[placeholder="Credits"]')!, '20')
     await act(async () => container.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })))
@@ -154,10 +166,14 @@ describe('Fantacalcio live auction recorder', () => {
   it('loads the empty authoritative auction and renders all eight managers at 500 credits', async () => {
     const container = await render(new MemoryAuctionRepository())
     expect(container.textContent).toContain('No sales recorded yet')
+    expect(container.textContent).toContain('No active sales available to undo.')
+    expect(container.querySelectorAll('.manager-card')).toHaveLength(0)
+    expect(container.textContent).toContain('Hard max legal bid')
+    navigate(container, 'Managers')
     expect(container.querySelectorAll('.manager-card')).toHaveLength(8)
     expect(container.querySelectorAll('.manager-credits')).toHaveLength(8)
     expect([...container.querySelectorAll('.manager-credits')].every((node) => node.textContent === '500')).toBe(true)
-    expect(container.textContent).toContain('Hard max legal bid')
+    expect(container.querySelector('.auction-entry')).toBeNull()
   })
 
   it('renders the calculated squad budget plan when every required role is available', async () => {
@@ -172,15 +188,67 @@ describe('Fantacalcio live auction recorder', () => {
     expect(container.textContent).toContain('Minimum obligations25')
   })
 
+  it('keeps rankings in a scroll region with sticky headers and player column', async () => {
+    const container = await render(new MemoryAuctionRepository(), pool)
+    expect([...container.querySelectorAll('.rankings-scroll thead th')].map(node => node.textContent)).toEqual(
+      ['Player', 'Role rank', 'Projection', 'Confidence', 'FVM', 'FVM500 reference', 'Availability', 'Signal'])
+    expect(rankingStyles).toMatch(/thead th \{ position: sticky; top: 0;/)
+    expect(rankingStyles).toMatch(/tr > :first-child \{ position: sticky; left: 0;/)
+  })
+
+  it('does not rerun FB1 optimization on typing, bids, role filtering or page changes', async () => {
+    const planSpy = vi.spyOn(squadPlanEngine, 'buildSquadBudgetPlan')
+    const ceilingSpy = vi.spyOn(squadPlanEngine, 'rosterAdjustedMax')
+    const balancedPool = (Object.entries(snapshot.config.requiredSlots) as [AuctionValuePlayer['role'], number][]).flatMap(([role, count]) =>
+      Array.from({ length: count + 1 }, (_, index): AuctionValuePlayer => ({ playerRef: `memo:${role}:${index}`, displayName: `${role} ${index}`,
+        club: 'Test', role, eligibility: 'SELECTABLE', projection: 100 - index, positionRank: index + 1,
+        overallRank: index + 1, confidence: 'MEDIUM', fvm: 2, fvm500: 1 })))
+    const container = await render(new MemoryAuctionRepository(), balancedPool)
+    const baseline = planSpy.mock.calls.length
+    expect(baseline).toBeGreaterThan(0)
+    setValue(container.querySelector<HTMLInputElement>('input[placeholder="Search 534 players"]')!, 'POR')
+    act(() => container.querySelector<HTMLButtonElement>('.player-results button')!.click())
+    const selected = ceilingSpy.mock.calls.length
+    expect(selected).toBeGreaterThan(0)
+    setValue(container.querySelector<HTMLInputElement>('input[placeholder="Credits"]')!, '12')
+    act(() => container.querySelector<HTMLButtonElement>('.ranking-filters button')!.click())
+    navigate(container, 'Managers'); navigate(container, 'Auction')
+    expect(planSpy).toHaveBeenCalledTimes(baseline)
+    expect(ceilingSpy).toHaveBeenCalledTimes(selected)
+    expect(container.textContent).toContain('Roster-adjusted max')
+  })
+
+  it('undoes the latest and an older active sale with two clicks and never offers an undone sale again', async () => {
+    const initial: AuctionSnapshot = { ...snapshot, events: Array.from({ length: 7 }, (_, i) => ({
+      id: `old-${i}`, sequenceNo: i + 1, clientRequestId: `old-request-${i}`, kind: 'SALE', managerId: 'manager-4',
+      playerRef: `manual:Defender ${i}`, role: 'DIF', price: 1, recordedAt: '2026-09-22T12:00:00.000Z', note: null })) }
+    const repository = new MemoryAuctionRepository(initial)
+    const container = await render(repository)
+    expect(container.querySelectorAll('.correction-panel button')).toHaveLength(7)
+    act(() => container.querySelector<HTMLButtonElement>('.latest-correction button')!.click())
+    expect(repository.undos).toHaveLength(0)
+    await act(async () => container.querySelector<HTMLButtonElement>('.latest-correction button')!.click())
+    expect(repository.undos).toHaveLength(1)
+    expect(container.querySelectorAll('.correction-panel button')).toHaveLength(6)
+    expect(container.querySelector('.correction-panel')?.textContent).not.toContain('Defender 6')
+    const oldest = () => [...container.querySelectorAll<HTMLButtonElement>('.correction-panel button')].find(button => button.textContent?.includes('Defender 0'))!
+    act(() => oldest().click()); expect(repository.undos).toHaveLength(1)
+    await act(async () => oldest().click())
+    expect(repository.undos).toHaveLength(2)
+    expect(container.querySelector('.correction-panel')?.textContent).not.toContain('Defender 0')
+    expect(container.querySelector('.auction-history')?.textContent).toContain('UNDO')
+  })
+
   it('writes a manual sale in the ledger shape and immediately derives the new manager state', async () => {
     const repository = new MemoryAuctionRepository()
     const container = await render(repository)
     await sale(container, 'Luca Test', 'DIF', 'manager-4', '24')
     expect(repository.sales).toEqual([expect.objectContaining({ sessionId: 'auction-2026', playerRef: 'manual:Luca Test', role: 'DIF', managerId: 'manager-4', price: 24, clientRequestId: 'request-id-1' })])
+    expect(container.textContent).toContain('Luca Test')
+    navigate(container, 'Managers')
     const vuk = [...container.querySelectorAll('.manager-card')].find((card) => card.textContent?.includes('Vuk'))
     expect(vuk?.textContent).toContain('476')
     expect(vuk?.textContent).toContain('DIF7')
-    expect(container.textContent).toContain('Luca Test')
   })
 
   it('rejects an invalid price before it calls the ledger', async () => {
@@ -225,6 +293,7 @@ describe('Fantacalcio live auction recorder', () => {
     expect(repository.recordSale).toHaveBeenCalledTimes(1)
     resolveSale?.()
     await settle()
+    navigate(container, 'Managers')
     expect(container.textContent).toContain('480')
   })
 
@@ -239,20 +308,23 @@ describe('Fantacalcio live auction recorder', () => {
     await act(async () => confirmUndo.dispatchEvent(new MouseEvent('click', { bubbles: true })))
     await settle()
     expect(repository.undos).toHaveLength(1)
-    expect(container.textContent).toContain('500')
     expect(container.textContent).toContain('Manual PlayerPOR')
     expect(container.textContent).toContain('UNDO')
+    navigate(container, 'Managers')
+    expect(container.textContent).toContain('500')
   })
 
   it('reconstructs the same state after a remount from the authoritative repository history', async () => {
     const repository = new MemoryAuctionRepository()
     const first = await render(repository)
     await sale(first, 'Persistent player', 'ATT', 'manager-2', '30')
+    navigate(first, 'Managers')
     const firstSummary = [...first.querySelectorAll('.manager-card')].find((card) => card.textContent?.includes('Massi'))?.textContent
     const second = await render(repository)
+    expect(second.textContent).toContain('Persistent player')
+    navigate(second, 'Managers')
     const secondSummary = [...second.querySelectorAll('.manager-card')].find((card) => card.textContent?.includes('Massi'))?.textContent
     expect(secondSummary).toBe(firstSummary)
-    expect(second.textContent).toContain('Persistent player')
   })
 
   it('exports the exact authoritative history and derived manager summaries', () => {
