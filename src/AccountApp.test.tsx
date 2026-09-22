@@ -15,6 +15,7 @@ const mocks = vi.hoisted(() => ({
   subscribe: vi.fn(),
   getState: vi.fn(),
   from: vi.fn(),
+  hasFantacalcioAccess: vi.fn(),
 }))
 
 vi.mock('./services/supabase/index.ts', () => ({
@@ -34,6 +35,10 @@ vi.mock('./LeagueDashboard.tsx', () => ({
   default: ({ currentManagerId }: { readonly currentManagerId?: string }) => (
     <div data-testid="league-dashboard">Dashboard for {currentManagerId}</div>
   ),
+}))
+
+vi.mock('./services/supabase/fantacalcioAccess.ts', () => ({
+  hasFantacalcioAccess: mocks.hasFantacalcioAccess,
 }))
 
 import AccountApp from './AccountApp.tsx'
@@ -107,6 +112,7 @@ beforeEach(() => {
   vi.clearAllMocks()
   mocks.signInWithTeamName.mockResolvedValue(sessionState('UNAUTHENTICATED'))
   mocks.signOut.mockResolvedValue(sessionState('UNAUTHENTICATED'))
+  mocks.hasFantacalcioAccess.mockResolvedValue(false)
 })
 
 afterEach(() => {
@@ -182,6 +188,81 @@ describe('AccountApp', () => {
     expect(container.querySelector('[data-testid="league-dashboard"]')?.textContent).toContain('demo-manager-3')
     expect(container.textContent).toContain('Dindi')
     expect(container.textContent).not.toContain('Commissioner')
+    expect(container.textContent).not.toContain('Fantacalcio')
+  })
+
+  it('lets an explicitly authorized Vuk switch products and return to the same FPL roster', async () => {
+    mocks.hasFantacalcioAccess.mockResolvedValue(true)
+    configure(sessionState('AUTHENTICATED', 'jakin-auth'), {
+      data: { id: 'jakin-account', auth_user_id: 'jakin-auth', team_name: 'Jakin Goff', manager_name: 'Vuk', role: 'LEAGUE_OWNER' },
+      error: null,
+    })
+    const container = await renderApp()
+    await settle()
+
+    expect(mocks.hasFantacalcioAccess).toHaveBeenCalledWith('jakin-auth')
+    expect(container.querySelector('[data-testid="league-dashboard"]')?.textContent).toContain('demo-manager-1')
+    const entry = [...container.querySelectorAll('button')].find((button) => button.textContent === 'Fantacalcio')
+    expect(entry).not.toBeUndefined()
+    act(() => entry!.dispatchEvent(new MouseEvent('click', { bubbles: true })))
+    expect(container.querySelector('[data-testid="league-dashboard"]')).toBeNull()
+    expect(container.querySelector('#fantacalcio-title')?.textContent).toContain('auction space')
+    expect(container.textContent).not.toContain('500 credits')
+
+    const returnButton = [...container.querySelectorAll('button')].find((button) => button.textContent === 'Return to FPL Draft')
+    act(() => returnButton!.dispatchEvent(new MouseEvent('click', { bubbles: true })))
+    expect(container.querySelector('[data-testid="league-dashboard"]')?.textContent).toContain('demo-manager-1')
+  })
+
+  it('does not use an FPL roster identity as the Fantacalcio capability', async () => {
+    mocks.hasFantacalcioAccess.mockResolvedValue(true)
+    configure(sessionState('AUTHENTICATED', 'verified-auth'), {
+      data: { id: 'account', auth_user_id: 'verified-auth', team_name: 'Miku007', manager_name: 'Vuk', role: 'MEMBER' },
+      error: null,
+    })
+    const container = await renderApp()
+    await settle()
+
+    expect(container.textContent).toContain('Account setup required')
+    const entry = [...container.querySelectorAll('button')].find((button) => button.textContent === 'Fantacalcio')
+    act(() => entry!.dispatchEvent(new MouseEvent('click', { bubbles: true })))
+    expect(container.querySelector('#fantacalcio-title')).not.toBeNull()
+    expect(container.querySelector('[data-testid="league-dashboard"]')).toBeNull()
+  })
+
+  it('can enter Fantacalcio with an explicit grant even if no FPL account row resolves', async () => {
+    mocks.hasFantacalcioAccess.mockResolvedValue(true)
+    configure(sessionState('AUTHENTICATED', 'fantacalcio-auth'))
+    const container = await renderApp()
+    await settle()
+
+    expect(container.textContent).toContain('Account setup required')
+    const entry = [...container.querySelectorAll('button')].find((button) => button.textContent === 'Fantacalcio')
+    act(() => entry!.dispatchEvent(new MouseEvent('click', { bubbles: true })))
+    expect(container.querySelector('#fantacalcio-title')).not.toBeNull()
+  })
+
+  it('removes Fantacalcio immediately when the signed-in Auth user changes', async () => {
+    let emitSession: ((state: AuthSessionState) => void) | undefined
+    mocks.hasFantacalcioAccess.mockImplementation((userId: string) => Promise.resolve(userId === 'jakin-auth'))
+    configure(sessionState('AUTHENTICATED', 'jakin-auth'), {
+      data: { id: 'jakin-account', auth_user_id: 'jakin-auth', team_name: 'Jakin Goff', manager_name: 'Vuk', role: 'LEAGUE_OWNER' },
+      error: null,
+    })
+    mocks.subscribe.mockImplementation((listener: (state: AuthSessionState) => void) => {
+      emitSession = listener
+      listener(sessionState('AUTHENTICATED', 'jakin-auth'))
+      return vi.fn()
+    })
+    const container = await renderApp()
+    await settle()
+    const entry = [...container.querySelectorAll('button')].find((button) => button.textContent === 'Fantacalcio')
+    act(() => entry!.dispatchEvent(new MouseEvent('click', { bubbles: true })))
+    expect(container.querySelector('#fantacalcio-title')).not.toBeNull()
+
+    act(() => emitSession?.(sessionState('AUTHENTICATED', 'dindi-auth')))
+    expect(container.querySelector('#fantacalcio-title')).toBeNull()
+    expect(container.textContent).not.toContain('Fantacalcio')
   })
 
   it('fails closed for an authenticated user without a league account mapping', async () => {

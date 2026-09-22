@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 
 import LeagueDashboard from './LeagueDashboard.tsx'
 import { resolveLeagueAccountRosterManagerId } from './data/leagues/kile-n-others/accountRosterIdentity.ts'
+import { FantacalcioShell } from './fantacalcio/FantacalcioShell.tsx'
 import {
   getSupabaseAuthSessionService,
   getSupabaseBrowserClient,
   LEAGUE_TEAM_LOGIN_IDENTITIES,
   type AuthSessionState,
 } from './services/supabase/index.ts'
+import { hasFantacalcioAccess } from './services/supabase/fantacalcioAccess.ts'
 import './AccountApp.css'
 
 type LeagueAccount = {
@@ -17,6 +19,17 @@ type LeagueAccount = {
   manager_name: string
   role: 'MEMBER' | 'LEAGUE_OWNER'
 }
+
+type AccountResolution = Readonly<{
+  authUserId: string
+  account: LeagueAccount | null
+  error: string | null
+}>
+
+type FantacalcioResolution = Readonly<{
+  authUserId: string
+  allowed: boolean
+}>
 
 function Login({ onLogin }: { readonly onLogin: () => void }) {
   const [team, setTeam] = useState<string>(LEAGUE_TEAM_LOGIN_IDENTITIES[0].teamName)
@@ -63,8 +76,9 @@ export default function AccountApp() {
 
 function ConfiguredAccountApp({ service }: { readonly service: ReturnType<typeof getSupabaseAuthSessionService> }) {
   const [session, setSession] = useState<AuthSessionState>(() => service.getState())
-  const [account, setAccount] = useState<LeagueAccount | null>(null)
-  const [accountError, setAccountError] = useState<string | null>(null)
+  const [accountResolution, setAccountResolution] = useState<AccountResolution | null>(null)
+  const [fantacalcioResolution, setFantacalcioResolution] = useState<FantacalcioResolution | null>(null)
+  const [product, setProduct] = useState<'FPL' | 'FANTACALCIO'>('FPL')
   const authUserId = session.status === 'AUTHENTICATED' ? session.session?.user.id ?? null : null
 
   useEffect(() => {
@@ -74,50 +88,82 @@ function ConfiguredAccountApp({ service }: { readonly service: ReturnType<typeof
   }, [service])
 
   useEffect(() => {
-    setAccount(null)
-    setAccountError(null)
+    setAccountResolution(null)
+    setFantacalcioResolution(null)
+    setProduct('FPL')
     if (authUserId === null) return
 
     let active = true
-    void getSupabaseBrowserClient().from('league_accounts').select('id, auth_user_id, team_name, manager_name, role').eq('auth_user_id', authUserId).maybeSingle().then(({ data, error }) => {
-      if (!active) return
-      if (error !== null || data === null) {
-        setAccountError('This authenticated account is not configured for the league.')
-        return
-      }
-      setAccount(data as LeagueAccount)
+    void Promise.resolve(getSupabaseBrowserClient().from('league_accounts').select('id, auth_user_id, team_name, manager_name, role').eq('auth_user_id', authUserId).maybeSingle())
+      .then(({ data, error }) => {
+        if (!active) return
+        setAccountResolution({
+          authUserId,
+          account: error === null ? data as LeagueAccount | null : null,
+          error: error !== null || data === null ? 'This authenticated account is not configured for the league.' : null,
+        })
+      }).catch(() => {
+        if (active) setAccountResolution({ authUserId, account: null, error: 'This authenticated account is not configured for the league.' })
+      })
+    void hasFantacalcioAccess(authUserId).then((allowed) => {
+      if (active) setFantacalcioResolution({ authUserId, allowed })
+    }).catch(() => {
+      if (active) setFantacalcioResolution({ authUserId, allowed: false })
     })
     return () => { active = false }
   }, [authUserId])
 
   if (session.status === 'INITIALIZING') return <main className="auth-page"><p className="auth-loading">Opening Kile N Others…</p></main>
   if (session.status === 'UNAUTHENTICATED') return <Login onLogin={() => undefined} />
-  if (accountError !== null) return <AccountSetupRequired onLogout={() => void service.signOut()}>{accountError}</AccountSetupRequired>
-  if (account === null) return <main className="auth-page"><p className="auth-loading">Loading league account…</p></main>
+  const accountState = accountResolution?.authUserId === authUserId ? accountResolution : null
+  const account = accountState?.account ?? null
+  const canUseFantacalcio = fantacalcioResolution?.authUserId === authUserId && fantacalcioResolution.allowed
+  const currentManagerId = account === null
+    ? null
+    : resolveLeagueAccountRosterManagerId(account.team_name, account.manager_name)
+  const showFantacalcio = canUseFantacalcio && product === 'FANTACALCIO'
 
-  const currentManagerId = resolveLeagueAccountRosterManagerId(account.team_name, account.manager_name)
-  if (currentManagerId === null) {
-    return <AccountSetupRequired onLogout={() => void service.signOut()}>
+  let fplExperience: ReactNode
+  if (accountState === null) {
+    fplExperience = <main className="auth-page"><p className="auth-loading">Loading league account…</p></main>
+  } else if (accountState.error !== null || account === null) {
+    fplExperience = <AccountSetupRequired onLogout={() => void service.signOut()}>
+      {accountState.error ?? 'This authenticated account is not configured for the league.'}
+    </AccountSetupRequired>
+  } else if (currentManagerId === null) {
+    fplExperience = <AccountSetupRequired onLogout={() => void service.signOut()}>
       This authenticated account does not map to an official league roster.
     </AccountSetupRequired>
+  } else {
+    fplExperience = <LeagueDashboard
+      currentManagerId={currentManagerId}
+      account={{
+        id: account.id,
+        teamName: account.team_name,
+        managerName: account.manager_name,
+        role: account.role,
+      }}
+      onLogout={() => void service.signOut()}
+    />
+  }
+
+  if (!canUseFantacalcio && (accountState === null || accountState.error !== null || currentManagerId === null)) {
+    return fplExperience
   }
 
   return (
     <div className="authenticated-app">
       <div className="account-banner">
-        <span>{account.team_name}{account.role === 'LEAGUE_OWNER' ? ' · Commissioner' : ''}</span>
+        <span>{account?.team_name ?? 'Signed in'}{account?.role === 'LEAGUE_OWNER' ? ' · Commissioner' : ''}</span>
+        {canUseFantacalcio && <nav className="product-navigation" aria-label="Products">
+          <button type="button" aria-current={!showFantacalcio ? 'page' : undefined} onClick={() => setProduct('FPL')}>FPL Draft</button>
+          <button type="button" aria-current={showFantacalcio ? 'page' : undefined} onClick={() => setProduct('FANTACALCIO')}>Fantacalcio</button>
+        </nav>}
         <button type="button" onClick={() => void service.signOut()}>Log out</button>
       </div>
-      <LeagueDashboard
-        currentManagerId={currentManagerId}
-        account={{
-          id: account.id,
-          teamName: account.team_name,
-          managerName: account.manager_name,
-          role: account.role,
-        }}
-        onLogout={() => void service.signOut()}
-      />
+      {showFantacalcio
+        ? <FantacalcioShell onReturnToFpl={() => setProduct('FPL')} />
+        : fplExperience}
     </div>
   )
 }

@@ -9,6 +9,21 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      fantacalcio_access: {
+        Row: {
+          auth_user_id: string
+          granted_at: string
+        }
+        Insert: {
+          auth_user_id: string
+          granted_at?: string
+        }
+        Update: {
+          auth_user_id?: string
+          granted_at?: string
+        }
+        Relationships: []
+      }
       league_accounts: {
         Row: {
           auth_user_id: string | null
